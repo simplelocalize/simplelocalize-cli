@@ -1,0 +1,15 @@
+<configuration debug="false">
+    <appender name="Console" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <!-- @formatter:on -->
+            <pattern>
+                %-4level [%logger{0}]: %msg%n
+            </pattern>
+            <!-- @formatter:off -->
+        </encoder>
+    </appender>
+
+    <root level="INFO">
+        <appender-ref ref="Console"/>
+    </root>
+</configuration>
