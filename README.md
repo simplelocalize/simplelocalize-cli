@@ -53,6 +53,6 @@ Application will find all i18n keys and push them to SimpleLocalize cloud.
 - Add easier option to install (bundle with Java)
 - Support more project types
 
-## License
+## 👩‍⚖️ License
 
 MIT © [](https://github.com/)
