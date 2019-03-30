@@ -53,7 +53,7 @@ class ShellCommander {
 
     String clientId = properties.getProperty(CLIENT_ID.getKey());
     String secret = properties.getProperty(CLIENT_SECRET.getKey());
-    String projectHash = properties.getProperty(PROJECT_HASH.getKey());
+    String projectHash = properties.getProperty(PROJECT_WRITE_TOKEN.getKey());
 
     SimpleLocalizeClient client = new SimpleLocalizeClient(clientId, secret);
     client.pushKeys(projectHash, keys);
