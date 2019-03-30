@@ -1,6 +1,6 @@
 # SimpleLocalize-CLI 
 
-## What it does?
+## ⚡️ What it does?
 
 Application will find all keys which are used by [https://github.com/yahoo/react-intl](https://github.com/yahoo/react-intl).
 Like:
@@ -17,7 +17,7 @@ Keys will be pushed to the [SimpleLocalize cloud](https://app.simplelocalize.io/
 
 Consider use of [`react-intl-simplelocalize`](https://github.com/simplelocalize/react-intl-simplelocalize) for the best experience. 
 
-## Install
+## ⚙️ Install
 
 ```bash
 //work in progress
@@ -25,7 +25,7 @@ Consider use of [`react-intl-simplelocalize`](https://github.com/simplelocalize/
 Download latest version:
 [https://github.com/simplelocalize/simplelocalize-cli/releases](https://github.com/simplelocalize/simplelocalize-cli/releases)
 
-## Configuration
+## 🛠 Configuration
 
 - Create account here: https://simplelocalize.io
 - Create example project and copy project hash from project settings
@@ -41,14 +41,14 @@ secret=xxxxxxxxxxxxxxxxxxxxxx
 projectHash=xxxxxxxxxxxxxxxxxxxxxxx
 ```
 
-## Usage
+## 🚀 Usage
 
 ```bash
 java -jar simplelocalize-1.0.0.jar
 ```
 Application will find all i18n keys and push them to SimpleLocalize cloud.
 
-## Further work
+## 💡 Further work
 
 - Add easier option to install (bundle with Java)
 - Support more project types
