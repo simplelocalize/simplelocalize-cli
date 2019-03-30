@@ -36,7 +36,9 @@ Download latest version:
 ```properties
 # simplelocalize.properties example
 search.dir=/Users/{YOUR_NAME}/Workspace/MyProject/src
-project.write.token=xxxxxxxxxxxxxxxxxxxxxxx
+client.id=<YOUR_CLIENT_ID>
+secret=<YOUR_SECRET>
+project.write.token=<YOUR_PROJECT_WRITE_TOKEN>
 ```
 
 ## 🚀 Usage
