@@ -25,20 +25,18 @@ Consider use of [`react-intl-simplelocalize`](https://github.com/simplelocalize/
 Download latest version:
 [https://github.com/simplelocalize/simplelocalize-cli/releases](https://github.com/simplelocalize/simplelocalize-cli/releases)
 
-## 🛠 Configuration
+## 🛠 First configuration
 
-- Create account here: https://simplelocalize.io
-- Create example project and copy project hash from project settings
-- Create app and copy credentials
-
-Put `simplelocalize.properties` config file in same directory with `simplelocalize-1.0.0.jar` and fill with your credentials.
+- Create account here: https://simplelocalize.io/register
+- Create example project
+- Go to project settings and download configuration properties
+- Setup project source path in `search.dir` 
+- Run `./simplelocalize.sh` and you are done! 💃
 
 ```properties
 # simplelocalize.properties example
-searchDir=/Users/{YOUR_NAME}/Workspace/MyProject/src
-clientId=xxxxxxxxxxxxxxx
-secret=xxxxxxxxxxxxxxxxxxxxxx
-projectHash=xxxxxxxxxxxxxxxxxxxxxxx
+search.dir=/Users/{YOUR_NAME}/Workspace/MyProject/src
+project.write.token=xxxxxxxxxxxxxxxxxxxxxxx
 ```
 
 ## 🚀 Usage
