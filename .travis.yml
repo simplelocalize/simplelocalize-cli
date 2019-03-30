@@ -1,0 +1,27 @@
+language: java
+jdk:
+  - oraclejdk8
+install: mvn --settings .maven.xml clean install -Ptest -B -V
+after_success:
+  - mvn clean test -Ptest && bash <(curl -s https://codecov.io/bash) || echo "Codecov did not collect coverage reports"
+
+cache:
+  directories:
+    - "$HOME/.m2"
+addons:
+  apt:
+    packages:
+      - oracle-java8-installer
+before_install:
+  - echo $GPG_SECRET_KEYS | base64 --decode | $GPG_EXECUTABLE --import
+  - echo $GPG_OWNERTRUST | base64 --decode | $GPG_EXECUTABLE --import-ownertrust
+
+
+deploy:
+  provider: script
+  script: mvn versions:set -DremoveSnapshot && mvn --settings .maven.xml clean deploy -DskipTests -B -U -Prelease
+  skip_cleanup: true
+  on:
+    repo: simplelocalize/simplelocalize-cli
+    tags: true
+    jdk: oraclejdk8
