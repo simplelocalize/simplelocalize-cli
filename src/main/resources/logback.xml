@@ -3,7 +3,7 @@
         <encoder>
             <!-- @formatter:on -->
             <pattern>
-                %-4level [%logger{0}]: %msg%n
+                %msg%n
             </pattern>
             <!-- @formatter:off -->
         </encoder>

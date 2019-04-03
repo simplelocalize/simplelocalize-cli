@@ -1,4 +1,4 @@
-package io.simplelocalize.cli.util;
+package io.simplelocalize.cli.client;
 
 import com.jayway.jsonpath.JsonPath;
 import org.apache.commons.io.IOUtils;
@@ -16,7 +16,8 @@ public class ClientUtils {
   private ClientUtils() {
   }
 
-  public static String tryExtractMessage(HttpResponse response) {
+  static String tryExtractMessage(HttpResponse response)
+  {
     try {
       String json = parseToJson(response);
       return JsonPath.read(json, "$.data.message");
@@ -25,12 +26,14 @@ public class ClientUtils {
     }
   }
 
-  public static String extractAccessToken(HttpResponse response) {
+  static String extractAccessToken(HttpResponse response)
+  {
     String json = parseToJson(response);
-    return JsonPath.read(json, "$.data.access_token");
+    return JsonPath.read(json, "$.access_token");
   }
 
-  public static String parseToJson(HttpResponse response) {
+  static String parseToJson(HttpResponse response)
+  {
     try {
       return IOUtils.toString(response.getEntity().getContent(), "UTF-8");
     } catch (IOException e) {
