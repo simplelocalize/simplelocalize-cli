@@ -20,7 +20,7 @@ Consider use of [`react-intl-simplelocalize`](https://github.com/simplelocalize/
 ## ⚙️ Install
 
 ```bash
-//work in progress
+curl -s "https://github.com/simplelocalize/simplelocalize-cli/releases/download/0.0.0/simplelocalize" | bash
 ```
 Download latest version:
 [https://github.com/simplelocalize/simplelocalize-cli/releases](https://github.com/simplelocalize/simplelocalize-cli/releases)
