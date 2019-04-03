@@ -20,7 +20,7 @@ Consider use of [`react-intl-simplelocalize`](https://github.com/simplelocalize/
 ## ⚙️ Installation
 
 ```bash
-curl -s -L "https://github.com/simplelocalize/simplelocalize-cli/releases/download/0.0.0/simplelocalize" | bash
+$ curl -s -L "https://github.com/simplelocalize/simplelocalize-cli/releases/download/0.0.0/simplelocalize" | bash
 ```
 
 ## 🛠 Configuration
@@ -41,7 +41,7 @@ project.write.token=<YOUR_PROJECT_WRITE_TOKEN>
 ## 🚀 Usage
 
 ```bash
-simplelocalize-cli <OPTIONAL_PROPERTIES_FILE_PATH>
+$ simplelocalize-cli
 ```
 Application will find all i18n keys and push them to SimpleLocalize cloud.
 
