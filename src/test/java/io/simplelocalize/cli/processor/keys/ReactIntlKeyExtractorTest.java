@@ -1,10 +1,10 @@
 package io.simplelocalize.cli.processor.keys;
 
-import io.simplelocalize.cli.processor.files.TestResourcesUtility;
 import org.assertj.core.api.Assertions;
 import org.junit.Test;
 
-import java.util.List;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Set;
 
 public class ReactIntlKeyExtractorTest {
@@ -14,10 +14,10 @@ public class ReactIntlKeyExtractorTest {
   @Test
   public void shouldExtractKeysFromLines() throws Exception {
     //given
-    List<String> fileLines = TestResourcesUtility.readFile("react-intl/UserPage.js");
+    Path path = Paths.get("react-intl/UserPage.js");
 
     //when
-    Set<String> keys = reactIntlKeyExtractor.extractKeysFromLines(fileLines);
+    Set<String> keys = reactIntlKeyExtractor.extractKeysFromFile(path);
 
     //then
     Assertions.assertThat(keys).hasSize(8);

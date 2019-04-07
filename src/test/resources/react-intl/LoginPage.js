@@ -9,7 +9,7 @@ class LoginPage extends Component {
 
   onLoginSuccess = () => this.props.history.push("/user");
 
-  render () {
+  render() {
     return (
       <div>
         <Header photo={"//images.placeflare.com/random/cover_image/3.jpg"}>

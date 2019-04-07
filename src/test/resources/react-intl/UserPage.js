@@ -17,7 +17,7 @@ import {logoutUser} from "../redux/actions/userActions";
 
 class UserPage extends Component {
 
-  constructor (props) {
+  constructor(props) {
     super(props);
     let userId = this.props.match.params.id;
     let showingLoggedUser = false;
@@ -36,12 +36,11 @@ class UserPage extends Component {
     };
   }
 
-  componentDidMount () {
-    Axios.get(`/users/${this.state.userId}`).
-      then(({data}) => this.setState({
-        user: data.data,
-        userIsLoading: false
-      }));
+  componentDidMount() {
+    Axios.get(`/users/${this.state.userId}`).then(({data}) => this.setState({
+      user: data.data,
+      userIsLoading: false
+    }));
     this.loadMoreActivities();
   }
 
@@ -55,22 +54,20 @@ class UserPage extends Component {
 
   loadMoreActivities = () => {
     const {userId} = this.state;
-    Axios.get(`/users/${userId}/feed`).
-      then(({data}) => this.setState({
-        activities: data.data,
-        activitesAreLoading: false
-      }));
+    Axios.get(`/users/${userId}/feed`).then(({data}) => this.setState({
+      activities: data.data,
+      activitesAreLoading: false
+    }));
   };
 
   onCoverUploaded = (fileResponse: any) => {
     const userUpdateForm = {
       profileCoverImage: fileResponse.data.url
     };
-    Axios.put("/users", userUpdateForm).
-      then(({data}) => this.setState({user: data.data}));
+    Axios.put("/users", userUpdateForm).then(({data}) => this.setState({user: data.data}));
   };
 
-  render () {
+  render() {
     const {user, activities, showingLoggedUser, userIsLoading, activitesAreLoading} = this.state;
     const {intl} = this.props;
 

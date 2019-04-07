@@ -16,10 +16,10 @@ import java.util.Set;
 
 class ClientBodyBuilders {
 
+  private static ObjectMapper objectMapper = new ObjectMapper();
+
   private ClientBodyBuilders() {
   }
-
-  private static ObjectMapper objectMapper = new ObjectMapper();
 
   static HttpEntity ofKeysBody(Set<String> keys) throws JsonProcessingException {
     Map<String, Set<String>> jsonMap = Maps.newHashMap();

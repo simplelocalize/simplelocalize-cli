@@ -16,8 +16,7 @@ public class ClientUtils {
   private ClientUtils() {
   }
 
-  static String tryExtractMessage(HttpResponse response)
-  {
+  static String tryExtractMessage(HttpResponse response) {
     try {
       String json = parseToJson(response);
       return JsonPath.read(json, "$.data.message");
@@ -26,14 +25,12 @@ public class ClientUtils {
     }
   }
 
-  static String extractAccessToken(HttpResponse response)
-  {
+  static String extractAccessToken(HttpResponse response) {
     String json = parseToJson(response);
     return JsonPath.read(json, "$.access_token");
   }
 
-  static String parseToJson(HttpResponse response)
-  {
+  static String parseToJson(HttpResponse response) {
     try {
       return IOUtils.toString(response.getEntity().getContent(), "UTF-8");
     } catch (IOException e) {

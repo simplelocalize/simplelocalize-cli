@@ -17,7 +17,7 @@ public class JavascriptFilesFinderTest {
     Path path = TestResourcesUtility.read("react-intl");
 
     //when
-    List<Path> files = javascriptFilesFinder.findFiles(path);
+    List<Path> files = javascriptFilesFinder.findFilesToProcess(path);
 
     //then
     Assertions.assertThat(files).hasSize(3);

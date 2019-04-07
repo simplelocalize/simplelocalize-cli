@@ -1,6 +1,8 @@
 package io.simplelocalize.cli;
 
 import io.simplelocalize.cli.client.SimpleLocalizeClient;
+import io.simplelocalize.cli.processor.ProcessResult;
+import io.simplelocalize.cli.processor.ProjectProcessorFacade;
 import io.simplelocalize.cli.util.PropertiesValidator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -9,6 +11,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.List;
 import java.util.Properties;
 import java.util.Set;
 
@@ -38,22 +41,27 @@ class ShellCommander {
 
     try {
       invokeWithProperties(properties);
-    } catch (InterruptedException e) {
-      log.error("Work interrupted", e);
     } catch (IOException e) {
       log.error("Could not read source files", e);
     }
   }
 
-  private void invokeWithProperties(Properties properties) throws IOException, InterruptedException {
+  private void invokeWithProperties(Properties properties) throws IOException {
     PropertiesValidator.validate(properties);
 
     String searchDir = properties.getProperty(SEARCH_DIR.getKey());
-    Set<String> keys = KeysFinderFacade.invoke(searchDir);
+    String projectType = properties.getProperty(PROJECT_TYPE.getKey());
+
+    ProjectProcessorFacade projectProcessorFacade = new ProjectProcessorFacade(projectType);
+    ProcessResult result = projectProcessorFacade.process(searchDir);
+    Set<String> keys = result.getKeys();
+    List<Path> processedFiles = result.getProcessedFiles();
+
+    log.info("Found {} unique keys in {} components", keys.size(), processedFiles.size());
 
     String clientId = properties.getProperty(CLIENT_ID.getKey());
     String secret = properties.getProperty(CLIENT_SECRET.getKey());
-    String projectHash = properties.getProperty(PROJECT_WRITE_TOKEN.getKey());
+    String projectHash = properties.getProperty(PROJECT_TOKEN.getKey());
 
     SimpleLocalizeClient client = new SimpleLocalizeClient(clientId, secret);
     client.pushKeys(projectHash, keys);

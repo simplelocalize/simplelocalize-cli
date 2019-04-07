@@ -1,5 +1,8 @@
 package io.simplelocalize.cli.processor.keys;
 
+import io.simplelocalize.cli.util.FileReaderUtil;
+
+import java.nio.file.Path;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
@@ -15,7 +18,10 @@ public class ReactIntlKeyExtractor implements KeyExtractor {
   private static final String DEFINE_MESSAGES_FUNCTION = "defineMessages(";
 
   @Override
-  public Set<String> extractKeysFromLines(List<String> fileLines) {
+  public Set<String> extractKeysFromFile(Path filePath) {
+
+    List<String> fileLines = FileReaderUtil.tryReadLines(filePath);
+
     Set<String> outputKeys = new HashSet<>();
     for (int lineNumber = 0; lineNumber < fileLines.size(); lineNumber++) {
       String line = fileLines.get(lineNumber);

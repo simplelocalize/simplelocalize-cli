@@ -2,10 +2,11 @@ package io.simplelocalize.cli;
 
 public enum ConfigProperty {
 
-    SEARCH_DIR("search.dir", true),
-    CLIENT_ID("client.id", true),
+  SEARCH_DIR("search.dir", true),
+  CLIENT_ID("client.id", true),
   CLIENT_SECRET("secret", true),
-    PROJECT_WRITE_TOKEN("project.write.token", true);
+  PROJECT_TOKEN("project.token", true),
+  PROJECT_TYPE("project.type", true);
 
   private String key;
   private boolean required;

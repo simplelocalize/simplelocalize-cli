@@ -1,9 +1,9 @@
 package io.simplelocalize.cli.processor.keys;
 
-import java.util.List;
+import java.nio.file.Path;
 import java.util.Set;
 
 public interface KeyExtractor {
 
-  Set<String> extractKeysFromLines(List<String> filePaths);
+  Set<String> extractKeysFromFile(Path filePath);
 }

@@ -10,22 +10,25 @@ import java.nio.file.Path;
 import java.util.Collections;
 import java.util.List;
 
+/**
+ * Feel free to use or extend this utility
+ */
 public class FileReaderUtil {
+
+  private static Logger log = LoggerFactory.getLogger(FileReaderUtil.class);
 
   private FileReaderUtil() {
 
   }
 
-  private static Logger log = LoggerFactory.getLogger(FileReaderUtil.class);
-
-  public static List<String> tryReadLines(Path componentPath) {
-    List<String> componentLines = Collections.emptyList();
+  public static List<String> tryReadLines(Path filePath) {
+    List<String> fileLines = Collections.emptyList();
     try {
-      componentLines = Files.readAllLines(componentPath, StandardCharsets.UTF_8);
+      fileLines = Files.readAllLines(filePath, StandardCharsets.UTF_8);
     } catch (IOException e) {
-      log.warn("Cannot read file from path " + componentPath.toString(), e);
+      log.warn("Cannot read file from path " + filePath.toString(), e);
     }
-    return componentLines;
+    return fileLines;
   }
 
 }
