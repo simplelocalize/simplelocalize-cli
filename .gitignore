@@ -23,9 +23,6 @@
 /.nb-gradle/
 /build/
 
-simplelocalize.properties
-simplelocalize.yaml
-simplelocalize.yml
 simplelocalize-dev.properties
 simplelocalize-dev.yml
 simplelocalize-dev.yaml

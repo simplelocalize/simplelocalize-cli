@@ -3,7 +3,7 @@ package io.simplelocalize.cli.processor.keys;
 import org.assertj.core.api.Assertions;
 import org.junit.Test;
 
-import java.nio.file.Path;
+import java.net.URL;
 import java.nio.file.Paths;
 import java.util.Set;
 
@@ -14,10 +14,12 @@ public class ReactIntlKeyExtractorTest {
   @Test
   public void shouldExtractKeysFromLines() throws Exception {
     //given
-    Path path = Paths.get("react-intl/UserPage.js");
+    ClassLoader classLoader = this.getClass().getClassLoader();
+    URL resource = classLoader.getResource("react-intl/UserPage.js");
+    String path = resource.getPath();
 
     //when
-    Set<String> keys = reactIntlKeyExtractor.extractKeysFromFile(path);
+    Set<String> keys = reactIntlKeyExtractor.extractKeysFromFile(Paths.get(path));
 
     //then
     Assertions.assertThat(keys).hasSize(8);
