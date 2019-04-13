@@ -27,21 +27,21 @@ THIS_FILE=`basename "$0"`
 
 mkdir -p ~/.simplelocalize
 
-if [[ ! -f ~/.simplelocalize/simplelocalize-cli ]]; then
-  echo "🛠  Installing as local package"
-  cp ${THIS_FILE} ~/.simplelocalize/simplelocalize-cli
-fi
+#if [[ ! -f ~/.simplelocalize/simplelocalize-cli ]]; then
+#  echo "🛠  Installing as local package"
+#  cp ${THIS_FILE} ~/.simplelocalize/simplelocalize-cli
+#fi
 
-BIN_PACKAGE=/usr/local/bin/simplelocalize-cli
-if [[ ! -e ${BIN_PACKAGE} ]]; then
-  echo "🛠  Remove invalid global package"
-  rm ${BIN_PACKAGE}
-fi
+#BIN_PACKAGE=/usr/local/bin/simplelocalize-cli
+#if [[ ! -e ${BIN_PACKAGE} ]]; then
+#  echo "🛠  Remove invalid global package"
+#  rm ${BIN_PACKAGE}
+#fi
 
-if [[ ! -L ${BIN_PACKAGE} ]]; then
-  echo "🛠  Installing as global package"
-  ln -s ~/.simplelocalize/simplelocalize-cli /usr/local/bin/simplelocalize-cli
-fi
+#if [[ ! -L ${BIN_PACKAGE} ]]; then
+#  echo "🛠  Installing as global package"
+#  ln -s ~/.simplelocalize/simplelocalize-cli /usr/local/bin/simplelocalize-cli
+#fi
 
 # setup environment
 echo "🛠  Setting up environment"

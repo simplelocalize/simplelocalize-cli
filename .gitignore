@@ -24,6 +24,10 @@
 /build/
 
 simplelocalize.properties
+simplelocalize.yaml
+simplelocalize.yml
 simplelocalize-dev.properties
+simplelocalize-dev.yml
+simplelocalize-dev.yaml
 simplelocalize*.jar
 *ITE.java
