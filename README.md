@@ -20,7 +20,7 @@ Consider use of [`react-intl-simplelocalize`](https://github.com/simplelocalize/
 ## ⚙️ Installation
 
 ```bash
-$ curl -sL "https://github.com/simplelocalize/simplelocalize-cli/releases/download/0.0.0/simplelocalize" | bash
+$ curl -sL https://github.com/simplelocalize/simplelocalize-cli/releases/download/0.0.0/simplelocalize | bash
 ```
 
 ## 🛠 Configuration
@@ -29,13 +29,13 @@ $ curl -sL "https://github.com/simplelocalize/simplelocalize-cli/releases/downlo
 - Create example project
 - Go to project settings and download configuration properties
 
-**Example `simplelocalize.properties`**
-```properties
-search.dir=/Users/{YOUR_NAME}/Workspace/MyProject/src
-client.id=<YOUR_CLIENT_ID>
-secret=<YOUR_SECRET>
-project.token=<PROJECT_TOKEN>
-project.type=<PROJECT_TYPE>
+**Example `simplelocalize.yml`**
+```yml
+searchDir: /Users/{YOUR_NAME}/Workspace/MyProject/src //OPTIONAL
+clientId: <YOUR_CLIENT_ID>
+clientSecret: <YOUR_SECRET>
+projectToken: <PROJECT_TOKEN>
+projectType: <PROJECT_TYPE>
 ```
 
 ## 🚀 Usage
