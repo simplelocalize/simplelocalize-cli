@@ -44,14 +44,13 @@ mkdir -p ~/.simplelocalize
 #fi
 
 # setup environment
-echo "🛠  Setting up environment"
+echo "Setting up environment"
 curl -s "https://get.sdkman.io" | bash > /dev/null
 source "$HOME/.sdkman/bin/sdkman-init.sh" > /dev/null
 sdk install java > /dev/null
 
 
 if [[ ! -f ${INSTALLATION_DIR} ]]; then
-  echo "🛠️  Downloading the latest version"
   curl -L ${DOWNLOAD_URL} --silent --output ${INSTALLATION_DIR}
 fi
 
@@ -95,7 +94,7 @@ if ${cygwin}; then
   CP=$(cygpath -pw "$CP")
 fi
 
-echo "🚀 Running SimpleLocalize"
+echo "Running SimpleLocalize"
 "$JAVA_CMD" -cp ${INSTALLATION_DIR} io.simplelocalize.cli.Main "$@"
 
 # exit using the same code returned from Java

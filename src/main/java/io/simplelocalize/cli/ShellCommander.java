@@ -17,7 +17,7 @@ import java.util.Set;
 
 class ShellCommander {
 
-  private static final String DEFAULT_CONFIG_FILE_NAME = "simplelocalize.yml";
+  private static final String DEFAULT_CONFIG_FILE_NAME = "./simplelocalize.yml";
   private Logger log = LoggerFactory.getLogger(ShellCommander.class);
 
   void run(String[] args) throws IOException {
