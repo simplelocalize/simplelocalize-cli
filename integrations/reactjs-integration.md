@@ -2,7 +2,7 @@
 description: The best way to use SimpleLocalize with ReactJS
 ---
 
-# ReactJS integration
+# ReactJS
 
 [![NPM](https://camo.githubusercontent.com/18839ad1c65ef1e1c25cfb3843b5631e84d07ec6/68747470733a2f2f696d672e736869656c64732e696f2f6e706d2f762f72656163742d696e746c2d73696d706c656c6f63616c697a652e737667)](https://www.npmjs.com/package/react-intl-simplelocalize) [![JavaScript Style Guide](https://camo.githubusercontent.com/58fbab8bb63d069c1e4fb3fa37c2899c38ffcd18/68747470733a2f2f696d672e736869656c64732e696f2f62616467652f636f64655f7374796c652d7374616e646172642d627269676874677265656e2e737667)](https://standardjs.com/)
 
