@@ -1,4 +1,4 @@
-# CLI Tool
+# SimpleLocalize CLI
 
 ## ⚡️ What it does?
 
