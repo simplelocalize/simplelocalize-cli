@@ -1,4 +1,4 @@
-# Initial page
+# CLI Tool
 
 ## ⚡️ What it does?
 
