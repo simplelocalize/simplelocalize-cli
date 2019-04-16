@@ -31,23 +31,30 @@ $ curl -sL https://github.com/simplelocalize/simplelocalize-cli/releases/downloa
 
 **Example `simplelocalize.yml`**
 ```yml
-searchDir: /Users/{YOUR_NAME}/Workspace/MyProject/src //OPTIONAL
 clientId: <YOUR_CLIENT_ID>
 clientSecret: <YOUR_SECRET>
 projectToken: <PROJECT_TOKEN>
-projectType: <PROJECT_TYPE>
+projectType: <SEE_SUPPORT_LIST>
 ```
 
 ## 🚀 Usage
 
 ```bash
-$ simplelocalize-cli
+$ curl -sL https://cdn.simplelocalize.io/cli/simplelocalize | bash
 ```
-Application will find all i18n keys and push them to SimpleLocalize cloud.
+*Remember to put `simplelocalize.yml` in same directory where you invoke this command.*
+CLI will find all i18n keys in current directory and push them to SimpleLocalize cloud.
 
-## 💡 Further work
+## 💡 Supported libraries
 
-- Support more project types
+- [ ] [react-i18next](https://github.com/i18next/react-i18next)
+- [x] [yahoo/react-intl](https://github.com/yahoo/react-intl)
+- [ ] [ember-intl](https://github.com/ember-intl/ember-intl)
+- [ ] [dust-intl](https://github.com/yahoo/dust-intl)
+- [ ] [handlebars-intl](https://github.com/yahoo/handlebars-intl)
+- [x] Standard Android internationalization
+- [x] Standard iOS internationalization
+- [x] [Request library support here!](https://github.com/simplelocalize/simplelocalize-cli/issues/new)
 
 ## 👩‍⚖️ License
 
