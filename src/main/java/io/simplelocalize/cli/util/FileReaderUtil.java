@@ -31,4 +31,14 @@ public class FileReaderUtil {
     return fileLines;
   }
 
+
+  public static String tryReadConent(Path filePath) {
+    try {
+      return Files.readString(filePath, StandardCharsets.UTF_8);
+    } catch (IOException e) {
+      log.warn("Cannot read file from path " + filePath.toString(), e);
+    }
+    return "";
+  }
+
 }

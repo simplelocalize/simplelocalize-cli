@@ -25,6 +25,7 @@ class LoginPage extends Component {
             <SocialLogin
               onLoginSuccess={this.onLoginSuccess}
             />
+
           </Col>
           <Col md={7}>
             <h2 className="text-center">

@@ -191,8 +191,7 @@ class UserPage extends Component {
                   id: "COVER_IMAGE.TITLE",
                   defaultMessage: "Change cover photo"
                 }))}
-                message={intl.formatMessage(defineMessages({
-                  id: "COVER_IMAGE.PLACEHOLDER",
+                message={intl.formatMessage(defineMessages( { id: "COVER_IMAGE.PLACEHOLDER",
                   defaultMessage: "Drop photo here, we will take care of everything"
                 }))}
               /> :
