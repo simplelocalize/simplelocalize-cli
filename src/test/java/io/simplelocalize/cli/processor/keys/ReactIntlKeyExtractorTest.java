@@ -23,7 +23,16 @@ public class ReactIntlKeyExtractorTest {
 
     //then
     Assertions.assertThat(keys).hasSize(8);
-    Assertions.assertThat(keys).contains("VISITS", "LIKES", "CREATED_COUNT", "COMMENTS");
+    Assertions.assertThat(keys).containsExactlyInAnyOrder(
+            "VISITS",
+            "LIKES",
+            "CREATED_COUNT",
+            "COMMENTS",
+            "COVER_IMAGE.PLACEHOLDER",
+            "COVER_IMAGE.TITLE",
+            "ACHIEVEMENTS",
+            "AVAILABLE_SOON"
+    );
   }
 
   @Test
