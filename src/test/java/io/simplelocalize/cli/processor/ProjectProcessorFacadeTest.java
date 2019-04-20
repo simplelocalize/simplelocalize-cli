@@ -5,7 +5,7 @@ import org.junit.Test;
 
 public class ProjectProcessorFacadeTest {
 
-  private ProjectProcessorFacade projectProcessorFacade = new ProjectProcessorFacade("react-intl");
+  private ProjectProcessorFacade projectProcessorFacade = new ProjectProcessorFacade("yahoo/react-intl");
 
   @Test
   public void shouldProcess() throws Exception {

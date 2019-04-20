@@ -16,10 +16,10 @@ import java.util.List;
 import java.util.Set;
 
 @RunWith(MockitoJUnitRunner.class)
-public class ReactIntlProcessorTest {
+public class YahooReactIntlProcessorTest {
 
   @InjectMocks
-  private ReactIntlProcessor processor = new ReactIntlProcessor();
+  private YahooReactIntlProcessor processor = new YahooReactIntlProcessor();
 
   @Mock
   private JavascriptFilesFinder javascriptFilesFinder = new JavascriptFilesFinder();

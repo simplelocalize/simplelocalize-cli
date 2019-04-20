@@ -7,7 +7,7 @@ import java.nio.file.Path;
 import java.util.List;
 import java.util.Set;
 
-public class ReactIntlProcessor implements ProjectProcessor {
+public class YahooReactIntlProcessor implements ProjectProcessor {
 
   private JavascriptFilesFinder javascriptFilesFinder = new JavascriptFilesFinder();
   private ReactIntlKeyExtractor reactIntlKeyExtractor = new ReactIntlKeyExtractor();
@@ -24,6 +24,6 @@ public class ReactIntlProcessor implements ProjectProcessor {
 
   @Override
   public String getProjectTypeSupport() {
-    return "react-intl";
+    return "yahoo/react-intl";
   }
 }
