@@ -22,7 +22,7 @@ public class BasicHttpAuthenticator implements HttpRequestInterceptor {
     request.setHeader(HttpHeaders.AUTHORIZATION, getClientToken());
   }
 
-  public String getClientToken() {
+  String getClientToken() {
     byte[] inputBytes = (clientId + ":" + secret).getBytes();
     String encode = Base64.getEncoder().encodeToString(inputBytes);
     return "Basic " + encode;
