@@ -17,6 +17,9 @@ public class ProjectProcessorFactory {
 
     Set<ProjectProcessor> processors = ReflectionLoader.loadProcessors();
 
+    List<String> supportedProjectTypesList = processors.stream().map(ProjectProcessor::getProjectTypeSupport).collect(Collectors.toList());
+    String supportedProjectTypes = String.join(",", supportedProjectTypesList);
+
     for (ProjectProcessor processor : processors) {
       String projectTypeSupport = processor.getProjectTypeSupport();
       boolean isSupportsProjectType = projectTypeSupport.equalsIgnoreCase(projectType);
@@ -25,8 +28,6 @@ public class ProjectProcessorFactory {
       }
     }
 
-    List<String> supportedProjectTypesList = processors.stream().map(ProjectProcessor::getProjectTypeSupport).collect(Collectors.toList());
-    String supportedProjectTypes = String.join(",", supportedProjectTypesList);
     throw new NoProcessorMatchException("Could not find matching project processor for type: " + projectType + " please use on of these: " + supportedProjectTypes);
   }
 
