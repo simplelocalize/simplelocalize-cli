@@ -4,7 +4,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>io.simplelocalize</groupId>
     <artifactId>simplelocalize-cli</artifactId>
-    <version>1.0.3</version>
+    <version>0.0.2</version>
     <packaging>jar</packaging>
     <name>simplelocalize-cli</name>
     <description>SimpleLocalize.io i18n key scrapper</description>
@@ -110,7 +110,8 @@
 
 
     <build>
-        <finalName>simplelocalize-${version}</finalName>
+        <!--<finalName>simplelocalize-${version}</finalName>-->
+        <finalName>simplelocalize</finalName>
         <plugins>
 
             <plugin>
@@ -138,6 +139,25 @@
                         </configuration>
                     </execution>
                 </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>de.jutzig</groupId>
+                <artifactId>github-release-plugin</artifactId>
+                <version>1.3.0</version>
+                <configuration>
+                    <description>Next release</description>
+                    <releaseName>simplelocalize-${version}</releaseName>
+                    <tag>${project.version}</tag>
+                    <fileSets>
+                        <fileSet>
+                            <directory>${project.build.directory}</directory>
+                            <includes>
+                                <include>${project.artifactId}.jar</include>
+                            </includes>
+                        </fileSet>
+                    </fileSets>
+                </configuration>
             </plugin>
         </plugins>
     </build>
