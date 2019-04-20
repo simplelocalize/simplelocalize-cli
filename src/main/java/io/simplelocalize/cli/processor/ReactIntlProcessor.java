@@ -9,15 +9,16 @@ import java.util.Set;
 
 public class ReactIntlProcessor implements ProjectProcessor {
 
+  private JavascriptFilesFinder javascriptFilesFinder = new JavascriptFilesFinder();
+  private ReactIntlKeyExtractor reactIntlKeyExtractor = new ReactIntlKeyExtractor();
+
   @Override
   public List<Path> findFilesToProcess(Path path) {
-    JavascriptFilesFinder javascriptFilesFinder = new JavascriptFilesFinder();
     return javascriptFilesFinder.findFilesToProcess(path);
   }
 
   @Override
   public Set<String> extractKeysFromFile(Path filePath) {
-    ReactIntlKeyExtractor reactIntlKeyExtractor = new ReactIntlKeyExtractor();
     return reactIntlKeyExtractor.extractKeysFromFile(filePath);
   }
 
