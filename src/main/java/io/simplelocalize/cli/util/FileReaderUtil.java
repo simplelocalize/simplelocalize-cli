@@ -32,7 +32,7 @@ public class FileReaderUtil {
   }
 
 
-  public static String tryReadConent(Path filePath) {
+  public static String tryReadContent(Path filePath) {
     try {
       return Files.readString(filePath, StandardCharsets.UTF_8);
     } catch (IOException e) {

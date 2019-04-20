@@ -14,7 +14,7 @@ public class ReactIntlKeyExtractor implements KeyExtractor {
   @Override
   public Set<String> extractKeysFromFile(Path filePath) {
 
-    String fileContent = FileReaderUtil.tryReadConent(filePath);
+    String fileContent = FileReaderUtil.tryReadContent(filePath);
     fileContent = fileContent.replaceAll("\n", " ");
     fileContent = fileContent.replaceAll("\\s+", " ");
 
