@@ -1,6 +1,6 @@
 language: java
 jdk:
-  - oraclejdk8
+  - oraclejdk11
 install: mvn --settings .maven.xml clean install -B -V
 after_success:
   - mvn clean test -Ptest && bash <(curl -s https://codecov.io/bash) || echo "Codecov did not collect coverage reports"
@@ -11,7 +11,7 @@ cache:
 addons:
   apt:
     packages:
-      - oracle-java8-installer
+      - oracle-java11-installer
 
 deploy:
   provider: script
@@ -20,4 +20,4 @@ deploy:
   on:
     repo: simplelocalize/simplelocalize-cli
     tags: true
-    jdk: oraclejdk8
+    jdk: oraclejdk11
