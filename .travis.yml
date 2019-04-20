@@ -1,7 +1,7 @@
 language: java
 jdk:
   - oraclejdk8
-install: mvn --settings .maven.xml clean install -Ptest -B -V
+install: mvn --settings .maven.xml clean install -B -V
 after_success:
   - mvn clean test -Ptest && bash <(curl -s https://codecov.io/bash) || echo "Codecov did not collect coverage reports"
 
@@ -15,7 +15,7 @@ addons:
 
 deploy:
   provider: script
-  script: mvn versions:set -DremoveSnapshot && mvn --settings .maven.xml clean deploy -DskipTests -B -U -Prelease
+  script: mvn versions:set -DremoveSnapshot && mvn --settings .maven.xml clean deploy -DskipTests -B -U
   skip_cleanup: true
   on:
     repo: simplelocalize/simplelocalize-cli
