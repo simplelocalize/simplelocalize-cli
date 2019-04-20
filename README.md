@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/simplelocalize/simplelocalize-cli.svg?branch=master)](https://travis-ci.org/simplelocalize/simplelocalize-cli)
+
 # SimpleLocalize CLI
 
 ## ⚡️ What it does?
