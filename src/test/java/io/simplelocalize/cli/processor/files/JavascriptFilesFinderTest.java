@@ -20,6 +20,6 @@ public class JavascriptFilesFinderTest {
     List<Path> files = javascriptFilesFinder.findFilesToProcess(path);
 
     //then
-    Assertions.assertThat(files).hasSize(3);
+    Assertions.assertThat(files).hasSize(4);
   }
 }
