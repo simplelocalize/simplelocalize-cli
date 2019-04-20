@@ -1,4 +1,6 @@
 [![Build Status](https://travis-ci.org/simplelocalize/simplelocalize-cli.svg?branch=master)](https://travis-ci.org/simplelocalize/simplelocalize-cli)
+[![Maintainability](https://api.codeclimate.com/v1/badges/af2f6a7680929a8dba41/maintainability)](https://codeclimate.com/github/simplelocalize/simplelocalize-cli/maintainability)
+[![codecov](https://codecov.io/gh/simplelocalize/simplelocalize-cli/branch/master/graph/badge.svg)](https://codecov.io/gh/simplelocalize/simplelocalize-cli)
 
 # SimpleLocalize CLI
 
