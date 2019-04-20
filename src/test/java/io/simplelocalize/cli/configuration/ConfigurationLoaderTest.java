@@ -21,7 +21,7 @@ public class ConfigurationLoaderTest {
     Assertions.assertThat(configuration.getClientId()).isEqualTo("123456");
     Assertions.assertThat(configuration.getClientSecret()).isEqualTo("7890");
     Assertions.assertThat(configuration.getProjectToken()).isEqualTo("abc");
-    Assertions.assertThat(configuration.getProjectType()).isEqualTo("CDN");
+    Assertions.assertThat(configuration.getProjectType()).isEqualTo("react-intl");
     Assertions.assertThat(configuration.getSearchDir()).isEqualTo("/Users/jpomykala/Workspace/");
   }
 
