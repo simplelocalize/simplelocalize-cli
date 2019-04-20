@@ -20,20 +20,27 @@ class ShellCommander {
   private static final String DEFAULT_CONFIG_FILE_NAME = "./simplelocalize.yml";
   private Logger log = LoggerFactory.getLogger(ShellCommander.class);
 
+  private ConfigurationLoader configurationLoader;
+  private ConfigurationValidator configurationValidator;
+
+  ShellCommander() {
+    this.configurationLoader = new ConfigurationLoader();
+    this.configurationValidator = new ConfigurationValidator();
+  }
+
   void run(String[] args) throws IOException {
 
     String configurationFilePath = resolveConfigurationPath(args);
 
-    ConfigurationLoader configurationLoader = new ConfigurationLoader();
     Configuration configuration = configurationLoader.load(configurationFilePath);
-
-    ConfigurationValidator configurationValidator = new ConfigurationValidator();
     configurationValidator.validate(configuration);
 
     String projectType = configuration.getProjectType();
     String searchDir = configuration.getSearchDir();
+
     ProjectProcessorFacade projectProcessorFacade = new ProjectProcessorFacade(projectType);
     ProcessResult result = projectProcessorFacade.process(searchDir);
+
     Set<String> keys = result.getKeys();
     List<Path> processedFiles = result.getProcessedFiles();
     log.info("Found {} unique keys in {} components", keys.size(), processedFiles.size());

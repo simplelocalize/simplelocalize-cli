@@ -1,5 +1,5 @@
-searchDir: /Users/jpomykala/Workspace/
+searchDir: ./target/test-classes/react-intl
 clientId: 123456
 clientSecret: 7890
 projectToken: abc
-projectType: CDN
+projectType: react-intl
