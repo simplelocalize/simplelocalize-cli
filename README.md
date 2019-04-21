@@ -42,9 +42,6 @@ projectType: <SEE_SUPPORT_LIST>
 ```
 [✅ SEE SUPPORTED LIBRARIES LIST](https://simplelocalize.gitbook.io/simplelocalize/supported-libraries)
 
-
-_Remember to put_ `simplelocalize.yml` _in same directory where you invoke this command._ CLI will find all i18n keys in current directory and push them to SimpleLocalize cloud.
-
 ## 💡 Supported libraries
 
 * [x] [Request library support here!](https://github.com/simplelocalize/simplelocalize-cli/issues/new)
