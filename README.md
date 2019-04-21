@@ -13,10 +13,10 @@ CLI will find i18n keys in you source code which are used by your library and pu
 For example to translate frontend application in ReactJS you can use [yahoo/react-intl](https://github.com/yahoo/react-intl) which looks like follows:
 
 ```jsx
-<FormattedMessage id="some_key"/>
+<FormattedMessage id="LOGIN"/>
 ```
 
-Thanks to SimpleLocalize-CLI, key: LOGIN  will be pushed to the SimpleLocalize cloud, where you will be able to translate this key to multiple languages, and publish it to the CDN or download in desired format.
+Thanks to SimpleLocalize command line tool, key: `LOGIN`  will be pushed to the [SimpleLocalize cloud](https://app.simplelocalize.io), where you will be able to translate this key into multiple languages, and publish it to the CDN or download in desired format.
 
 ## 🚀 Usage
 
