@@ -1,12 +1,15 @@
+![logo](https://i.imgur.com/du8JQ2L.png)
+
+
 [![Build Status](https://travis-ci.org/simplelocalize/simplelocalize-cli.svg?branch=master)](https://travis-ci.org/simplelocalize/simplelocalize-cli)
 [![Maintainability](https://api.codeclimate.com/v1/badges/af2f6a7680929a8dba41/maintainability)](https://codeclimate.com/github/simplelocalize/simplelocalize-cli/maintainability)
 [![codecov](https://codecov.io/gh/simplelocalize/simplelocalize-cli/branch/master/graph/badge.svg)](https://codecov.io/gh/simplelocalize/simplelocalize-cli)
 [![Gitter](https://badges.gitter.im/simplelocalize-io/community.svg)](https://gitter.im/simplelocalize-io/community?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
 
-# SimpleLocalize CLI
 
 
-## ⚡️ What it does?
+
+## 💡 What it does?
 
 CLI will find i18n keys in you source code which are used by your library and push them to the cloud, where you will be able to translate keys and publish to the CDN and download in desired format.
 
