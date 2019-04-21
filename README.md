@@ -27,7 +27,7 @@ Thanks to SimpleLocalize-CLI, key: LOGIN  will be pushed to the SimpleLocalize c
 * Run in terminal
 
 ```bash
-$ cd ~/MyProject //same place where the simplelocalize.yml is
+$ cd ~/MyProject #same place where the simplelocalize.yml is
 $ curl -sL https://cdn.simplelocalize.io/cli/simplelocalize | bash
 ```
 
