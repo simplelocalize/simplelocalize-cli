@@ -2,4 +2,4 @@ searchDir: ./target/test-classes/react-intl
 clientId: 123456
 clientSecret: 7890
 projectToken: abc
-projectType: react-intl
+projectType: yahoo/react-intl

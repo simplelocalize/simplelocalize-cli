@@ -1,10 +1,8 @@
 package io.simplelocalize.cli;
 
-import java.io.IOException;
-
 public class Main {
 
-  public static void main(String[] args) throws IOException {
+  public static void main(String[] args) throws Exception {
     ShellCommander shellCommander = new ShellCommander();
     shellCommander.run(args);
   }

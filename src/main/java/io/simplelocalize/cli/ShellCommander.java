@@ -28,7 +28,7 @@ class ShellCommander {
     this.configurationValidator = new ConfigurationValidator();
   }
 
-  void run(String[] args) throws IOException {
+  void run(String[] args) throws IOException, InterruptedException {
 
     String configurationFilePath = resolveConfigurationPath(args);
 
@@ -53,7 +53,7 @@ class ShellCommander {
     SimpleLocalizeClient client = new SimpleLocalizeClient(clientId, clientSecret);
 
     String projectToken = configuration.getProjectToken();
-    client.pushKeys(projectToken, keys);
+    client.sendKeys(projectToken, keys);
   }
 
   private String resolveConfigurationPath(String[] args) {

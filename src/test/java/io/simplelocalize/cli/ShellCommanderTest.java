@@ -7,10 +7,10 @@ public class ShellCommanderTest {
 
   private ShellCommander shellCommander = new ShellCommander();
 
-  @Test(expected = AccessDeniedException.class)
+  @Test
   public void shouldRun() throws Exception {
     //given
-    String resourcePath = ShellCommanderTest.class.getClassLoader().getResource("simplelocalize.yml").getPath();
+    String resourcePath = ShellCommanderTest.class.getClassLoader().getResource("simplelocalize-it.yml").getPath();
 
     //when
     shellCommander.run(new String[]{resourcePath});

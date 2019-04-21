@@ -31,7 +31,7 @@ public final class SimpleLocalizeClient {
             .build();
   }
 
-  public void pushKeys(String projectHash, Set<String> keys) throws IOException, InterruptedException {
+  public void sendKeys(String projectHash, Set<String> keys) throws IOException, InterruptedException {
     Objects.requireNonNull(projectHash);
     String accessToken = requestAccessToken();
 
@@ -73,8 +73,8 @@ public final class SimpleLocalizeClient {
 
     String body = httpResponse.body();
     if (httpResponse.statusCode() != 200) {
-      String message = JsonPath.read(body, "$.data.message");
-      log.error("There was a problem with authentication due error: {}", message);
+//      String message = JsonPath.read(body, "$.data.message");
+      log.error("There was a problem with authentication due error: {}", body);
       throw new AccessDeniedException();
     }
     return JsonPath.read(body, "$.access_token");
