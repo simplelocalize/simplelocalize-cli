@@ -21,14 +21,16 @@ Thanks to SimpleLocalize-CLI, key: LOGIN  will be pushed to the SimpleLocalize c
 ## 🚀 Usage
 
 * [Create a new project](https://app.simplelocalize.io/dashboard)
-* Go to project settings and download configuration properties
+* Go to project settings and download configuration file
 * Put `simplelocalize.yml` file in project root directory
 * Setup `projectType` property. [Show available projectType values](https://simplelocalize.gitbook.io/simplelocalize/supported-libraries)
 * Run in terminal
 
 ```bash
+$ cd ~/MyProject //same place where the simplelocalize.yml is
 $ curl -sL https://cdn.simplelocalize.io/cli/simplelocalize | bash
 ```
+
 
 **Example** `simplelocalize.yml`
 
