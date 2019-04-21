@@ -34,7 +34,7 @@ $ curl -sL https://cdn.simplelocalize.io/cli/simplelocalize | bash
 
 **Example** `simplelocalize.yml`
 
-```text
+```yaml
 clientId: <YOUR_CLIENT_ID>
 clientSecret: <YOUR_SECRET>
 projectToken: <PROJECT_TOKEN>
