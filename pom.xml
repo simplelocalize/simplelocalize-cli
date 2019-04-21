@@ -13,7 +13,6 @@
         <java.version>11</java.version>
         <maven.compiler.source>11</maven.compiler.source>
         <maven.compiler.target>11</maven.compiler.target>
-        <http.client.version>4.5.7</http.client.version>
     </properties>
 
     <dependencies>
@@ -76,12 +75,6 @@
             <version>27.0.1-jre</version>
         </dependency>
 
-        <dependency>
-            <groupId>org.apache.httpcomponents</groupId>
-            <artifactId>httpclient</artifactId>
-            <version>${http.client.version}</version>
-            <scope>compile</scope>
-        </dependency>
         <dependency>
             <groupId>com.jayway.jsonpath</groupId>
             <artifactId>json-path</artifactId>

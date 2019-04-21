@@ -1,13 +1,9 @@
 package io.simplelocalize.cli.client;
 
-import com.google.common.net.HttpHeaders;
-import org.apache.http.HttpRequest;
-import org.apache.http.HttpRequestInterceptor;
-import org.apache.http.protocol.HttpContext;
+import java.net.Authenticator;
+import java.net.PasswordAuthentication;
 
-import java.util.Base64;
-
-public class BasicHttpAuthenticator implements HttpRequestInterceptor {
+public class BasicHttpAuthenticator extends Authenticator {
 
   private final String clientId;
   private final String secret;
@@ -18,13 +14,7 @@ public class BasicHttpAuthenticator implements HttpRequestInterceptor {
   }
 
   @Override
-  public void process(HttpRequest request, HttpContext context) {
-    request.setHeader(HttpHeaders.AUTHORIZATION, getClientToken());
-  }
-
-  String getClientToken() {
-    byte[] inputBytes = (clientId + ":" + secret).getBytes();
-    String encode = Base64.getEncoder().encodeToString(inputBytes);
-    return "Basic " + encode;
+  protected PasswordAuthentication getPasswordAuthentication() {
+    return new PasswordAuthentication(clientId, secret.toCharArray());
   }
 }
