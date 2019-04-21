@@ -45,7 +45,7 @@ projectType: <SEE_SUPPORT_LIST>
 ```
 [✅ SEE SUPPORTED LIBRARIES LIST](https://simplelocalize.gitbook.io/simplelocalize/supported-libraries)
 
-## 💡 Supported libraries
+## 🔌 Supported libraries
 
 * [x] [Request library support here!](https://github.com/simplelocalize/simplelocalize-cli/issues/new)
 * [x] [yahoo/react-intl](https://github.com/yahoo/react-intl)
