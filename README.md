@@ -10,7 +10,7 @@
 
 CLI will find i18n keys in you source code which are used by your library and push them to the cloud, where you will be able to translate keys and publish to the CDN and download in desired format.
 
-For example to translate frontend application in ReactJS you can use yahoo/react-intl which looks like follows:
+For example to translate frontend application in ReactJS you can use [yahoo/react-intl](https://github.com/yahoo/react-intl) which looks like follows:
 
 ```jsx
 <FormattedMessage id="some_key"/>
