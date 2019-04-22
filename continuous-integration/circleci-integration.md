@@ -1,4 +1,0 @@
-# CircleCI integration
-
-TBC
-

@@ -1,2 +1,0 @@
-# Generic CI/CD integration
-

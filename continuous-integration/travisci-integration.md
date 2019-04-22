@@ -1,2 +1,0 @@
-# TravisCI integration
-
