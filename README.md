@@ -31,7 +31,7 @@ Thanks to SimpleLocalize command line tool, key: `LOGIN`  will be pushed to the 
 
 ```bash
 $ cd ~/MyProject #same place where the simplelocalize.yml is
-$ curl -sL https://cdn.simplelocalize.io/cli/simplelocalize | bash
+$ curl -s https://get.simplelocalize.io | bash
 ```
 
 
