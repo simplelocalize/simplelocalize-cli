@@ -38,7 +38,7 @@ sdk install java > /dev/null
 java -version
 
 if [[ ! -f ${INSTALLATION_PACKAGE_PATH} ]]; then
-  echo "--> Downloading the latest SimpleLocalize-CLI image"
+  echo "--> Downloading ${DOWNLOAD_URL}"
   curl -L ${DOWNLOAD_URL} --silent --output ${INSTALLATION_PACKAGE_PATH} > /dev/null
 fi
 
