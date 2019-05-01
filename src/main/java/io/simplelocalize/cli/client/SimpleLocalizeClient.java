@@ -39,18 +39,15 @@ public final class SimpleLocalizeClient {
 
     HttpResponse<String> httpResponse = httpClient.send(httpRequest, HttpResponse.BodyHandlers.ofString());
     String json = httpResponse.body();
-
-    long keysProcessed = JsonPath.read(json, "$.data.uniqueKeysProcessed");
-    boolean processedWithWarning = JsonPath.read(json, "$.data.processedWithWarnings");
     int statusCode = httpResponse.statusCode();
-
     boolean isSuccessful = statusCode == 200;
 
-    if (isSuccessful && processedWithWarning) {
-      log.warn("Cloud processed your request with warnings, but it was successful.");
-    }
-
     if (isSuccessful) {
+      int keysProcessed = JsonPath.read(json, "$.data.uniqueKeysProcessed");
+      boolean processedWithWarning = JsonPath.read(json, "$.data.processedWithWarnings");
+      if (processedWithWarning) {
+        log.warn("Cloud processed your request with warnings, but it was successful.");
+      }
       log.info("Successfully uploaded {} keys", keysProcessed);
     } else {
       String message = JsonPath.read(json, "$.msg");
