@@ -25,7 +25,7 @@ public class ConfigurationValidatorTest {
   public void shouldThrowWhenMissingToken() throws Exception {
     //given
     Configuration randomConfiguration = EnhancedRandom.random(Configuration.class);
-    randomConfiguration.setToken("");
+    randomConfiguration.setUploadToken("");
 
     //when
     configurationValidator.validate(randomConfiguration);

@@ -48,8 +48,8 @@ class ShellCommander {
     Set<String> ignoredKeys = configuration.getIgnoredKeys();
     keys.removeAll(ignoredKeys);
 
-    String token = configuration.getToken();
-    SimpleLocalizeClient client = new SimpleLocalizeClient(token);
+    String uploadToken = configuration.getUploadToken();
+    SimpleLocalizeClient client = new SimpleLocalizeClient(uploadToken);
     client.sendKeys(keys);
   }
 

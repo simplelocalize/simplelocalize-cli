@@ -18,13 +18,13 @@ public final class SimpleLocalizeClient {
   private static final String API_URL = "https://api.simplelocalize.io";
   private static final String TOKEN_HEADER_NAME = "X-SimpleLocalize-Token";
   private final HttpClient httpClient;
-  private final String token;
+  private final String uploadToken;
 
   private Logger log = LoggerFactory.getLogger(SimpleLocalizeClient.class);
 
-  public SimpleLocalizeClient(String token) {
-    Objects.requireNonNull(token);
-    this.token = token;
+  public SimpleLocalizeClient(String uploadToken) {
+    Objects.requireNonNull(uploadToken);
+    this.uploadToken = uploadToken;
     this.httpClient = HttpClient.newBuilder().build();
   }
 
@@ -34,7 +34,7 @@ public final class SimpleLocalizeClient {
             .POST(ClientBodyBuilders.ofKeysBody(keys))
             .uri(URI.create(API_URL + "/api/v1/keys"))
             .header(HttpHeaders.CONTENT_TYPE, "application/json")
-            .header(TOKEN_HEADER_NAME, token)
+            .header(TOKEN_HEADER_NAME, uploadToken)
             .build();
 
     HttpResponse<String> httpResponse = httpClient.send(httpRequest, HttpResponse.BodyHandlers.ofString());

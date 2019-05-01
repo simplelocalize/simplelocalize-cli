@@ -8,8 +8,8 @@ public class ConfigurationValidator {
 
   public void validate(Configuration configuration) {
 
-    if (Strings.isNullOrEmpty(configuration.getToken())) {
-      throw new MissingPropertyException("token");
+    if (Strings.isNullOrEmpty(configuration.getUploadToken())) {
+      throw new MissingPropertyException("uploadToken");
     }
 
     String projectType = configuration.getProjectType();
