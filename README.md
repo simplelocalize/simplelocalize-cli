@@ -38,9 +38,7 @@ $ curl -sL https://cdn.simplelocalize.io/cli/simplelocalize | bash
 **Example** `simplelocalize.yml`
 
 ```yaml
-clientId: <YOUR_CLIENT_ID>
-clientSecret: <YOUR_SECRET>
-projectToken: <PROJECT_TOKEN>
+uploadToken: <PROJECT_UPLOAD_TOKEN>
 projectType: <SEE_SUPPORT_LIST>
 ```
 [✅ SEE SUPPORTED LIBRARIES LIST](https://simplelocalize.gitbook.io/simplelocalize/supported-libraries)
