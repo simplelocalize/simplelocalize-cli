@@ -22,34 +22,10 @@ public class ConfigurationValidatorTest {
   }
 
   @Test(expected = MissingPropertyException.class)
-  public void shouldThrowWhenMissingClientId() throws Exception {
+  public void shouldThrowWhenMissingToken() throws Exception {
     //given
     Configuration randomConfiguration = EnhancedRandom.random(Configuration.class);
-    randomConfiguration.setClientId("");
-
-    //when
-    configurationValidator.validate(randomConfiguration);
-
-    //then
-  }
-
-  @Test(expected = MissingPropertyException.class)
-  public void shouldThrowWhenMissingClientSecret() throws Exception {
-    //given
-    Configuration randomConfiguration = EnhancedRandom.random(Configuration.class);
-    randomConfiguration.setClientSecret("");
-
-    //when
-    configurationValidator.validate(randomConfiguration);
-
-    //then
-  }
-
-  @Test(expected = MissingPropertyException.class)
-  public void shouldThrowWhenMissingProjectToken() throws Exception {
-    //given
-    Configuration randomConfiguration = EnhancedRandom.random(Configuration.class);
-    randomConfiguration.setProjectToken("");
+    randomConfiguration.setToken("");
 
     //when
     configurationValidator.validate(randomConfiguration);

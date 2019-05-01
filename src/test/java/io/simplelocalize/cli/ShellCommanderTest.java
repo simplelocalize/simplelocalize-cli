@@ -1,6 +1,5 @@
 package io.simplelocalize.cli;
 
-import io.simplelocalize.cli.exception.AccessDeniedException;
 import org.junit.Test;
 
 public class ShellCommanderTest {

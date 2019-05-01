@@ -48,12 +48,9 @@ class ShellCommander {
     Set<String> ignoredKeys = configuration.getIgnoredKeys();
     keys.removeAll(ignoredKeys);
 
-    String clientId = configuration.getClientId();
-    String clientSecret = configuration.getClientSecret();
-    SimpleLocalizeClient client = new SimpleLocalizeClient(clientId, clientSecret);
-
-    String projectToken = configuration.getProjectToken();
-    client.sendKeys(projectToken, keys);
+    String token = configuration.getToken();
+    SimpleLocalizeClient client = new SimpleLocalizeClient(token);
+    client.sendKeys(keys);
   }
 
   private String resolveConfigurationPath(String[] args) {

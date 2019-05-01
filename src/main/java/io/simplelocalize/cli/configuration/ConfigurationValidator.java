@@ -7,16 +7,9 @@ public class ConfigurationValidator {
 
 
   public void validate(Configuration configuration) {
-    if (Strings.isNullOrEmpty(configuration.getClientId())) {
-      throw new MissingPropertyException("clientId");
-    }
 
-    if (Strings.isNullOrEmpty(configuration.getClientSecret())) {
-      throw new MissingPropertyException("clientSecret");
-    }
-
-    if (Strings.isNullOrEmpty(configuration.getProjectToken())) {
-      throw new MissingPropertyException("projectToken");
+    if (Strings.isNullOrEmpty(configuration.getToken())) {
+      throw new MissingPropertyException("token");
     }
 
     String projectType = configuration.getProjectType();

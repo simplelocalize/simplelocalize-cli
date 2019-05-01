@@ -29,7 +29,4 @@ class ClientBodyBuilders {
     return HttpRequest.BodyPublishers.ofString(jsonString);
   }
 
-  static HttpRequest.BodyPublisher ofClientCredentialsGrantType() {
-    return HttpRequest.BodyPublishers.ofString("grant_type=client_credentials");
-  }
 }

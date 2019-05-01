@@ -19,9 +19,7 @@ public class ConfigurationLoaderTest {
 
     //then
     Assertions.assertThat(configuration).isNotNull();
-    Assertions.assertThat(configuration.getClientId()).isEqualTo("123456");
-    Assertions.assertThat(configuration.getClientSecret()).isEqualTo("7890");
-    Assertions.assertThat(configuration.getProjectToken()).isEqualTo("abc");
+    Assertions.assertThat(configuration.getToken()).isEqualTo("abc");
     Assertions.assertThat(configuration.getProjectType()).isEqualTo("yahoo/react-intl");
     Assertions.assertThat(configuration.getSearchDir()).isEqualTo("./target/test-classes/react-intl");
   }

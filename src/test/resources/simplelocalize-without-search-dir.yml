@@ -1,4 +1,2 @@
-clientId: 123456
-clientSecret: 7890
-projectToken: abc
+token: abc
 projectType: CDN
