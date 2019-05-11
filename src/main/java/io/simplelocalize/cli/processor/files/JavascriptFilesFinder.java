@@ -17,8 +17,8 @@ public class JavascriptFilesFinder implements FilesFinder {
     try (Stream<Path> walk = Files.walk(path)) {
       return walk
               .filter(Files::isRegularFile)
-              .filter(isJavaScriptFile())
               .filter(isNotNodeModule())
+              .filter(isJavaScriptFile())
               .collect(Collectors.toList());
     } catch (IOException e) {
       throw new ProjectProcessException("Could not process files in path: " + path, e);
