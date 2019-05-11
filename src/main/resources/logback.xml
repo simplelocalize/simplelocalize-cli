@@ -9,6 +9,8 @@
         </encoder>
     </appender>
 
+    <logger name="org.reflections.Reflections" level="OFF"/>
+
     <root level="INFO">
         <appender-ref ref="Console"/>
     </root>

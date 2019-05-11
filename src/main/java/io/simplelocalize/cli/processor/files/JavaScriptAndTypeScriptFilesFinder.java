@@ -10,7 +10,7 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public class JavascriptFilesFinder implements FilesFinder {
+public class JavaScriptAndTypeScriptFilesFinder implements FilesFinder {
 
   @Override
   public List<Path> findFilesToProcess(Path path) {
@@ -24,6 +24,8 @@ public class JavascriptFilesFinder implements FilesFinder {
       throw new ProjectProcessException("Could not process files in path: " + path, e);
     }
   }
+
+
 
   private Predicate<? super Path> isNotNodeModule() {
     return filePath -> {

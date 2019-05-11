@@ -1,9 +1,10 @@
 package io.simplelocalize.cli.processor;
 
-import io.simplelocalize.cli.processor.files.FilesFinder;
-import io.simplelocalize.cli.processor.keys.KeyExtractor;
+import java.nio.file.Path;
 
-public interface ProjectProcessor extends KeyExtractor, FilesFinder {
+public interface ProjectProcessor {
+
+  ProcessResult process(Path searchDirectory);
 
   String getProjectTypeSupport();
 }

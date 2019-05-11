@@ -1,6 +1,7 @@
 package io.simplelocalize.cli.processor.keys;
 
 import com.google.common.collect.Sets;
+import io.simplelocalize.cli.util.FileContentUtil;
 import io.simplelocalize.cli.util.FileReaderUtil;
 
 import java.nio.file.Path;
@@ -13,10 +14,8 @@ public class ReactIntlKeyExtractor implements KeyExtractor {
 
   @Override
   public Set<String> extractKeysFromFile(Path filePath) {
-
     String fileContent = FileReaderUtil.tryReadContent(filePath);
-    fileContent = fileContent.replaceAll("\n", " ");
-    fileContent = fileContent.replaceAll("\\s+", " ");
+    fileContent = FileContentUtil.transformTextToOneLine(fileContent);
 
     Set<String> formattedMessageIds = matchFormattedMessageIds(fileContent);
     Set<String> defineMessageIds = matchDefineMessageIds(fileContent);

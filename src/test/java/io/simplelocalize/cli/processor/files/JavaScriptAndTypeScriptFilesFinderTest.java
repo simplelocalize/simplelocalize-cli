@@ -9,9 +9,9 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 
-public class JavascriptFilesFinderTest {
+public class JavaScriptAndTypeScriptFilesFinderTest {
 
-  private JavascriptFilesFinder javascriptFilesFinder = new JavascriptFilesFinder();
+  private JavaScriptAndTypeScriptFilesFinder javaScriptAndTypeScriptFilesFinder = new JavaScriptAndTypeScriptFilesFinder();
 
   @Test
   public void shouldFindFiles() throws Exception {
@@ -19,7 +19,7 @@ public class JavascriptFilesFinderTest {
     Path path = TestResourcesUtility.read("react-intl");
 
     //when
-    List<Path> files = javascriptFilesFinder.findFilesToProcess(path);
+    List<Path> files = javaScriptAndTypeScriptFilesFinder.findFilesToProcess(path);
 
     //then
     Assertions.assertThat(files).hasSize(4);
@@ -31,7 +31,7 @@ public class JavascriptFilesFinderTest {
     Path path = Paths.get("some path");
 
     //when
-    javascriptFilesFinder.findFilesToProcess(path);
+    javaScriptAndTypeScriptFilesFinder.findFilesToProcess(path);
 
     //then
   }

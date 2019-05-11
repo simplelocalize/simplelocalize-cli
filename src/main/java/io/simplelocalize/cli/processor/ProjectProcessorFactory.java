@@ -12,7 +12,7 @@ public class ProjectProcessorFactory {
   private ProjectProcessorFactory() {
   }
 
-  static ProjectProcessor createForType(String projectType) {
+  public static ProjectProcessor createForType(String projectType) {
     Objects.requireNonNull(projectType, "Could not create ProjectProcessor for null project type");
 
     Set<ProjectProcessor> processors = ReflectionLoader.loadProcessors();

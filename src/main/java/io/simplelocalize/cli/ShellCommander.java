@@ -5,12 +5,14 @@ import io.simplelocalize.cli.configuration.Configuration;
 import io.simplelocalize.cli.configuration.ConfigurationLoader;
 import io.simplelocalize.cli.configuration.ConfigurationValidator;
 import io.simplelocalize.cli.processor.ProcessResult;
-import io.simplelocalize.cli.processor.ProjectProcessorFacade;
+import io.simplelocalize.cli.processor.ProjectProcessor;
+import io.simplelocalize.cli.processor.ProjectProcessorFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 import java.util.Set;
 
@@ -38,8 +40,8 @@ class ShellCommander {
     String projectType = configuration.getProjectType();
     String searchDir = configuration.getSearchDir();
 
-    ProjectProcessorFacade projectProcessorFacade = new ProjectProcessorFacade(projectType);
-    ProcessResult result = projectProcessorFacade.process(searchDir);
+    ProjectProcessor projectProcessor = ProjectProcessorFactory.createForType(projectType);
+    ProcessResult result = projectProcessor.process(Paths.get(searchDir));
 
     Set<String> keys = result.getKeys();
     List<Path> processedFiles = result.getProcessedFiles();

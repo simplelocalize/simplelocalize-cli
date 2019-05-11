@@ -1,6 +1,7 @@
 package io.simplelocalize.cli.processor;
 
-import io.simplelocalize.cli.processor.files.JavascriptFilesFinder;
+import com.google.common.collect.Sets;
+import io.simplelocalize.cli.processor.files.JavaScriptAndTypeScriptFilesFinder;
 import io.simplelocalize.cli.processor.keys.ReactIntlKeyExtractor;
 
 import java.nio.file.Path;
@@ -9,17 +10,20 @@ import java.util.Set;
 
 public class YahooReactIntlProcessor implements ProjectProcessor {
 
-  private JavascriptFilesFinder javascriptFilesFinder = new JavascriptFilesFinder();
-  private ReactIntlKeyExtractor reactIntlKeyExtractor = new ReactIntlKeyExtractor();
 
   @Override
-  public List<Path> findFilesToProcess(Path path) {
-    return javascriptFilesFinder.findFilesToProcess(path);
-  }
+  public ProcessResult process(Path searchDirectory) {
+    JavaScriptAndTypeScriptFilesFinder javaScriptAndTypeScriptFilesFinder = new JavaScriptAndTypeScriptFilesFinder();
+    ReactIntlKeyExtractor reactIntlKeyExtractor = new ReactIntlKeyExtractor();
 
-  @Override
-  public Set<String> extractKeysFromFile(Path filePath) {
-    return reactIntlKeyExtractor.extractKeysFromFile(filePath);
+    List<Path> foundFiles = javaScriptAndTypeScriptFilesFinder.findFilesToProcess(searchDirectory);
+
+    Set<String> keys = Sets.newHashSet();
+    for (Path file : foundFiles) {
+      Set<String> batchKeys = reactIntlKeyExtractor.extractKeysFromFile(file);
+      keys.addAll(batchKeys);
+    }
+    return ProcessResult.of(keys, foundFiles);
   }
 
   @Override

@@ -12,6 +12,7 @@ import java.util.Set;
 
 @NoArgsConstructor
 @Data
+@AllArgsConstructor(staticName = "of")
 public class ProcessResult {
 
   private Set<String> keys;
