@@ -1,10 +1,12 @@
 package io.simplelocalize.cli.client.dto;
 
+import io.micronaut.core.annotation.Introspected;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 import java.util.Set;
 
+@Introspected
 public class ImportForm
 {
     private Set<ImportKey> content;

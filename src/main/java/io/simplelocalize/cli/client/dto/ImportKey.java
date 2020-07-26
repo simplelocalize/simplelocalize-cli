@@ -2,12 +2,14 @@ package io.simplelocalize.cli.client.dto;
 
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonAnySetter;
+import io.micronaut.core.annotation.Introspected;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 import java.util.HashMap;
 import java.util.Map;
 
+@Introspected
 public class ImportKey {
   private String key;
 

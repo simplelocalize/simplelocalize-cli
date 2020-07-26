@@ -149,6 +149,19 @@
             <artifactId>mockito-core</artifactId>
             <version>2.24.5</version>
         </dependency>
+
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-core</artifactId>
+            <version>2.9.8</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.fasterxml.jackson.datatype</groupId>
+            <artifactId>jackson-datatype-jsr310</artifactId>
+            <version>2.9.8</version>
+        </dependency>
+
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
@@ -234,7 +247,7 @@
                     </annotationProcessorPaths>
                     <compilerArgs>
                         <arg>-Amicronaut.processing.group=io.simplelocalize.cli</arg>
-                        <arg>-Amicronaut.processing.module=simplelocalize-cli-v2</arg>
+                        <arg>-Amicronaut.processing.module=simplelocalize-cli</arg>
                     </compilerArgs>
                 </configuration>
                 <executions>
