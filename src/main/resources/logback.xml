@@ -1,17 +1,15 @@
-<configuration debug="false">
-    <appender name="Console" class="ch.qos.logback.core.ConsoleAppender">
+<configuration>
+
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <withJansi>true</withJansi>
+        <!-- encoders are assigned the type
+             ch.qos.logback.classic.encoder.PatternLayoutEncoder by default -->
         <encoder>
-            <!-- @formatter:on -->
-            <pattern>
-               --> %msg%n
-            </pattern>
-            <!-- @formatter:off -->
+            <pattern>%cyan(%d{HH:mm:ss.SSS}) %gray([%thread]) %highlight(%-5level) %magenta(%logger{36}) - %msg%n</pattern>
         </encoder>
     </appender>
 
-    <logger name="org.reflections.Reflections" level="OFF"/>
-
-    <root level="INFO">
-        <appender-ref ref="Console"/>
+    <root level="info">
+        <appender-ref ref="STDOUT" />
     </root>
 </configuration>
