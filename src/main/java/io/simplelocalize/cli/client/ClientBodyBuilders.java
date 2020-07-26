@@ -11,7 +11,7 @@ import java.util.stream.Collectors;
 
 class ClientBodyBuilders {
 
-  private static ObjectMapper objectMapper = new ObjectMapper();
+  private static final ObjectMapper objectMapper = new ObjectMapper();
 
   private ClientBodyBuilders() {
   }
