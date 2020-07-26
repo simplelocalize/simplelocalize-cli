@@ -5,12 +5,24 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 import java.util.Set;
 
+
 public class Configuration {
 
   private String searchDir;
   private String uploadToken;
   private String projectType;
   private Set<String> ignoredKeys = Set.of();
+
+
+  public Configuration() {
+  }
+
+  public Configuration(String searchDir, String uploadToken, String projectType, Set<String> ignoredKeys) {
+    this.searchDir = searchDir;
+    this.uploadToken = uploadToken;
+    this.projectType = projectType;
+    this.ignoredKeys = ignoredKeys;
+  }
 
   @Override
   public boolean equals(Object o) {
@@ -42,35 +54,31 @@ public class Configuration {
     return searchDir;
   }
 
-  public Configuration setSearchDir(String searchDir) {
-    this.searchDir = searchDir;
-    return this;
-  }
-
   public String getUploadToken() {
     return uploadToken;
-  }
-
-  public Configuration setUploadToken(String uploadToken) {
-    this.uploadToken = uploadToken;
-    return this;
   }
 
   public String getProjectType() {
     return projectType;
   }
 
-  public Configuration setProjectType(String projectType) {
-    this.projectType = projectType;
-    return this;
-  }
-
   public Set<String> getIgnoredKeys() {
     return ignoredKeys;
   }
 
-  public Configuration setIgnoredKeys(Set<String> ignoredKeys) {
+  public void setSearchDir(String searchDir) {
+    this.searchDir = searchDir;
+  }
+
+  public void setUploadToken(String uploadToken) {
+    this.uploadToken = uploadToken;
+  }
+
+  public void setProjectType(String projectType) {
+    this.projectType = projectType;
+  }
+
+  public void setIgnoredKeys(Set<String> ignoredKeys) {
     this.ignoredKeys = ignoredKeys;
-    return this;
   }
 }
