@@ -22,9 +22,9 @@ jobs:
           java -version
           native-image --version
       - name: Build with Maven
-          run: mvn -B clean install --file pom.xml
+        run: mvn -B clean install --file pom.xml
       - name: Build Native Image
-          run: native-image --no-server -cp target/simplelocalize-cli-*.jar io.simplelocalize.cli.SimplelocalizeCliCommand
+        run: native-image --no-server -cp target/simplelocalize-cli-*.jar io.simplelocalize.cli.SimplelocalizeCliCommand
       - uses: actions/upload-artifact@v2
         with:
           name: output-linux
