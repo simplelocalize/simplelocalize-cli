@@ -10,4 +10,5 @@ FROM frolvlad/alpine-glibc
 RUN apk update && apk add libstdc++
 EXPOSE 8080
 COPY --from=graalvm /home/app/simplelocalize-cli/simplelocalize-cli /app/simplelocalize-cli
+RUN chmod +x /app/simplelocalize-cli
 ENTRYPOINT ["/app/simplelocalize-cli"]
