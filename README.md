@@ -48,8 +48,8 @@ projectType: <SEE_SUPPORT_LIST>
 * [x] [Request library support here!](https://github.com/simplelocalize/simplelocalize-cli/issues/new)
 * [x] [yahoo/react-intl](https://github.com/yahoo/react-intl)
 * [ ] Jekyll: [Anthony-Gaudino/jekyll-multiple-languages-plugin](https://github.com/Anthony-Gaudino/jekyll-multiple-languages-plugin)
-* [ ] Standard Android internationalization
-* [ ] Standard iOS internationalization
+* [x] Standard Android internationalization
+* [x] Standard iOS internationalization
 * [ ] [react-i18next](https://github.com/i18next/react-i18next)
 * [ ] [ember-intl](https://github.com/ember-intl/ember-intl)
 * [ ] [dust-intl](https://github.com/yahoo/dust-intl)
