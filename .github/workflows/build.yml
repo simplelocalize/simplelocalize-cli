@@ -1,4 +1,4 @@
-name: Build
+name: Build executables
 
 
 on:
@@ -7,9 +7,12 @@ on:
       - 'graalvm'
 
 jobs:
-  build-linux:
-    name: "Build Linux"
-    runs-on: ubuntu-latest
+  build-all:
+    name: "Build executable"
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v2
       - name: setup-graalvm-ce
@@ -28,6 +31,6 @@ jobs:
         run: native-image --no-server --report-unsupported-elements-at-runtime -cp target/simplelocalize-cli-*.jar io.simplelocalize.cli.SimplelocalizeCliCommand
       - uses: actions/upload-artifact@v2
         with:
-          name: output-linux
+          name: output-${{ matrix.os }}
           path: io.simplelocalize.cli.simplelocalizeclicommand
 
