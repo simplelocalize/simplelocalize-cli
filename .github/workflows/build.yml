@@ -30,6 +30,6 @@ jobs:
         with:
           name: output-linux
           path: |
-            io.simplelocalize.cli.SimplelocalizeCliCommand
+            io.simplelocalize.cli.simplelocalizeclicommand
             target/
 
