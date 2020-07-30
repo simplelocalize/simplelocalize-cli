@@ -29,7 +29,6 @@ public class ConfigurationLoader {
     File file = null;
     try {
       file = new File(URLDecoder.decode(String.valueOf(configurationFilePath.toFile()), "utf-8"));
-      log.info("THIS THAT FILE: {}", String.valueOf(file));
     } catch (UnsupportedEncodingException e) {
       e.printStackTrace();
     }

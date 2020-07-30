@@ -26,13 +26,9 @@ public class FileReaderUtil {
 
   public static List<String> tryReadLines(Path filePath) {
     Path decodedFilePath = null;
-    try {
-      decodedFilePath = Paths.get(URLDecoder.decode(String.valueOf(Paths.get(String.valueOf(filePath))), "utf-8"));
-    } catch (UnsupportedEncodingException e) {
-      e.printStackTrace();
-    }
     List<String> fileLines = Collections.emptyList();
     try {
+      decodedFilePath = Paths.get(URLDecoder.decode(String.valueOf(Paths.get(String.valueOf(filePath))), "utf-8"));
       fileLines = Files.readAllLines(decodedFilePath, StandardCharsets.UTF_8);
     } catch (IOException e) {
       log.warn("Cannot read file from path " + decodedFilePath.toString(), e);
@@ -45,10 +41,6 @@ public class FileReaderUtil {
     Path decodedFilePath = null;
     try {
       decodedFilePath = Paths.get(URLDecoder.decode(String.valueOf(Paths.get(String.valueOf(filePath))), "utf-8"));
-    } catch (UnsupportedEncodingException e) {
-      e.printStackTrace();
-    }
-    try {
       return Files.readString(decodedFilePath, StandardCharsets.UTF_8);
     } catch (IOException e) {
       log.warn("Cannot read file from path " + decodedFilePath.toString(), e);
