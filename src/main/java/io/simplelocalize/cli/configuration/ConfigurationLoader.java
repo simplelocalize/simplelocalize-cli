@@ -21,17 +21,12 @@ public class ConfigurationLoader {
 
   private Logger log = LoggerFactory.getLogger(ConfigurationLoader.class);
 
-  public Configuration load(String path) {
+  public Configuration load(String path) throws UnsupportedEncodingException {
 
     Path configurationFilePath = Paths.get(path);
     log.info("Using configuration file in path: {}", configurationFilePath);
 
-    File file = null;
-    try {
-      file = new File(URLDecoder.decode(String.valueOf(configurationFilePath.toFile()), "utf-8"));
-    } catch (UnsupportedEncodingException e) {
-      e.printStackTrace();
-    }
+    File file = new File(URLDecoder.decode(String.valueOf(configurationFilePath.toFile()), "utf-8"));;
 
     if (!file.exists()) {
       throw new ConfigurationNotFoundException("Could not find configuration file in: " + path);
