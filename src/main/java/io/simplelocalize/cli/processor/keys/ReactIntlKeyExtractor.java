@@ -19,13 +19,15 @@ public class ReactIntlKeyExtractor implements KeyExtractor {
 
     Set<String> formattedMessageIds = matchFormattedMessageIds(fileContent);
     Set<String> defineMessageIds = matchDefineMessageIds(fileContent);
-    return Sets.union(formattedMessageIds, defineMessageIds);
+    Set<String> intlFormatMessageIds = matchIntlFormatMessageIds(fileContent);
+    Set<String> mergeSet = Sets.union(formattedMessageIds, defineMessageIds);
+    return Sets.union(mergeSet, intlFormatMessageIds);
 
   }
 
   private Set<String> matchDefineMessageIds(String fileContent) {
     fileContent = fileContent.replaceAll("\\s+", "");
-    return Pattern.compile("(?<=defineMessages\\(\\{id:\")(.*?)(?=\")")
+    return Pattern.compile("(?<=defineMessages\\(\\{id:[\"|\'])(.*?)(?=[\"|\'])")
             .matcher(fileContent)
             .results()
             .map(MatchResult::group)
@@ -34,6 +36,15 @@ public class ReactIntlKeyExtractor implements KeyExtractor {
 
   private Set<String> matchFormattedMessageIds(String fileContent) {
     return Pattern.compile("(?<=<FormattedMessage id=\")(.*?)(?=\")")
+            .matcher(fileContent)
+            .results()
+            .map(MatchResult::group)
+            .collect(Collectors.toSet());
+  }
+
+  private Set<String> matchIntlFormatMessageIds(String fileContent) {
+    fileContent = fileContent.replaceAll("\\s+", "");
+    return Pattern.compile("(?<=intl\\.formatMessage\\(\\{id:[\"|\'])(.*?)(?=[\"|\'])")
             .matcher(fileContent)
             .results()
             .map(MatchResult::group)

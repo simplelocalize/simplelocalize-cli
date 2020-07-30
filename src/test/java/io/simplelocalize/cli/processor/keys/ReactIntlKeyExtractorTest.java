@@ -18,6 +18,7 @@ public class ReactIntlKeyExtractorTest {
     URL resource = classLoader.getResource("react-intl/UserPage.js");
     String path = resource.getPath();
 
+
     //when
     Set<String> keys = reactIntlKeyExtractor.extractKeysFromFile(Paths.get(path));
 
