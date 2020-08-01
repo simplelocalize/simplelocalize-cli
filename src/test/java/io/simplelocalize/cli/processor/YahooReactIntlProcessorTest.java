@@ -39,6 +39,6 @@ public class YahooReactIntlProcessorTest {
 
     //then
     Assertions.assertThat(filesToProcess.getProcessedFiles()).hasSize(4);
-    Assertions.assertThat(filesToProcess.getKeys()).hasSize(13);
+    Assertions.assertThat(filesToProcess.getKeys()).hasSize(15);
   }
 }
