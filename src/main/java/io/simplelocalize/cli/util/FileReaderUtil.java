@@ -28,7 +28,7 @@ public class FileReaderUtil {
     Path decodedFilePath = null;
     List<String> fileLines = Collections.emptyList();
     try {
-      decodedFilePath = Paths.get(URLDecoder.decode(String.valueOf(Paths.get(String.valueOf(filePath))), "utf-8"));
+      decodedFilePath = Paths.get(URLDecoder.decode(String.valueOf(Paths.get(String.valueOf(filePath))), StandardCharsets.UTF_8));
       fileLines = Files.readAllLines(decodedFilePath, StandardCharsets.UTF_8);
     } catch (IOException e) {
       log.warn("Cannot read file from path " + decodedFilePath.toString(), e);
@@ -40,7 +40,7 @@ public class FileReaderUtil {
   public static String tryReadContent(Path filePath) {
     Path decodedFilePath = null;
     try {
-      decodedFilePath = Paths.get(URLDecoder.decode(String.valueOf(Paths.get(String.valueOf(filePath))), "utf-8"));
+      decodedFilePath = Paths.get(URLDecoder.decode(String.valueOf(Paths.get(String.valueOf(filePath))), StandardCharsets.UTF_8));
       return Files.readString(decodedFilePath, StandardCharsets.UTF_8);
     } catch (IOException e) {
       log.warn("Cannot read file from path " + decodedFilePath.toString(), e);

@@ -197,6 +197,19 @@ class UserPage extends Component {
               /> :
               null}
 
+            {showingLoggedUser ?
+              <ImageUploaderGroup
+                onImageUploaded={this.onCoverUploaded}
+                title={intl.formatMessage(defineMessages({
+                  id: "COVER_IMAGE.TITLE_DOUBLE",
+                  defaultMessage: "Change cover photo"
+                }))}
+                message={intl.formatMessage(defineMessages( { id: "COVER_IMAGE.PLACEHOLDER_DOUBLE",
+                  defaultMessage: "Drop photo here, we will take care of everything"
+                }))}
+              /> :
+              null}
+
             <h2 className="text-center">
               <FormattedMessage
                 id="ACHIEVEMENTS"

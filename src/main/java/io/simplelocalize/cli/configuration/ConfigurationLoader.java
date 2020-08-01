@@ -12,6 +12,7 @@ import java.io.FileInputStream;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
@@ -21,12 +22,12 @@ public class ConfigurationLoader {
 
   private Logger log = LoggerFactory.getLogger(ConfigurationLoader.class);
 
-  public Configuration load(String path) throws UnsupportedEncodingException {
+  public Configuration load(String path) {
 
     Path configurationFilePath = Paths.get(path);
     log.info("Using configuration file in path: {}", configurationFilePath);
 
-    File file = new File(URLDecoder.decode(String.valueOf(configurationFilePath.toFile()), "utf-8"));;
+    File file = new File(URLDecoder.decode(String.valueOf(configurationFilePath.toFile()), StandardCharsets.UTF_8));
 
     if (!file.exists()) {
       throw new ConfigurationNotFoundException("Could not find configuration file in: " + path);
