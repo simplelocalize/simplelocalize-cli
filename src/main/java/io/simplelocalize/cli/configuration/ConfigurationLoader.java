@@ -10,6 +10,8 @@ import org.yaml.snakeyaml.constructor.Constructor;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
@@ -19,12 +21,13 @@ public class ConfigurationLoader {
 
   private Logger log = LoggerFactory.getLogger(ConfigurationLoader.class);
 
-  public Configuration load(String path) {
+  public Configuration load(String path) throws UnsupportedEncodingException {
 
     Path configurationFilePath = Paths.get(path);
     log.info("Using configuration file in path: {}", configurationFilePath);
 
-    File file = configurationFilePath.toFile();
+    File file = new File(URLDecoder.decode(String.valueOf(configurationFilePath.toFile()), "utf-8"));;
+
     if (!file.exists()) {
       throw new ConfigurationNotFoundException("Could not find configuration file in: " + path);
     }
