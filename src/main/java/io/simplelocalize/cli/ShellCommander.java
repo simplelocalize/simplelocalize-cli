@@ -31,6 +31,7 @@ class ShellCommander {
   }
 
   void run(String[] args) throws IOException, InterruptedException {
+    log.info("SimpleLocalize CLI, Version: {}", getVersion());
 
     String configurationFilePath = resolveConfigurationPath(args);
 
@@ -53,6 +54,14 @@ class ShellCommander {
     String uploadToken = configuration.getUploadToken();
     SimpleLocalizeClient client = new SimpleLocalizeClient(uploadToken);
     client.sendKeys(keys);
+  }
+
+  private String getVersion() {
+    try {
+      return this.getClass().getPackage().getImplementationVersion();
+    } catch (Exception e) {
+      return "unknown";
+    }
   }
 
   private String resolveConfigurationPath(String[] args) {
