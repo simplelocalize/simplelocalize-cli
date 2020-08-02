@@ -16,11 +16,9 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: setup-graalvm-ce
-        uses: rinx/setup-graalvm-ce@v0.0.4
+        uses: DeLaGuardo/setup-graalvm@3
         with:
-          graalvm-version: "20.1.0"
-          java-version: "java11"
-          native-image: "true"
+          graalvm-version: '20.1.0.java11'
       - name: version
         run: |
           java -version
