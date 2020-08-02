@@ -42,7 +42,7 @@ jobs:
       - name: "Install GraalVM"
         run: |
           Expand-Archive -path 'graal.zip' -destinationpath '.'
-      - name: "Install native-image"
+      - name: "Install Native Image"
         run: |
           graalvm-ce-java11-20.1.0\bin\gu.cmd install native-image
       - name: "Set up Visual C Build Tools Workload for Visual Studio 2017 Build Tools"
@@ -62,17 +62,16 @@ jobs:
           JAVA_HOME: ./graalvm-ce-java11-20.1.0
         run: |
           call "C:\Program Files (x86)\Microsoft Visual Studio\2017\BuildTools\VC\Auxiliary\Build\vcvars64.bat"
-          ./graalvm-ce-java11-20.1.0/bin/native-image --no-server --report-unsupported-elements-at-runtime -cp simplelocalize-cli-${{env.VERSION}}.jar io.simplelocalize.cli.SimplelocalizeCliCommand
+          ./graalvm-ce-java11-20.1.0/bin/native-image --no-server --report-unsupported-elements-at-runtime -cp simplelocalize-cli-${{env.VERSION}}.jar -H:Name="simplelocalize-cli" io.simplelocalize.cli.SimplelocalizeCliCommand
       - name: 'Upload artifact'
         uses: actions/upload-artifact@v2
-        if: success()
         with:
           name: simplelocalize-cli-windows
-          path: ./graalvm-ce-java11-20.1.0/bin/io.simplelocalize.cli.simplelocalizeclicommand
+          path: 'simplelocalize-cli.exe'
 
   build-unix:
     needs: [build-jar]
-    name: "Build Unix executables"
+    name: "Build Unix executable"
     strategy:
       matrix:
         os: [ubuntu-latest, macos-latest]
@@ -95,13 +94,13 @@ jobs:
         uses: DeLaGuardo/setup-graalvm@3
         with:
           graalvm-version: '20.1.0.java11'
-      - name: "Install native-image"
+      - name: "Install Native Image"
         run: gu install native-image
       - name: "Build Native Image"
-        run: native-image --no-server --report-unsupported-elements-at-runtime -cp simplelocalize-cli-*.jar io.simplelocalize.cli.SimplelocalizeCliCommand
+        run: native-image --no-server --report-unsupported-elements-at-runtime -cp simplelocalize-cli-*.jar -H:Name="simplelocalize-cli" io.simplelocalize.cli.SimplelocalizeCliCommand
       - name: "Upload artifact"
         uses: actions/upload-artifact@v2
         with:
           name: simplelocalize-cli-${{ matrix.os }}
-          path: io.simplelocalize.cli.simplelocalizeclicommand
+          path: simplelocalize-cli
 
