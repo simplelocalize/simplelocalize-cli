@@ -1,7 +1,6 @@
 package io.simplelocalize.cli.processor;
 
 import io.simplelocalize.cli.exception.NoProcessorMatchException;
-import io.simplelocalize.cli.util.ReflectionLoader;
 
 import java.util.List;
 import java.util.Objects;
@@ -15,7 +14,7 @@ public class ProjectProcessorFactory {
   public static ProjectProcessor createForType(String projectType) {
     Objects.requireNonNull(projectType, "Could not create ProjectProcessor for null project type");
 
-    Set<ProjectProcessor> processors = ReflectionLoader.loadProcessors();
+    Set<ProjectProcessor> processors = Set.of(new YahooReactIntlProcessor(), new AndroidProcessor());
 
     List<String> supportedProjectTypesList = processors.stream().map(ProjectProcessor::getProjectTypeSupport).collect(Collectors.toList());
     String supportedProjectTypes = String.join(",", supportedProjectTypesList);

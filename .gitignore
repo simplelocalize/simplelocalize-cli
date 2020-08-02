@@ -28,3 +28,7 @@ simplelocalize-dev.yml
 simplelocalize-dev.yaml
 simplelocalize*.jar
 *ITE.java
+
+io.simplelocalize.cli.simplelocalizeclicommand
+simplelocalize-cli
+

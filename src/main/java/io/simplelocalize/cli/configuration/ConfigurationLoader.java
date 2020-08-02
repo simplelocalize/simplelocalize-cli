@@ -35,6 +35,7 @@ public class ConfigurationLoader {
 
     Constructor yamlTargetClass = new Constructor(Configuration.class);
     Yaml yaml = new Yaml(yamlTargetClass);
+
     Configuration configuration;
     try {
       InputStream inputStream = new FileInputStream(file);

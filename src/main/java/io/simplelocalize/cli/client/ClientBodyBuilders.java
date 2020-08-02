@@ -6,17 +6,18 @@ import io.simplelocalize.cli.client.dto.ImportForm;
 import io.simplelocalize.cli.client.dto.ImportKey;
 
 import java.net.http.HttpRequest;
+import java.util.Collection;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 class ClientBodyBuilders {
 
-  private static ObjectMapper objectMapper = new ObjectMapper();
+  private static final ObjectMapper objectMapper = new ObjectMapper();
 
   private ClientBodyBuilders() {
   }
 
-  static HttpRequest.BodyPublisher ofKeysBody(Set<String> keys) throws JsonProcessingException {
+  static HttpRequest.BodyPublisher ofKeysBody(Collection<String> keys) throws JsonProcessingException {
     ImportForm importForm = new ImportForm();
 
     Set<ImportKey> importContent = keys.stream()
