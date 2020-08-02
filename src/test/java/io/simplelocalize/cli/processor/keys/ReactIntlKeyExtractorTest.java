@@ -18,11 +18,12 @@ public class ReactIntlKeyExtractorTest {
     URL resource = classLoader.getResource("react-intl/UserPage.js");
     String path = resource.getPath();
 
+
     //when
     Set<String> keys = reactIntlKeyExtractor.extractKeysFromFile(Paths.get(path));
 
     //then
-    Assertions.assertThat(keys).hasSize(8);
+    Assertions.assertThat(keys).hasSize(10);
     Assertions.assertThat(keys).containsExactlyInAnyOrder(
             "VISITS",
             "LIKES",
@@ -30,6 +31,8 @@ public class ReactIntlKeyExtractorTest {
             "COMMENTS",
             "COVER_IMAGE.PLACEHOLDER",
             "COVER_IMAGE.TITLE",
+            "COVER_IMAGE.PLACEHOLDER_DOUBLE",
+            "COVER_IMAGE.TITLE_DOUBLE",
             "ACHIEVEMENTS",
             "AVAILABLE_SOON"
     );

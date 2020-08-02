@@ -1,6 +1,7 @@
 package io.simplelocalize.cli;
 
 import com.google.common.base.Strings;
+import com.google.common.collect.Iterables;
 import io.micronaut.configuration.picocli.PicocliRunner;
 import io.simplelocalize.cli.client.SimpleLocalizeClient;
 import io.simplelocalize.cli.configuration.Configuration;
@@ -19,23 +20,25 @@ import java.nio.file.Paths;
 import java.util.List;
 import java.util.Set;
 
-@Command(name = "simplelocalize-cli", description = "...", mixinStandardHelpOptions = true)
+@Command(name = "simplelocalize-cli", description = "SimpleLocalize CLI finds all i18n keys in your source code and sends it to the SimpleLocalize Cloud where you can easily translate, and manage them.", mixinStandardHelpOptions = true)
 public class SimplelocalizeCliCommand implements Runnable {
 
   private static final String DEFAULT_CONFIG_FILE_NAME = "./simplelocalize.yml";
-  @CommandLine.Option(names = {"-c", "--config"}, description = "Configuration file")
-  String configurationFilePath;
-  private Logger log = LoggerFactory.getLogger(SimplelocalizeCliCommand.class);
-  private ConfigurationLoader configurationLoader;
-  private ConfigurationValidator configurationValidator;
+  private static final int BATCH_SIZE = 1000;
 
-  public static void main(String[] args) throws Exception {
+  private final Logger log = LoggerFactory.getLogger(SimplelocalizeCliCommand.class);
+  @CommandLine.Option(names = {"-c", "--config"}, description = "Configuration file path (default: ./simplelocalize.yml)")
+  String configurationFilePath;
+
+  public static void main(String[] args) {
     PicocliRunner.run(SimplelocalizeCliCommand.class, args);
   }
 
   public void run() {
-    this.configurationLoader = new ConfigurationLoader();
-    this.configurationValidator = new ConfigurationValidator();
+    ConfigurationLoader configurationLoader = new ConfigurationLoader();
+    ConfigurationValidator configurationValidator = new ConfigurationValidator();
+
+    log.info("SimpleLocalize CLI, Version: {}", getVersion());
 
     if (Strings.isNullOrEmpty(configurationFilePath)) {
       configurationFilePath = DEFAULT_CONFIG_FILE_NAME;
@@ -59,11 +62,23 @@ public class SimplelocalizeCliCommand implements Runnable {
 
     String uploadToken = configuration.getUploadToken();
     SimpleLocalizeClient client = new SimpleLocalizeClient(uploadToken);
-    try {
-      client.sendKeys(keys);
-    } catch (Exception e) {
-      log.error("Could not send keys", e);
+
+    for (List<String> partition : Iterables.partition(keys, BATCH_SIZE)) {
+      try {
+        client.sendKeys(partition);
+      } catch (Exception e) {
+        log.error("Could not send keys chunk", e);
+      }
     }
+
+
   }
 
+  private String getVersion() {
+    try {
+      return this.getClass().getPackage().getImplementationVersion();
+    } catch (Exception e) {
+      return "unknown";
+    }
+  }
 }

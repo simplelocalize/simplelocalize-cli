@@ -4,7 +4,7 @@ name: Build executables
 on:
   push:
     branches:
-      - 'graalvm'
+      - 'master'
 
 jobs:
   build-jar:

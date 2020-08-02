@@ -10,6 +10,7 @@ import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.util.Collection;
 import java.util.Objects;
 import java.util.Set;
 
@@ -20,7 +21,7 @@ public final class SimpleLocalizeClient {
   private final HttpClient httpClient;
   private final String uploadToken;
 
-  private Logger log = LoggerFactory.getLogger(SimpleLocalizeClient.class);
+  private final Logger log = LoggerFactory.getLogger(SimpleLocalizeClient.class);
 
   public SimpleLocalizeClient(String uploadToken) {
     Objects.requireNonNull(uploadToken);
@@ -28,7 +29,7 @@ public final class SimpleLocalizeClient {
     this.httpClient = HttpClient.newBuilder().build();
   }
 
-  public void sendKeys(Set<String> keys) throws IOException, InterruptedException {
+  public void sendKeys(Collection<String> keys) throws IOException, InterruptedException {
 
     HttpRequest httpRequest = HttpRequest.newBuilder()
             .POST(ClientBodyBuilders.ofKeysBody(keys))
