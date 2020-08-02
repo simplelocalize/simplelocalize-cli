@@ -38,8 +38,6 @@ public class SimplelocalizeCliCommand implements Runnable {
     ConfigurationLoader configurationLoader = new ConfigurationLoader();
     ConfigurationValidator configurationValidator = new ConfigurationValidator();
 
-    log.info("SimpleLocalize CLI, Version: {}", getVersion());
-
     if (Strings.isNullOrEmpty(configurationFilePath)) {
       configurationFilePath = DEFAULT_CONFIG_FILE_NAME;
     }
@@ -69,16 +67,6 @@ public class SimplelocalizeCliCommand implements Runnable {
       } catch (Exception e) {
         log.error("Could not send keys chunk", e);
       }
-    }
-
-
-  }
-
-  private String getVersion() {
-    try {
-      return this.getClass().getPackage().getImplementationVersion();
-    } catch (Exception e) {
-      return "unknown";
     }
   }
 }
