@@ -17,14 +17,11 @@ jobs:
           java-version: '11'
       - name: "Build with Maven"
         run: mvn -B clean install --file pom.xml
-      - name: 'Get Version Number'
-        run: |
-          echo "::set-env name=VERSION::$(mvn org.apache.maven.plugins:maven-help-plugin:2.1.1:evaluate -o -Dexpression=project.version | grep -v '\[')"
       - name: 'Upload artifact'
         uses: actions/upload-artifact@v2
         with:
-          name: 'simplelocalize-cli-${{env.VERSION}}.jar'
-          path: target/simplelocalize-cli.jar
+          name: 'simplelocalize-cli.jar'
+          path: target/simplelocalize.jar
   build-windows:
     needs: [build-jar]
     name: "Build Windows executable"
@@ -42,21 +39,17 @@ jobs:
       - name: "Set up Visual C Build Tools Workload for Visual Studio 2017 Build Tools"
         run: |
           choco install visualstudio2017-workload-vctools
-      - name: 'Get Version Number'
-        run: |
-          echo "::set-env name=VERSION::$(./mvnw org.apache.maven.plugins:maven-help-plugin:2.1.1:evaluate -o -Dexpression=project.version | grep -v '\[')"
-        shell: bash
       - name: 'Get JAR Artifact'
         uses: actions/download-artifact@v2
         with:
-          name: 'simplelocalize-cli-${{env.VERSION}}.jar'
+          name: 'simplelocalize-cli.jar'
       - name: "Build Native Image"
         shell: cmd
         env:
           JAVA_HOME: ./graalvm-ce-java11-20.1.0
         run: |
           call "C:\Program Files (x86)\Microsoft Visual Studio\2017\BuildTools\VC\Auxiliary\Build\vcvars64.bat"
-          ./graalvm-ce-java11-20.1.0/bin/native-image --no-server --report-unsupported-elements-at-runtime -cp target/simplelocalize-cli-${{env.VERSION}}.jar io.simplelocalize.cli.SimplelocalizeCliCommand
+          ./graalvm-ce-java11-20.1.0/bin/native-image --no-server --report-unsupported-elements-at-runtime -cp simplelocalize-cli.jar io.simplelocalize.cli.SimplelocalizeCliCommand
       - name: 'Upload artifact'
         uses: actions/upload-artifact@v2
         if: success()
@@ -77,13 +70,10 @@ jobs:
             label: 'mac'
     runs-on: ${{ matrix.os }}
     steps:
-      - name: 'Get Version Number'
-        run: |
-          echo "::set-env name=VERSION::$(./mvnw org.apache.maven.plugins:maven-help-plugin:2.1.1:evaluate -o -Dexpression=project.version | grep -v '\[')"
       - name: 'Get JAR Artifact'
         uses: actions/download-artifact@v2
         with:
-          name: 'simplelocalize-cli-${{env.VERSION}}.jar'
+          name: 'simplelocalize-cli.jar'
       - name: "Setup GraalVM"
         uses: DeLaGuardo/setup-graalvm@3
         with:
@@ -91,7 +81,7 @@ jobs:
       - name: "Install native-image"
         run: gu install native-image
       - name: "Build Native Image"
-        run: native-image --no-server --report-unsupported-elements-at-runtime -cp target/simplelocalize-cli-*.jar io.simplelocalize.cli.SimplelocalizeCliCommand
+        run: native-image --no-server --report-unsupported-elements-at-runtime -cp simplelocalize-cli.jar io.simplelocalize.cli.SimplelocalizeCliCommand
       - name: "Upload artifact"
         uses: actions/upload-artifact@v2
         with:
