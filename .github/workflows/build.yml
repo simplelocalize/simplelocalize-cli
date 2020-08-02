@@ -43,9 +43,9 @@ jobs:
         run: |
           choco install visualstudio2017-workload-vctools
       - name: 'Get Version Number'
-          run: |
-            echo "::set-env name=VERSION::$(./mvnw org.apache.maven.plugins:maven-help-plugin:2.1.1:evaluate -o -Dexpression=project.version | grep -v '\[')"
-          shell: bash
+        run: |
+          echo "::set-env name=VERSION::$(./mvnw org.apache.maven.plugins:maven-help-plugin:2.1.1:evaluate -o -Dexpression=project.version | grep -v '\[')"
+        shell: bash
       - name: 'Get JAR Artifact'
           uses: actions/download-artifact@v2
           with:
