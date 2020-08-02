@@ -15,11 +15,16 @@ jobs:
       - uses: actions/setup-java@v1
         with:
           java-version: '11'
+      - name: "Cache Maven packages"
+        uses: actions/cache@v2
+        with:
+          path: ~/.m2
+          key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
+          restore-keys: ${{ runner.os }}-m2
       - name: "Build with Maven"
         run: mvn -B clean install --file pom.xml
       - name: 'Get Version Number'
-        run: |
-          echo "::set-env name=VERSION::$(mvn org.apache.maven.plugins:maven-help-plugin:2.1.1:evaluate -Dexpression=project.version | grep -v '\[')"
+        run: echo "::set-env name=VERSION::$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)"
       - name: 'Upload artifact'
         uses: actions/upload-artifact@v2
         with:
@@ -44,7 +49,7 @@ jobs:
           choco install visualstudio2017-workload-vctools
       - name: 'Get Version Number'
         run: |
-          echo "::set-env name=VERSION::$(./mvnw org.apache.maven.plugins:maven-help-plugin:2.1.1:evaluate -Dexpression=project.version | grep -v '\[')"
+          echo "::set-env name=VERSION::$(./mvnw help:evaluate -Dexpression=project.version -q -DforceStdout)"
         shell: bash
       - name: 'Get JAR Artifact'
         uses: actions/download-artifact@v2
@@ -79,7 +84,7 @@ jobs:
     steps:
       - name: 'Get Version Number'
         run: |
-          echo "::set-env name=VERSION::$(./mvnw org.apache.maven.plugins:maven-help-plugin:2.1.1:evaluate -Dexpression=project.version | grep -v '\[')"
+          echo "::set-env name=VERSION::$(./mvnw help:evaluate -Dexpression=project.version -q -DforceStdout)"
       - name: 'Get JAR Artifact'
         uses: actions/download-artifact@v2
         with:
