@@ -38,8 +38,8 @@ jobs:
           ./graalvm-ce-java11-20.1.0/bin/native-image --no-server --report-unsupported-elements-at-runtime -cp target/simplelocalize-cli-0.4.0.jar io.simplelocalize.cli.SimplelocalizeCliCommand
       - uses: actions/upload-artifact@v2
         with:
-          name: output-${{ matrix.os }}
-          path: io.simplelocalize.cli.simplelocalizeclicommand
+          name: output-windows-latest
+          path: ./graalvm-ce-java11-20.1.0/bin/io.simplelocalize.cli.simplelocalizeclicommand
 
   build-all:
     name: "Build executable"
