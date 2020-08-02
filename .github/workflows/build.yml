@@ -62,7 +62,7 @@ jobs:
           JAVA_HOME: ./graalvm-ce-java11-20.1.0
         run: |
           call "C:\Program Files (x86)\Microsoft Visual Studio\2017\BuildTools\VC\Auxiliary\Build\vcvars64.bat"
-          ./graalvm-ce-java11-20.1.0/bin/native-image --no-server --report-unsupported-elements-at-runtime -cp target/simplelocalize-cli-${{env.VERSION}}.jar io.simplelocalize.cli.SimplelocalizeCliCommand
+          ./graalvm-ce-java11-20.1.0/bin/native-image --no-server --report-unsupported-elements-at-runtime -cp simplelocalize-cli-${{env.VERSION}}.jar io.simplelocalize.cli.SimplelocalizeCliCommand
       - name: 'Upload artifact'
         uses: actions/upload-artifact@v2
         if: success()
@@ -98,7 +98,7 @@ jobs:
       - name: "Install native-image"
         run: gu install native-image
       - name: "Build Native Image"
-        run: native-image --no-server --report-unsupported-elements-at-runtime -cp target/simplelocalize-cli-*.jar io.simplelocalize.cli.SimplelocalizeCliCommand
+        run: native-image --no-server --report-unsupported-elements-at-runtime -cp simplelocalize-cli-*.jar io.simplelocalize.cli.SimplelocalizeCliCommand
       - name: "Upload artifact"
         uses: actions/upload-artifact@v2
         with:
