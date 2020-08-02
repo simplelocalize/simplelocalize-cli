@@ -1,9 +1,10 @@
 name: Run Tests
 
 on:
+  pull_request:
   push:
-    branches-ignore:
-      - 'master'
+    branches:
+      - master
 
 jobs:
   run_tests:
