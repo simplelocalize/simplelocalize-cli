@@ -1,11 +1,12 @@
 package io.simplelocalize.cli.configuration;
 
+import io.micronaut.core.annotation.Introspected;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 import java.util.Set;
 
-
+@Introspected
 public class Configuration {
 
   private String searchDir;

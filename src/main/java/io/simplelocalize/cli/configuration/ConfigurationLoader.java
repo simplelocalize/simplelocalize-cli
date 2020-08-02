@@ -29,8 +29,7 @@ public class ConfigurationLoader {
       throw new ConfigurationNotFoundException("Could not find configuration file in: " + path);
     }
 
-    Constructor yamlTargetClass = new Constructor(Configuration.class);
-    Yaml yaml = new Yaml(yamlTargetClass);
+    Yaml yaml = new Yaml();
     Configuration configuration;
     try {
       InputStream inputStream = new FileInputStream(file);
