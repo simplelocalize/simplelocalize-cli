@@ -32,7 +32,7 @@ $ cd ~/MyProject #same place where the simplelocalize.yml is
 $ curl -s https://get.simplelocalize.io | bash
 ```
 
-Done! CLI should find i18n terms push them to [SimpleLocalize](https://app.simplelocalize.io).
+Done! CLI will find i18n terms, and push them to [SimpleLocalize](https://app.simplelocalize.io).
 
 **Example** `simplelocalize.yml`
 
