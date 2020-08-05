@@ -97,7 +97,7 @@ $ curl -s https://get.simplelocalize.io | bash -s /tmp/simplelocalize-dev.yml
 
 ## 🤯 Problem with running CLI
 
-In most cases you should use our regular script which is constantly optimized for everyone and ready to use 
+In most cases you should use our regular script which is constantly optimized for everyone like below
 ```bash
 $ curl -s https://get.simplelocalize.io | bash
 ```
