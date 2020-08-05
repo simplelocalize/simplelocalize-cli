@@ -95,6 +95,25 @@ If you would like to use simplelocalize.yml from custom location or with custom 
 $ curl -s https://get.simplelocalize.io | bash -s /tmp/simplelocalize-dev.yml
 ```
 
+## Problem with running CLI
+
+In most cases you should use our regular script which is constantly optimized for everyone and ready to use 
+```bash
+$ curl -s https://get.simplelocalize.io | bash
+```
+If something is not working properly please [create an issue](https://github.com/simplelocalize/simplelocalize-cli/issues/new) and provide script output. In meantime, you can use one of 2 other options to run CLI.
+
+
+##### Option 1: I have Java 11+ installed on my system, let me just use app in *.jar file. 
+```bash
+$ curl -s https://get.simplelocalize.io/run-jar | bash
+```
+
+##### Option 2: I want to use *.jar file, but I don't have JDK installed.
+```bash
+$ curl -s https://get.simplelocalize.io/install-jdk-run-jar | bash
+```
+
 
 ## 👩‍⚖️ License
 
