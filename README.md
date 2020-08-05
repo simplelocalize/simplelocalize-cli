@@ -95,7 +95,7 @@ If you would like to use simplelocalize.yml from custom location or with custom 
 $ curl -s https://get.simplelocalize.io | bash -s /tmp/simplelocalize-dev.yml
 ```
 
-## Problem with running CLI
+## 🤯 Problem with running CLI
 
 In most cases you should use our regular script which is constantly optimized for everyone and ready to use 
 ```bash
