@@ -1,4 +1,4 @@
-![logo](https://i.imgur.com/du8JQ2L.png)
+![logo](https://simplelocalize.io/public/github-banner-cli.png)
 
 ![Tests](https://github.com/simplelocalize/simplelocalize-cli/workflows/Run%20Tests/badge.svg)
 ![Build native executables](https://github.com/simplelocalize/simplelocalize-cli/workflows/Build%20executables/badge.svg?branch=master)
