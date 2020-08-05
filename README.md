@@ -54,7 +54,7 @@ projectType: <SEE_BELOW>
 | [handlebars-intl](https://github.com/yahoo/handlebars-intl) | yahoo/handlebars-intl      |    [ ] |
 
 
-## Workflow automation
+## 🤖 Workflow automation
 
 SimpleLocalize can be integrated with any CI/CD service, simply put bash script somewhere in your scripting environment to find and push translation keys:
 
@@ -63,9 +63,10 @@ $ curl -s https://get.simplelocalize.io | bash
 ```
 The best place to run SimpleLocalize script is **after successful build** because this will not result a wrong internationalisation keys caused by invalid syntax
 
-## ⚙️ Customizations
+## ⚙️ Available options
+SimpleLocalize CLI can be customized using `simplelocalize.yaml` file. See examples below.
 
-### Ignoring keys
+##### Ignoring keys
 
 ```yaml
 uploadToken: <PROJECT_UPLOAD_TOKEN>
@@ -77,7 +78,7 @@ ignoredKeys:
     - ":("
 ```
 
-### Custom directory
+##### Custom search directory
 If you would like to search translation keys in some specific path you  can achieve this by adding searchDir and path where the CLI should search keys.
 
 ```yaml
@@ -87,9 +88,8 @@ searchDir: /Users/jpomykala/Workspace/MyProject
 ```
 Please pay attention to what you are putting in the `searchDir` property. This may cause high CPU and disc usage due to this will be looking for files to process and try to find translation keys.
 
-### Configuration profiles
+##### Configuration profiles
 If you would like to use simplelocalize.yml from custom location or with custom name like simplelocalize-dev.yml file. This can be easilly achieved by passing path as first argument.
-
 
 ```bash
 $ curl -s https://get.simplelocalize.io | bash -s /tmp/simplelocalize-dev.yml
