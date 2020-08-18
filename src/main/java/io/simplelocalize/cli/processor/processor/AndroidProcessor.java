@@ -1,7 +1,9 @@
-package io.simplelocalize.cli.processor;
+package io.simplelocalize.cli.processor.processor;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
+import io.simplelocalize.cli.processor.ProcessResult;
+import io.simplelocalize.cli.processor.ProjectProcessor;
 import io.simplelocalize.cli.processor.files.GenericExtensionFilesFinder;
 import io.simplelocalize.cli.processor.keys.AndroidRStringKeyExtractor;
 import io.simplelocalize.cli.processor.keys.AndroidXmlKeysExtractor;

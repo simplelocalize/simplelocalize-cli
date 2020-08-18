@@ -1,0 +1,42 @@
+<%- contentFor('header') %>
+<h1><%=i18n.confirm.title%></h1>
+<h1><%=i18n.confirm.title%></h1>
+<h1><%=i18n.confirm.title%></h1>
+<h1><%=i18n.confirm.title%></h1>
+<h1><%=i18n.confirm.title%></h1>
+<%- contentFor('main') %>
+<script type="text/javascript" src="/scripts/passwordmeter.js"></script>
+<script type="text/javascript" src="/scripts/confirm.js"></script>
+
+<div class="row">
+  <%if (typeof message !== "undefined") { %>
+  <div class="message <%=message.type%>"><%=message.content%></div>
+  <% } %>
+  <%if (typeof message !== "undefined" && message.type === "error") { %>
+    <form id="confirm" name="confirm" action="/confirm" method="POST" class="col-12">
+      <input type="hidden" name="_csrf" value="<%= csrftoken %>" />
+      <div class="controls">
+        <div class="row email">
+          <div class="md-form col-xs-12 col-sm-12 col-md-6 col-lg-6 row">
+              <i class="fa fa-envelope prefix grey-text"></i>
+              <input id="email" type="email" class="form-control" required="required" name="email" tabindex="1">
+              <label id="emailLabel" for="email"><%=i18n.common.email%><span class="red-txt">*</span></label>
+              <label id="emailLabel" for="email"><%=i18n.common.email%><span class="red-txt">*</span></label>
+          </div>
+        </div>
+        <div class="row buttons">
+            <div class="col-xs-12 col-sm-12 col-md-8 col-lg-8"></div>
+            <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
+            <div class="buttonSubmitTooltip">
+            <input class="buttonSubmit btn btn-primary" id="buttonSubmit" name="submit" type="submit" value="<%=i18n.confirm.sendAgain%>" disabled tabindex="3"/>
+            </div>
+            </div>
+        </div>
+      </div>
+    </form>
+  <% } %>
+</div>
+<%- contentFor('footer') %>
+<div class="form-bottom-links">
+  <a href="/signin"><%=i18n.common.signIn%></a><a href="/recoverpassword"><%=i18n.common.recoverPassword%></a>
+</div>

@@ -1,6 +1,7 @@
 package io.simplelocalize.cli.processor;
 
 import io.simplelocalize.cli.processor.files.TestResourcesUtility;
+import io.simplelocalize.cli.processor.processor.AndroidProcessor;
 import org.assertj.core.api.Assertions;
 import org.junit.Test;
 import org.junit.runner.RunWith;

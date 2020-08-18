@@ -44,7 +44,7 @@ public class ReactIntlKeyExtractor implements KeyExtractor {
 
   private Set<String> matchIntlFormatMessageIds(String fileContent) {
     fileContent = fileContent.replaceAll("\\s+", "");
-    return Pattern.compile("(?<=intl\\.formatMessage\\(\\{id:[\"|\'])(.*?)(?=[\"|\'])")
+    return Pattern.compile("(?<=intl\\.formatMessage\\(\\{id:[\"|'])(.*?)(?=[\"|'])")
             .matcher(fileContent)
             .results()
             .map(MatchResult::group)

@@ -1,6 +1,8 @@
-package io.simplelocalize.cli.processor;
+package io.simplelocalize.cli.processor.processor;
 
 import com.google.common.collect.Sets;
+import io.simplelocalize.cli.processor.ProcessResult;
+import io.simplelocalize.cli.processor.ProjectProcessor;
 import io.simplelocalize.cli.processor.files.JavaScriptAndTypeScriptFilesFinder;
 import io.simplelocalize.cli.processor.keys.ReactIntlKeyExtractor;
 
