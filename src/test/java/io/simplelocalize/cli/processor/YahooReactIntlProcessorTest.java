@@ -2,6 +2,7 @@ package io.simplelocalize.cli.processor;
 
 import io.simplelocalize.cli.exception.ProjectProcessException;
 import io.simplelocalize.cli.processor.files.TestResourcesUtility;
+import io.simplelocalize.cli.processor.processor.YahooReactIntlProcessor;
 import org.assertj.core.api.Assertions;
 import org.junit.Test;
 import org.junit.runner.RunWith;
