@@ -47,11 +47,12 @@ projectType: <SEE_BELOW>
 | Library | `projectType` value | Is supported? | 
 | ------------- |-------------:|:----:|
 | [react-intl](https://github.com/yahoo/react-intl)      | yahoo/react-intl | [x]
-| [jekyll-multiple-languages-plugin](https://github.com/Anthony-Gaudino/jekyll-multiple-languages-plugin)      | Anthony-Gaudino/jekyll-multiple-languages-plugin      |   [ ] |
 | Standard Android internationalization | google/android      |    [x] |
 | Standard iOS internationalization | apple/ios      |    [ ] |
-| [react-i18next](https://github.com/i18next/react-i18next) | i18next/react-i18next      |    [ ] |
+| [react-i18next](https://github.com/i18next/react-i18next) | i18next/i18next      |    [x] |
+| [mde/ejs](https://github.com/mde/ejs) | mde/ejs | [x] |
 | [ember-intl](https://github.com/ember-intl/ember-intl) | ember-intl/ember-intl      |    [ ] |
+| [jekyll-multiple-languages-plugin](https://github.com/Anthony-Gaudino/jekyll-multiple-languages-plugin)      | Anthony-Gaudino/jekyll-multiple-languages-plugin      |   [ ] |
 | [dust-intl](https://github.com/yahoo/dust-intl) | yahoo/dust-intl      |    [ ] |
 | [handlebars-intl](https://github.com/yahoo/handlebars-intl) | yahoo/handlebars-intl      |    [ ] |
 
