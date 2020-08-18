@@ -11,21 +11,22 @@ Learn more about us on [our website](https://simplelocalize.io).
 
 We've built SimpleLocalize CLI that extracts i18n terms from your project files, and pushes them to the [SimpleLocalize](https://app.simplelocalize.io), where you can to translate it, and publish to the CDN or export in a desired format. 
 
-Features:
-- bring your own libary or custom code
+### Features:
 - extract i18n keys from project using [SimpleLocalize CLI](https://github.com/simplelocalize/simplelocalize-cli)
 - manage translations using [SimpleLocalize.io Platform](https://simplelocalize.io)
 - fetch ready to use translations from [SimpleLocalize CDN](https://simplelocalize.io/cdn) in desired format
+- **bring your i18n library of choice**
+- **no vendor lock-in**
 
-## Example
-For example to translate frontend application in ReactJS you can use 3rd party library like [yahoo/react-intl](https://github.com/yahoo/react-intl):
+### Example
+For example to translate frontend application in [ReactJS](https://github.com/facebook/react) you can use 3rd party library like [yahoo/react-intl](https://github.com/yahoo/react-intl):
 
 Example [yahoo/react-intl](https://github.com/yahoo/react-intl) usage in code:
 ```jsx
 <FormattedMessage id="LOGIN"/>
 ```
 
-Thanks to SimpleLocalize CLI, key: `LOGIN`  will be found and pushed to the [SimpleLocalize](https://app.simplelocalize.io) automatically.
+Thanks to [SimpleLocalize.io CLI](https://github.com/simplelocalize/simplelocalize-cli), key: `LOGIN`  will be found and pushed to the [SimpleLocalize Platform](https://app.simplelocalize.io) automatically.
 
 ## 🚀 How to use it
 
@@ -40,7 +41,7 @@ $ cd ~/MyProject #same place where the simplelocalize.yml is
 $ curl -s https://get.simplelocalize.io | bash
 ```
 
-Done! CLI will find i18n terms, and push them to [SimpleLocalize](https://app.simplelocalize.io).
+Done! CLI will find i18n terms, and push them to [SimpleLocalize Platform](https://app.simplelocalize.io).
 
 **Example** `simplelocalize.yml`
 
