@@ -50,7 +50,7 @@ projectType: <SEE_BELOW>
 | Standard Android internationalization | google/android      |    ✅ |
 | Standard iOS internationalization | apple/ios      |    [ ] |
 | [react-i18next](https://github.com/i18next/react-i18next) | i18next/react-i18next      |    ✅ |
-| [mde/ejs](https://github.com/mde/ejs) | mde/ejs | [x] |
+| [mde/ejs](https://github.com/mde/ejs) | mde/ejs | ✅ |
 | [ember-intl](https://github.com/ember-intl/ember-intl) | ember-intl/ember-intl      |    [ ] |
 | [jekyll-multiple-languages-plugin](https://github.com/Anthony-Gaudino/jekyll-multiple-languages-plugin)      | Anthony-Gaudino/jekyll-multiple-languages-plugin      |   [ ] |
 | [dust-intl](https://github.com/yahoo/dust-intl) | yahoo/dust-intl      |    [ ] |
