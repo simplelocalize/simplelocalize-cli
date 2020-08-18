@@ -46,10 +46,10 @@ projectType: <SEE_BELOW>
 
 | Library | `projectType` value | Is supported? | 
 | ------------- |-------------:|:----:|
-| [react-intl](https://github.com/yahoo/react-intl)      | yahoo/react-intl | [x]
-| Standard Android internationalization | google/android      |    [x] |
+| [react-intl](https://github.com/yahoo/react-intl)      | yahoo/react-intl | ✅
+| Standard Android internationalization | google/android      |    ✅ |
 | Standard iOS internationalization | apple/ios      |    [ ] |
-| [react-i18next](https://github.com/i18next/react-i18next) | i18next/i18next      |    [x] |
+| [react-i18next](https://github.com/i18next/react-i18next) | i18next/react-i18next      |    ✅ |
 | [mde/ejs](https://github.com/mde/ejs) | mde/ejs | [x] |
 | [ember-intl](https://github.com/ember-intl/ember-intl) | ember-intl/ember-intl      |    [ ] |
 | [jekyll-multiple-languages-plugin](https://github.com/Anthony-Gaudino/jekyll-multiple-languages-plugin)      | Anthony-Gaudino/jekyll-multiple-languages-plugin      |   [ ] |
