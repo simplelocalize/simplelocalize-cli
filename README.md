@@ -7,10 +7,17 @@ Learn more about us on [our website](https://simplelocalize.io).
 [![Maintainability](https://api.codeclimate.com/v1/badges/af2f6a7680929a8dba41/maintainability)](https://codeclimate.com/github/simplelocalize/simplelocalize-cli/maintainability)
 [![codecov](https://codecov.io/gh/simplelocalize/simplelocalize-cli/branch/master/graph/badge.svg)](https://codecov.io/gh/simplelocalize/simplelocalize-cli)
 
-## 💡 What it does?
+## What it does?
 
-We've built SimpleLocalize CLI that extracts i18n terms from your project files, and pushes them to the [SimpleLocalize](https://app.simplelocalize.io), where you can to translate it, and publish to the CDN or export in a desired format.
+We've built SimpleLocalize CLI that extracts i18n terms from your project files, and pushes them to the [SimpleLocalize](https://app.simplelocalize.io), where you can to translate it, and publish to the CDN or export in a desired format. 
 
+Features:
+- bring your own libary or custom code
+- extract i18n keys from project using [SimpleLocalize CLI](https://github.com/simplelocalize/simplelocalize-cli)
+- manage translations using [SimpleLocalize.io Platform](https://simplelocalize.io)
+- fetch ready to use translations from [SimpleLocalize CDN](https://simplelocalize.io/cdn) in desired format
+
+## Example
 For example to translate frontend application in ReactJS you can use 3rd party library like [yahoo/react-intl](https://github.com/yahoo/react-intl):
 
 Example [yahoo/react-intl](https://github.com/yahoo/react-intl) usage in code:
@@ -42,7 +49,7 @@ uploadToken: <PROJECT_UPLOAD_TOKEN>
 projectType: <SEE_BELOW>
 ```
 
-## 🔌 Supported libraries
+## 📖 Supported libraries
 
 | Library | `projectType` value | Is supported? | 
 | ------------- |-------------:|:----:|
@@ -69,7 +76,7 @@ The best place to run SimpleLocalize script is **after successful build** becaus
 ## ⚙️ Available options
 SimpleLocalize CLI can be customized using `simplelocalize.yaml` file. See examples below.
 
-##### Ignoring keys
+### Ignoring keys
 
 ```yaml
 uploadToken: <PROJECT_UPLOAD_TOKEN>
@@ -81,7 +88,7 @@ ignoredKeys:
     - ":("
 ```
 
-##### Custom search directory
+### Custom search directory
 If you would like to search translation keys in some specific path you  can achieve this by adding searchDir and path where the CLI should search keys.
 
 ```yaml
@@ -91,7 +98,7 @@ searchDir: /Users/jpomykala/Workspace/MyProject
 ```
 Please pay attention to what you are putting in the `searchDir` property. This may cause high CPU and disc usage due to this will be looking for files to process and try to find translation keys.
 
-##### Configuration profiles
+### Configuration profiles
 If you would like to use simplelocalize.yml from custom location or with custom name like simplelocalize-dev.yml file. This can be easilly achieved by passing path as first argument.
 
 ```bash
@@ -107,12 +114,12 @@ $ curl -s https://get.simplelocalize.io | bash
 If something is not working properly please [create an issue](https://github.com/simplelocalize/simplelocalize-cli/issues/new) and provide script output. In meantime, you can use one of 2 other options to run CLI.
 
 
-##### Option 1: I have Java 11+ installed on my system, let me just use app in *.jar file. 
+### Option 1: I have Java 11+ installed on my system, let me just use app in *.jar file. 
 ```bash
 $ curl -s https://get.simplelocalize.io/run-jar | bash
 ```
 
-##### Option 2: I want to use *.jar file, but I don't have JDK installed.
+### Option 2: I want to use *.jar file, but I don't have JDK installed.
 ```bash
 $ curl -s https://get.simplelocalize.io/install-jdk-run-jar | bash
 ```
