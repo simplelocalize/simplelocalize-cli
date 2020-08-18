@@ -4,10 +4,10 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>io.simplelocalize</groupId>
     <artifactId>simplelocalize-cli</artifactId>
-    <version>0.5.0</version>
+    <version>0.5.1</version>
     <packaging>jar</packaging>
     <name>simplelocalize-cli</name>
-    <description>SimpleLocalize.io i18n key scrapper</description>
+    <description>SimpleLocalize.io i18n key extractor</description>
 
     <parent>
         <groupId>io.micronaut</groupId>

@@ -29,6 +29,6 @@ public class IEighteenNextProcessor implements ProjectProcessor {
 
   @Override
   public String getProjectTypeSupport() {
-    return "i18next/i18next";
+    return "i18next/react-i18next";
   }
 }
