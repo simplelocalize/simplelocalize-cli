@@ -1,6 +1,5 @@
 package io.simplelocalize.cli.processor.keys;
 
-import com.google.common.collect.Sets;
 import io.simplelocalize.cli.util.FileContentUtil;
 import io.simplelocalize.cli.util.FileReaderUtil;
 
@@ -9,6 +8,7 @@ import java.util.Set;
 import java.util.regex.MatchResult;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class ReactIntlKeyExtractor implements KeyExtractor {
 
@@ -18,16 +18,26 @@ public class ReactIntlKeyExtractor implements KeyExtractor {
     fileContent = FileContentUtil.transformTextToOneLine(fileContent);
 
     Set<String> formattedMessageIds = matchFormattedMessageIds(fileContent);
+    Set<String> formattedHTMLMessageIds = matchFormattedHTMLMessageIds(fileContent);
     Set<String> defineMessageIds = matchDefineMessageIds(fileContent);
     Set<String> intlFormatMessageIds = matchIntlFormatMessageIds(fileContent);
-    Set<String> mergeSet = Sets.union(formattedMessageIds, defineMessageIds);
-    return Sets.union(mergeSet, intlFormatMessageIds);
+    return Stream.of(formattedMessageIds, formattedHTMLMessageIds, defineMessageIds, intlFormatMessageIds)
+            .flatMap(Set::stream)
+            .collect(Collectors.toSet());
 
   }
 
   private Set<String> matchDefineMessageIds(String fileContent) {
     fileContent = fileContent.replaceAll("\\s+", "");
     return Pattern.compile("(?<=defineMessages\\(\\{id:[\"|\'])(.*?)(?=[\"|\'])")
+            .matcher(fileContent)
+            .results()
+            .map(MatchResult::group)
+            .collect(Collectors.toSet());
+  }
+
+  private Set<String> matchFormattedHTMLMessageIds(String fileContent) {
+    return Pattern.compile("(?<=<FormattedHTMLMessage id=\")(.*?)(?=\")")
             .matcher(fileContent)
             .results()
             .map(MatchResult::group)
@@ -50,4 +60,6 @@ public class ReactIntlKeyExtractor implements KeyExtractor {
             .map(MatchResult::group)
             .collect(Collectors.toSet());
   }
+
+
 }
