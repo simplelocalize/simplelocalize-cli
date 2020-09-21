@@ -29,15 +29,15 @@ public class ReactIntlKeyExtractor implements KeyExtractor {
 
   private Set<String> matchDefineMessageIds(String fileContent) {
     fileContent = fileContent.replaceAll("\\s+", "");
-    return Pattern.compile("(?<=defineMessages\\(\\{id:[\"|\'])(.*?)(?=[\"|\'])")
+    return Pattern.compile("defineMessages\\(\\{\\s*?\\n?\\s*?(?>[\\s?\\w]+:\\s?\\{\\s?)*?id:\\s?[\"|'](.*?)(?=[\"|'])")
             .matcher(fileContent)
             .results()
-            .map(MatchResult::group)
+            .map(mapper -> mapper.group(1))
             .collect(Collectors.toSet());
   }
 
   private Set<String> matchFormattedHTMLMessageIds(String fileContent) {
-    return Pattern.compile("(?<=<FormattedHTMLMessage id=\")(.*?)(?=\")")
+    return Pattern.compile("<FormattedHTMLMessage\\s*?(?:\\S*)\\s*?id=\"(.*?)(?=\")")
             .matcher(fileContent)
             .results()
             .map(MatchResult::group)
@@ -45,10 +45,10 @@ public class ReactIntlKeyExtractor implements KeyExtractor {
   }
 
   private Set<String> matchFormattedMessageIds(String fileContent) {
-    return Pattern.compile("(?<=<FormattedMessage id=\")(.*?)(?=\")")
+    return Pattern.compile("<FormattedMessage\\s*?(?:\\S*)\\s*?id=\"(.*?)(?=[\"|'])")
             .matcher(fileContent)
             .results()
-            .map(MatchResult::group)
+            .map(mapper -> mapper.group(1))
             .collect(Collectors.toSet());
   }
 
