@@ -137,8 +137,11 @@ class UserPage extends Component {
                         icon="plane"/>&nbsp;{user.visitsCount}</h2>
                       <h5 className="text-muted">
                         <FormattedMessage
+
+
+                            defaultMessage="Visits"
                           id="VISITS"
-                          defaultMessage="Visits"
+
                         />
                       </h5>
                     </Col>
@@ -211,9 +214,9 @@ class UserPage extends Component {
               null}
 
             <h2 className="text-center">
-              <FormattedMessage
+              <FormattedMessage defaultMessage="Achievements"
                 id="ACHIEVEMENTS"
-                defaultMessage="Achievements"
+
               />
             </h2>
             <h4 className="text-muted text-center">
