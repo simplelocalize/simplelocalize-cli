@@ -31,8 +31,6 @@ jobs:
         restore-keys: ${{ runner.os }}-m2
     - name: "Test with Maven"
       run: mvn --settings .maven.xml clean install -B -V
-    - name: "Check test coverage"
-      run: mvn clean test -Ptest && bash <(curl -s https://codecov.io/bash) || echo "Codecov did not collect coverage reports"
     - name: "SonarCloud Analyze"
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
