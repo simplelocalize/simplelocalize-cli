@@ -4,8 +4,6 @@ import io.github.benas.randombeans.api.EnhancedRandom;
 import io.simplelocalize.cli.exception.MissingPropertyException;
 import org.junit.Test;
 
-import static org.junit.Assert.*;
-
 public class ConfigurationValidatorTest {
 
   private ConfigurationValidator configurationValidator= new ConfigurationValidator();
@@ -25,7 +23,7 @@ public class ConfigurationValidatorTest {
   public void shouldThrowWhenMissingToken() throws Exception {
     //given
     Configuration randomConfiguration = EnhancedRandom.random(Configuration.class);
-    randomConfiguration.setUploadToken("");
+    randomConfiguration.setApiKey("");
 
     //when
     configurationValidator.validate(randomConfiguration);

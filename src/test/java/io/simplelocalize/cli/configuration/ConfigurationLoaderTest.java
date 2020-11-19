@@ -19,7 +19,7 @@ public class ConfigurationLoaderTest {
 
     //then
     Assertions.assertThat(configuration).isNotNull();
-    Assertions.assertThat(configuration.getUploadToken()).isEqualTo("abc");
+    Assertions.assertThat(configuration.getApiKey()).isEqualTo("abc-apiKey");
     Assertions.assertThat(configuration.getProjectType()).isEqualTo("yahoo/react-intl");
     Assertions.assertThat(configuration.getSearchDir()).isEqualTo("./target/test-classes/react-intl");
   }

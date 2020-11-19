@@ -2,6 +2,7 @@ package io.simplelocalize.cli.configuration;
 
 import io.micronaut.core.annotation.Introspected;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
@@ -11,6 +12,7 @@ import java.util.Set;
 public class Configuration {
 
   private String searchDir;
+  private String apiKey;
   private String uploadToken;
   private String projectType;
   private Set<String> ignoredKeys = Set.of();
@@ -19,9 +21,14 @@ public class Configuration {
   public Configuration() {
   }
 
-  public Configuration(String searchDir, String uploadToken, String projectType, Set<String> ignoredKeys) {
+  public Configuration(String searchDir, String uploadToken, String apiKey, String projectType, Set<String> ignoredKeys) {
     this.searchDir = searchDir;
-    this.uploadToken = uploadToken;
+
+    if(StringUtils.isEmpty(apiKey)){
+      this.apiKey = uploadToken;
+    } else {
+      this.apiKey = apiKey;
+    }
     this.projectType = projectType;
     this.ignoredKeys = ignoredKeys;
   }
@@ -36,7 +43,7 @@ public class Configuration {
 
     return new EqualsBuilder()
             .append(searchDir, that.searchDir)
-            .append(uploadToken, that.uploadToken)
+            .append(apiKey, that.apiKey)
             .append(projectType, that.projectType)
             .append(ignoredKeys, that.ignoredKeys)
             .isEquals();
@@ -46,7 +53,7 @@ public class Configuration {
   public int hashCode() {
     return new HashCodeBuilder(17, 37)
             .append(searchDir)
-            .append(uploadToken)
+            .append(apiKey)
             .append(projectType)
             .append(ignoredKeys)
             .toHashCode();
@@ -56,8 +63,8 @@ public class Configuration {
     return searchDir;
   }
 
-  public String getUploadToken() {
-    return uploadToken;
+  public String getApiKey() {
+    return apiKey;
   }
 
   public String getProjectType() {
@@ -72,8 +79,8 @@ public class Configuration {
     this.searchDir = searchDir;
   }
 
-  public void setUploadToken(String uploadToken) {
-    this.uploadToken = uploadToken;
+  public void setApiKey(String apiKey) {
+    this.apiKey = apiKey;
   }
 
   public void setProjectType(String projectType) {
@@ -82,5 +89,13 @@ public class Configuration {
 
   public void setIgnoredKeys(Set<String> ignoredKeys) {
     this.ignoredKeys = ignoredKeys;
+  }
+
+  public String getUploadToken() {
+    return uploadToken;
+  }
+
+  public void setUploadToken(String uploadToken) {
+    this.uploadToken = uploadToken;
   }
 }
