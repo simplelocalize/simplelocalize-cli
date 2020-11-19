@@ -34,7 +34,7 @@ public class SimplelocalizeCliCommand implements Runnable {
   @Option(names = {"--analysis"}, description = "Run project analysis")
   boolean analysisEnabled;
 
-  @Option(names = {"--failOnGate"}, description = "Fail build if gate will fail")
+  @Option(names = {"--gateCheck"}, description = "Fail build if gate will fail")
   boolean failOnGate;
 
   @Option(names = {"--disableExtraction"}, description = "Turn off keys extraction")
@@ -49,7 +49,7 @@ public class SimplelocalizeCliCommand implements Runnable {
   @Option(names = {"--searchDir"}, description = "Search directory")
   String searchDirectory;
 
-  @Option(names = {"--profile"}, description = "Validation profile")
+  @Option(names = {"--profile"}, description = "Profile")
   String profile;
 
   public static void main(String[] args) {
