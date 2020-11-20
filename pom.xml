@@ -269,6 +269,7 @@
                 <configuration>
                     <excludes>
                         <exclude>io.simplelocalize.cli/**/dto/*</exclude>
+                        <exclude>**/Configuration.*</exclude>
                     </excludes>
                 </configuration>
                 <executions>
