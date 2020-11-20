@@ -81,8 +81,6 @@ public class SimplelocalizeCliCommand implements Runnable {
 
     String projectType = configuration.getProjectType();
     String searchDir = configuration.getSearchDir();
-
-
     String apiKey = configuration.getApiKey();
     SimpleLocalizeClient client = new SimpleLocalizeClient(apiKey, profile);
 
