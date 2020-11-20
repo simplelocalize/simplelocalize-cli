@@ -106,6 +106,7 @@ jobs:
   release:
     needs: [build-jar, build-unix, build-windows]
     name: "Prepare release"
+    runs-on: ubuntu-latest
     steps:
       - name: "Create pre-release"
         id: create_release
