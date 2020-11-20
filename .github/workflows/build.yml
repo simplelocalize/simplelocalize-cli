@@ -122,35 +122,14 @@ jobs:
             - Second Change
           draft: true
           prerelease: true
-      - name: "Upload Linux executable"
+      - name: "Upload executable"
         id: upload-release-asset
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          systems: [ linux, mac, windows ]
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./simplelocalize-cli-linux.zip
-          asset_name: simplelocalize-cli-linux.zip
+          asset_path: ./simplelocalize-cli-${{ env.systems }}.zip
+          asset_name: simplelocalize-cli-${{ env.systems }}.zip
           asset_content_type: application/zip
-      - name: "Upload macOS executable"
-        id: upload-release-asset
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./simplelocalize-cli-mac.zip
-          asset_name: simplelocalize-cli-mac.zip
-          asset_content_type: application/zip
-      - name: "Upload Windows executable"
-        id: upload-release-asset
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./simplelocalize-cli-windows.zip
-          asset_name: simplelocalize-cli-windows.zip
-          asset_content_type: application/zip
-
-
