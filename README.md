@@ -46,7 +46,7 @@ Done! CLI will find i18n terms, and push them to [SimpleLocalize Platform](https
 **Example** `simplelocalize.yml`
 
 ```yaml
-uploadToken: <PROJECT_UPLOAD_TOKEN>
+apiKey: <API_KEY>
 projectType: <SEE_BELOW>
 ```
 
@@ -80,7 +80,7 @@ SimpleLocalize CLI can be customized using `simplelocalize.yaml` file. See examp
 ### Ignoring keys
 
 ```yaml
-uploadToken: <PROJECT_UPLOAD_TOKEN>
+apiKey: <API_KEY>
 projectType: <PROJECT_TYPE>
 ignoredKeys:
     - "HEY"
@@ -93,7 +93,7 @@ ignoredKeys:
 If you would like to search translation keys in some specific path you  can achieve this by adding searchDir and path where the CLI should search keys.
 
 ```yaml
-uploadToken: <PROJECT_UPLOAD_TOKEN>
+apiKey: <API_KEY>
 projectType: <YOUR_PROJECT_TYPE>
 searchDir: /Users/jpomykala/Workspace/MyProject
 ```
