@@ -8,8 +8,6 @@ import org.junit.jupiter.api.Test;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
 public class SimplelocalizeCliCommandTest {
 
     @Test
@@ -20,11 +18,6 @@ public class SimplelocalizeCliCommandTest {
         try (ApplicationContext ctx = ApplicationContext.run(Environment.CLI, Environment.TEST)) {
             String[] args = new String[] { "-c" };
             PicocliRunner.run(SimplelocalizeCliCommand.class, ctx, args);
-
-            // simplelocalize-cli
-            String s = baos.toString();
-            //TODO: adjust test
-//            assertTrue(s.contains("Hi!"));
         }
     }
 }

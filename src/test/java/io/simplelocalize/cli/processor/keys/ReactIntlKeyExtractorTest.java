@@ -9,7 +9,7 @@ import java.util.Set;
 
 public class ReactIntlKeyExtractorTest {
 
-  private ReactIntlKeyExtractor reactIntlKeyExtractor = new ReactIntlKeyExtractor();
+  private final ReactIntlKeyExtractor reactIntlKeyExtractor = new ReactIntlKeyExtractor();
 
   @Test
   public void shouldExtractKeysFromLines() throws Exception {
@@ -51,5 +51,20 @@ public class ReactIntlKeyExtractorTest {
     //then
     Assertions.assertThat(keys).hasSize(2);
     Assertions.assertThat(keys).contains("SAVE", "CREATE");
+  }
+
+  @Test
+  public void shouldExtractKeysFromProblematicCase3() throws Exception {
+    //given
+    ClassLoader classLoader = this.getClass().getClassLoader();
+    URL resource = classLoader.getResource("react-intl/ProblematicCase-issue-3.js");
+    String path = resource.getPath();
+
+    //when
+    Set<String> keys = reactIntlKeyExtractor.extractKeysFromFile(Paths.get(path));
+
+    //then
+    Assertions.assertThat(keys).hasSize(3);
+    Assertions.assertThat(keys).contains("header-text", "header-subtitle", "header-button");
   }
 }

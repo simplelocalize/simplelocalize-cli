@@ -37,10 +37,10 @@ public class ReactIntlKeyExtractor implements KeyExtractor {
   }
 
   private Set<String> matchFormattedHTMLMessageIds(String fileContent) {
-    return Pattern.compile("<FormattedHTMLMessage\\s*?(?:\\S*)\\s*?id=\"(.*?)(?=\")")
+    return Pattern.compile("<FormattedHTMLMessage\\s*?(?:\\S*)\\s*?id=\"(.*?)(?=[\"|'])")
             .matcher(fileContent)
             .results()
-            .map(MatchResult::group)
+            .map(mapper -> mapper.group(1))
             .collect(Collectors.toSet());
   }
 
