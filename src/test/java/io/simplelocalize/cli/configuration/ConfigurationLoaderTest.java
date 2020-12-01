@@ -6,7 +6,7 @@ import org.junit.Test;
 
 public class ConfigurationLoaderTest {
 
-  private ConfigurationLoader loader = new ConfigurationLoader();
+  private final ConfigurationLoader loader = new ConfigurationLoader();
 
   @Test
   public void shouldLoadConfiguration() throws Exception {
@@ -60,5 +60,18 @@ public class ConfigurationLoaderTest {
     Configuration configuration = loader.load(pathToConfig);
 
     //then
+  }
+
+  @Test
+  public void shouldLoadConfigurationWithDeprecatedUploadTokenAsApiKey() throws Exception {
+    //given
+    ClassLoader classLoader = getClass().getClassLoader();
+    String pathToConfig = classLoader.getResource("simplelocalize-with-deprecated-upload-token.yml").toURI().toString().replace("file:", "");
+
+    //when
+    Configuration configuration = loader.load(pathToConfig);
+
+    //then
+    Assertions.assertThat(configuration.getApiKey()).isEqualTo("abc");
   }
 }

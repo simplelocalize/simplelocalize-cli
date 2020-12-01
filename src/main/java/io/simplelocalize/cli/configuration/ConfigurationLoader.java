@@ -10,7 +10,6 @@ import org.yaml.snakeyaml.constructor.Constructor;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
-import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
@@ -20,7 +19,7 @@ public class ConfigurationLoader {
 
   private static final String CURRENT_DIRECTORY = ".";
 
-  private Logger log = LoggerFactory.getLogger(ConfigurationLoader.class);
+  private final Logger log = LoggerFactory.getLogger(ConfigurationLoader.class);
 
   public Configuration load(String path) {
 
@@ -47,6 +46,12 @@ public class ConfigurationLoader {
     String searchDir = configuration.getSearchDir();
     if (Strings.isNullOrEmpty(searchDir)) {
       configuration.setSearchDir(CURRENT_DIRECTORY);
+    }
+
+    String uploadToken = configuration.getUploadToken();
+    String apiKey = configuration.getApiKey();
+    if (Strings.isNullOrEmpty(apiKey)) {
+      configuration.setApiKey(uploadToken);
     }
     return configuration;
 
