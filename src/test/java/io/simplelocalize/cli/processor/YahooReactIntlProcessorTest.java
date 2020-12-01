@@ -16,7 +16,7 @@ import java.nio.file.Paths;
 public class YahooReactIntlProcessorTest {
 
   @InjectMocks
-  private YahooReactIntlProcessor processor = new YahooReactIntlProcessor();
+  private final YahooReactIntlProcessor processor = new YahooReactIntlProcessor();
 
   @Test(expected = ProjectProcessException.class)
   public void shouldThrowWhenWrongPath() throws Exception {
@@ -39,7 +39,7 @@ public class YahooReactIntlProcessorTest {
     ProcessResult filesToProcess = processor.process(path);
 
     //then
-    Assertions.assertThat(filesToProcess.getProcessedFiles()).hasSize(4);
+    Assertions.assertThat(filesToProcess.getProcessedFiles()).hasSize(5);
     Assertions.assertThat(filesToProcess.getKeys()).hasSize(15);
   }
 }

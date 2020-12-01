@@ -11,7 +11,7 @@ import java.util.List;
 
 public class JavaScriptAndTypeScriptFilesFinderTest {
 
-  private JavaScriptAndTypeScriptFilesFinder javaScriptAndTypeScriptFilesFinder = new JavaScriptAndTypeScriptFilesFinder();
+  private final JavaScriptAndTypeScriptFilesFinder javaScriptAndTypeScriptFilesFinder = new JavaScriptAndTypeScriptFilesFinder();
 
   @Test
   public void shouldFindFiles() throws Exception {
@@ -22,7 +22,7 @@ public class JavaScriptAndTypeScriptFilesFinderTest {
     List<Path> files = javaScriptAndTypeScriptFilesFinder.findFilesToProcess(path);
 
     //then
-    Assertions.assertThat(files).hasSize(4);
+    Assertions.assertThat(files).hasSize(5);
   }
 
   @Test(expected = ProjectProcessException.class)
