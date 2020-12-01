@@ -94,7 +94,7 @@ jobs:
         with:
           name: 'simplelocalize-cli-${{env.VERSION}}.jar'
       - name: "Setup GraalVM"
-        uses: DeLaGuardo/setup-graalvm@3
+        uses: DeLaGuardo/setup-graalvm@master
         with:
           graalvm-version: '20.1.0.java11'
       - name: "Install Native Image"

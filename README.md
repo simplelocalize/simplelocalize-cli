@@ -80,8 +80,8 @@ SimpleLocalize CLI can be customized using `simplelocalize.yaml` file. See examp
 ### Ignoring keys
 
 ```yaml
-apiKey: <API_KEY>
-projectType: <PROJECT_TYPE>
+proje
+apiKey: <API_KEY>ctType: <PROJECT_TYPE>
 ignoredKeys:
     - "HEY"
     - "PLEASE"
