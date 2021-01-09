@@ -18,18 +18,38 @@ import java.nio.file.Paths;
 public class ConfigurationLoader {
 
   private static final String CURRENT_DIRECTORY = ".";
+  private static final Path DEFAULT_CONFIG_FILE_NAME = Path.of("./simplelocalize.yml");
 
   private final Logger log = LoggerFactory.getLogger(ConfigurationLoader.class);
 
-  public Configuration load(String path) {
+  public Configuration loadOrDefault(Path configurationFilePath){
+    ConfigurationLoader configurationLoader = new ConfigurationLoader();
+    ConfigurationValidator configurationValidator = new ConfigurationValidator();
 
-    Path configurationFilePath = Paths.get(path);
-    log.info("Using configuration file in path: {}", configurationFilePath);
+    if (configurationFilePath == null)
+    {
+      configurationFilePath = DEFAULT_CONFIG_FILE_NAME;
+    }
+
+    boolean defaultConfigurationExists = DEFAULT_CONFIG_FILE_NAME.toFile().exists();
+    if (!defaultConfigurationExists)
+    {
+      return new Configuration();
+    }
+
+    Configuration configuration = configurationLoader.load(configurationFilePath);
+    configurationValidator.validate(configuration);
+    return configuration;
+  }
+
+  public Configuration load(Path configurationFilePath) {
+
+    log.info("Loading file from path: {}", configurationFilePath);
 
     File file = new File(URLDecoder.decode(String.valueOf(configurationFilePath.toFile()), StandardCharsets.UTF_8));
 
     if (!file.exists()) {
-      throw new ConfigurationNotFoundException("Could not find configuration file in: " + path);
+      throw new ConfigurationNotFoundException("Could not find configuration file in: " + configurationFilePath);
     }
 
     Constructor yamlTargetClass = new Constructor(Configuration.class);
@@ -40,7 +60,7 @@ public class ConfigurationLoader {
       InputStream inputStream = new FileInputStream(file);
       configuration = yaml.load(inputStream);
     } catch (Exception e) {
-      throw new ConfigurationNotFoundException("Could not read configuration file in: " + path, e);
+      throw new ConfigurationNotFoundException("Could not read configuration file in: " + configurationFilePath, e);
     }
 
     String searchDir = configuration.getSearchDir();

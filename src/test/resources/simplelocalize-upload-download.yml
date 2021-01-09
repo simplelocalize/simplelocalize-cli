@@ -1,0 +1,11 @@
+# authorization
+apiKey: abc-apiKey
+
+# extraction
+projectType: yahoo/react-intl
+
+# upload
+uploadPath: ./lang.json
+
+# download
+downloadPath: ./output.json

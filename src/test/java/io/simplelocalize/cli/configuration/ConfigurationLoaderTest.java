@@ -4,6 +4,8 @@ import io.simplelocalize.cli.exception.ConfigurationNotFoundException;
 import org.assertj.core.api.Assertions;
 import org.junit.Test;
 
+import java.nio.file.Path;
+
 public class ConfigurationLoaderTest {
 
   private final ConfigurationLoader loader = new ConfigurationLoader();
@@ -15,7 +17,7 @@ public class ConfigurationLoaderTest {
     String pathToConfig = classLoader.getResource("simplelocalize.yml").toURI().toString().replace("file:", "");
 
     //when
-    Configuration configuration = loader.load(pathToConfig);
+    Configuration configuration = loader.load(Path.of(pathToConfig));
 
     //then
     Assertions.assertThat(configuration).isNotNull();
@@ -31,7 +33,7 @@ public class ConfigurationLoaderTest {
     String pathToConfig = classLoader.getResource("simplelocalize-without-search-dir.yml").toURI().toString().replace("file:", "");
 
     //when
-    Configuration configuration = loader.load(pathToConfig);
+    Configuration configuration = loader.load(Path.of(pathToConfig));
 
     //then
     Assertions.assertThat(configuration.getSearchDir()).isEqualTo(".");
@@ -45,7 +47,7 @@ public class ConfigurationLoaderTest {
     String pathToConfig = "somepath";
 
     //when
-    Configuration configuration = loader.load(pathToConfig);
+    Configuration configuration = loader.load(Path.of(pathToConfig));
 
     //then
   }
@@ -57,7 +59,7 @@ public class ConfigurationLoaderTest {
     String pathToConfig = classLoader.getResource("simplelocalize-invalid.yml").toURI().toString().replace("file:", "");
 
     //when
-    Configuration configuration = loader.load(pathToConfig);
+    Configuration configuration = loader.load(Path.of(pathToConfig));
 
     //then
   }
@@ -69,7 +71,7 @@ public class ConfigurationLoaderTest {
     String pathToConfig = classLoader.getResource("simplelocalize-with-deprecated-upload-token.yml").toURI().toString().replace("file:", "");
 
     //when
-    Configuration configuration = loader.load(pathToConfig);
+    Configuration configuration = loader.load(Path.of(pathToConfig));
 
     //then
     Assertions.assertThat(configuration.getApiKey()).isEqualTo("abc");

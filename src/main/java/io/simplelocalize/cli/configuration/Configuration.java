@@ -5,27 +5,41 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
+import java.nio.file.Path;
 import java.util.Set;
 
 @Introspected
 public class Configuration {
 
-  private String searchDir;
   private String apiKey;
   private String uploadToken;
-  private String profile;
-  private Boolean analysis;
-  private Boolean gateCheck;
-  private Boolean disableExtraction;
-  private String projectType;
-  private Set<String> ignoredKeys = Set.of();
 
+  private String projectType;
+  private String searchDir;
+  private Set<String> ignoreKeys = Set.of();
+
+  private Path uploadPath;
+  private String uploadFormat;
+
+  private Path downloadPath;
+  private String downloadFormat;
+
+  private String profile;
 
   public Configuration() {
   }
 
-  public Configuration(String searchDir, String uploadToken, String apiKey, String projectType, Set<String> ignoredKeys, String profile) {
+  public Configuration(String searchDir, String uploadToken, String apiKey, String projectType, Path uploadPath, String uploadFormat, Set<String> ignoreKeys, String profile, Path downloadPath, String downloadFormat) {
     this.searchDir = searchDir;
+
+    this.projectType = projectType;
+    this.ignoreKeys = ignoreKeys;
+
+    this.uploadPath = uploadPath;
+    this.uploadFormat = uploadFormat;
+
+    this.downloadPath = downloadPath;
+    this.downloadFormat = downloadFormat;
 
     if (StringUtils.isEmpty(apiKey)) {
       this.apiKey = uploadToken;
@@ -33,8 +47,6 @@ public class Configuration {
       this.apiKey = apiKey;
     }
     this.profile = profile;
-    this.projectType = projectType;
-    this.ignoredKeys = ignoredKeys;
 
   }
 
@@ -51,7 +63,7 @@ public class Configuration {
             .append(apiKey, that.apiKey)
             .append(profile, that.profile)
             .append(projectType, that.projectType)
-            .append(ignoredKeys, that.ignoredKeys)
+            .append(ignoreKeys, that.ignoreKeys)
             .isEquals();
   }
 
@@ -62,7 +74,7 @@ public class Configuration {
             .append(apiKey)
             .append(profile)
             .append(projectType)
-            .append(ignoredKeys)
+            .append(ignoreKeys)
             .toHashCode();
   }
 
@@ -90,12 +102,12 @@ public class Configuration {
     this.projectType = projectType;
   }
 
-  public Set<String> getIgnoredKeys() {
-    return ignoredKeys;
+  public Set<String> getIgnoreKeys() {
+    return ignoreKeys;
   }
 
-  public void setIgnoredKeys(Set<String> ignoredKeys) {
-    this.ignoredKeys = ignoredKeys;
+  public void setIgnoreKeys(Set<String> ignoreKeys) {
+    this.ignoreKeys = ignoreKeys;
   }
 
   public String getUploadToken() {
@@ -114,27 +126,43 @@ public class Configuration {
     this.profile = profile;
   }
 
-  public Boolean getAnalysis() {
-    return analysis;
+  public Path getUploadPath()
+  {
+    return uploadPath;
   }
 
-  public void setAnalysis(Boolean analysis) {
-    this.analysis = analysis;
+  public void setUploadPath(Path uploadPath)
+  {
+    this.uploadPath = uploadPath;
   }
 
-  public Boolean getGateCheck() {
-    return gateCheck;
+  public String getUploadFormat()
+  {
+    return uploadFormat;
   }
 
-  public void setGateCheck(Boolean gateCheck) {
-    this.gateCheck = gateCheck;
+  public void setUploadFormat(String uploadFormat)
+  {
+    this.uploadFormat = uploadFormat;
   }
 
-  public Boolean getDisableExtraction() {
-    return disableExtraction;
+  public Path getDownloadPath()
+  {
+    return downloadPath;
   }
 
-  public void setDisableExtraction(Boolean disableExtraction) {
-    this.disableExtraction = disableExtraction;
+  public void setDownloadPath(Path downloadPath)
+  {
+    this.downloadPath = downloadPath;
+  }
+
+  public String getDownloadFormat()
+  {
+    return downloadFormat;
+  }
+
+  public void setDownloadFormat(String downloadFormat)
+  {
+    this.downloadFormat = downloadFormat;
   }
 }
