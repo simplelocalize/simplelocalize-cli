@@ -18,7 +18,7 @@ public class ConfigurationLoader
 {
 
   private static final String CURRENT_DIRECTORY = ".";
-  private static final Path DEFAULT_CONFIG_FILE_NAME = Path.of("./simplelocalize.yml");
+  private static final Path DEFAULT_CONFIG_FILE_NAME = Path.of("simplelocalize.yml");
 
   private final Logger log = LoggerFactory.getLogger(ConfigurationLoader.class);
 
@@ -31,15 +31,6 @@ public class ConfigurationLoader
       configurationFilePath = DEFAULT_CONFIG_FILE_NAME;
     }
 
-    boolean defaultConfigurationExists = DEFAULT_CONFIG_FILE_NAME.toFile().exists();
-    if (!defaultConfigurationExists)
-    {
-      log.info("Default configuration file {} does not exist. Load default in-memory config.", DEFAULT_CONFIG_FILE_NAME.toAbsolutePath());
-      Configuration configuration = new Configuration();
-      configuration.setSearchDir(CURRENT_DIRECTORY);
-      return configuration;
-    }
-
     return configurationLoader.load(configurationFilePath);
   }
 
@@ -49,10 +40,12 @@ public class ConfigurationLoader
     log.info("Loading file from path: {}", configurationFilePath);
 
     File file = new File(URLDecoder.decode(String.valueOf(configurationFilePath.toFile()), StandardCharsets.UTF_8));
-
     if (!file.exists())
     {
-      throw new ConfigurationNotFoundException("Could not find configuration file in: " + configurationFilePath);
+      log.warn("Could not find configuration file in: {}", configurationFilePath);
+      Configuration configuration = new Configuration();
+      configuration.setSearchDir(CURRENT_DIRECTORY);
+      return configuration;
     }
 
     Constructor yamlTargetClass = new Constructor(Configuration.class);
@@ -74,6 +67,13 @@ public class ConfigurationLoader
     {
       configuration.setApiKey(uploadToken);
     }
+
+    String searchDir = configuration.getSearchDir();
+    if (Strings.isNullOrEmpty(searchDir))
+    {
+      configuration.setSearchDir(CURRENT_DIRECTORY);
+    }
+
     return configuration;
 
   }
