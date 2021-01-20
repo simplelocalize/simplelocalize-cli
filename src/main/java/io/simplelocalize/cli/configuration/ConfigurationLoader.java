@@ -13,46 +13,67 @@ import java.io.InputStream;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 
-public class ConfigurationLoader {
+public class ConfigurationLoader
+{
 
   private static final String CURRENT_DIRECTORY = ".";
+  private static final Path DEFAULT_CONFIG_FILE_NAME = Path.of("simplelocalize.yml");
 
   private final Logger log = LoggerFactory.getLogger(ConfigurationLoader.class);
 
-  public Configuration load(String path) {
+  public Configuration loadOrGetDefault(Path configurationFilePath)
+  {
+    ConfigurationLoader configurationLoader = new ConfigurationLoader();
 
-    Path configurationFilePath = Paths.get(path);
-    log.info("Using configuration file in path: {}", configurationFilePath);
+    if (configurationFilePath == null)
+    {
+      configurationFilePath = DEFAULT_CONFIG_FILE_NAME;
+    }
+
+    return configurationLoader.load(configurationFilePath);
+  }
+
+  private Configuration load(Path configurationFilePath)
+  {
+
+    log.info("Loading file from path: {}", configurationFilePath);
 
     File file = new File(URLDecoder.decode(String.valueOf(configurationFilePath.toFile()), StandardCharsets.UTF_8));
-
-    if (!file.exists()) {
-      throw new ConfigurationNotFoundException("Could not find configuration file in: " + path);
+    if (!file.exists())
+    {
+      log.warn("Could not find configuration file in: {}", configurationFilePath);
+      Configuration configuration = new Configuration();
+      configuration.setSearchDir(CURRENT_DIRECTORY);
+      return configuration;
     }
 
     Constructor yamlTargetClass = new Constructor(Configuration.class);
     Yaml yaml = new Yaml(yamlTargetClass);
 
     Configuration configuration;
-    try {
+    try
+    {
       InputStream inputStream = new FileInputStream(file);
       configuration = yaml.load(inputStream);
-    } catch (Exception e) {
-      throw new ConfigurationNotFoundException("Could not read configuration file in: " + path, e);
-    }
-
-    String searchDir = configuration.getSearchDir();
-    if (Strings.isNullOrEmpty(searchDir)) {
-      configuration.setSearchDir(CURRENT_DIRECTORY);
+    } catch (Exception e)
+    {
+      throw new ConfigurationNotFoundException("Could not read configuration file in: " + configurationFilePath, e);
     }
 
     String uploadToken = configuration.getUploadToken();
     String apiKey = configuration.getApiKey();
-    if (Strings.isNullOrEmpty(apiKey)) {
+    if (Strings.isNullOrEmpty(apiKey))
+    {
       configuration.setApiKey(uploadToken);
     }
+
+    String searchDir = configuration.getSearchDir();
+    if (Strings.isNullOrEmpty(searchDir))
+    {
+      configuration.setSearchDir(CURRENT_DIRECTORY);
+    }
+
     return configuration;
 
   }

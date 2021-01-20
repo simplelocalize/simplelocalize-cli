@@ -1,122 +1,140 @@
 package io.simplelocalize.cli;
 
-import com.google.common.base.Strings;
-import com.google.common.collect.Iterables;
 import io.micronaut.configuration.picocli.PicocliRunner;
-import io.simplelocalize.cli.client.SimpleLocalizeClient;
+import io.simplelocalize.cli.command.DownloadCommand;
+import io.simplelocalize.cli.command.ExtractCommand;
+import io.simplelocalize.cli.command.UploadCommand;
+import io.simplelocalize.cli.command.ValidateCommand;
 import io.simplelocalize.cli.configuration.Configuration;
 import io.simplelocalize.cli.configuration.ConfigurationLoader;
-import io.simplelocalize.cli.configuration.ConfigurationValidator;
-import io.simplelocalize.cli.processor.ProcessResult;
-import io.simplelocalize.cli.processor.ProjectProcessor;
-import io.simplelocalize.cli.processor.ProjectProcessorFactory;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
 
+import java.io.IOException;
 import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.List;
-import java.util.Set;
 
-@Command(name = "simplelocalize-cli", description = "SimpleLocalize CLI finds all i18n keys in your source code and sends it to the SimpleLocalize Cloud where you can easily translate, and manage them.", mixinStandardHelpOptions = true)
-public class SimplelocalizeCliCommand implements Runnable {
+@Command(
+        name = "simplelocalize-cli",
+        description = "SimpleLocalize CLI can 'extract' i18n keys from project files, 'upload' translations or translation keys, or 'download' ready to use translation files. Check https://docs.simplelocalize.io to learn more!",
+        mixinStandardHelpOptions = true
+)
+public class SimplelocalizeCliCommand implements Runnable
+{
+  private static final Logger log = LoggerFactory.getLogger(SimplelocalizeCliCommand.class);
 
-  private static final String DEFAULT_CONFIG_FILE_NAME = "./simplelocalize.yml";
-  private static final int BATCH_SIZE = 1000;
-
-  private final Logger log = LoggerFactory.getLogger(SimplelocalizeCliCommand.class);
   @Option(names = {"-c", "--config"}, description = "Configuration file path (default: ./simplelocalize.yml)")
-  String configurationFilePath;
+  Path configurationFilePath;
 
-  @Option(names = {"--analysis"}, description = "Run project analysis")
-  boolean analysisEnabled;
-
-  @Option(names = {"--gateCheck"}, description = "Fail build if gate will fail")
-  boolean failOnGate;
-
-  @Option(names = {"--disableExtraction"}, description = "Turn off keys extraction")
-  boolean extractionDisabled;
-
-  @Option(names = {"--apiKey"}, description = "Project API Key")
-  String apiKey;
-
-  @Option(names = {"--projectType"}, description = "Project Type")
-  String projectType;
-
-  @Option(names = {"--searchDir"}, description = "Search directory")
-  String searchDirectory;
-
-  @Option(names = {"--profile"}, description = "Profile")
-  String profile;
-
-  public static void main(String[] args) {
+  public static void main(String[] args)
+  {
     PicocliRunner.run(SimplelocalizeCliCommand.class, args);
   }
 
-  public void run() {
+  @Command(name = "extract", description = "Use 'extract' command to extract translation keys from project files.")
+  public void extract(
+          @Option(names = {"--apiKey"}, description = "Project API Key") String apiKey,
+          @Option(names = {"--projectType"}, description = "Project type tells CLI how to find i18n keys in your project files") String projectType,
+          @Option(names = {"--searchDir"}, description = "Search directory tells CLI where to look for project files which may contain translation keys") String searchDirectory
+  )
+  {
     ConfigurationLoader configurationLoader = new ConfigurationLoader();
-    ConfigurationValidator configurationValidator = new ConfigurationValidator();
-
-    if (Strings.isNullOrEmpty(configurationFilePath)) {
-      configurationFilePath = DEFAULT_CONFIG_FILE_NAME;
-    }
-
-
-    Configuration configuration = configurationLoader.load(configurationFilePath);
-    if (StringUtils.isNotEmpty(apiKey)) {
+    Configuration configuration = configurationLoader.loadOrGetDefault(configurationFilePath);
+    if (StringUtils.isNotEmpty(apiKey))
+    {
       configuration.setApiKey(apiKey);
     }
-
-    if (StringUtils.isNotEmpty(projectType)) {
+    if (StringUtils.isNotEmpty(projectType))
+    {
       configuration.setProjectType(projectType);
     }
-
-    if (StringUtils.isNotEmpty(searchDirectory)) {
+    if (StringUtils.isNotEmpty(searchDirectory))
+    {
       configuration.setSearchDir(searchDirectory);
     }
-    configurationValidator.validate(configuration);
-
-    String projectType = configuration.getProjectType();
-    String searchDir = configuration.getSearchDir();
-    String apiKey = configuration.getApiKey();
-    SimpleLocalizeClient client = new SimpleLocalizeClient(apiKey, profile);
-
-    boolean extractionEnabled = !extractionDisabled;
-    if (extractionEnabled) {
-      log.info("Running keys extraction");
-      ProjectProcessor projectProcessor = ProjectProcessorFactory.createForType(projectType);
-      ProcessResult result = projectProcessor.process(Paths.get(searchDir));
-
-      Set<String> keys = result.getKeys();
-      List<Path> processedFiles = result.getProcessedFiles();
-      log.info("Found {} unique keys in {} components", keys.size(), processedFiles.size());
-
-      Set<String> ignoredKeys = configuration.getIgnoredKeys();
-      keys.removeAll(ignoredKeys);
-
-      for (List<String> partition : Iterables.partition(keys, BATCH_SIZE)) {
-        try {
-          client.sendKeys(partition);
-        } catch (Exception e) {
-          log.error("Could not send keys chunk. Contact support: contact@simplelocalize.io", e);
-        }
-      }
-    }
-
-    if (analysisEnabled) {
-      log.info("Running project analysis");
-      try {
-        int status = client.runAnalysis();
-        if (failOnGate) {
-          System.exit(status);
-        }
-      } catch (Exception e) {
-        log.error("Project could not be analyzed. Contact support: contact@simplelocalize.io");
-      }
-    }
-
+    ExtractCommand extractCommand = new ExtractCommand();
+    extractCommand.invoke(configuration);
   }
+
+  @Command(name = "upload", description = "Use 'upload' command to upload translations or i18n keys to SimpleLocalize editor. Use '--uploadFormat' to setup file format.")
+  public void upload(
+          @Option(names = {"--apiKey"}, description = "Project API Key") String apiKey,
+          @Option(names = {"--uploadPath"}, description = "Path to translations or keys which should be uploaded") Path uploadPath,
+          @Option(names = {"--uploadFormat"}, description = "Translations format or keys") String uploadFormat
+  ) throws IOException
+  {
+    ConfigurationLoader configurationLoader = new ConfigurationLoader();
+    Configuration configuration = configurationLoader.loadOrGetDefault(configurationFilePath);
+
+    if (StringUtils.isNotEmpty(apiKey))
+    {
+      configuration.setApiKey(apiKey);
+    }
+    if (uploadPath != null)
+    {
+      configuration.setUploadPath(uploadPath);
+    }
+    if (StringUtils.isNotEmpty(uploadFormat))
+    {
+      configuration.setUploadFormat(uploadFormat);
+    }
+    UploadCommand uploadCommand = new UploadCommand();
+    uploadCommand.invoke(configuration);
+  }
+
+  @Command(name = "download", description = "Use 'download' command to download translations in ready to use format for your i18n library. Use '--downloadFormat' to setup file format.")
+  public void download(
+          @Option(names = {"--apiKey"}, description = "Project API Key") String apiKey,
+          @Option(names = {"--downloadPath"}, description = "Path to translations or keys which should be downloaded") Path downloadPath,
+          @Option(names = {"--downloadFormat"}, description = "Translations format or keys") String downloadFormat
+  )
+  {
+    ConfigurationLoader configurationLoader = new ConfigurationLoader();
+    Configuration configuration = configurationLoader.loadOrGetDefault(configurationFilePath);
+
+    if (StringUtils.isNotEmpty(apiKey))
+    {
+      configuration.setApiKey(apiKey);
+    }
+    if (downloadPath != null)
+    {
+      configuration.setDownloadPath(downloadPath);
+    }
+    if (StringUtils.isNotEmpty(downloadFormat))
+    {
+      configuration.setDownloadFormat(downloadFormat);
+    }
+    DownloadCommand downloadCommand = new DownloadCommand();
+    downloadCommand.invoke(configuration);
+  }
+
+  @Command(name = "validate")
+  public void validate(
+          @Option(names = {"--apiKey"}, description = "Project API Key") String apiKey
+  )
+  {
+    ConfigurationLoader configurationLoader = new ConfigurationLoader();
+    Configuration configuration = configurationLoader.loadOrGetDefault(configurationFilePath);
+
+    if (StringUtils.isNotEmpty(apiKey))
+    {
+      configuration.setApiKey(apiKey);
+    }
+    ValidateCommand validateCommand = new ValidateCommand();
+    validateCommand.invoke(configuration);
+  }
+
+  public void run()
+  {
+    log.warn("You are running CLI without specifying a command. We will run 'extract' command as a default but please adjust your configuration to invoke some command explicitly. Learn more https://docs.simplelocalize.io");
+
+    ConfigurationLoader configurationLoader = new ConfigurationLoader();
+    Configuration configuration = configurationLoader.loadOrGetDefault(configurationFilePath);
+
+    extract(configuration.getApiKey(), configuration.getProjectType(), configuration.getSearchDir());
+  }
+
+
 }
