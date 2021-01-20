@@ -24,8 +24,8 @@ import java.util.Objects;
 public final class SimpleLocalizeClient
 {
 
-  private static final String API_URL = "http://localhost:8080";
-  //  private static final String API_URL = "https://api.simplelocalize.io";
+
+  private static final String API_URL = "https://api.simplelocalize.io";
   private static final String TOKEN_HEADER_NAME = "X-SimpleLocalize-Token";
   private final HttpClient httpClient;
   private final String apiKey;
