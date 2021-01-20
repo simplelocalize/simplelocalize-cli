@@ -13,7 +13,6 @@ import java.io.InputStream;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 
 public class ConfigurationLoader {
 
@@ -24,7 +23,6 @@ public class ConfigurationLoader {
 
   public Configuration loadOrDefault(Path configurationFilePath){
     ConfigurationLoader configurationLoader = new ConfigurationLoader();
-    ConfigurationValidator configurationValidator = new ConfigurationValidator();
 
     if (configurationFilePath == null)
     {
@@ -37,9 +35,7 @@ public class ConfigurationLoader {
       return new Configuration();
     }
 
-    Configuration configuration = configurationLoader.load(configurationFilePath);
-    configurationValidator.validate(configuration);
-    return configuration;
+    return configurationLoader.load(configurationFilePath);
   }
 
   public Configuration load(Path configurationFilePath) {
