@@ -14,14 +14,16 @@ import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 
-public class ConfigurationLoader {
+public class ConfigurationLoader
+{
 
   private static final String CURRENT_DIRECTORY = ".";
   private static final Path DEFAULT_CONFIG_FILE_NAME = Path.of("./simplelocalize.yml");
 
   private final Logger log = LoggerFactory.getLogger(ConfigurationLoader.class);
 
-  public Configuration loadOrDefault(Path configurationFilePath){
+  public Configuration loadOrGetDefault(Path configurationFilePath)
+  {
     ConfigurationLoader configurationLoader = new ConfigurationLoader();
 
     if (configurationFilePath == null)
@@ -32,19 +34,24 @@ public class ConfigurationLoader {
     boolean defaultConfigurationExists = DEFAULT_CONFIG_FILE_NAME.toFile().exists();
     if (!defaultConfigurationExists)
     {
-      return new Configuration();
+      log.info("Default configuration file {} does not exist. Load default in-memory config.", DEFAULT_CONFIG_FILE_NAME.toAbsolutePath());
+      Configuration configuration = new Configuration();
+      configuration.setSearchDir(CURRENT_DIRECTORY);
+      return configuration;
     }
 
     return configurationLoader.load(configurationFilePath);
   }
 
-  public Configuration load(Path configurationFilePath) {
+  private Configuration load(Path configurationFilePath)
+  {
 
     log.info("Loading file from path: {}", configurationFilePath);
 
     File file = new File(URLDecoder.decode(String.valueOf(configurationFilePath.toFile()), StandardCharsets.UTF_8));
 
-    if (!file.exists()) {
+    if (!file.exists())
+    {
       throw new ConfigurationNotFoundException("Could not find configuration file in: " + configurationFilePath);
     }
 
@@ -52,21 +59,19 @@ public class ConfigurationLoader {
     Yaml yaml = new Yaml(yamlTargetClass);
 
     Configuration configuration;
-    try {
+    try
+    {
       InputStream inputStream = new FileInputStream(file);
       configuration = yaml.load(inputStream);
-    } catch (Exception e) {
+    } catch (Exception e)
+    {
       throw new ConfigurationNotFoundException("Could not read configuration file in: " + configurationFilePath, e);
-    }
-
-    String searchDir = configuration.getSearchDir();
-    if (Strings.isNullOrEmpty(searchDir)) {
-      configuration.setSearchDir(CURRENT_DIRECTORY);
     }
 
     String uploadToken = configuration.getUploadToken();
     String apiKey = configuration.getApiKey();
-    if (Strings.isNullOrEmpty(apiKey)) {
+    if (Strings.isNullOrEmpty(apiKey))
+    {
       configuration.setApiKey(uploadToken);
     }
     return configuration;

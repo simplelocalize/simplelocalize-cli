@@ -3,8 +3,8 @@ package io.simplelocalize.cli;
 import io.micronaut.configuration.picocli.PicocliRunner;
 import io.simplelocalize.cli.command.DownloadCommand;
 import io.simplelocalize.cli.command.ExtractCommand;
-import io.simplelocalize.cli.command.ValidateCommand;
 import io.simplelocalize.cli.command.UploadCommand;
+import io.simplelocalize.cli.command.ValidateCommand;
 import io.simplelocalize.cli.configuration.Configuration;
 import io.simplelocalize.cli.configuration.ConfigurationLoader;
 import org.apache.commons.lang3.StringUtils;
@@ -41,7 +41,7 @@ public class SimplelocalizeCliCommand implements Runnable
   )
   {
     ConfigurationLoader configurationLoader = new ConfigurationLoader();
-    Configuration configuration = configurationLoader.loadOrDefault(configurationFilePath);
+    Configuration configuration = configurationLoader.loadOrGetDefault(configurationFilePath);
     if (StringUtils.isNotEmpty(apiKey))
     {
       configuration.setApiKey(apiKey);
@@ -66,7 +66,7 @@ public class SimplelocalizeCliCommand implements Runnable
   ) throws IOException
   {
     ConfigurationLoader configurationLoader = new ConfigurationLoader();
-    Configuration configuration = configurationLoader.loadOrDefault(configurationFilePath);
+    Configuration configuration = configurationLoader.loadOrGetDefault(configurationFilePath);
 
     if (StringUtils.isNotEmpty(apiKey))
     {
@@ -92,7 +92,7 @@ public class SimplelocalizeCliCommand implements Runnable
   )
   {
     ConfigurationLoader configurationLoader = new ConfigurationLoader();
-    Configuration configuration = configurationLoader.loadOrDefault(configurationFilePath);
+    Configuration configuration = configurationLoader.loadOrGetDefault(configurationFilePath);
 
     if (StringUtils.isNotEmpty(apiKey))
     {
@@ -116,7 +116,7 @@ public class SimplelocalizeCliCommand implements Runnable
   )
   {
     ConfigurationLoader configurationLoader = new ConfigurationLoader();
-    Configuration configuration = configurationLoader.loadOrDefault(configurationFilePath);
+    Configuration configuration = configurationLoader.loadOrGetDefault(configurationFilePath);
 
     if (StringUtils.isNotEmpty(apiKey))
     {
@@ -131,7 +131,7 @@ public class SimplelocalizeCliCommand implements Runnable
     log.warn("You are running CLI without specifying a command. We will run 'extract' command as a default but please adjust your configuration to invoke some command explicitly. Learn more https://docs.simplelocalize.io");
 
     ConfigurationLoader configurationLoader = new ConfigurationLoader();
-    Configuration configuration = configurationLoader.loadOrDefault(configurationFilePath);
+    Configuration configuration = configurationLoader.loadOrGetDefault(configurationFilePath);
 
     extract(configuration.getApiKey(), configuration.getProjectType(), configuration.getSearchDir());
   }
