@@ -22,38 +22,55 @@ public class ZipUtils
   public static void unzip(String zipFilePath, String destinationPath)
   {
     File dir = new File(destinationPath);
-    if (!dir.exists()) dir.mkdirs();
-    FileInputStream fileInputStream;
-    byte[] buffer = new byte[1024];
+    if (!dir.exists())
+    {
+      boolean isSuccessful = dir.mkdirs();
+      if (!isSuccessful)
+      {
+        log.warn("Unable to create not existing directories");
+      }
+    }
+
     try
     {
-      fileInputStream = new FileInputStream(zipFilePath);
-      ZipInputStream zipInputStream = new ZipInputStream(fileInputStream);
+      unzipFiles(zipFilePath, destinationPath);
+    } catch (IOException e)
+    {
+      log.error("Unable to unzip archive", e);
+    }
+
+  }
+
+  private static void unzipFiles(String zipFilePath, String destinationPath) throws IOException
+  {
+    byte[] buffer = new byte[1024];
+    try (ZipInputStream zipInputStream = new ZipInputStream(new FileInputStream(zipFilePath)))
+    {
       ZipEntry entry = zipInputStream.getNextEntry();
       while (entry != null)
       {
         String fileName = entry.getName();
         File newFile = new File(destinationPath + File.separator + fileName);
         log.info("Unzipping to " + newFile.getAbsolutePath());
-        new File(newFile.getParent()).mkdirs();
-        FileOutputStream fos = new FileOutputStream(newFile);
-        int lenght;
-        while ((lenght = zipInputStream.read(buffer)) > 0)
+        boolean isSuccessful = new File(newFile.getParent()).mkdirs();
+        if (isSuccessful)
         {
-          fos.write(buffer, 0, lenght);
+          log.warn("Unable to create not existing directories for {}", newFile.getAbsolutePath());
         }
-        fos.close();
+
+        try (FileOutputStream fileOutputStream = new FileOutputStream(newFile))
+        {
+          int length;
+          while ((length = zipInputStream.read(buffer)) > 0)
+          {
+            fileOutputStream.write(buffer, 0, length);
+          }
+        }
         zipInputStream.closeEntry();
         entry = zipInputStream.getNextEntry();
       }
       zipInputStream.closeEntry();
-      zipInputStream.close();
-      fileInputStream.close();
-    } catch (IOException e)
-    {
-      e.printStackTrace();
     }
-
   }
 
 

@@ -32,6 +32,8 @@ public final class SimpleLocalizeClient
   private final String profile;
 
   private final Logger log = LoggerFactory.getLogger(SimpleLocalizeClient.class);
+  private final Random random;
+
 
   public SimpleLocalizeClient(String apiKey, String profile)
   {
@@ -45,7 +47,7 @@ public final class SimpleLocalizeClient
     {
       this.profile = profile;
     }
-
+    this.random = new Random();
     this.httpClient = HttpClient.newBuilder()
             .connectTimeout(Duration.ofMinutes(5))
             .build();
@@ -83,8 +85,7 @@ public final class SimpleLocalizeClient
 
   public void uploadFile(Path uploadPath, String language, String uploadFormat) throws IOException, InterruptedException
   {
-    Random rand = new Random();
-    int pseudoRandomNumber = (int) (rand.nextDouble() * 1_000_000_000);
+    int pseudoRandomNumber = (int) (random.nextDouble() * 1_000_000_000);
     String boundary = "simplelocalize" + pseudoRandomNumber;
     Map<Object, Object> formData = Maps.newHashMap();
     formData.put("file", uploadPath);
@@ -105,9 +106,11 @@ public final class SimpleLocalizeClient
 
     HttpResponse<String> httpResponse = httpClient.send(httpRequest, HttpResponse.BodyHandlers.ofString());
 
-    if(httpResponse.statusCode() == 200){
+    if (httpResponse.statusCode() == 200)
+    {
       log.info("Upload successful");
-    } else {
+    } else
+    {
       log.error("Upload failed");
       log.error("{} - {}", httpResponse.statusCode(), httpResponse.body());
     }
@@ -138,14 +141,20 @@ public final class SimpleLocalizeClient
     if (fileName.contains(".zip"))
     {
       ZipUtils.unzip(filePath.toString(), downloadPath.toString());
-      filePath.toFile().delete();
+      boolean isSuccessful = filePath.toFile().delete();
+      if (!isSuccessful)
+      {
+        log.warn("Unable to delete file {}", filePath);
+      }
     }
 
     log.info("{} - {} (from: {})", httpResponse.statusCode(), fileName, contentDispositionHeader);
 
-    if(httpResponse.statusCode() == 200){
+    if (httpResponse.statusCode() == 200)
+    {
       log.info("Download success");
-    } else {
+    } else
+    {
       log.error("Download failed");
       log.error("{} - {}", httpResponse.statusCode(), httpResponse.body());
     }

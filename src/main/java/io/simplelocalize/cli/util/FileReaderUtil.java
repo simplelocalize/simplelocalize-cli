@@ -15,6 +15,7 @@ import java.nio.file.Paths;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * Feel free to use or extend this utility
@@ -22,7 +23,7 @@ import java.util.stream.Collectors;
 public class FileReaderUtil
 {
 
-  private static Logger log = LoggerFactory.getLogger(FileReaderUtil.class);
+  private static final Logger log = LoggerFactory.getLogger(FileReaderUtil.class);
 
   private FileReaderUtil()
   {
@@ -66,24 +67,26 @@ public class FileReaderUtil
     File file = uploadPathWithTemplateKey.toFile();
     Path parentDirectory = file.getParentFile().toPath();
 
-    List<Path> foundFiles = Files.walk(parentDirectory, 1)
-            .collect(Collectors.toList());
-
-    Path fileName1 = uploadPathWithTemplateKey.getFileName();
-    String[] split = fileName1.toString().split("\\" + templateKey);
-    String beforeLanguageTemplateKey = split[0];
-    String afterLanguageTemplateKey = split[1];
-
-    for (Path foundFile : foundFiles)
+    try (Stream<Path> foundFilesStream = Files.walk(parentDirectory, 1))
     {
-      String fileName = foundFile.getFileName().toString();
-      if (fileName.contains(beforeLanguageTemplateKey) && fileName.contains(afterLanguageTemplateKey))
+      var foundFiles = foundFilesStream.collect(Collectors.toList());
+      Path fileNameWithTemplateKey = uploadPathWithTemplateKey.getFileName();
+      String escapedTemplateKey = String.format("\\%s", templateKey);
+      String[] split = fileNameWithTemplateKey.toString().split(escapedTemplateKey);
+      String beforeLanguageTemplateKey = split[0];
+      String afterLanguageTemplateKey = split[1];
+
+      for (Path foundFile : foundFiles)
       {
-        String language = fileName.replace(beforeLanguageTemplateKey, "").replace(afterLanguageTemplateKey, "");
-        output.add(FileToUpload.of(foundFile, language));
+        String fileName = foundFile.getFileName().toString();
+        if (fileName.contains(beforeLanguageTemplateKey) && fileName.contains(afterLanguageTemplateKey))
+        {
+          String language = fileName.replace(beforeLanguageTemplateKey, "").replace(afterLanguageTemplateKey, "");
+          output.add(FileToUpload.of(foundFile, language));
+        }
       }
+      return output;
     }
-    return output;
   }
 
 }
