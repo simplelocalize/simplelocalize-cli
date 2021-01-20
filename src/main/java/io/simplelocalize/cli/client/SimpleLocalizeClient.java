@@ -15,11 +15,11 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.security.SecureRandom;
 import java.time.Duration;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Random;
 
 public final class SimpleLocalizeClient
 {
@@ -32,7 +32,7 @@ public final class SimpleLocalizeClient
   private final String profile;
 
   private final Logger log = LoggerFactory.getLogger(SimpleLocalizeClient.class);
-  private final Random random;
+  private final SecureRandom random;
 
 
   public SimpleLocalizeClient(String apiKey, String profile)
@@ -47,7 +47,7 @@ public final class SimpleLocalizeClient
     {
       this.profile = profile;
     }
-    this.random = new Random();
+    this.random = new SecureRandom();
     this.httpClient = HttpClient.newBuilder()
             .connectTimeout(Duration.ofMinutes(5))
             .build();
