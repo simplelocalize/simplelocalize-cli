@@ -33,7 +33,7 @@ public class SimplelocalizeCliCommand implements Runnable
     PicocliRunner.run(SimplelocalizeCliCommand.class, args);
   }
 
-  @Command(name = "extract", description = "Use 'extract' command to extract translation keys from project files.")
+  @Command(name = "extract", description = "Extract translation keys from project files.")
   public void extract(
           @Option(names = {"--apiKey"}, description = "Project API Key") String apiKey,
           @Option(names = {"--projectType"}, description = "Project type tells CLI how to find i18n keys in your project files") String projectType,
@@ -58,11 +58,11 @@ public class SimplelocalizeCliCommand implements Runnable
     extractCommand.invoke(configuration);
   }
 
-  @Command(name = "upload", description = "Use 'upload' command to upload translations or i18n keys to SimpleLocalize editor. Use '--uploadFormat' to setup file format.")
+  @Command(name = "upload", description = "Upload translations or translation keys to SimpleLocalize editor. Use '--uploadFormat' to setup file format.")
   public void upload(
           @Option(names = {"--apiKey"}, description = "Project API Key") String apiKey,
-          @Option(names = {"--uploadPath"}, description = "Path to translations or keys which should be uploaded") Path uploadPath,
-          @Option(names = {"--uploadFormat"}, description = "Translations format or keys") String uploadFormat
+          @Option(names = {"--uploadPath"}, description = "Path to file with translation or translation keys to upload. Use '{lang}' to define language key if you are uploading more than one file with translations.") Path uploadPath,
+          @Option(names = {"--uploadFormat"}, description = "Translations or keys format") String uploadFormat
   ) throws IOException
   {
     ConfigurationLoader configurationLoader = new ConfigurationLoader();
@@ -84,11 +84,11 @@ public class SimplelocalizeCliCommand implements Runnable
     uploadCommand.invoke(configuration);
   }
 
-  @Command(name = "download", description = "Use 'download' command to download translations in ready to use format for your i18n library. Use '--downloadFormat' to setup file format.")
+  @Command(name = "download", description = "Download translations in ready to use format for your i18n library. Use '--downloadFormat' to setup file format.")
   public void download(
           @Option(names = {"--apiKey"}, description = "Project API Key") String apiKey,
-          @Option(names = {"--downloadPath"}, description = "Path to translations or keys which should be downloaded") Path downloadPath,
-          @Option(names = {"--downloadFormat"}, description = "Translations format or keys") String downloadFormat
+          @Option(names = {"--downloadPath"}, description = "Directory where translations should be saved") Path downloadPath,
+          @Option(names = {"--downloadFormat"}, description = "Translations file format") String downloadFormat
   )
   {
     ConfigurationLoader configurationLoader = new ConfigurationLoader();
@@ -110,7 +110,7 @@ public class SimplelocalizeCliCommand implements Runnable
     downloadCommand.invoke(configuration);
   }
 
-  @Command(name = "validate")
+  @Command(name = "validate", hidden = true)
   public void validate(
           @Option(names = {"--apiKey"}, description = "Project API Key") String apiKey
   )
