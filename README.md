@@ -1,6 +1,4 @@
-![logo](https://simplelocalize.io/public/github-banner-cli.png)
-
-Learn more about us on [our website](https://simplelocalize.io).
+![logo](https://simplelocalize.io/cli/get-started/get-started.png)
 
 ![Tests](https://github.com/simplelocalize/simplelocalize-cli/workflows/Run%20Tests/badge.svg)
 ![Build native executables](https://github.com/simplelocalize/simplelocalize-cli/workflows/Build%20executables/badge.svg?branch=master)
@@ -9,121 +7,31 @@ Learn more about us on [our website](https://simplelocalize.io).
 
 ## What it does?
 
-We've built SimpleLocalize CLI that extracts i18n terms from your project files, and pushes them to the [SimpleLocalize](https://app.simplelocalize.io), where you can to translate it, and publish to the CDN or export in a desired format. 
+SimpleLocalize CLI to simplifies the process of translation in web apps, mobile apps, and games. It can:
+- find translation keys in your local files
+- upload existing translation files or transaltion keys
+- download translation file in ready to use format for already used i18n library like: i18next, Android, iOS, and many others
 
-### Features:
-- extract i18n keys from project using [SimpleLocalize CLI](https://github.com/simplelocalize/simplelocalize-cli)
-- manage translations using [SimpleLocalize.io Platform](https://simplelocalize.io)
-- fetch ready to use translations from [SimpleLocalize CDN](https://simplelocalize.io/cdn) in desired format
-- **bring your i18n library of choice**
-- **no vendor lock-in**
 
-### Example
-For example to translate frontend application in [ReactJS](https://github.com/facebook/react) you can use 3rd party library like [yahoo/react-intl](https://github.com/yahoo/react-intl):
+## Installation
 
-Example [yahoo/react-intl](https://github.com/yahoo/react-intl) usage in code:
-```jsx
-<FormattedMessage id="LOGIN"/>
+```shell
+curl -s https://get.simplelocalize.io/install | bash
 ```
 
-Thanks to [SimpleLocalize.io CLI](https://github.com/simplelocalize/simplelocalize-cli), key: `LOGIN`  will be found and pushed to the [SimpleLocalize Platform](https://app.simplelocalize.io) automatically.
+## Usage
 
-## 🚀 How to use it
-
-* [Create a new project](https://app.simplelocalize.io/dashboard)
-* [Download `simplelocalize.yml` file](https://i.imgur.com/7LFtHeG.png)
-* Put `simplelocalize.yml` file in project root directory
-* Setup `projectType` property. [See list below](https://github.com/simplelocalize/simplelocalize-cli#-supported-libraries)
-* Run in terminal
-
-```bash
-$ cd ~/MyProject #same place where the simplelocalize.yml is
-$ curl -s https://get.simplelocalize.io | bash
+```properties
+simplelocalize-cli [COMMAND] --apiKey <PROJECT_API_KEY> rest of parameters...
 ```
 
-Done! CLI will find i18n terms, and push them to [SimpleLocalize Platform](https://app.simplelocalize.io).
+## Available commands
 
-**Example** `simplelocalize.yml`
+Rememebr to [get API Key for your SimpleLocalize project](https://simplelocalize.io/docs/cli/get-started/) before your start.
 
-```yaml
-apiKey: <API_KEY>
-projectType: <SEE_BELOW>
-```
-
-## 📖 Supported libraries
-
-| Library | `projectType` value | Is supported? | 
-| ------------- |-------------:|:----:|
-| [react-intl](https://github.com/yahoo/react-intl)      | yahoo/react-intl | ✅
-| Standard Android internationalization | google/android      |    ✅ |
-| Standard iOS internationalization | apple/ios      |    [ ] |
-| [react-i18next](https://github.com/i18next/react-i18next) | i18next/i18next      |    ✅ |
-| [mde/ejs](https://github.com/mde/ejs) | mde/ejs | ✅ |
-| [ember-intl](https://github.com/ember-intl/ember-intl) | ember-intl/ember-intl      |    [ ] |
-| [jekyll-multiple-languages-plugin](https://github.com/Anthony-Gaudino/jekyll-multiple-languages-plugin)      | Anthony-Gaudino/jekyll-multiple-languages-plugin      |   [ ] |
-| [dust-intl](https://github.com/yahoo/dust-intl) | yahoo/dust-intl      |    [ ] |
-| [handlebars-intl](https://github.com/yahoo/handlebars-intl) | yahoo/handlebars-intl      |    [ ] |
-
-
-## 🤖 Workflow automation
-
-SimpleLocalize can be integrated with any CI/CD service, simply put bash script somewhere in your scripting environment to find and push translation keys:
-
-```bash
-$ curl -s https://get.simplelocalize.io | bash
-```
-The best place to run SimpleLocalize script is **after successful build** because this will not result a wrong internationalisation keys caused by invalid syntax
-
-## ⚙️ Available options
-SimpleLocalize CLI can be customized using `simplelocalize.yaml` file. See examples below.
-
-### Ignoring keys
-
-```yaml
-apiKey: <API_KEY>
-projectType: <PROJECT_TYPE>
-ignoredKeys:
-    - "HEY"
-    - "PLEASE"
-    - "DO NOT IGNORE ME"
-    - ":("
-```
-
-### Custom search directory
-If you would like to search translation keys in some specific path you  can achieve this by adding searchDir and path where the CLI should search keys.
-
-```yaml
-apiKey: <API_KEY>
-projectType: <YOUR_PROJECT_TYPE>
-searchDir: /Users/jpomykala/Workspace/MyProject
-```
-Please pay attention to what you are putting in the `searchDir` property. This may cause high CPU and disc usage due to this will be looking for files to process and try to find translation keys.
-
-### Configuration profiles
-If you would like to use simplelocalize.yml from custom location or with custom name like simplelocalize-dev.yml file. This can be easilly achieved by passing path as first argument.
-
-```bash
-$ curl -s https://get.simplelocalize.io | bash -s /tmp/simplelocalize-dev.yml
-```
-
-## 🤯 Problem with running CLI
-
-In most cases you should use our regular script which is constantly optimized for everyone like below
-```bash
-$ curl -s https://get.simplelocalize.io | bash
-```
-If something is not working properly please [create an issue](https://github.com/simplelocalize/simplelocalize-cli/issues/new) and provide script output. In meantime, you can use one of 2 other options to run CLI.
-
-
-### Option 1: I have Java 11+ installed on my system, let me just use app in *.jar file. 
-```bash
-$ curl -s https://get.simplelocalize.io/run-jar | bash
-```
-
-### Option 2: I want to use *.jar file, but I don't have JDK installed.
-```bash
-$ curl -s https://get.simplelocalize.io/install-jdk-run-jar | bash
-```
+- `simplelocalize-cli extract` - learn more [how to extract translation keys from local files](https://simplelocalize.io/docs/cli/i18n-keys-extraction/)
+- `simplelocalize-cli upload` - learn more [how to upload translations or translation keys](https://simplelocalize.io/docs/cli/upload-translations/)
+- `simplelocalize-cli download` - learn more [how to download ready to use translation file](https://simplelocalize.io/docs/cli/download-translations/)
 
 
 ## 👩‍⚖️ License
