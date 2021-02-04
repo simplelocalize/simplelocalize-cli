@@ -20,11 +20,12 @@ import java.nio.file.Path;
         name = "simplelocalize-cli",
         description =
                 {
-                        "SimpleLocalize CLI can:"
+                        "SimpleLocalize CLI can",
                         "-> 'extract' i18n keys from project files",
                         "-> 'upload' translations or translation keys",
                         "-> 'download' ready to use translation files",
                         "",
+                        "Use 'simplelocalize-cli [command]' to use one of above commands",
                         "Check https://docs.simplelocalize.io to learn more."
                 },
         mixinStandardHelpOptions = true,
