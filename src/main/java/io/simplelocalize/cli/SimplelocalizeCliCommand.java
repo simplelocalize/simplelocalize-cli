@@ -42,7 +42,7 @@ public class SimplelocalizeCliCommand implements Runnable
     PicocliRunner.run(SimplelocalizeCliCommand.class, args);
   }
 
-  @Command(name = "extract", description = "Extract translation keys from project files.")
+  @Command(name = "extract", description = "Extract translation keys from project files. Use 'simplelocalize-cli extract --help' to learn more about the parameters.")
   public void extract(
           @Option(names = {"--apiKey"}, description = "Project API Key") String apiKey,
           @Option(names = {"--projectType"}, description = "Project type tells CLI how to find i18n keys in your project files") String projectType,
@@ -67,7 +67,7 @@ public class SimplelocalizeCliCommand implements Runnable
     extractCommand.invoke(configuration);
   }
 
-  @Command(name = "upload", description = "Upload translations or translation keys to SimpleLocalize editor. Use '--uploadFormat' to setup file format.")
+  @Command(name = "upload", description = "Upload translations or translation keys to SimpleLocalize editor. Use 'simplelocalize-cli upload --help' to learn more about the parameters.")
   public void upload(
           @Option(names = {"--apiKey"}, description = "Project API Key") String apiKey,
           @Option(names = {"--uploadPath"}, description = "Path to file with translation or translation keys to upload. Use '{lang}' to define language key if you are uploading more than one file with translations.") Path uploadPath,
@@ -104,7 +104,7 @@ public class SimplelocalizeCliCommand implements Runnable
     uploadCommand.invoke(configuration);
   }
 
-  @Command(name = "download", description = "Download translations in ready to use format for your i18n library. Use '--downloadFormat' to setup file format.")
+  @Command(name = "download", description = "Download translations in ready to use format for your i18n library. Use 'simplelocalize-cli download --help' to learn more about the parameters.")
   public void download(
           @Option(names = {"--apiKey"}, description = "Project API Key") String apiKey,
           @Option(names = {"--downloadPath"}, description = "Directory where translations should be downloaded") Path downloadPath,
