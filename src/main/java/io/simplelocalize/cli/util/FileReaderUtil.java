@@ -2,6 +2,7 @@ package io.simplelocalize.cli.util;
 
 import com.google.common.collect.Lists;
 import io.simplelocalize.cli.client.dto.FileToUpload;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -65,7 +66,13 @@ public class FileReaderUtil
   {
     List<FileToUpload> output = Lists.newArrayList();
     File file = uploadPathWithTemplateKey.toFile();
-    Path parentDirectory = file.getParentFile().toPath();
+    File parentDirectoryFile = file.getParentFile();
+
+    Path parentDirectory = Path.of("./");
+    if (parentDirectoryFile != null)
+    {
+      parentDirectory = parentDirectoryFile.toPath();
+    }
 
     try (Stream<Path> foundFilesStream = Files.walk(parentDirectory, 1))
     {
@@ -81,8 +88,9 @@ public class FileReaderUtil
         String fileName = foundFile.getFileName().toString();
         if (fileName.contains(beforeLanguageTemplateKey) && fileName.contains(afterLanguageTemplateKey))
         {
-          String language = fileName.replace(beforeLanguageTemplateKey, "").replace(afterLanguageTemplateKey, "");
-          output.add(FileToUpload.of(foundFile, language));
+          String removedFirstPart = StringUtils.remove(fileName, beforeLanguageTemplateKey);
+          String plainLanguageKey = StringUtils.remove(removedFirstPart, afterLanguageTemplateKey);
+          output.add(FileToUpload.of(foundFile, plainLanguageKey));
         }
       }
       return output;

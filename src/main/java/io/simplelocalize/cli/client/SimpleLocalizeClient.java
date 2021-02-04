@@ -8,6 +8,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.net.http.HttpClient;
@@ -83,23 +84,26 @@ public final class SimpleLocalizeClient
     }
   }
 
-  public void uploadFile(Path uploadPath, String language, String uploadFormat) throws IOException, InterruptedException
+  public void uploadFile(Path uploadPath, String languageKey, String uploadFormat, String uploadOptions) throws IOException, InterruptedException
   {
     int pseudoRandomNumber = (int) (random.nextDouble() * 1_000_000_000);
     String boundary = "simplelocalize" + pseudoRandomNumber;
     Map<Object, Object> formData = Maps.newHashMap();
     formData.put("file", uploadPath);
-    log.info("Uploading {}", uploadPath);
-    if (language != null)
+    log.info("Uploading {} with language key '{}'", uploadPath, languageKey);
+    if (StringUtils.isNotEmpty(languageKey))
     {
-      formData.put("language", language);
+      formData.put("languageKey", languageKey);
     }
 
+    String endpointUrl = API_URL + "/cli/v1/upload?uploadFormat=" + uploadFormat;
+    if (StringUtils.isNotEmpty(uploadOptions))
+    {
+      endpointUrl += "&uploadOptions=" + uploadOptions;
+    }
     HttpRequest httpRequest = HttpRequest.newBuilder()
-            .POST(ClientBodyBuilders.ofMimeMultipartData(
-                    formData
-                    , boundary))
-            .uri(URI.create(API_URL + "/cli/v1/upload?uploadFormat=" + uploadFormat))
+            .POST(ClientBodyBuilders.ofMimeMultipartData(formData, boundary))
+            .uri(URI.create(endpointUrl))
             .header(TOKEN_HEADER_NAME, apiKey)
             .header("Content-Type", "multipart/form-data; boundary=" + boundary)
             .build();
@@ -117,47 +121,51 @@ public final class SimpleLocalizeClient
 
   }
 
-  public void uploadFile(Path uploadPath, String uploadFormat) throws IOException, InterruptedException
+  public void downloadFile(Path downloadPath, String downloadFormat, String languageKey) throws IOException, InterruptedException
   {
-    uploadFile(uploadPath, null, uploadFormat);
-  }
-
-  public void downloadFile(Path downloadPath, String downloadFormat) throws IOException, InterruptedException
-  {
+    String endpointUrl = API_URL + "/cli/v1/download?downloadFormat=" + downloadFormat;
+    if (StringUtils.isNotEmpty(languageKey))
+    {
+      endpointUrl += "&languageKey=" + languageKey;
+    }
     HttpRequest httpRequest = HttpRequest.newBuilder()
             .GET()
-            .uri(URI.create(API_URL + "/cli/v1/download?downloadFormat=" + downloadFormat))
+            .uri(URI.create(endpointUrl))
             .header(TOKEN_HEADER_NAME, apiKey)
             .build();
 
     log.info("Downloading to {}", downloadPath);
     HttpResponse<byte[]> httpResponse = httpClient.send(httpRequest, HttpResponse.BodyHandlers.ofByteArray());
-    byte[] body = httpResponse.body();
-    String contentDispositionHeader = httpResponse.headers().firstValue("Content-Disposition").orElse("");
-    String fileName = contentDispositionHeader.split("=")[1];
-    Path filePath = Path.of(downloadPath + fileName);
-    Files.write(filePath, body);
-
-    if (fileName.contains(".zip"))
-    {
-      ZipUtils.unzip(filePath.toString(), downloadPath.toString());
-      boolean isSuccessful = filePath.toFile().delete();
-      if (!isSuccessful)
-      {
-        log.warn("Unable to delete file {}", filePath);
-      }
-    }
-
-    log.info("{} - {} (from: {})", httpResponse.statusCode(), fileName, contentDispositionHeader);
-
     if (httpResponse.statusCode() == 200)
     {
-      log.info("Download success");
+      log.info("Export success");
     } else
     {
-      log.error("Download failed");
+      log.error("Export failed");
       log.error("{} - {}", httpResponse.statusCode(), httpResponse.body());
+      return;
     }
+    byte[] body = httpResponse.body();
+    String contentDispositionHeader = httpResponse.headers().firstValue("Content-Disposition").orElse("");
+    String remoteFileName = contentDispositionHeader.split("=")[1];
+
+    Path fileSavePath = Path.of(downloadPath + File.separator + remoteFileName);
+    if (StringUtils.isNotEmpty(languageKey))
+    {
+      fileSavePath = downloadPath;
+    }
+
+    Files.write(fileSavePath, body);
+    if (remoteFileName.endsWith(".zip"))
+    {
+      ZipUtils.unzip(fileSavePath.toString(), downloadPath.toString());
+      boolean isSuccessful = fileSavePath.toFile().delete();
+      if (!isSuccessful)
+      {
+        log.warn("Unable to delete file {}", downloadPath);
+      }
+    }
+    log.info("Save success");
   }
 
   public int fetchGateCheckStatus() throws IOException, InterruptedException

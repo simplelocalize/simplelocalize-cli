@@ -20,16 +20,20 @@ public class Configuration {
 
   private Path uploadPath;
   private String uploadFormat;
+  private String uploadOptions;
 
   private Path downloadPath;
   private String downloadFormat;
 
+  private String languageKey;
   private String profile;
 
-  public Configuration() {
+  public Configuration()
+  {
   }
 
-  public Configuration(String searchDir, String uploadToken, String apiKey, String projectType, Path uploadPath, String uploadFormat, Set<String> ignoreKeys, String profile, Path downloadPath, String downloadFormat) {
+  public Configuration(String searchDir, String uploadToken, String apiKey, String projectType, Path uploadPath, String uploadFormat, String languageKey, String uploadOptions, Set<String> ignoreKeys, String profile, Path downloadPath, String downloadFormat)
+  {
     this.searchDir = searchDir;
 
     this.projectType = projectType;
@@ -37,13 +41,18 @@ public class Configuration {
 
     this.uploadPath = uploadPath;
     this.uploadFormat = uploadFormat;
+    this.uploadOptions = uploadOptions;
 
     this.downloadPath = downloadPath;
     this.downloadFormat = downloadFormat;
 
-    if (StringUtils.isEmpty(apiKey)) {
+    this.languageKey = languageKey;
+
+    if (StringUtils.isEmpty(apiKey))
+    {
       this.apiKey = uploadToken;
-    } else {
+    } else
+    {
       this.apiKey = apiKey;
     }
     this.profile = profile;
@@ -164,5 +173,25 @@ public class Configuration {
   public void setDownloadFormat(String downloadFormat)
   {
     this.downloadFormat = downloadFormat;
+  }
+
+  public String getLanguageKey()
+  {
+    return languageKey;
+  }
+
+  public void setLanguageKey(String languageKey)
+  {
+    this.languageKey = languageKey;
+  }
+
+  public String getUploadOptions()
+  {
+    return uploadOptions;
+  }
+
+  public void setUploadOptions(String uploadOptions)
+  {
+    this.uploadOptions = uploadOptions;
   }
 }

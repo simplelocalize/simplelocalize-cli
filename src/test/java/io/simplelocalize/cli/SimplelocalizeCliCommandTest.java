@@ -33,12 +33,14 @@ public class SimplelocalizeCliCommandTest {
     }
 
     @Test
-    public void testUpload2() throws Exception {
+    public void testUploadWithMinimalProperties() throws Exception
+    {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         System.setOut(new PrintStream(baos));
 
-        try (ApplicationContext ctx = ApplicationContext.run(Environment.CLI)) {
-            String[] args = new String[] { "upload", "--apiKey", "3463"};
+        try (ApplicationContext ctx = ApplicationContext.run(Environment.CLI))
+        {
+            String[] args = new String[]{"upload", "--apiKey", "3463"};
             PicocliRunner.run(SimplelocalizeCliCommand.class, ctx, args);
         }
     }

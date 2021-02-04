@@ -2,3 +2,4 @@ searchDir: ./target/test-classes/react-intl
 uploadToken: abc
 apiKey: abc-apiKey
 projectType: yahoo/react-intl
+uploadPath: messages_{lang}.properties
