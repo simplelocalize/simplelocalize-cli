@@ -39,6 +39,7 @@ public class ConfigurationLoaderTest {
   }
 
 
+  @Test
   public void shouldLoadEmptyConfigurationNotFound() throws Exception
   {
     //given
@@ -52,6 +53,7 @@ public class ConfigurationLoaderTest {
     Assertions.assertThat(configuration.getApiKey()).isNull();
   }
 
+  @Test
   public void shouldLoadEmptyConfigurationFileWhenInvalidFile() throws Exception
   {
     //given
