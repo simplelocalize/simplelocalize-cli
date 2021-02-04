@@ -22,9 +22,7 @@ public class UploadCommand implements CliCommand
     Path configurationUploadPath = configuration.getUploadPath();
     String apiKey = configuration.getApiKey();
     String profile = configuration.getProfile();
-    String uploadLanguageKey = Optional.ofNullable(configuration.getUploadLanguageKey()).orElse("default");
-
-    log.info("Uploading translation files");
+    String uploadLanguageKey = Optional.ofNullable(configuration.getLanguageKey()).orElse("default");
 
     SimpleLocalizeClient client = new SimpleLocalizeClient(apiKey, profile);
 
@@ -63,7 +61,7 @@ public class UploadCommand implements CliCommand
         client.uploadFile(fileToUpload.getPath(), language, uploadFormat, uploadOptions);
       } catch (InterruptedException | IOException e)
       {
-        log.warn("File {} could not be uploaded", fileToUpload.getPath());
+        log.warn("File {} could not be uploaded", fileToUpload.getPath(), e);
       }
     }
   }

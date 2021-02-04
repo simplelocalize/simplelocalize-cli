@@ -18,20 +18,13 @@ public class DownloadCommand implements CliCommand
     String apiKey = configuration.getApiKey();
     String downloadFormat = configuration.getDownloadFormat();
     String profile = configuration.getProfile();
+    String languageKey = configuration.getLanguageKey();
 
-    log.info("Download translation files");
-
-    boolean isDirectory = downloadPath.toFile().isDirectory();
-    if (!isDirectory)
-    {
-      log.error("Download path must be a directory!");
-      System.exit(1);
-    }
-
+    log.info("Downloading translation files");
     try
     {
       SimpleLocalizeClient client = new SimpleLocalizeClient(apiKey, profile);
-      client.downloadFile(downloadPath, downloadFormat);
+      client.downloadFile(downloadPath, downloadFormat, languageKey);
     } catch (InterruptedException | IOException e)
     {
       log.error("Translations could not be downloaded");

@@ -72,7 +72,7 @@ public class SimplelocalizeCliCommand implements Runnable
           @Option(names = {"--apiKey"}, description = "Project API Key") String apiKey,
           @Option(names = {"--uploadPath"}, description = "Path to file with translation or translation keys to upload. Use '{lang}' to define language key if you are uploading more than one file with translations.") Path uploadPath,
           @Option(names = {"--uploadFormat"}, description = "Translations or keys format") String uploadFormat,
-          @Option(names = {"--uploadLanguageKey"}, description = "(Optional) If you upload one file you can specify language key for it") String uploadLanguageKey,
+          @Option(names = {"--languageKey"}, description = "(Optional) Specify language key for single file upload") String languageKey,
           @Option(names = {"--uploadOptions"}, description = "(Optional) Read more about 'uploadOptions' param at docs.simplelocalize.io") String uploadOptions
   ) throws IOException
   {
@@ -83,18 +83,22 @@ public class SimplelocalizeCliCommand implements Runnable
     {
       configuration.setApiKey(apiKey);
     }
+
     if (uploadPath != null)
     {
       configuration.setUploadPath(uploadPath);
     }
+
     if (StringUtils.isNotEmpty(uploadFormat))
     {
       configuration.setUploadFormat(uploadFormat);
     }
-    if (StringUtils.isNotEmpty(uploadLanguageKey))
+
+    if (StringUtils.isNotEmpty(languageKey))
     {
-      configuration.setUploadLanguageKey(uploadLanguageKey);
+      configuration.setLanguageKey(languageKey);
     }
+
     if (StringUtils.isNotEmpty(uploadOptions))
     {
       configuration.setUploadOptions(uploadOptions);
@@ -108,7 +112,8 @@ public class SimplelocalizeCliCommand implements Runnable
   public void download(
           @Option(names = {"--apiKey"}, description = "Project API Key") String apiKey,
           @Option(names = {"--downloadPath"}, description = "Directory where translations should be downloaded") Path downloadPath,
-          @Option(names = {"--downloadFormat"}, description = "Download format for translation file") String downloadFormat
+          @Option(names = {"--downloadFormat"}, description = "Download format for translation file") String downloadFormat,
+          @Option(names = {"--languageKey"}, description = "(Optional) Setup languageKey parameter to download file with only one language translations") String languageKey
   )
   {
     ConfigurationLoader configurationLoader = new ConfigurationLoader();
@@ -125,6 +130,10 @@ public class SimplelocalizeCliCommand implements Runnable
     if (StringUtils.isNotEmpty(downloadFormat))
     {
       configuration.setDownloadFormat(downloadFormat);
+    }
+    if (StringUtils.isNotEmpty(languageKey))
+    {
+      configuration.setLanguageKey(languageKey);
     }
     DownloadCommand downloadCommand = new DownloadCommand();
     downloadCommand.invoke(configuration);
