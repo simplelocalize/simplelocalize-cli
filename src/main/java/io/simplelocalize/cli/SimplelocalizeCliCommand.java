@@ -18,7 +18,15 @@ import java.nio.file.Path;
 
 @Command(
         name = "simplelocalize-cli",
-        description = "SimpleLocalize CLI can 'extract' i18n keys from project files, 'upload' translations or translation keys, or 'download' ready to use translation files. Check https://docs.simplelocalize.io to learn more!",
+        description =
+                {
+                        "SimpleLocalize CLI can:"
+                        "-> 'extract' i18n keys from project files",
+                        "-> 'upload' translations or translation keys",
+                        "-> 'download' ready to use translation files",
+                        "",
+                        "Check https://docs.simplelocalize.io to learn more."
+                },
         mixinStandardHelpOptions = true,
         version = {
                 "SimpleLocalize CLI: 1.0.1",
