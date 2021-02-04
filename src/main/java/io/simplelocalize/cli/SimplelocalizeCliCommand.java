@@ -20,7 +20,10 @@ import java.nio.file.Path;
         name = "simplelocalize-cli",
         description = "SimpleLocalize CLI can 'extract' i18n keys from project files, 'upload' translations or translation keys, or 'download' ready to use translation files. Check https://docs.simplelocalize.io to learn more!",
         mixinStandardHelpOptions = true,
-        version = "1.0.1"
+        version = {
+                "SimpleLocalize CLI: 1.0.1",
+                "JVM: ${java.version} (${java.vendor} ${java.vm.name} ${java.vm.version})",
+                "OS: ${os.name} ${os.version} ${os.arch}"}
 )
 public class SimplelocalizeCliCommand implements Runnable
 {
