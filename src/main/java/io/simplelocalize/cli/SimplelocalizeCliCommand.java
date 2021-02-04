@@ -37,7 +37,7 @@ public class SimplelocalizeCliCommand implements Runnable
   public void extract(
           @Option(names = {"--apiKey"}, description = "Project API Key") String apiKey,
           @Option(names = {"--projectType"}, description = "Project type tells CLI how to find i18n keys in your project files") String projectType,
-          @Option(names = {"--searchDir"}, description = "Search directory tells CLI where to look for project files which may contain translation keys") String searchDirectory
+          @Option(names = {"--searchDir"}, description = "(Optional) Search directory tells CLI where to look for project files which may contain translation keys. Default: ./") String searchDirectory
   )
   {
     ConfigurationLoader configurationLoader = new ConfigurationLoader();
@@ -62,7 +62,9 @@ public class SimplelocalizeCliCommand implements Runnable
   public void upload(
           @Option(names = {"--apiKey"}, description = "Project API Key") String apiKey,
           @Option(names = {"--uploadPath"}, description = "Path to file with translation or translation keys to upload. Use '{lang}' to define language key if you are uploading more than one file with translations.") Path uploadPath,
-          @Option(names = {"--uploadFormat"}, description = "Translations or keys format") String uploadFormat
+          @Option(names = {"--uploadFormat"}, description = "Translations or keys format") String uploadFormat,
+          @Option(names = {"--uploadLanguageKey"}, description = "(Optional) If you upload one file you can specify language key for it") String uploadLanguageKey,
+          @Option(names = {"--uploadOptions"}, description = "(Optional) Read more about 'uploadOptions' param at docs.simplelocalize.io") String uploadOptions
   ) throws IOException
   {
     ConfigurationLoader configurationLoader = new ConfigurationLoader();
@@ -80,6 +82,15 @@ public class SimplelocalizeCliCommand implements Runnable
     {
       configuration.setUploadFormat(uploadFormat);
     }
+    if (StringUtils.isNotEmpty(uploadLanguageKey))
+    {
+      configuration.setUploadLanguageKey(uploadLanguageKey);
+    }
+    if (StringUtils.isNotEmpty(uploadOptions))
+    {
+      configuration.setUploadOptions(uploadOptions);
+    }
+
     UploadCommand uploadCommand = new UploadCommand();
     uploadCommand.invoke(configuration);
   }
@@ -87,8 +98,8 @@ public class SimplelocalizeCliCommand implements Runnable
   @Command(name = "download", description = "Download translations in ready to use format for your i18n library. Use '--downloadFormat' to setup file format.")
   public void download(
           @Option(names = {"--apiKey"}, description = "Project API Key") String apiKey,
-          @Option(names = {"--downloadPath"}, description = "Directory where translations should be saved") Path downloadPath,
-          @Option(names = {"--downloadFormat"}, description = "Translations file format") String downloadFormat
+          @Option(names = {"--downloadPath"}, description = "Directory where translations should be downloaded") Path downloadPath,
+          @Option(names = {"--downloadFormat"}, description = "Download format for translation file") String downloadFormat
   )
   {
     ConfigurationLoader configurationLoader = new ConfigurationLoader();

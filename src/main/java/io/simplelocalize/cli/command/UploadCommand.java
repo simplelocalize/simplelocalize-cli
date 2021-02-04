@@ -1,8 +1,8 @@
 package io.simplelocalize.cli.command;
 
 import com.google.common.collect.Lists;
-import io.simplelocalize.cli.client.dto.FileToUpload;
 import io.simplelocalize.cli.client.SimpleLocalizeClient;
+import io.simplelocalize.cli.client.dto.FileToUpload;
 import io.simplelocalize.cli.configuration.Configuration;
 import io.simplelocalize.cli.util.FileReaderUtil;
 import org.slf4j.Logger;
@@ -11,6 +11,7 @@ import org.slf4j.LoggerFactory;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.List;
+import java.util.Optional;
 
 public class UploadCommand implements CliCommand
 {
@@ -21,6 +22,7 @@ public class UploadCommand implements CliCommand
     Path configurationUploadPath = configuration.getUploadPath();
     String apiKey = configuration.getApiKey();
     String profile = configuration.getProfile();
+    String uploadLanguageKey = Optional.ofNullable(configuration.getUploadLanguageKey()).orElse("default");
 
     log.info("Uploading translation files");
 
@@ -34,7 +36,8 @@ public class UploadCommand implements CliCommand
     }
 
     final String languageTemplateKey = "{lang}";
-    if (configurationUploadPath.toString().contains(languageTemplateKey))
+    boolean fileNameWithTemplate = configurationUploadPath.toString().contains(languageTemplateKey);
+    if (fileNameWithTemplate)
     {
       try
       {
@@ -47,14 +50,17 @@ public class UploadCommand implements CliCommand
       }
     } else
     {
-      filesToUpload.add(FileToUpload.of(configurationUploadPath, "default"));
+      filesToUpload.add(FileToUpload.of(configurationUploadPath, uploadLanguageKey));
     }
 
     for (FileToUpload fileToUpload : filesToUpload)
     {
       try
       {
-        client.uploadFile(fileToUpload.getPath(), fileToUpload.getLanguage(), configuration.getUploadFormat());
+        String language = fileToUpload.getLanguage();
+        String uploadFormat = configuration.getUploadFormat();
+        String uploadOptions = configuration.getUploadOptions();
+        client.uploadFile(fileToUpload.getPath(), language, uploadFormat, uploadOptions);
       } catch (InterruptedException | IOException e)
       {
         log.warn("File {} could not be uploaded", fileToUpload.getPath());

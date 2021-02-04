@@ -20,6 +20,7 @@ import java.time.Duration;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 
 public final class SimpleLocalizeClient
 {
@@ -83,7 +84,7 @@ public final class SimpleLocalizeClient
     }
   }
 
-  public void uploadFile(Path uploadPath, String language, String uploadFormat) throws IOException, InterruptedException
+  public void uploadFile(Path uploadPath, String language, String uploadFormat, String uploadOptions) throws IOException, InterruptedException
   {
     int pseudoRandomNumber = (int) (random.nextDouble() * 1_000_000_000);
     String boundary = "simplelocalize" + pseudoRandomNumber;
@@ -95,11 +96,15 @@ public final class SimpleLocalizeClient
       formData.put("language", language);
     }
 
+    String endpointUrl = API_URL + "/cli/v1/upload?uploadFormat=" + uploadFormat;
+    boolean hasUploadOptions = !Optional.ofNullable(uploadOptions).orElse("").isBlank();
+    if (hasUploadOptions)
+    {
+      endpointUrl += "&uploadOptions=" + uploadOptions;
+    }
     HttpRequest httpRequest = HttpRequest.newBuilder()
-            .POST(ClientBodyBuilders.ofMimeMultipartData(
-                    formData
-                    , boundary))
-            .uri(URI.create(API_URL + "/cli/v1/upload?uploadFormat=" + uploadFormat))
+            .POST(ClientBodyBuilders.ofMimeMultipartData(formData, boundary))
+            .uri(URI.create(endpointUrl))
             .header(TOKEN_HEADER_NAME, apiKey)
             .header("Content-Type", "multipart/form-data; boundary=" + boundary)
             .build();
@@ -115,11 +120,6 @@ public final class SimpleLocalizeClient
       log.error("{} - {}", httpResponse.statusCode(), httpResponse.body());
     }
 
-  }
-
-  public void uploadFile(Path uploadPath, String uploadFormat) throws IOException, InterruptedException
-  {
-    uploadFile(uploadPath, null, uploadFormat);
   }
 
   public void downloadFile(Path downloadPath, String downloadFormat) throws IOException, InterruptedException

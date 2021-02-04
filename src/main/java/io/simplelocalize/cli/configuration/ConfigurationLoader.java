@@ -1,7 +1,6 @@
 package io.simplelocalize.cli.configuration;
 
 import com.google.common.base.Strings;
-import io.simplelocalize.cli.exception.ConfigurationNotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.yaml.snakeyaml.Yaml;
@@ -36,18 +35,7 @@ public class ConfigurationLoader
 
   private Configuration load(Path configurationFilePath)
   {
-
-    log.info("Loading file from path: {}", configurationFilePath);
-
     File file = new File(URLDecoder.decode(String.valueOf(configurationFilePath.toFile()), StandardCharsets.UTF_8));
-    if (!file.exists())
-    {
-      log.warn("Could not find configuration file in: {}", configurationFilePath);
-      Configuration configuration = new Configuration();
-      configuration.setSearchDir(CURRENT_DIRECTORY);
-      return configuration;
-    }
-
     Constructor yamlTargetClass = new Constructor(Configuration.class);
     Yaml yaml = new Yaml(yamlTargetClass);
 
@@ -56,9 +44,13 @@ public class ConfigurationLoader
     {
       InputStream inputStream = new FileInputStream(file);
       configuration = yaml.load(inputStream);
+      log.info("Loaded configuration file from: {}", configurationFilePath);
     } catch (Exception e)
     {
-      throw new ConfigurationNotFoundException("Could not read configuration file in: " + configurationFilePath, e);
+      log.info("Using default configuration. Configuration file not found at: {}", configurationFilePath);
+      configuration = new Configuration();
+      configuration.setSearchDir(CURRENT_DIRECTORY);
+      return configuration;
     }
 
     String uploadToken = configuration.getUploadToken();
