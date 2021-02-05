@@ -151,7 +151,7 @@ public final class SimpleLocalizeClient
     String remoteFileName = contentDispositionHeader.split("=")[1];
 
     Path fileSavePath = Path.of(downloadPath + File.separator + remoteFileName);
-    if (remoteFileName.endsWith(".zip"))
+    if (StringUtils.isNotEmpty(languageKey) || downloadFormat.equalsIgnoreCase("multi-language-json"))
     {
       fileSavePath = downloadPath;
     }
