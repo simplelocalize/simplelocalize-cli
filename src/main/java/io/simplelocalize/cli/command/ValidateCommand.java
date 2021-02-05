@@ -21,7 +21,7 @@ public class ValidateCommand implements CliCommand
       System.exit(status);
     } catch (Exception e)
     {
-      log.error("Project could not be validated. Contact support: contact@simplelocalize.io");
+      log.error(" 😝 Project could not be validated. Contact support: contact@simplelocalize.io");
       System.exit(1);
     }
   }

@@ -29,13 +29,13 @@ public class ExtractCommand implements CliCommand
 
     SimpleLocalizeClient client = new SimpleLocalizeClient(apiKey, profile);
 
-    log.info("Running keys extraction");
+    log.info(" 🕵️‍♂️ Running keys extraction");
     ProjectProcessor projectProcessor = ProjectProcessorFactory.createForType(projectType);
     ProcessResult result = projectProcessor.process(Paths.get(searchDir));
 
     Set<String> keys = result.getKeys();
     List<Path> processedFiles = result.getProcessedFiles();
-    log.info("Found {} unique keys in {} components", keys.size(), processedFiles.size());
+    log.info(" 📦 Found {} unique keys in {} components", keys.size(), processedFiles.size());
 
     Set<String> ignoredKeys = configuration.getIgnoreKeys();
     keys.removeAll(ignoredKeys);
@@ -47,7 +47,7 @@ public class ExtractCommand implements CliCommand
         client.sendKeys(partition);
       } catch (Exception e)
       {
-        log.error("Could not send keys chunk. Contact support: contact@simplelocalize.io", e);
+        log.error(" 😝 Could not send keys chunk. Contact support: contact@simplelocalize.io", e);
       }
     }
   }

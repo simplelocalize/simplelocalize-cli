@@ -26,7 +26,7 @@ import java.nio.file.Path;
                 },
         mixinStandardHelpOptions = true,
         version = {
-                "SimpleLocalize CLI: 1.0.1",
+                "SimpleLocalize CLI: 1.0.2",
                 "JVM: ${java.version} (${java.vendor} ${java.vm.name} ${java.vm.version})",
                 "OS: ${os.name} ${os.version} ${os.arch}"}
 )
@@ -157,7 +157,7 @@ public class SimplelocalizeCliCommand implements Runnable
 
   public void run()
   {
-    log.warn("You are running CLI without specifying a command. We will run 'extract' command as a default but please adjust your configuration to invoke some command explicitly. Learn more https://docs.simplelocalize.io");
+    log.warn(" 🤨 You are running CLI without specifying a command. We will run 'extract' command as a default but please adjust your configuration to invoke some command explicitly. Learn more https://docs.simplelocalize.io");
 
     ConfigurationLoader configurationLoader = new ConfigurationLoader();
     Configuration configuration = configurationLoader.loadOrGetDefault(configurationFilePath);
