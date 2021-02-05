@@ -29,7 +29,7 @@ public class UploadCommand implements CliCommand
     List<FileToUpload> filesToUpload = Lists.newArrayList();
     if (configurationUploadPath.toFile().isDirectory())
     {
-      log.error("Upload path cannot be a directory!");
+      log.error(" 😝 Upload path cannot be a directory!");
       System.exit(1);
     }
 
@@ -43,7 +43,7 @@ public class UploadCommand implements CliCommand
         filesToUpload.addAll(foundMatchingFiles);
       } catch (IOException e)
       {
-        log.error("Matching files could not be found", e);
+        log.error(" 😝 Matching files could not be found", e);
         System.exit(1);
       }
     } else
@@ -61,7 +61,7 @@ public class UploadCommand implements CliCommand
         client.uploadFile(fileToUpload.getPath(), language, uploadFormat, uploadOptions);
       } catch (InterruptedException | IOException e)
       {
-        log.warn("File {} could not be uploaded", fileToUpload.getPath(), e);
+        log.warn(" 😝 File {} could not be uploaded", fileToUpload.getPath(), e);
       }
     }
   }

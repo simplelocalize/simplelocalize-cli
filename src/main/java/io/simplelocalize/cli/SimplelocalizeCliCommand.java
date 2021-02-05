@@ -157,7 +157,7 @@ public class SimplelocalizeCliCommand implements Runnable
 
   public void run()
   {
-    log.warn("You are running CLI without specifying a command. We will run 'extract' command as a default but please adjust your configuration to invoke some command explicitly. Learn more https://docs.simplelocalize.io");
+    log.warn(" 🤨 You are running CLI without specifying a command. We will run 'extract' command as a default but please adjust your configuration to invoke some command explicitly. Learn more https://docs.simplelocalize.io");
 
     ConfigurationLoader configurationLoader = new ConfigurationLoader();
     Configuration configuration = configurationLoader.loadOrGetDefault(configurationFilePath);

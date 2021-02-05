@@ -72,14 +72,14 @@ public final class SimpleLocalizeClient
       boolean processedWithWarning = JsonPath.read(json, "$.data.processedWithWarnings");
       if (processedWithWarning)
       {
-        log.warn("Cloud processed your request with warnings, but it was successful.");
+        log.warn(" 🤨 SimpleLocalize processed your request with warnings, but it was successful.");
       }
-      log.info("Successfully uploaded {} keys", keysProcessed);
+      log.info(" 🎉 Successfully uploaded {} keys", keysProcessed);
 
     } else
     {
       String message = JsonPath.read(json, "$.msg");
-      log.error("There was a problem with your request: {}", message);
+      log.error(" 😝 There was a problem with your request: {}", message);
       System.exit(1);
     }
   }
@@ -90,7 +90,7 @@ public final class SimpleLocalizeClient
     String boundary = "simplelocalize" + pseudoRandomNumber;
     Map<Object, Object> formData = Maps.newHashMap();
     formData.put("file", uploadPath);
-    log.info("Uploading {} with language key '{}'", uploadPath, languageKey);
+    log.info(" 🌍 Uploading {} with language key '{}'", uploadPath, languageKey);
     if (StringUtils.isNotEmpty(languageKey))
     {
       formData.put("languageKey", languageKey);
@@ -112,10 +112,10 @@ public final class SimpleLocalizeClient
 
     if (httpResponse.statusCode() == 200)
     {
-      log.info("Upload success");
+      log.info(" 🎉 Upload success");
     } else
     {
-      log.error("Upload failed");
+      log.error(" 😝 Upload failed");
       log.error("{} - {}", httpResponse.statusCode(), httpResponse.body());
     }
 
@@ -134,15 +134,15 @@ public final class SimpleLocalizeClient
             .header(TOKEN_HEADER_NAME, apiKey)
             .build();
 
-    log.info("Downloading to {}", downloadPath);
-    log.info("Requesting file");
+    log.info(" 🌍 Downloading to {}", downloadPath);
+    log.info(" 🌍 Requesting file");
     HttpResponse<byte[]> httpResponse = httpClient.send(httpRequest, HttpResponse.BodyHandlers.ofByteArray());
     if (httpResponse.statusCode() == 200)
     {
-      log.info("Request success");
+      log.info(" 👌 Request success");
     } else
     {
-      log.error("Request failed");
+      log.error(" 😝 Request failed");
       log.error("{} - {}", httpResponse.statusCode(), httpResponse.body());
       return;
     }
@@ -163,10 +163,10 @@ public final class SimpleLocalizeClient
       boolean isSuccessful = fileSavePath.toFile().delete();
       if (!isSuccessful)
       {
-        log.warn("Unable to delete file {}", downloadPath);
+        log.warn(" 😝 Unable to delete file {}", downloadPath);
       }
     }
-    log.info("Download success");
+    log.info(" 🎉 Download success!");
   }
 
   public int fetchGateCheckStatus() throws IOException, InterruptedException
@@ -186,12 +186,12 @@ public final class SimpleLocalizeClient
       String gateResult = JsonPath.read(json, "$.data.gateResult");
       String message = JsonPath.read(json, "$.data.message");
       int status = JsonPath.read(json, "$.data.status");
-      log.info("Gate result: {} (status: {}, message: {})", gateResult, status, message);
+      log.info(" 🌍 Gate result: {} (status: {}, message: {})", gateResult, status, message);
       return status;
     } else
     {
       String message = JsonPath.read(json, "$.msg");
-      log.error("There was a problem with your request: {}", message);
+      log.error(" 😝 There was a problem with your request: {}", message);
     }
     return -1;
   }

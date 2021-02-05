@@ -20,14 +20,14 @@ public class DownloadCommand implements CliCommand
     String profile = configuration.getProfile();
     String languageKey = configuration.getLanguageKey();
 
-    log.info("Downloading translation files");
+    log.info(" 🌍 Downloading translation files");
     try
     {
       SimpleLocalizeClient client = new SimpleLocalizeClient(apiKey, profile);
       client.downloadFile(downloadPath, downloadFormat, languageKey);
     } catch (InterruptedException | IOException e)
     {
-      log.error("Translations could not be downloaded", e);
+      log.error(" 😝 Translations could not be downloaded", e);
       System.exit(1);
     }
 
