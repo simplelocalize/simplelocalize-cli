@@ -112,7 +112,7 @@ public final class SimpleLocalizeClient
 
     if (httpResponse.statusCode() == 200)
     {
-      log.info("Upload successful");
+      log.info("Upload success");
     } else
     {
       log.error("Upload failed");
@@ -135,13 +135,14 @@ public final class SimpleLocalizeClient
             .build();
 
     log.info("Downloading to {}", downloadPath);
+    log.info("Requesting file");
     HttpResponse<byte[]> httpResponse = httpClient.send(httpRequest, HttpResponse.BodyHandlers.ofByteArray());
     if (httpResponse.statusCode() == 200)
     {
-      log.info("Export success");
+      log.info("Request success");
     } else
     {
-      log.error("Export failed");
+      log.error("Request failed");
       log.error("{} - {}", httpResponse.statusCode(), httpResponse.body());
       return;
     }
@@ -150,7 +151,7 @@ public final class SimpleLocalizeClient
     String remoteFileName = contentDispositionHeader.split("=")[1];
 
     Path fileSavePath = Path.of(downloadPath + File.separator + remoteFileName);
-    if (StringUtils.isNotEmpty(languageKey))
+    if (remoteFileName.endsWith(".zip"))
     {
       fileSavePath = downloadPath;
     }
@@ -165,7 +166,7 @@ public final class SimpleLocalizeClient
         log.warn("Unable to delete file {}", downloadPath);
       }
     }
-    log.info("Save success");
+    log.info("Download success");
   }
 
   public int fetchGateCheckStatus() throws IOException, InterruptedException

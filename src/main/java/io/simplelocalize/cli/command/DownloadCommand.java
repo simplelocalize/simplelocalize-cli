@@ -27,7 +27,7 @@ public class DownloadCommand implements CliCommand
       client.downloadFile(downloadPath, downloadFormat, languageKey);
     } catch (InterruptedException | IOException e)
     {
-      log.error("Translations could not be downloaded");
+      log.error("Translations could not be downloaded", e);
       System.exit(1);
     }
 
