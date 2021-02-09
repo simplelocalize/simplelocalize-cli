@@ -23,6 +23,7 @@ public class FileListReaderUtilTest
 
     //then
     Assertions.assertThat(result).hasSize(2);
+    Assertions.assertThat(result).extracting(FileToUpload::getPath).containsExactlyInAnyOrder(Paths.get("./junit/lang-in-directory/en/strings.xml"), Paths.get("./junit/lang-in-directory/es/strings.xml"));
     Assertions.assertThat(result).extracting(FileToUpload::getLanguage).containsExactlyInAnyOrder("en", "es");
   }
 
@@ -37,6 +38,7 @@ public class FileListReaderUtilTest
 
     //then
     Assertions.assertThat(result).hasSize(2);
+    Assertions.assertThat(result).extracting(FileToUpload::getPath).containsExactlyInAnyOrder(Paths.get("./junit/lang-in-directory-with-prefix/values-en/strings.xml"), Paths.get("./junit/lang-in-directory-with-prefix/values-es/strings.xml"));
     Assertions.assertThat(result).extracting(FileToUpload::getLanguage).containsExactlyInAnyOrder("en", "es");
   }
 
@@ -51,6 +53,7 @@ public class FileListReaderUtilTest
 
     //then
     Assertions.assertThat(result).hasSize(2);
+    Assertions.assertThat(result).extracting(FileToUpload::getPath).containsExactlyInAnyOrder(Paths.get("./junit/lang-in-filename/en.json"), Paths.get("./junit/lang-in-filename/es.json"));
     Assertions.assertThat(result).extracting(FileToUpload::getLanguage).containsExactlyInAnyOrder("en", "es");
   }
 }
