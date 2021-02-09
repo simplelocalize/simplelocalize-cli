@@ -44,10 +44,10 @@ public class ConfigurationLoader
     {
       InputStream inputStream = new FileInputStream(file);
       configuration = yaml.load(inputStream);
-      log.info("Loaded configuration file from: {}", configurationFilePath);
+      log.info(" 🗄 Loaded configuration file from: {}", configurationFilePath);
     } catch (Exception e)
     {
-      log.info("Using default configuration. Configuration file not found at: {}", configurationFilePath);
+      log.info(" 🗄 Using default configuration. Configuration file not found at: {}", configurationFilePath);
       configuration = new Configuration();
       configuration.setSearchDir(CURRENT_DIRECTORY);
       return configuration;
