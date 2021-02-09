@@ -7,17 +7,17 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 
-import static org.junit.Assert.*;
-
-public class FileReaderUtilTest {
+public class FileContentUtilTest
+{
 
   @Test
-  public void shouldTryReadLines() {
+  public void shouldTryReadLines()
+  {
     //given
-    String path = FileReaderUtilTest.class.getClassLoader().getResource("example-test.txt").getPath();
+    String path = FileListReaderUtilTest.class.getClassLoader().getResource("example-test.txt").getPath();
 
     //when
-    List<String> result = FileReaderUtil.tryReadLines(Paths.get(path));
+    List<String> result = FileContentUtil.tryReadLines(Paths.get(path));
 
     //then
     Assertions.assertThat(result).hasSize(3);
@@ -25,12 +25,13 @@ public class FileReaderUtilTest {
   }
 
   @Test
-  public void shouldReturnEmptyStringWhenFileNotFound() {
+  public void shouldReturnEmptyStringWhenFileNotFound()
+  {
     //given
     Path given = Paths.get("some path");
 
     //when
-    String result = FileReaderUtil.tryReadContent(given);
+    String result = FileContentUtil.tryReadContent(given);
 
     //then
     Assertions.assertThat(result).isNotNull();
@@ -38,12 +39,13 @@ public class FileReaderUtilTest {
   }
 
   @Test
-  public void shouldReturnEmptyListWhenFileNotFound() {
+  public void shouldReturnEmptyListWhenFileNotFound()
+  {
     //given
     Path given = Paths.get("some path");
 
     //when
-    List<String> result = FileReaderUtil.tryReadLines(given);
+    List<String> result = FileContentUtil.tryReadLines(given);
 
     //then
     Assertions.assertThat(result).isNotNull();
@@ -51,14 +53,16 @@ public class FileReaderUtilTest {
   }
 
   @Test
-  public void shouldTryReadContent() {
+  public void shouldTryReadContent()
+  {
     //given
-    String path = FileReaderUtilTest.class.getClassLoader().getResource("example-test.txt").getPath();
+    String path = FileListReaderUtilTest.class.getClassLoader().getResource("example-test.txt").getPath();
 
     //when
-    String result = FileReaderUtil.tryReadContent(Paths.get(path));
+    String result = FileContentUtil.tryReadContent(Paths.get(path));
 
     //then
     Assertions.assertThat(result).isNotEmpty();
   }
+
 }

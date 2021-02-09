@@ -1,6 +1,7 @@
 package io.simplelocalize.cli.util;
 
 import io.simplelocalize.cli.client.SimpleLocalizeClient;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -8,6 +9,8 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
@@ -19,29 +22,19 @@ public class ZipUtils
   {
   }
 
-  public static void unzip(String zipFilePath, String destinationPath)
+  public static void unzip(String zipFilePath, String destinationPath, String templateKey)
   {
-    File dir = new File(destinationPath);
-    if (!dir.exists())
-    {
-      boolean isSuccessful = dir.mkdirs();
-      if (!isSuccessful)
-      {
-        log.warn("Unable to create not existing directories");
-      }
-    }
-
     try
     {
-      unzipFiles(zipFilePath, destinationPath);
+      unzipFiles(zipFilePath, destinationPath, templateKey);
     } catch (IOException e)
     {
-      log.error("Unable to unzip archive", e);
+      log.error(" 😝 Unable to unzip archive", e);
     }
 
   }
 
-  private static void unzipFiles(String zipFilePath, String destinationPath) throws IOException
+  private static void unzipFiles(String zipFilePath, String destinationPath, String templateKey) throws IOException
   {
     byte[] buffer = new byte[1024];
     try (ZipInputStream zipInputStream = new ZipInputStream(new FileInputStream(zipFilePath)))
@@ -50,15 +43,12 @@ public class ZipUtils
       while (entry != null)
       {
         String fileName = entry.getName();
-        File newFile = new File(destinationPath + File.separator + fileName);
-        log.info("Unzipping to " + newFile.getAbsolutePath());
-        boolean isSuccessful = new File(newFile.getParent()).mkdirs();
-        if (isSuccessful)
-        {
-          log.warn("Unable to create not existing directories for {}", newFile.getAbsolutePath());
-        }
+        String outputPath = StringUtils.replace(destinationPath, templateKey, fileName);
+        File outputFile = new File(outputPath);
+        log.info(" 📦 Unzipping to " + outputFile.getAbsolutePath());
+        Files.createDirectories(Path.of(outputFile.getParent()));
 
-        try (FileOutputStream fileOutputStream = new FileOutputStream(newFile))
+        try (FileOutputStream fileOutputStream = new FileOutputStream(outputFile))
         {
           int length;
           while ((length = zipInputStream.read(buffer)) > 0)

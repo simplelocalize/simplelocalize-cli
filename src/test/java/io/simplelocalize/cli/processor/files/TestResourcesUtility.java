@@ -1,6 +1,6 @@
 package io.simplelocalize.cli.processor.files;
 
-import io.simplelocalize.cli.util.FileReaderUtil;
+import io.simplelocalize.cli.util.FileContentUtil;
 
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -16,7 +16,7 @@ public final class TestResourcesUtility {
 
   public static List<String> readFile(String file) {
     Path read = read(file);
-    return FileReaderUtil.tryReadLines(read);
+    return FileContentUtil.tryReadLines(read);
   }
 
   public static Path read(String inResourcesFileOrDirectory) {

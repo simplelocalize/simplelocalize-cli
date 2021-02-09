@@ -1,7 +1,6 @@
 package io.simplelocalize.cli.processor.keys;
 
 import io.simplelocalize.cli.util.FileContentUtil;
-import io.simplelocalize.cli.util.FileReaderUtil;
 
 import java.nio.file.Path;
 import java.util.Set;
@@ -13,7 +12,7 @@ public class EjsKeyExtractor implements KeyExtractor {
 
   @Override
   public Set<String> extractKeysFromFile(Path filePath) {
-    String fileContent = FileReaderUtil.tryReadContent(filePath);
+    String fileContent = FileContentUtil.tryReadContent(filePath);
     fileContent = FileContentUtil.transformTextToOneLine(fileContent);
     return matchI18n(fileContent);
 
