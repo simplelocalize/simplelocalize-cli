@@ -22,7 +22,7 @@ import java.util.Collection;
 import java.util.Map;
 import java.util.Objects;
 
-import static io.simplelocalize.cli.util.FileReaderUtil.LANGUAGE_TEMPLATE_KEY;
+import static io.simplelocalize.cli.util.FileListReaderUtil.LANGUAGE_TEMPLATE_KEY;
 
 public final class SimpleLocalizeClient
 {
@@ -123,7 +123,8 @@ public final class SimpleLocalizeClient
   public void downloadFile(Path downloadPath, String downloadFormat, String languageKey) throws IOException, InterruptedException
   {
     String endpointUrl = API_URL + "/cli/v1/download?downloadFormat=" + downloadFormat;
-    if (StringUtils.isNotEmpty(languageKey))
+    boolean isRequestedTranslationsForSpecificLanguage = StringUtils.isNotEmpty(languageKey);
+    if (isRequestedTranslationsForSpecificLanguage)
     {
       endpointUrl += "&languageKey=" + languageKey;
     }
@@ -146,27 +147,36 @@ public final class SimpleLocalizeClient
       return;
     }
     byte[] body = httpResponse.body();
-    String contentDispositionHeader = httpResponse.headers().firstValue("Content-Disposition").orElse("");
-    String remoteFileName = contentDispositionHeader.split("=")[1];
 
-    Path fileSavePath = Path.of(downloadPath + File.separator + remoteFileName);
-    boolean shouldSaveAsASingleFile = StringUtils.isNotEmpty(languageKey) || downloadFormat.equalsIgnoreCase("multi-language-json");
-    if (shouldSaveAsASingleFile)
+    boolean isFileFormatWithAllLanguages = downloadFormat.equalsIgnoreCase("multi-language-json");
+    if (isRequestedTranslationsForSpecificLanguage || isFileFormatWithAllLanguages)
     {
-      fileSavePath = downloadPath;
+      Files.createDirectories(downloadPath.getParent());
+      Files.write(downloadPath, body);
+    } else
+    {
+      saveAsMultipleFiles(downloadPath, body);
     }
+
+    log.info(" 🎉 Download success!");
+  }
+
+  private void saveAsMultipleFiles(Path downloadPath, byte[] body) throws IOException
+  {
+    String[] splitByLanguageTemplateKey = StringUtils.splitByWholeSeparator(downloadPath.toString(), LANGUAGE_TEMPLATE_KEY);
+    String directoriesPartBeforeTemplateKeyWithPrefix = splitByLanguageTemplateKey[0];
+    String directoriesPartBeforeTemplateKey = removePrefix(directoriesPartBeforeTemplateKeyWithPrefix);
+    Files.createDirectories(Path.of(directoriesPartBeforeTemplateKey));
+    Path fileSavePath = Path.of(directoriesPartBeforeTemplateKey + File.separator + "translations.zip");
 
     Files.write(fileSavePath, body);
-    if (remoteFileName.endsWith(".zip"))
-    {
-      ZipUtils.unzip(fileSavePath.toString(), downloadPath.toString(), LANGUAGE_TEMPLATE_KEY);
-      boolean isSuccessful = fileSavePath.toFile().delete();
-      if (!isSuccessful)
-      {
-        log.warn(" 😝 Unable to delete file {}", downloadPath);
-      }
-    }
-    log.info(" 🎉 Download success!");
+    ZipUtils.unzip(fileSavePath.toString(), downloadPath.toString(), LANGUAGE_TEMPLATE_KEY);
+    Files.delete(fileSavePath);
+  }
+
+  private String removePrefix(String directoriesPartBeforeTemplateKeyWithPrefix)
+  {
+    return StringUtils.substringBeforeLast(directoriesPartBeforeTemplateKeyWithPrefix, File.separator);
   }
 
   public int fetchGateCheckStatus() throws IOException, InterruptedException

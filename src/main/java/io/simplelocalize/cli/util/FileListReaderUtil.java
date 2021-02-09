@@ -15,13 +15,13 @@ import java.util.stream.Stream;
 /**
  * Feel free to use or extend this utility
  */
-public class FileReaderUtil
+public class FileListReaderUtil
 {
 
   public static final String LANGUAGE_TEMPLATE_KEY = "{lang}";
 
 
-  private FileReaderUtil()
+  private FileListReaderUtil()
   {
 
   }

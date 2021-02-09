@@ -9,6 +9,8 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
@@ -22,22 +24,12 @@ public class ZipUtils
 
   public static void unzip(String zipFilePath, String destinationPath, String templateKey)
   {
-    File dir = new File(destinationPath);
-    if (!dir.exists())
-    {
-      boolean isSuccessful = dir.mkdirs();
-      if (!isSuccessful)
-      {
-        log.warn("Unable to create not existing directories");
-      }
-    }
-
     try
     {
       unzipFiles(zipFilePath, destinationPath, templateKey);
     } catch (IOException e)
     {
-      log.error("Unable to unzip archive", e);
+      log.error(" 😝 Unable to unzip archive", e);
     }
 
   }
@@ -52,15 +44,11 @@ public class ZipUtils
       {
         String fileName = entry.getName();
         String outputPath = StringUtils.replace(destinationPath, templateKey, fileName);
-        File newFile = new File(outputPath);
-        log.info("Unzipping to " + newFile.getAbsolutePath());
-        boolean isSuccessful = new File(newFile.getParent()).mkdirs();
-        if (isSuccessful)
-        {
-          log.warn("Unable to create not existing directories for {}", newFile.getAbsolutePath());
-        }
+        File outputFile = new File(outputPath);
+        log.info(" 📦 Unzipping to " + outputFile.getAbsolutePath());
+        Files.createDirectories(Path.of(outputFile.getParent()));
 
-        try (FileOutputStream fileOutputStream = new FileOutputStream(newFile))
+        try (FileOutputStream fileOutputStream = new FileOutputStream(outputFile))
         {
           int length;
           while ((length = zipInputStream.read(buffer)) > 0)

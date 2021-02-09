@@ -4,7 +4,7 @@ import com.google.common.collect.Lists;
 import io.simplelocalize.cli.client.SimpleLocalizeClient;
 import io.simplelocalize.cli.client.dto.FileToUpload;
 import io.simplelocalize.cli.configuration.Configuration;
-import io.simplelocalize.cli.util.FileReaderUtil;
+import io.simplelocalize.cli.util.FileListReaderUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,7 +14,7 @@ import java.nio.file.Path;
 import java.util.List;
 import java.util.Optional;
 
-import static io.simplelocalize.cli.util.FileReaderUtil.LANGUAGE_TEMPLATE_KEY;
+import static io.simplelocalize.cli.util.FileListReaderUtil.LANGUAGE_TEMPLATE_KEY;
 
 public class UploadCommand implements CliCommand
 {
@@ -48,7 +48,7 @@ public class UploadCommand implements CliCommand
     {
       try
       {
-        List<FileToUpload> foundMatchingFiles = FileReaderUtil.getMatchingFilesToUpload(configurationUploadPath, LANGUAGE_TEMPLATE_KEY);
+        List<FileToUpload> foundMatchingFiles = FileListReaderUtil.getMatchingFilesToUpload(configurationUploadPath, LANGUAGE_TEMPLATE_KEY);
         filesToUpload.addAll(foundMatchingFiles);
       } catch (IOException e)
       {

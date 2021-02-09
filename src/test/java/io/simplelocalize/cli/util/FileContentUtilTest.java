@@ -14,7 +14,7 @@ public class FileContentUtilTest
   public void shouldTryReadLines()
   {
     //given
-    String path = FileReaderUtilTest.class.getClassLoader().getResource("example-test.txt").getPath();
+    String path = FileListReaderUtilTest.class.getClassLoader().getResource("example-test.txt").getPath();
 
     //when
     List<String> result = FileContentUtil.tryReadLines(Paths.get(path));
@@ -56,7 +56,7 @@ public class FileContentUtilTest
   public void shouldTryReadContent()
   {
     //given
-    String path = FileReaderUtilTest.class.getClassLoader().getResource("example-test.txt").getPath();
+    String path = FileListReaderUtilTest.class.getClassLoader().getResource("example-test.txt").getPath();
 
     //when
     String result = FileContentUtil.tryReadContent(Paths.get(path));

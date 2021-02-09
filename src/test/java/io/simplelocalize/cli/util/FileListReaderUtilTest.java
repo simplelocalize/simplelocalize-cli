@@ -8,7 +8,8 @@ import java.io.IOException;
 import java.nio.file.Paths;
 import java.util.List;
 
-public class FileReaderUtilTest {
+public class FileListReaderUtilTest
+{
 
 
   @Test
@@ -18,7 +19,7 @@ public class FileReaderUtilTest {
     String path = "./junit/lang-in-directory/{lang}/strings.xml";
 
     //when
-    List<FileToUpload> result = FileReaderUtil.getMatchingFilesToUpload(Paths.get(path), "{lang}");
+    List<FileToUpload> result = FileListReaderUtil.getMatchingFilesToUpload(Paths.get(path), "{lang}");
 
     //then
     Assertions.assertThat(result).hasSize(2);
@@ -32,7 +33,7 @@ public class FileReaderUtilTest {
     String path = "./junit/lang-in-directory-with-prefix/values-{lang}/strings.xml";
 
     //when
-    List<FileToUpload> result = FileReaderUtil.getMatchingFilesToUpload(Paths.get(path), "{lang}");
+    List<FileToUpload> result = FileListReaderUtil.getMatchingFilesToUpload(Paths.get(path), "{lang}");
 
     //then
     Assertions.assertThat(result).hasSize(2);
@@ -46,7 +47,7 @@ public class FileReaderUtilTest {
     String path = "./junit/lang-in-filename/{lang}.json";
 
     //when
-    List<FileToUpload> result = FileReaderUtil.getMatchingFilesToUpload(Paths.get(path), "{lang}");
+    List<FileToUpload> result = FileListReaderUtil.getMatchingFilesToUpload(Paths.get(path), "{lang}");
 
     //then
     Assertions.assertThat(result).hasSize(2);

@@ -15,7 +15,7 @@ import java.util.List;
 public class FileContentUtil
 {
 
-  private static final Logger log = LoggerFactory.getLogger(FileReaderUtil.class);
+  private static final Logger log = LoggerFactory.getLogger(FileListReaderUtil.class);
 
 
   private FileContentUtil()
