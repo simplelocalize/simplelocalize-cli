@@ -22,10 +22,10 @@ import java.util.Collection;
 import java.util.Map;
 import java.util.Objects;
 
+import static io.simplelocalize.cli.util.FileReaderUtil.LANGUAGE_TEMPLATE_KEY;
+
 public final class SimpleLocalizeClient
 {
-
-
   private static final String API_URL = "https://api.simplelocalize.io";
   private static final String TOKEN_HEADER_NAME = "X-SimpleLocalize-Token";
   private final HttpClient httpClient;
@@ -34,7 +34,6 @@ public final class SimpleLocalizeClient
 
   private final Logger log = LoggerFactory.getLogger(SimpleLocalizeClient.class);
   private final SecureRandom random;
-
 
   public SimpleLocalizeClient(String apiKey, String profile)
   {
@@ -151,7 +150,8 @@ public final class SimpleLocalizeClient
     String remoteFileName = contentDispositionHeader.split("=")[1];
 
     Path fileSavePath = Path.of(downloadPath + File.separator + remoteFileName);
-    if (StringUtils.isNotEmpty(languageKey) || downloadFormat.equalsIgnoreCase("multi-language-json"))
+    boolean shouldSaveAsASingleFile = StringUtils.isNotEmpty(languageKey) || downloadFormat.equalsIgnoreCase("multi-language-json");
+    if (shouldSaveAsASingleFile)
     {
       fileSavePath = downloadPath;
     }
@@ -159,7 +159,7 @@ public final class SimpleLocalizeClient
     Files.write(fileSavePath, body);
     if (remoteFileName.endsWith(".zip"))
     {
-      ZipUtils.unzip(fileSavePath.toString(), downloadPath.toString());
+      ZipUtils.unzip(fileSavePath.toString(), downloadPath.toString(), LANGUAGE_TEMPLATE_KEY);
       boolean isSuccessful = fileSavePath.toFile().delete();
       if (!isSuccessful)
       {

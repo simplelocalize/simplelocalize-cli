@@ -1,64 +1,55 @@
 package io.simplelocalize.cli.util;
 
+import io.simplelocalize.cli.client.dto.FileToUpload;
 import org.assertj.core.api.Assertions;
 import org.junit.Test;
 
-import java.nio.file.Path;
+import java.io.IOException;
 import java.nio.file.Paths;
 import java.util.List;
 
-import static org.junit.Assert.*;
-
 public class FileReaderUtilTest {
 
+
   @Test
-  public void shouldTryReadLines() {
+  public void shouldFindFilesWithLangInDirectoryName() throws IOException
+  {
     //given
-    String path = FileReaderUtilTest.class.getClassLoader().getResource("example-test.txt").getPath();
+    String path = "./junit/lang-in-directory/{lang}/strings.xml";
 
     //when
-    List<String> result = FileReaderUtil.tryReadLines(Paths.get(path));
+    List<FileToUpload> result = FileReaderUtil.getMatchingFilesToUpload(Paths.get(path), "{lang}");
 
     //then
-    Assertions.assertThat(result).hasSize(3);
-    Assertions.assertThat(result).containsExactly("call", "me", "maybe");
+    Assertions.assertThat(result).hasSize(2);
+    Assertions.assertThat(result).extracting(FileToUpload::getLanguage).containsExactlyInAnyOrder("en", "es");
   }
 
   @Test
-  public void shouldReturnEmptyStringWhenFileNotFound() {
+  public void shouldFindFilesWithLangInDirectoryNameWithPrefix() throws IOException
+  {
     //given
-    Path given = Paths.get("some path");
+    String path = "./junit/lang-in-directory-with-prefix/values-{lang}/strings.xml";
 
     //when
-    String result = FileReaderUtil.tryReadContent(given);
+    List<FileToUpload> result = FileReaderUtil.getMatchingFilesToUpload(Paths.get(path), "{lang}");
 
     //then
-    Assertions.assertThat(result).isNotNull();
-    Assertions.assertThat(result).isEmpty();
+    Assertions.assertThat(result).hasSize(2);
+    Assertions.assertThat(result).extracting(FileToUpload::getLanguage).containsExactlyInAnyOrder("en", "es");
   }
 
   @Test
-  public void shouldReturnEmptyListWhenFileNotFound() {
+  public void shouldFindFilesWithLangInFilename() throws IOException
+  {
     //given
-    Path given = Paths.get("some path");
+    String path = "./junit/lang-in-filename/{lang}.json";
 
     //when
-    List<String> result = FileReaderUtil.tryReadLines(given);
+    List<FileToUpload> result = FileReaderUtil.getMatchingFilesToUpload(Paths.get(path), "{lang}");
 
     //then
-    Assertions.assertThat(result).isNotNull();
-    Assertions.assertThat(result).isEmpty();
-  }
-
-  @Test
-  public void shouldTryReadContent() {
-    //given
-    String path = FileReaderUtilTest.class.getClassLoader().getResource("example-test.txt").getPath();
-
-    //when
-    String result = FileReaderUtil.tryReadContent(Paths.get(path));
-
-    //then
-    Assertions.assertThat(result).isNotEmpty();
+    Assertions.assertThat(result).hasSize(2);
+    Assertions.assertThat(result).extracting(FileToUpload::getLanguage).containsExactlyInAnyOrder("en", "es");
   }
 }

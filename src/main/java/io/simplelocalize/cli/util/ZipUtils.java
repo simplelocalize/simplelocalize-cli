@@ -1,6 +1,7 @@
 package io.simplelocalize.cli.util;
 
 import io.simplelocalize.cli.client.SimpleLocalizeClient;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -19,7 +20,7 @@ public class ZipUtils
   {
   }
 
-  public static void unzip(String zipFilePath, String destinationPath)
+  public static void unzip(String zipFilePath, String destinationPath, String templateKey)
   {
     File dir = new File(destinationPath);
     if (!dir.exists())
@@ -33,7 +34,7 @@ public class ZipUtils
 
     try
     {
-      unzipFiles(zipFilePath, destinationPath);
+      unzipFiles(zipFilePath, destinationPath, templateKey);
     } catch (IOException e)
     {
       log.error("Unable to unzip archive", e);
@@ -41,7 +42,7 @@ public class ZipUtils
 
   }
 
-  private static void unzipFiles(String zipFilePath, String destinationPath) throws IOException
+  private static void unzipFiles(String zipFilePath, String destinationPath, String templateKey) throws IOException
   {
     byte[] buffer = new byte[1024];
     try (ZipInputStream zipInputStream = new ZipInputStream(new FileInputStream(zipFilePath)))
@@ -50,7 +51,8 @@ public class ZipUtils
       while (entry != null)
       {
         String fileName = entry.getName();
-        File newFile = new File(destinationPath + File.separator + fileName);
+        String outputPath = StringUtils.replace(destinationPath, templateKey, fileName);
+        File newFile = new File(outputPath);
         log.info("Unzipping to " + newFile.getAbsolutePath());
         boolean isSuccessful = new File(newFile.getParent()).mkdirs();
         if (isSuccessful)

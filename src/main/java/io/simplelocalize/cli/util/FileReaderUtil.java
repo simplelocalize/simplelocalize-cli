@@ -3,17 +3,11 @@ package io.simplelocalize.cli.util;
 import com.google.common.collect.Lists;
 import io.simplelocalize.cli.client.dto.FileToUpload;
 import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.URLDecoder;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -24,74 +18,46 @@ import java.util.stream.Stream;
 public class FileReaderUtil
 {
 
-  private static final Logger log = LoggerFactory.getLogger(FileReaderUtil.class);
+  public static final String LANGUAGE_TEMPLATE_KEY = "{lang}";
+
 
   private FileReaderUtil()
   {
 
   }
 
-  public static List<String> tryReadLines(Path filePath)
-  {
-    Path decodedFilePath = null;
-    List<String> fileLines = Collections.emptyList();
-    try
-    {
-      decodedFilePath = Paths.get(URLDecoder.decode(String.valueOf(Paths.get(String.valueOf(filePath))), StandardCharsets.UTF_8));
-      fileLines = Files.readAllLines(decodedFilePath, StandardCharsets.UTF_8);
-    } catch (IOException e)
-    {
-      log.warn("Cannot read file from path " + decodedFilePath.toString(), e);
-    }
-    return fileLines;
-  }
-
-
-  public static String tryReadContent(Path filePath)
-  {
-    Path decodedFilePath = null;
-    try
-    {
-      decodedFilePath = Paths.get(URLDecoder.decode(String.valueOf(Paths.get(String.valueOf(filePath))), StandardCharsets.UTF_8));
-      return Files.readString(decodedFilePath, StandardCharsets.UTF_8);
-    } catch (IOException e)
-    {
-      log.warn("Cannot read file from path " + decodedFilePath.toString(), e);
-    }
-    return "";
-  }
-
-
   public static List<FileToUpload> getMatchingFilesToUpload(Path uploadPathWithTemplateKey, String templateKey) throws IOException
   {
     List<FileToUpload> output = Lists.newArrayList();
-    File file = uploadPathWithTemplateKey.toFile();
-    File parentDirectoryFile = file.getParentFile();
+    String filePathWithTemplate = uploadPathWithTemplateKey.toString();
 
-    Path parentDirectory = Path.of("./");
-    if (parentDirectoryFile != null)
+    String[] splitUploadPath = StringUtils.splitByWholeSeparator(filePathWithTemplate, templateKey);
+    String firstPart = splitUploadPath[0];
+    String secondPart = splitUploadPath[1];
+
+    Path parentDir = Path.of(firstPart);
+
+    boolean exists = Files.exists(parentDir);
+    if (!exists)
     {
-      parentDirectory = parentDirectoryFile.toPath();
+      String parentDirectory = StringUtils.substringBeforeLast(firstPart, File.separator);
+      parentDir = Path.of(parentDirectory);
     }
 
-    try (Stream<Path> foundFilesStream = Files.walk(parentDirectory, 1))
+    try (Stream<Path> foundFilesStream = Files.walk(parentDir, 10))
     {
-      var foundFiles = foundFilesStream.collect(Collectors.toList());
-      Path fileNameWithTemplateKey = uploadPathWithTemplateKey.getFileName();
-      String escapedTemplateKey = String.format("\\%s", templateKey);
-      String[] split = fileNameWithTemplateKey.toString().split(escapedTemplateKey);
-      String beforeLanguageTemplateKey = split[0];
-      String afterLanguageTemplateKey = split[1];
-
+      var foundPaths = foundFilesStream.collect(Collectors.toList());
+      var foundFiles = foundPaths.stream()
+              .filter(Files::isRegularFile)
+              .filter(path -> path.toString().endsWith(secondPart))
+              .collect(Collectors.toList());
       for (Path foundFile : foundFiles)
       {
-        String fileName = foundFile.getFileName().toString();
-        if (fileName.contains(beforeLanguageTemplateKey) && fileName.contains(afterLanguageTemplateKey))
-        {
-          String removedFirstPart = StringUtils.remove(fileName, beforeLanguageTemplateKey);
-          String plainLanguageKey = StringUtils.remove(removedFirstPart, afterLanguageTemplateKey);
-          output.add(FileToUpload.of(foundFile, plainLanguageKey));
-        }
+        String foundFilePathString = foundFile.toString();
+        String removedPrefix = StringUtils.remove(foundFilePathString, firstPart);
+        String removedSuffix = StringUtils.remove(removedPrefix, secondPart);
+        String removedPathSeparator = StringUtils.remove(removedSuffix, File.separator);
+        output.add(FileToUpload.of(foundFile, removedPathSeparator));
       }
       return output;
     }

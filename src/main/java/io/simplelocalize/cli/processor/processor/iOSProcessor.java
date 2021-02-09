@@ -38,6 +38,6 @@ public class iOSProcessor implements ProjectProcessor
   @Override
   public String getProjectTypeSupport()
   {
-    return "apple/ios";
+    return "apple/ios-macos";
   }
 }

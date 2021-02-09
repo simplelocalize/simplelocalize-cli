@@ -5,6 +5,7 @@ import io.simplelocalize.cli.client.SimpleLocalizeClient;
 import io.simplelocalize.cli.client.dto.FileToUpload;
 import io.simplelocalize.cli.configuration.Configuration;
 import io.simplelocalize.cli.util.FileReaderUtil;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -12,6 +13,8 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.Optional;
+
+import static io.simplelocalize.cli.util.FileReaderUtil.LANGUAGE_TEMPLATE_KEY;
 
 public class UploadCommand implements CliCommand
 {
@@ -33,13 +36,19 @@ public class UploadCommand implements CliCommand
       System.exit(1);
     }
 
-    final String languageTemplateKey = "{lang}";
-    boolean fileNameWithTemplate = configurationUploadPath.toString().contains(languageTemplateKey);
+    boolean fileNameWithTemplate = configurationUploadPath.toString().contains(LANGUAGE_TEMPLATE_KEY);
+
+    if (fileNameWithTemplate && StringUtils.isNotBlank(uploadLanguageKey))
+    {
+      log.error(" 😝 Please use 'languageKey' param OR '{lang}' variable in 'uploadPath' param!");
+      System.exit(1);
+    }
+
     if (fileNameWithTemplate)
     {
       try
       {
-        List<FileToUpload> foundMatchingFiles = FileReaderUtil.getMatchingFilesToUpload(configurationUploadPath, languageTemplateKey);
+        List<FileToUpload> foundMatchingFiles = FileReaderUtil.getMatchingFilesToUpload(configurationUploadPath, LANGUAGE_TEMPLATE_KEY);
         filesToUpload.addAll(foundMatchingFiles);
       } catch (IOException e)
       {

@@ -2,7 +2,6 @@ package io.simplelocalize.cli.processor.keys;
 
 import com.google.common.collect.Sets;
 import io.simplelocalize.cli.util.FileContentUtil;
-import io.simplelocalize.cli.util.FileReaderUtil;
 
 import java.nio.file.Path;
 import java.util.Set;
@@ -14,7 +13,7 @@ public class IEighteenNextKeyExtractor implements KeyExtractor {
 
   @Override
   public Set<String> extractKeysFromFile(Path filePath) {
-    String fileContent = FileReaderUtil.tryReadContent(filePath);
+    String fileContent = FileContentUtil.tryReadContent(filePath);
     fileContent = FileContentUtil.transformTextToOneLine(fileContent);
     Set<String> ts = matchT(fileContent);
     Set<String> i18nKeys = matchI18nKey(fileContent);
