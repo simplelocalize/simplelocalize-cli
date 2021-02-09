@@ -33,6 +33,7 @@ public class FileListReaderUtil
 
     String[] splitUploadPath = StringUtils.splitByWholeSeparator(filePathWithTemplate, templateKey);
     String firstPart = splitUploadPath[0];
+    String fileName = StringUtils.substringAfterLast(firstPart, File.separator);
     String secondPart = splitUploadPath[1];
 
     Path parentDir = Path.of(firstPart);
@@ -49,7 +50,7 @@ public class FileListReaderUtil
       var foundPaths = foundFilesStream.collect(Collectors.toList());
       var foundFiles = foundPaths.stream()
               .filter(Files::isRegularFile)
-              .filter(path -> path.toString().endsWith(secondPart))
+              .filter(path -> path.toString().endsWith(secondPart) && path.toString().contains(fileName))
               .collect(Collectors.toList());
       for (Path foundFile : foundFiles)
       {

@@ -25,7 +25,7 @@ public class UploadCommand implements CliCommand
     Path configurationUploadPath = configuration.getUploadPath();
     String apiKey = configuration.getApiKey();
     String profile = configuration.getProfile();
-    String uploadLanguageKey = Optional.ofNullable(configuration.getLanguageKey()).orElse("default");
+    String uploadLanguageKey = configuration.getLanguageKey();
 
     SimpleLocalizeClient client = new SimpleLocalizeClient(apiKey, profile);
 
