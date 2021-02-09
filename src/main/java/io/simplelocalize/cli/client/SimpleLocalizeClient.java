@@ -137,10 +137,7 @@ public final class SimpleLocalizeClient
     log.info(" 🌍 Downloading to {}", downloadPath);
     log.info(" 🌍 Requesting file");
     HttpResponse<byte[]> httpResponse = httpClient.send(httpRequest, HttpResponse.BodyHandlers.ofByteArray());
-    if (httpResponse.statusCode() == 200)
-    {
-      log.info(" 👌 Request success");
-    } else
+    if (httpResponse.statusCode() != 200)
     {
       log.error(" 😝 Request failed");
       log.error("{} - {}", httpResponse.statusCode(), httpResponse.body());
