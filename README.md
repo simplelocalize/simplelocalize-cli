@@ -33,8 +33,21 @@ Rememebr to [get API Key for your SimpleLocalize project](https://simplelocalize
 - `simplelocalize-cli upload` - learn more [how to upload translations or translation keys](https://simplelocalize.io/docs/cli/upload-translations/)
 - `simplelocalize-cli download` - learn more [how to download ready to use translation file](https://simplelocalize.io/docs/cli/download-translations/)
 
+## Integrations 
 
-## 👩‍⚖️ License
+- [Android localization guide](https://simplelocalize.io/docs/integrations/android/)
+- [iOS localization guide](https://simplelocalize.io/docs/integrations/ios-macos/)
+- [macOS localization guide](https://simplelocalize.io/docs/integrations/ios-macos/)
+- [JVM apps integration guide](https://simplelocalize.io/docs/file-formats/java-properties/)
+- [FormatJS integration guide](https://simplelocalize.io/docs/integrations/format-js/)
+- [FormatJS CLI messsages import guide](https://simplelocalize.io/docs/integrations/format-js-cli/)
+- [i18next HTTP backend integration guide](https://simplelocalize.io/docs/integrations/i18next/)
+
+## Documentation 
+
+Head to [docs.simplelocalize.io](https://simplelocalize.io/docs/cli/get-started/) to learn the SimpleLocalize basics
+
+## License
 
 Check LICENSE.md file
 
