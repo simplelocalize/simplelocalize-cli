@@ -36,5 +36,5 @@ Rememebr to [get API Key for your SimpleLocalize project](https://simplelocalize
 
 ## 👩‍⚖️ License
 
-MIT © 
+Check LICENSE.md file
 
