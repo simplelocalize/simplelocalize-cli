@@ -19,6 +19,8 @@ SimpleLocalize CLI to simplifies the process of translation in web apps, mobile 
 curl -s https://get.simplelocalize.io/install | bash
 ```
 
+🥸 Tip: Run script above to update CLI to the newest version. 
+
 ## Usage
 
 ```properties
