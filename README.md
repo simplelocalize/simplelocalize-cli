@@ -1,4 +1,4 @@
-![logo](https://simplelocalize.io/cli/get-started/get-started.png)
+![logo](https://simplelocalize.io/simplelocalize-cli-github.png)
 
 ![Tests](https://github.com/simplelocalize/simplelocalize-cli/workflows/Run%20Tests/badge.svg)
 ![Build native executables](https://github.com/simplelocalize/simplelocalize-cli/workflows/Build%20executables/badge.svg?branch=master)
