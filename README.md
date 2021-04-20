@@ -1,4 +1,4 @@
-![logo](https://simplelocalize.io/simplelocalize-cli-github.png)
+
 
 ![Tests](https://github.com/simplelocalize/simplelocalize-cli/workflows/Run%20Tests/badge.svg)
 [![Maintainability](https://api.codeclimate.com/v1/badges/af2f6a7680929a8dba41/maintainability)](https://codeclimate.com/github/simplelocalize/simplelocalize-cli/maintainability)
