@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created by simplelocalize.io -->
+<resources>
+    <string name="email.broken.button.instruction"></string>
+    <string name="email.password.changed.instruction.button"></string>
+    <string name="email.password.changed.subject"></string>
+    <string name="email.password.request.button.text"></string>
+    <string name="email.password.request.instruction.button"></string>
+    <string name="email.password.request.subject"></string>
+    <string name="email.team"></string>
+    <string name="email.user.created.button.text"></string>
+    <string name="email.user.created.instruction.button"></string>
+    <string name="email.user.created.subject"></string>
+    <string name="email.user.hello"></string>
+    <string name="email.weekly.report.machine.title"></string>
+    <string name="email.weekly.report.more.reports"></string>
+    <string name="email.weekly.report.nice.weekend"></string>
+    <string name="email.weekly.report.product.title"></string>
+    <string name="email.weekly.report.resign"></string>
+    <string name="email.weekly.report.sales"></string>
+    <string name="email.weekly.report.sales.revenue"></string>
+    <string name="email.weekly.report.sales.transactions"></string>
+    <string name="email.weekly.report.subject"></string>
+    <string name="email.weekly.report.team"></string>
+    <string name="email.weekly.report.transactions"></string>
+    <string name="push.coin.shortage"></string>
+</resources>

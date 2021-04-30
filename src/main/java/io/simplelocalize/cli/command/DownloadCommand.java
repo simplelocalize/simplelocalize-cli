@@ -23,7 +23,7 @@ public class DownloadCommand implements CliCommand
     log.info(" 🌍 Downloading translation files");
     try
     {
-      SimpleLocalizeClient client = new SimpleLocalizeClient(apiKey, profile);
+      SimpleLocalizeClient client = SimpleLocalizeClient.withProductionServer(apiKey, profile);
       client.downloadFile(downloadPath, downloadFormat, languageKey);
     } catch (InterruptedException | IOException e)
     {

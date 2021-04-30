@@ -12,7 +12,6 @@ import org.slf4j.LoggerFactory;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.List;
-import java.util.Optional;
 
 import static io.simplelocalize.cli.util.FileListReaderUtil.LANGUAGE_TEMPLATE_KEY;
 
@@ -27,7 +26,7 @@ public class UploadCommand implements CliCommand
     String profile = configuration.getProfile();
     String uploadLanguageKey = configuration.getLanguageKey();
 
-    SimpleLocalizeClient client = new SimpleLocalizeClient(apiKey, profile);
+    SimpleLocalizeClient client = SimpleLocalizeClient.withProductionServer(apiKey, profile);
 
     List<FileToUpload> filesToUpload = Lists.newArrayList();
     if (configurationUploadPath.toFile().isDirectory())

@@ -13,7 +13,7 @@ public class ValidateCommand implements CliCommand
   {
     String apiKey = configuration.getApiKey();
     String profile = configuration.getProfile();
-    SimpleLocalizeClient client = new SimpleLocalizeClient(apiKey, profile);
+    SimpleLocalizeClient client = SimpleLocalizeClient.withProductionServer(apiKey, profile);
 
     try
     {

@@ -13,7 +13,7 @@ import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 
-public class ConfigurationLoader
+public final class ConfigurationLoader
 {
 
   private static final String CURRENT_DIRECTORY = ".";

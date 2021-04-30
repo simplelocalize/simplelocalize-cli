@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created by simplelocalize.io -->
+<resources>
+    <string name="dog">Pies</string>
+    <string name="email.broken.button.instruction">W przypadku, gdy przycisk nie działa, prosimy o skopiowanie
+        poniższego adresu url i wklejenie go w przeglądarce.
+    </string>
+    <string name="email.password.changed.instruction.button">To jest potwierdzenie że hasło do Twojego konta
+        VendingMetrics zostało zmienione. W przypadku, gdy zmiania nie została wykonana przez Ciebie, prosimy o kontakt.
+    </string>
+    <string name="email.password.changed.subject">Twoje hasło do konta VendingMetrics zostało zmienione</string>
+    <string name="email.password.request.button.text">Resetuj hasło</string>
+    <string name="email.password.request.instruction.button">Aby zresetować hasło dla konta VendingMetrics, użyj
+        przycisku poniżej
+    </string>
+    <string name="email.password.request.subject">Reset hasła do konta VendingMetrics</string>
+    <string name="email.team">Zespół VendingMetrics.com</string>
+    <string name="email.user.created.button.text">Ustaw hasło</string>
+    <string name="email.user.created.instruction.button">Aby ustawić hasło dla konta VendingMetrics, użyj przycisku
+        poniżej
+    </string>
+    <string name="email.user.created.subject">Ustaw hasło do konta VendingMetrics</string>
+    <string name="email.user.hello">Dzień dobry, {0}</string>
+    <string name="email.weekly.report.machine.title">Najlepiej sprzedający automat w ostatnich 7 dniach</string>
+    <string name="email.weekly.report.more.reports">Więcej raportów sprzedaży oraz szczegółowe informacje znajdziesz w
+        systemie w zakładce "Raporty".
+    </string>
+    <string name="email.weekly.report.nice.weekend">Udanego weekendu!</string>
+    <string name="email.weekly.report.product.title">Najchętniej wybierany produkt w ostatnich 7 dniach</string>
+    <string name="email.weekly.report.resign">Aby zrezygnować z powiadomień przejdź do ustawień notyfikacji w systemie i
+        wyłącz tygodniowe raporty.
+    </string>
+    <string name="email.weekly.report.sales">Sprzedaż</string>
+    <string name="email.weekly.report.sales.revenue">{0} przychodu ze sprzedaży</string>
+    <string name="email.weekly.report.sales.transactions">{0} sprzedanych produkty</string>
+    <string name="email.weekly.report.subject">Raport tygodnia</string>
+    <string name="email.weekly.report.team">Zespół VendingMetrics.com</string>
+    <string name="email.weekly.report.transactions">Transakcje</string>
+    <string name="push.coin.shortage">Brakuje monet we wrzutniku.</string>
+</resources>

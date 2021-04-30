@@ -3,9 +3,9 @@ package io.simplelocalize.cli.command;
 import com.google.common.collect.Iterables;
 import io.simplelocalize.cli.client.SimpleLocalizeClient;
 import io.simplelocalize.cli.configuration.Configuration;
-import io.simplelocalize.cli.processor.ProcessResult;
-import io.simplelocalize.cli.processor.ProjectProcessor;
-import io.simplelocalize.cli.processor.ProjectProcessorFactory;
+import io.simplelocalize.cli.extraction.ExtractionResult;
+import io.simplelocalize.cli.extraction.ProjectProcessorFactory;
+import io.simplelocalize.cli.extraction.processor.ExtractionProcessor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -27,11 +27,12 @@ public class ExtractCommand implements CliCommand
     String projectType = configuration.getProjectType();
     String profile = configuration.getProfile();
 
-    SimpleLocalizeClient client = new SimpleLocalizeClient(apiKey, profile);
+    SimpleLocalizeClient client = SimpleLocalizeClient.withProductionServer(apiKey, profile);
 
     log.info(" 🕵️‍♂️ Running keys extraction");
-    ProjectProcessor projectProcessor = ProjectProcessorFactory.createForType(projectType);
-    ProcessResult result = projectProcessor.process(Paths.get(searchDir));
+    ProjectProcessorFactory processorFactory = new ProjectProcessorFactory();
+    ExtractionProcessor extractionProcessor = processorFactory.createForType(projectType);
+    ExtractionResult result = extractionProcessor.process(Paths.get(searchDir));
 
     Set<String> keys = result.getKeys();
     List<Path> processedFiles = result.getProcessedFiles();
