@@ -16,7 +16,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-class ClientBodyBuilders
+final class ClientBodyBuilders
 {
 
   private static final ObjectMapper objectMapper = new ObjectMapper();
@@ -27,13 +27,12 @@ class ClientBodyBuilders
 
   static HttpRequest.BodyPublisher ofKeysBody(Collection<String> keys) throws JsonProcessingException
   {
-    ImportForm importForm = new ImportForm();
 
     Set<ImportKey> importContent = keys.stream()
             .map(ImportKey::new)
             .collect(Collectors.toSet());
 
-    importForm.setContent(importContent);
+    ImportForm importForm = new ImportForm(importContent);
 
     String jsonString = objectMapper.writeValueAsString(importForm);
     return HttpRequest.BodyPublishers.ofString(jsonString);

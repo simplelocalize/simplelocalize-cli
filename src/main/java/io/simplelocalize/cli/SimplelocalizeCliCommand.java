@@ -20,13 +20,13 @@ import java.nio.file.Path;
         name = "simplelocalize-cli",
         description =
                 {
-                        "SimpleLocalize CLI is the official Localization CLI Tool for SimpleLocalize.io Platform",
+                        "SimpleLocalize CLI is an official Localization CLI Tool for SimpleLocalize.io Platform",
                         "Usage: 'simplelocalize-cli [command]'",
                         "Check https://docs.simplelocalize.io to learn more."
                 },
         mixinStandardHelpOptions = true,
         version = {
-                "SimpleLocalize CLI: 1.1.0",
+                "SimpleLocalize CLI: 1.2.0",
                 "JVM: ${java.version} (${java.vendor} ${java.vm.name} ${java.vm.version})",
                 "OS: ${os.name} ${os.version} ${os.arch}"}
 )
@@ -65,6 +65,21 @@ public class SimplelocalizeCliCommand implements Runnable
     }
     ExtractCommand extractCommand = new ExtractCommand();
     extractCommand.invoke(configuration);
+  }
+
+  @Command(name = "sync", description = "Synchronize (Upload & Download) translations with SimpleLocalize editor. Use 'simplelocalize-cli sync --help' to learn more about the parameters.")
+  public void sync(
+          @Option(names = {"--apiKey"}, description = "Project API Key") String apiKey,
+          @Option(names = {"--uploadPath"}, description = "Path to file with translation or translation keys to upload. Use '{lang}' to define language key if you are uploading more than one file with translations.") Path uploadPath,
+          @Option(names = {"--uploadFormat"}, description = "Translations or keys format") String uploadFormat,
+          @Option(names = {"--uploadOptions"}, description = "(Optional) Read more about 'uploadOptions' param at docs.simplelocalize.io") String uploadOptions,
+          @Option(names = {"--downloadPath"}, description = "Directory where translations should be downloaded") Path downloadPath,
+          @Option(names = {"--downloadFormat"}, description = "Download format for translation file") String downloadFormat,
+          @Option(names = {"--languageKey"}, description = "(Optional) Specify language key for single file upload") String languageKey
+  ) throws IOException
+  {
+    upload(apiKey, uploadPath, uploadFormat, languageKey, uploadOptions);
+    download(apiKey, downloadPath, downloadFormat, languageKey);
   }
 
   @Command(name = "upload", description = "Upload translations or translation keys to SimpleLocalize editor. Use 'simplelocalize-cli upload --help' to learn more about the parameters.")

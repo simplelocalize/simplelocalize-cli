@@ -7,12 +7,18 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 import java.util.Set;
 
 @Introspected
-public class ImportForm
+public final class ImportForm
 {
-    private Set<ImportKey> content;
+    private final Set<ImportKey> content;
+
+    public ImportForm(Set<ImportKey> content)
+    {
+        this.content = content;
+    }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(Object o)
+    {
         if (this == o) return true;
 
         if (o == null || getClass() != o.getClass()) return false;
@@ -35,8 +41,4 @@ public class ImportForm
         return content;
     }
 
-    public ImportForm setContent(Set<ImportKey> content) {
-        this.content = content;
-        return this;
-    }
 }

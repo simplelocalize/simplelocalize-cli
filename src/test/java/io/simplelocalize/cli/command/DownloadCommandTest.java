@@ -2,7 +2,7 @@ package io.simplelocalize.cli.command;
 
 import io.simplelocalize.cli.configuration.Configuration;
 import org.assertj.core.api.Assertions;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.nio.file.Path;
 

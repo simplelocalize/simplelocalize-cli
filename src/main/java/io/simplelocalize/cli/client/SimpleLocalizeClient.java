@@ -26,16 +26,17 @@ import static io.simplelocalize.cli.util.FileListReaderUtil.LANGUAGE_TEMPLATE_KE
 
 public final class SimpleLocalizeClient
 {
-  private static final String API_URL = "https://api.simplelocalize.io";
+  private static final String PRODUCTION_BASE_URL = "https://api.simplelocalize.io";
   private static final String TOKEN_HEADER_NAME = "X-SimpleLocalize-Token";
   private final HttpClient httpClient;
+  private final String baseUrl;
   private final String apiKey;
   private final String profile;
 
   private final Logger log = LoggerFactory.getLogger(SimpleLocalizeClient.class);
   private final SecureRandom random;
 
-  public SimpleLocalizeClient(String apiKey, String profile)
+  public SimpleLocalizeClient(String baseUrl, String apiKey, String profile)
   {
     Objects.requireNonNull(apiKey);
     this.apiKey = apiKey;
@@ -47,17 +48,23 @@ public final class SimpleLocalizeClient
     {
       this.profile = profile;
     }
+    this.baseUrl = baseUrl;
     this.random = new SecureRandom();
     this.httpClient = HttpClient.newBuilder()
             .connectTimeout(Duration.ofMinutes(5))
             .build();
   }
 
+  public static SimpleLocalizeClient withProductionServer(String apiKey, String profile)
+  {
+    return new SimpleLocalizeClient(PRODUCTION_BASE_URL, apiKey, profile);
+  }
+
   public void sendKeys(Collection<String> keys) throws IOException, InterruptedException
   {
     HttpRequest httpRequest = HttpRequest.newBuilder()
             .POST(ClientBodyBuilders.ofKeysBody(keys))
-            .uri(URI.create(API_URL + "/cli/v1/keys?profile=" + profile))
+            .uri(URI.create(baseUrl + "/cli/v1/keys?profile=" + profile))
             .header(HttpHeaders.CONTENT_TYPE, "application/json")
             .header(TOKEN_HEADER_NAME, apiKey)
             .build();
@@ -95,7 +102,7 @@ public final class SimpleLocalizeClient
       formData.put("languageKey", languageKey);
     }
 
-    String endpointUrl = API_URL + "/cli/v1/upload?uploadFormat=" + uploadFormat;
+    String endpointUrl = baseUrl + "/cli/v1/upload?uploadFormat=" + uploadFormat;
     if (StringUtils.isNotEmpty(uploadOptions))
     {
       endpointUrl += "&uploadOptions=" + uploadOptions;
@@ -122,7 +129,7 @@ public final class SimpleLocalizeClient
 
   public void downloadFile(Path downloadPath, String downloadFormat, String languageKey) throws IOException, InterruptedException
   {
-    String endpointUrl = API_URL + "/cli/v1/download?downloadFormat=" + downloadFormat;
+    String endpointUrl = baseUrl + "/cli/v1/download?downloadFormat=" + downloadFormat;
     boolean isRequestedTranslationsForSpecificLanguage = StringUtils.isNotEmpty(languageKey);
     if (isRequestedTranslationsForSpecificLanguage)
     {
@@ -181,7 +188,7 @@ public final class SimpleLocalizeClient
 
     HttpRequest httpRequest = HttpRequest.newBuilder()
             .GET()
-            .uri(URI.create(API_URL + "/cli/v1/analysis?profile=" + profile))
+            .uri(URI.create(baseUrl + "/cli/v1/analysis?profile=" + profile))
             .header(TOKEN_HEADER_NAME, apiKey)
             .build();
 

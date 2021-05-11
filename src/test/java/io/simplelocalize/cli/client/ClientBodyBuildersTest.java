@@ -32,7 +32,7 @@ class ClientBodyBuildersTest
     //given
     String boundary = "894758275029";
     Map<Object, Object> data = Map.of(
-            "file", Path.of("./"),
+            "file", Path.of("./junit/client-body-builders-test/de.json"),
             "language", "en"
     );
 
