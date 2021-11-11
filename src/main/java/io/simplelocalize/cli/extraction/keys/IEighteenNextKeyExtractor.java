@@ -29,7 +29,7 @@ public class IEighteenNextKeyExtractor implements KeyExtractor {
   }
 
   private Set<String> matchT(String fileContent) {
-    return Pattern.compile("(?<=t\\([\"|'])(.*?)(?=[\"|'])")
+    return Pattern.compile("(?<=[^a-zA-Z]t\\([\"|'])(.*?)(?=[\"|'])")
             .matcher(fileContent)
             .results()
             .map(MatchResult::group)
