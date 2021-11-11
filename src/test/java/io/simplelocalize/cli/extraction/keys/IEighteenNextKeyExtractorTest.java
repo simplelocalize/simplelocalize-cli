@@ -23,10 +23,12 @@ public class IEighteenNextKeyExtractorTest {
 
     //then
     Assertions.assertThat(keys)
-            .hasSize(4)
+            .hasSize(6)
             .containsExactlyInAnyOrder(
                     "Welcome to React",
                     "simpleContentJSX",
+                    "findWithSpace",
+                    "findWithAssignment",
                     "userMessagesUnreadJSX",
                     "nameTitleJSX"
             );
