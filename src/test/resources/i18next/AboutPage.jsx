@@ -8,7 +8,7 @@ const AboutPage = () => {
 
   function getText(value: string) {
     const myMessage = t("findWithSpace");
-    const myMessage = t("findWithAssignment");
+    const myMessage =t("findWithAssignment");
     //this function should not be found by i18next extractor
   }
 

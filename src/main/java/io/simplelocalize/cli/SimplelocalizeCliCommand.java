@@ -26,7 +26,7 @@ import java.nio.file.Path;
                 },
         mixinStandardHelpOptions = true,
         version = {
-                "SimpleLocalize CLI: 1.2.0",
+                "SimpleLocalize CLI: 1.1.2",
                 "JVM: ${java.version} (${java.vendor} ${java.vm.name} ${java.vm.version})",
                 "OS: ${os.name} ${os.version} ${os.arch}"}
 )
