@@ -4,7 +4,7 @@ import com.google.common.collect.Lists;
 import io.simplelocalize.cli.client.SimpleLocalizeClient;
 import io.simplelocalize.cli.client.dto.FileToUpload;
 import io.simplelocalize.cli.configuration.Configuration;
-import io.simplelocalize.cli.util.FileListReaderUtil;
+import io.simplelocalize.cli.io.FileListReader;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,7 +13,7 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.util.List;
 
-import static io.simplelocalize.cli.util.FileListReaderUtil.LANGUAGE_TEMPLATE_KEY;
+import static io.simplelocalize.cli.io.FileListReader.LANGUAGE_TEMPLATE_KEY;
 
 public class UploadCommand implements CliCommand
 {
@@ -27,28 +27,29 @@ public class UploadCommand implements CliCommand
     String uploadLanguageKey = configuration.getLanguageKey();
 
     SimpleLocalizeClient client = SimpleLocalizeClient.withProductionServer(apiKey, profile);
+    FileListReader fileListReader = new FileListReader();
 
+    boolean hasLanguageKeyInPath = configurationUploadPath.toString().contains(LANGUAGE_TEMPLATE_KEY);
     List<FileToUpload> filesToUpload = Lists.newArrayList();
     if (configurationUploadPath.toFile().isDirectory())
     {
-      log.error(" 😝 Upload path cannot be a directory!");
-      System.exit(1);
-    }
-
-    boolean fileNameWithTemplate = configurationUploadPath.toString().contains(LANGUAGE_TEMPLATE_KEY);
-
-    if (fileNameWithTemplate && StringUtils.isNotBlank(uploadLanguageKey))
+      try
+      {
+        filesToUpload = fileListReader.getFilesToUploadByUploadFormat(configurationUploadPath, configuration.getUploadFormat());
+      } catch (IOException e)
+      {
+        log.error(" 😝 Matching files could not be found", e);
+        System.exit(1);
+      }
+    } else if (hasLanguageKeyInPath && StringUtils.isNotBlank(uploadLanguageKey))
     {
-      log.error(" 😝 Please use 'languageKey' param OR '{lang}' variable in 'uploadPath' param!");
+      log.error(" 😝 You cannot use '{lang}' param in upload path and '--languageKey' option together.");
       System.exit(1);
-    }
-
-    if (fileNameWithTemplate)
+    } else if (hasLanguageKeyInPath)
     {
       try
       {
-        List<FileToUpload> foundMatchingFiles = FileListReaderUtil.getMatchingFilesToUpload(configurationUploadPath, LANGUAGE_TEMPLATE_KEY);
-        filesToUpload.addAll(foundMatchingFiles);
+        filesToUpload = fileListReader.getMatchingFilesToUpload(configurationUploadPath, LANGUAGE_TEMPLATE_KEY);
       } catch (IOException e)
       {
         log.error(" 😝 Matching files could not be found", e);

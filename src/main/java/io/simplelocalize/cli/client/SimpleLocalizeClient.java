@@ -3,12 +3,11 @@ package io.simplelocalize.cli.client;
 import com.google.common.collect.Maps;
 import com.google.common.net.HttpHeaders;
 import com.jayway.jsonpath.JsonPath;
-import io.simplelocalize.cli.util.ZipUtils;
+import io.simplelocalize.cli.io.FileWriter;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.net.http.HttpClient;
@@ -22,7 +21,6 @@ import java.util.Collection;
 import java.util.Map;
 import java.util.Objects;
 
-import static io.simplelocalize.cli.util.FileListReaderUtil.LANGUAGE_TEMPLATE_KEY;
 
 public final class SimpleLocalizeClient
 {
@@ -34,6 +32,7 @@ public final class SimpleLocalizeClient
   private final String profile;
 
   private final Logger log = LoggerFactory.getLogger(SimpleLocalizeClient.class);
+  private final FileWriter fileWriter;
   private final SecureRandom random;
 
   public SimpleLocalizeClient(String baseUrl, String apiKey, String profile)
@@ -50,6 +49,7 @@ public final class SimpleLocalizeClient
     }
     this.baseUrl = baseUrl;
     this.random = new SecureRandom();
+    this.fileWriter = new FileWriter();
     this.httpClient = HttpClient.newBuilder()
             .connectTimeout(Duration.ofMinutes(5))
             .build();
@@ -129,7 +129,7 @@ public final class SimpleLocalizeClient
 
   public void downloadFile(Path downloadPath, String downloadFormat, String languageKey) throws IOException, InterruptedException
   {
-    String endpointUrl = baseUrl + "/cli/v1/download?downloadFormat=" + downloadFormat;
+    String endpointUrl = baseUrl + "/cli/v2/download?downloadFormat=" + downloadFormat;
     boolean isRequestedTranslationsForSpecificLanguage = StringUtils.isNotEmpty(languageKey);
     if (isRequestedTranslationsForSpecificLanguage)
     {
@@ -142,45 +142,28 @@ public final class SimpleLocalizeClient
             .build();
 
     log.info(" 🌍 Downloading to {}", downloadPath);
-    log.info(" 🌍 Requesting file");
     HttpResponse<byte[]> httpResponse = httpClient.send(httpRequest, HttpResponse.BodyHandlers.ofByteArray());
     if (httpResponse.statusCode() != 200)
     {
-      log.error(" 😝 Request failed");
+      log.error(" 😝 Download failed");
       log.error("{} - {}", httpResponse.statusCode(), httpResponse.body());
       return;
     }
     byte[] body = httpResponse.body();
 
     boolean isFileFormatWithAllLanguages = downloadFormat.equalsIgnoreCase("multi-language-json");
+
+    //here I should decide if I should write downloaded file as single file or multiple files with multiple languages
     if (isRequestedTranslationsForSpecificLanguage || isFileFormatWithAllLanguages)
     {
       Files.createDirectories(downloadPath.getParent());
       Files.write(downloadPath, body);
     } else
     {
-      saveAsMultipleFiles(downloadPath, body);
+      fileWriter.saveAsMultipleFiles(downloadPath, body);
     }
 
     log.info(" 🎉 Download success!");
-  }
-
-  private void saveAsMultipleFiles(Path downloadPath, byte[] body) throws IOException
-  {
-    String[] splitByLanguageTemplateKey = StringUtils.splitByWholeSeparator(downloadPath.toString(), LANGUAGE_TEMPLATE_KEY);
-    String directoriesPartBeforeTemplateKeyWithPrefix = splitByLanguageTemplateKey[0];
-    String directoriesPartBeforeTemplateKey = removePrefix(directoriesPartBeforeTemplateKeyWithPrefix);
-    Files.createDirectories(Path.of(directoriesPartBeforeTemplateKey));
-    Path fileSavePath = Path.of(directoriesPartBeforeTemplateKey + File.separator + "translations.zip");
-
-    Files.write(fileSavePath, body);
-    ZipUtils.unzip(fileSavePath.toString(), downloadPath.toString(), LANGUAGE_TEMPLATE_KEY);
-    Files.delete(fileSavePath);
-  }
-
-  private String removePrefix(String directoriesPartBeforeTemplateKeyWithPrefix)
-  {
-    return StringUtils.substringBeforeLast(directoriesPartBeforeTemplateKeyWithPrefix, File.separator);
   }
 
   public int fetchGateCheckStatus() throws IOException, InterruptedException
