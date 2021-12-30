@@ -5,6 +5,7 @@ on:
   push:
     branches:
       - 'master'
+  pull_request:
 
 env:
   ACTIONS_ALLOW_UNSECURE_COMMANDS: true
