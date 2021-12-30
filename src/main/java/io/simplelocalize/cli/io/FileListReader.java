@@ -23,11 +23,9 @@ public class FileListReader
 {
 
   private static final Logger log = LoggerFactory.getLogger(UploadCommand.class);
-
   public static final String LANGUAGE_TEMPLATE_KEY = "{lang}";
 
-
-  public List<FileToUpload> getMatchingFilesToUpload(Path uploadPathWithTemplateKey, String templateKey) throws IOException
+  public List<FileToUpload> findFilesWithTemplateKey(Path uploadPathWithTemplateKey, String templateKey) throws IOException
   {
     List<FileToUpload> output = Lists.newArrayList();
     String filePathWithTemplate = uploadPathWithTemplateKey.toString();
@@ -65,7 +63,7 @@ public class FileListReader
     }
   }
 
-  public List<FileToUpload> getFilesForMultiFileUpload(Configuration configuration) throws IOException
+  public List<FileToUpload> findFilesForMultiFileUpload(Configuration configuration) throws IOException
   {
     Path configurationUploadPath = configuration.getUploadPath();
     String uploadFormat = configuration.getUploadFormat();

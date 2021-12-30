@@ -89,11 +89,11 @@ public class UploadCommand implements CliCommand
         log.error(" 😝 You must a directory with '--uploadPath' parameter in order to use 'MULTI_FILE' upload option.");
         System.exit(1);
       }
-      return fileListReader.getFilesForMultiFileUpload(configuration);
+      return fileListReader.findFilesForMultiFileUpload(configuration);
     }
     if (hasLanguageKeyInPath)
     {
-      return fileListReader.getMatchingFilesToUpload(configurationUploadPath, LANGUAGE_TEMPLATE_KEY);
+      return fileListReader.findFilesWithTemplateKey(configurationUploadPath, LANGUAGE_TEMPLATE_KEY);
     }
     FileToUpload fileToUpload = FileToUpload.of(configurationUploadPath, uploadLanguageKey);
     return Collections.singletonList(fileToUpload);

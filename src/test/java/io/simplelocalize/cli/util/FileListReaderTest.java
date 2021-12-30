@@ -29,7 +29,7 @@ public class FileListReaderTest
     configuration.setUploadPath(Path.of(path));
 
     //when
-    List<FileToUpload> result = sut.getFilesForMultiFileUpload(configuration);
+    List<FileToUpload> result = sut.findFilesForMultiFileUpload(configuration);
 
     //then
     Assertions.assertThat(result).hasSize(2);
@@ -49,7 +49,7 @@ public class FileListReaderTest
     configuration.setUploadPath(Path.of(path));
 
     //when
-    List<FileToUpload> result = sut.getFilesForMultiFileUpload(configuration);
+    List<FileToUpload> result = sut.findFilesForMultiFileUpload(configuration);
 
     //then
     Assertions.assertThat(result).hasSize(1);
@@ -63,7 +63,7 @@ public class FileListReaderTest
     String path = "./junit/lang-in-directory/{lang}/strings.xml";
 
     //when
-    List<FileToUpload> result = sut.getMatchingFilesToUpload(Paths.get(path), "{lang}");
+    List<FileToUpload> result = sut.findFilesWithTemplateKey(Paths.get(path), "{lang}");
 
     //then
     Assertions.assertThat(result).hasSize(2);
@@ -78,7 +78,7 @@ public class FileListReaderTest
     String path = "./junit/lang-in-directory-with-prefix/values-{lang}/strings.xml";
 
     //when
-    List<FileToUpload> result = sut.getMatchingFilesToUpload(Paths.get(path), "{lang}");
+    List<FileToUpload> result = sut.findFilesWithTemplateKey(Paths.get(path), "{lang}");
 
     //then
     Assertions.assertThat(result).hasSize(2);
@@ -93,7 +93,7 @@ public class FileListReaderTest
     String path = "./junit/lang-in-filename/{lang}.json";
 
     //when
-    List<FileToUpload> result = sut.getMatchingFilesToUpload(Paths.get(path), "{lang}");
+    List<FileToUpload> result = sut.findFilesWithTemplateKey(Paths.get(path), "{lang}");
 
     //then
     Assertions.assertThat(result).hasSize(2);
@@ -108,7 +108,7 @@ public class FileListReaderTest
     String path = "./junit/lang-in-filename-suffix/messages_{lang}.properties";
 
     //when
-    List<FileToUpload> result = sut.getMatchingFilesToUpload(Paths.get(path), "{lang}");
+    List<FileToUpload> result = sut.findFilesWithTemplateKey(Paths.get(path), "{lang}");
 
     //then
     Assertions.assertThat(result).hasSize(3);
