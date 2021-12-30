@@ -13,7 +13,7 @@ public class ExportResponse
 {
   private List<DownloadableFile> files;
   @JsonIgnore
-  private Map<String, Object> additionalProperties = new HashMap<String, Object>();
+  private Map<String, Object> additionalProperties = new HashMap<>();
 
   public List<DownloadableFile> getFiles()
   {

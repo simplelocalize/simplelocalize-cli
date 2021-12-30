@@ -13,7 +13,7 @@ import java.nio.file.Paths;
 public class FileContentReader
 {
 
-  private static final Logger log = LoggerFactory.getLogger(FileListReader.class);
+  private static final Logger log = LoggerFactory.getLogger(FileContentReader.class);
 
 
   private FileContentReader()
@@ -36,7 +36,7 @@ public class FileContentReader
 
   public static String transformTextToOneLine(String fileContent)
   {
-    fileContent = fileContent.replaceAll("\n", " ");
+    fileContent = fileContent.replace("\n", " ");
     fileContent = fileContent.replaceAll("\\s+", " ");
     return fileContent;
   }

@@ -77,8 +77,8 @@ public class SimplelocalizeCliCommand implements Runnable
           @Option(names = {"--uploadOptions"}, description = "(Optional) Read more about 'uploadOptions' param at docs.simplelocalize.io") String uploadOptions,
           @Option(names = {"--downloadPath"}, description = "Directory where translations should be downloaded") Path downloadPath,
           @Option(names = {"--downloadFormat"}, description = "Download format for translation file") String downloadFormat,
-          @Option(names = {"--downloadOptions"}, description = "(Optional) Download options") String downloadOptions,
-          @Option(names = {"--languageKey"}, description = "(Optional) Specify language key for single file upload") String languageKey
+          @Option(names = {"--languageKey"}, description = "(Optional) Specify language key for single file upload") String languageKey,
+          @Option(names = {"--downloadOptions"}, description = "(Optional) Download options") String downloadOptions
   ) throws IOException
   {
     upload(apiKey, uploadPath, uploadFormat, languageKey, uploadOptions);
@@ -131,8 +131,8 @@ public class SimplelocalizeCliCommand implements Runnable
           @Option(names = {"--apiKey"}, description = "Project API Key") String apiKey,
           @Option(names = {"--downloadPath"}, description = "Directory where translations should be downloaded") Path downloadPath,
           @Option(names = {"--downloadFormat"}, description = "Download format for translation file") String downloadFormat,
-          @Option(names = {"--downloadOptions"}, description = "(Optional) Download options") String downloadOptions,
-          @Option(names = {"--languageKey"}, description = "(Optional) Setup languageKey parameter to download file with only one language translations") String languageKey
+          @Option(names = {"--languageKey"}, description = "(Optional) Setup languageKey parameter to download file with only one language translations") String languageKey,
+          @Option(names = {"--downloadOptions"}, description = "(Optional) Download options") String downloadOptions
   )
   {
     ConfigurationLoader configurationLoader = new ConfigurationLoader();
