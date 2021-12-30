@@ -141,7 +141,6 @@ public class SimpleLocalizeClient
 
   }
 
-  @Deprecated
   public void downloadFile(Path downloadPath, String downloadFormat, String languageKey) throws IOException, InterruptedException
   {
     String endpointUrl = baseUrl + "/cli/v2/download?downloadFormat=" + downloadFormat;
