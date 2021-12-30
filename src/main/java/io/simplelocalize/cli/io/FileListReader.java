@@ -2,19 +2,27 @@ package io.simplelocalize.cli.io;
 
 import com.google.common.collect.Lists;
 import io.simplelocalize.cli.client.dto.FileToUpload;
+import io.simplelocalize.cli.command.UploadCommand;
 import io.simplelocalize.cli.configuration.Configuration;
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
+import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class FileListReader
 {
+
+  private static final Logger log = LoggerFactory.getLogger(UploadCommand.class);
 
   public static final String LANGUAGE_TEMPLATE_KEY = "{lang}";
 
@@ -61,9 +69,12 @@ public class FileListReader
   {
     Path configurationUploadPath = configuration.getUploadPath();
     String uploadFormat = configuration.getUploadFormat();
+    Set<String> ignorePaths = configuration.getIgnorePaths();
+
     if (!"multi-language-json".equals(uploadFormat))
     {
-      throw new IllegalArgumentException("Currently, only 'multi-language-json' upload format is supported with 'MULTI_FILE' upload option");
+      log.error(" 😝 Currently, only 'multi-language-json' upload format is supported with 'MULTI_FILE' upload option");
+      throw new UnsupportedOperationException();
     }
     String fileExtension = ".json";
     List<FileToUpload> output = Lists.newArrayList();
@@ -73,6 +84,7 @@ public class FileListReader
       var foundPaths = foundFilesStream.collect(Collectors.toList());
       var foundFiles = foundPaths.stream()
               .filter(Files::isRegularFile)
+              .filter(path -> !isIgnoredPath(ignorePaths, path))
               .filter(path -> path.toString().endsWith(fileExtension))
               .collect(Collectors.toList());
       for (Path foundFile : foundFiles)
@@ -81,5 +93,28 @@ public class FileListReader
       }
       return output;
     }
+  }
+
+  private boolean isIgnoredPath(Set<String> ignorePaths, Path path)
+  {
+    String pathString = path.toString();
+    for (String ignorePath : ignorePaths)
+    {
+
+      if (pathString.startsWith(ignorePath))
+      {
+        return true;
+      }
+
+      String globStyle = ignorePath.replaceAll(".\\*+", ".*");
+      Pattern pattern = Pattern.compile(globStyle);
+      Matcher matcher = pattern.matcher(pathString);
+      boolean matches = matcher.matches();
+      if (matches)
+      {
+        return true;
+      }
+    }
+    return false;
   }
 }

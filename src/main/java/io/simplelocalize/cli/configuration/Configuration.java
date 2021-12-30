@@ -18,7 +18,7 @@ public class Configuration
   private String searchDir;
   private Set<String> ignoreKeys = Set.of();
 
-  private Set<Path> ignorePaths;
+  private Set<String> ignorePaths;
 
   private Path uploadPath;
   private String uploadFormat;
@@ -150,12 +150,12 @@ public class Configuration
     this.uploadOptions = uploadOptions;
   }
 
-  public Set<Path> getIgnorePaths()
+  public Set<String> getIgnorePaths()
   {
     return ignorePaths;
   }
 
-  public void setIgnorePaths(Set<Path> ignorePaths)
+  public void setIgnorePaths(Set<String> ignorePaths)
   {
     this.ignorePaths = ignorePaths;
   }

@@ -29,11 +29,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
-
+//TODO create request object and URL builder
 public class SimpleLocalizeClient
 {
-  //  private static final String PRODUCTION_BASE_URL = "https://api.simplelocalize.io";
-  private static final String PRODUCTION_BASE_URL = "http://localhost:8080";
+  private static final String PRODUCTION_BASE_URL = "https://api.simplelocalize.io";
+  //  private static final String PRODUCTION_BASE_URL = "http://localhost:8080";
   private static final String TOKEN_HEADER_NAME = "X-SimpleLocalize-Token";
 
   private final HttpClient httpClient;
@@ -98,6 +98,7 @@ public class SimpleLocalizeClient
     }
   }
 
+  //TODO create request object
   public void uploadFile(Path uploadPath, String languageKey, String uploadFormat, String uploadOptions, String relativePath) throws IOException, InterruptedException
   {
     int pseudoRandomNumber = (int) (random.nextDouble() * 1_000_000_000);
@@ -141,9 +142,10 @@ public class SimpleLocalizeClient
 
   }
 
+  //TODO create request object
   public void downloadFile(Path downloadPath, String downloadFormat, String languageKey) throws IOException, InterruptedException
   {
-    String endpointUrl = baseUrl + "/cli/v2/download?downloadFormat=" + downloadFormat;
+    String endpointUrl = baseUrl + "/cli/v1/download?downloadFormat=" + downloadFormat;
     boolean isRequestedTranslationsForSpecificLanguage = StringUtils.isNotEmpty(languageKey);
     if (isRequestedTranslationsForSpecificLanguage)
     {
@@ -179,6 +181,7 @@ public class SimpleLocalizeClient
     log.info(" 🎉 Download success!");
   }
 
+  //TODO create request object
   @Beta
   public void downloadMultiFile(Path downloadPath, String downloadFormat, String languageKey) throws IOException, InterruptedException
   {
@@ -229,7 +232,7 @@ public class SimpleLocalizeClient
       httpClient.send(httpRequest, HttpResponse.BodyHandlers.ofFile(savePath));
     } catch (IOException | InterruptedException e)
     {
-      log.error(" 😝 Download failed", e);
+      log.error(" 😝 Download failed: {}", savePath, e);
     }
   }
 

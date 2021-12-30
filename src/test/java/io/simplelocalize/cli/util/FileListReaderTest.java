@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
+import java.util.Set;
 
 public class FileListReaderTest
 {
@@ -24,6 +25,7 @@ public class FileListReaderTest
 
     Configuration configuration = new Configuration();
     configuration.setUploadFormat("multi-language-json");
+    configuration.setIgnorePaths(Set.of("./junit/*/ignore-me/*"));
     configuration.setUploadPath(Path.of(path));
 
     //when
@@ -33,6 +35,25 @@ public class FileListReaderTest
     Assertions.assertThat(result).hasSize(2);
     Assertions.assertThat(result).extracting(FileToUpload::getPath).containsExactlyInAnyOrder(Paths.get("./junit/multi-file/about-page/componentY.json"), Paths.get("./junit/multi-file/welcome-page/componentX.json"));
     Assertions.assertThat(result).extracting(FileToUpload::getLanguage).containsExactlyInAnyOrder(null, null);
+  }
+
+  @Test
+  public void shouldIgnoreFiles() throws IOException
+  {
+    //given
+    String path = "./junit/multi-file/ignore-me";
+
+    Configuration configuration = new Configuration();
+    configuration.setUploadFormat("multi-language-json");
+    configuration.setIgnorePaths(Set.of("./junit/multi-file/ignore-me/*-second.json"));
+    configuration.setUploadPath(Path.of(path));
+
+    //when
+    List<FileToUpload> result = sut.getFilesForMultiFileUpload(configuration);
+
+    //then
+    Assertions.assertThat(result).hasSize(1);
+    Assertions.assertThat(result).extracting(FileToUpload::getPath).containsExactlyInAnyOrder(Paths.get("./junit/multi-file/ignore-me/ignore-me.json"));
   }
 
   @Test

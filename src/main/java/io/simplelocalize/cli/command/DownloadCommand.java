@@ -42,7 +42,7 @@ public class DownloadCommand implements CliCommand
       }
     } catch (InterruptedException | IOException e)
     {
-      log.info(" 😝 Translations could not be downloaded", e);
+      log.error(" 😝 Translations could not be downloaded", e);
       System.exit(1);
     }
   }
