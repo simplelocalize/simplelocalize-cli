@@ -28,7 +28,10 @@ simplelocalize [COMMAND] --apiKey <PROJECT_API_KEY> rest of parameters...
 
 ## Example configuration file
 
+Filename: `simplelocalize.yml`
+
 ```yaml
+apiKey: API_KEY
 
 # Upload command
 uploadPath: ./src
@@ -51,9 +54,6 @@ projectType: yahoo/react-intl
 ignoreKeys:
   - 'WELCOME'
   - 'ABOUT-US'
-  
-
-
 ```
 
 ## Upload Translations
@@ -71,7 +71,7 @@ simplelocalize download --apiKey <PROJECT_API_KEY>
 
 
 ## Sync Translations
-
+Sync command combines upload and download commend execution.
 ```properties
 simplelocalize sync --apiKey <PROJECT_API_KEY>
 ```
@@ -81,6 +81,13 @@ simplelocalize sync --apiKey <PROJECT_API_KEY>
 
 ```properties
 simplelocalize extract --apiKey <PROJECT_API_KEY>
+```
+
+## Custom configuration file
+By default SimpleLocalize will load configuration from file named `simplelocalize.yml`. You can load configuration from different location using `--configuration` parameters.
+
+```properties
+simplelocalize upload --apiKey <PROJECT_API_KEY> --configuration ./my-configuration.yml
 ```
 
 ## Commands documentation
