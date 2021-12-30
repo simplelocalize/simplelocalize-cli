@@ -1,7 +1,5 @@
 package io.simplelocalize.cli.extraction.processor;
 
-import com.google.common.collect.Lists;
-import com.google.common.collect.Sets;
 import io.simplelocalize.cli.extraction.ExtractionResult;
 import io.simplelocalize.cli.extraction.files.GenericExtensionFilesFinder;
 import io.simplelocalize.cli.extraction.keys.AndroidRStringKeyExtractor;
@@ -9,6 +7,8 @@ import io.simplelocalize.cli.extraction.keys.AndroidXmlKeysExtractor;
 import io.simplelocalize.cli.util.ListsUtil;
 
 import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -20,8 +20,8 @@ public class AndroidProcessor implements ExtractionProcessor
   public ExtractionResult process(Path searchDirectory)
   {
 
-    Set<String> foundKeys = Sets.newLinkedHashSet();
-    List<Path> foundFiles = Lists.newArrayList();
+    Set<String> foundKeys = new LinkedHashSet<>();
+    List<Path> foundFiles = new ArrayList();
 
     GenericExtensionFilesFinder filesFinder = new GenericExtensionFilesFinder();
     List<Path> javaFiles = filesFinder.findFilesToProcess(searchDirectory, ".java");
@@ -30,7 +30,8 @@ public class AndroidProcessor implements ExtractionProcessor
     foundFiles.addAll(combinedLists);
 
     AndroidRStringKeyExtractor javaKeysExtractor = new AndroidRStringKeyExtractor();
-    for (Path javaFile : combinedLists) {
+    for (Path javaFile : combinedLists)
+    {
       Set<String> chunk = javaKeysExtractor.extractKeysFromFile(javaFile);
       foundKeys.addAll(chunk);
     }
@@ -38,7 +39,8 @@ public class AndroidProcessor implements ExtractionProcessor
     List<Path> xmlFiles = filesFinder.findFilesToProcess(searchDirectory, ".xml");
     foundFiles.addAll(xmlFiles);
     AndroidXmlKeysExtractor xmlKeysExtractor = new AndroidXmlKeysExtractor();
-    for (Path xmlFile : xmlFiles) {
+    for (Path xmlFile : xmlFiles)
+    {
       Set<String> chunk = xmlKeysExtractor.extractKeysFromFile(xmlFile);
       foundKeys.addAll(chunk);
     }

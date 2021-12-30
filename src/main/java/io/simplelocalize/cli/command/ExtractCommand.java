@@ -1,6 +1,5 @@
 package io.simplelocalize.cli.command;
 
-import com.google.common.collect.Iterables;
 import io.simplelocalize.cli.client.SimpleLocalizeClient;
 import io.simplelocalize.cli.configuration.Configuration;
 import io.simplelocalize.cli.extraction.ExtractionResult;
@@ -16,8 +15,6 @@ import java.util.Set;
 
 public class ExtractCommand implements CliCommand
 {
-  private static final int BATCH_SIZE = 1000;
-
   private static final Logger log = LoggerFactory.getLogger(ExtractCommand.class);
 
   private final SimpleLocalizeClient client;
@@ -46,15 +43,12 @@ public class ExtractCommand implements CliCommand
     Set<String> ignoredKeys = configuration.getIgnoreKeys();
     keys.removeAll(ignoredKeys);
 
-    for (List<String> partition : Iterables.partition(keys, BATCH_SIZE))
+    try
     {
-      try
-      {
-        client.sendKeys(partition);
-      } catch (Exception e)
-      {
-        log.error(" 😝 Could not send keys chunk. Contact support: contact@simplelocalize.io", e);
-      }
+      client.sendKeys(keys);
+    } catch (Exception e)
+    {
+      log.error(" 😝 Could not send keys chunk. Contact support: contact@simplelocalize.io", e);
     }
   }
 }

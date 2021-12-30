@@ -1,6 +1,7 @@
 package io.simplelocalize.cli.client.dto;
 
-import com.google.common.base.Objects;
+
+import java.util.Objects;
 
 public class DownloadableFile
 {
@@ -33,12 +34,12 @@ public class DownloadableFile
     if (this == o) return true;
     if (o == null || getClass() != o.getClass()) return false;
     DownloadableFile that = (DownloadableFile) o;
-    return Objects.equal(url, that.url) && Objects.equal(projectPath, that.projectPath);
+    return url.equals(that.url) && projectPath.equals(that.projectPath);
   }
 
   @Override
   public int hashCode()
   {
-    return Objects.hashCode(url, projectPath);
+    return Objects.hash(url, projectPath);
   }
 }

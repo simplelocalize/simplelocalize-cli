@@ -1,9 +1,6 @@
 package io.simplelocalize.cli.client;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.common.annotations.Beta;
-import com.google.common.collect.Maps;
-import com.google.common.net.HttpHeaders;
 import com.jayway.jsonpath.JsonPath;
 import io.simplelocalize.cli.client.dto.DownloadableFile;
 import io.simplelocalize.cli.client.dto.ExportResponse;
@@ -24,10 +21,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.security.SecureRandom;
 import java.time.Duration;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 
 //TODO create request object and URL builder
 public class SimpleLocalizeClient
@@ -73,7 +67,7 @@ public class SimpleLocalizeClient
     HttpRequest httpRequest = HttpRequest.newBuilder()
             .POST(ClientBodyBuilders.ofKeysBody(keys))
             .uri(URI.create(baseUrl + "/cli/v1/keys"))
-            .header(HttpHeaders.CONTENT_TYPE, "application/json")
+            .header("Content-Type", "application/json")
             .header(TOKEN_HEADER_NAME, apiKey)
             .build();
 
@@ -103,7 +97,7 @@ public class SimpleLocalizeClient
   {
     int pseudoRandomNumber = (int) (random.nextDouble() * 1_000_000_000);
     String boundary = "simplelocalize" + pseudoRandomNumber;
-    Map<Object, Object> formData = Maps.newHashMap();
+    Map<Object, Object> formData = new HashMap<>();
     formData.put("file", uploadPath);
     log.info(" 🌍 Uploading {} with language key '{}'", uploadPath, languageKey);
     if (StringUtils.isNotEmpty(languageKey))
@@ -182,7 +176,6 @@ public class SimpleLocalizeClient
   }
 
   //TODO create request object
-  @Beta
   public void downloadMultiFile(Path downloadPath, String downloadFormat, String languageKey) throws IOException, InterruptedException
   {
     FileFormat.logWarningIfUnknownOrDeprecatedFileFormat(downloadFormat);

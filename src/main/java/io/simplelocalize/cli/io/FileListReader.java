@@ -1,6 +1,5 @@
 package io.simplelocalize.cli.io;
 
-import com.google.common.collect.Lists;
 import io.simplelocalize.cli.client.dto.FileToUpload;
 import io.simplelocalize.cli.command.UploadCommand;
 import io.simplelocalize.cli.configuration.Configuration;
@@ -27,7 +26,7 @@ public class FileListReader
 
   public List<FileToUpload> findFilesWithTemplateKey(Path uploadPathWithTemplateKey, String templateKey) throws IOException
   {
-    List<FileToUpload> output = Lists.newArrayList();
+    List<FileToUpload> output = new ArrayList();
     String filePathWithTemplate = uploadPathWithTemplateKey.toString();
 
     String[] splitUploadPath = StringUtils.splitByWholeSeparator(filePathWithTemplate, templateKey);
@@ -75,7 +74,7 @@ public class FileListReader
       throw new UnsupportedOperationException();
     }
     String fileExtension = ".json";
-    List<FileToUpload> output = Lists.newArrayList();
+    List<FileToUpload> output = new ArrayList();
 
     try (Stream<Path> foundFilesStream = Files.walk(configurationUploadPath, 10))
     {

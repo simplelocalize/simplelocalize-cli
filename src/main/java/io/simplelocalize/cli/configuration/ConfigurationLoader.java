@@ -1,6 +1,6 @@
 package io.simplelocalize.cli.configuration;
 
-import com.google.common.base.Strings;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.yaml.snakeyaml.Yaml;
@@ -55,13 +55,13 @@ public final class ConfigurationLoader
 
     String uploadToken = configuration.getUploadToken();
     String apiKey = configuration.getApiKey();
-    if (Strings.isNullOrEmpty(apiKey))
+    if (StringUtils.isEmpty(apiKey))
     {
       configuration.setApiKey(uploadToken);
     }
 
     String searchDir = configuration.getSearchDir();
-    if (Strings.isNullOrEmpty(searchDir))
+    if (StringUtils.isEmpty(searchDir))
     {
       configuration.setSearchDir(CURRENT_DIRECTORY);
     }

@@ -1,8 +1,8 @@
 package io.simplelocalize.cli.client.dto;
 
-import com.google.common.base.Objects;
 
 import java.nio.file.Path;
+import java.util.Objects;
 
 public final class FileToUpload
 {
@@ -36,12 +36,12 @@ public final class FileToUpload
     if (this == o) return true;
     if (o == null || getClass() != o.getClass()) return false;
     FileToUpload that = (FileToUpload) o;
-    return Objects.equal(path, that.path) && Objects.equal(language, that.language);
+    return path.equals(that.path) && language.equals(that.language);
   }
 
   @Override
   public int hashCode()
   {
-    return Objects.hashCode(path, language);
+    return Objects.hash(path, language);
   }
 }
