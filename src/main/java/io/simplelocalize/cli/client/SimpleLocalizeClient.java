@@ -1,14 +1,19 @@
 package io.simplelocalize.cli.client;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.common.annotations.Beta;
 import com.google.common.collect.Maps;
 import com.google.common.net.HttpHeaders;
 import com.jayway.jsonpath.JsonPath;
-import io.simplelocalize.cli.util.ZipUtils;
+import io.simplelocalize.cli.client.dto.DownloadableFile;
+import io.simplelocalize.cli.client.dto.ExportResponse;
+import io.simplelocalize.cli.client.dto.FileFormat;
+import io.simplelocalize.cli.configuration.Configuration;
+import io.simplelocalize.cli.io.FileWriter;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.net.http.HttpClient;
@@ -16,55 +21,58 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.security.SecureRandom;
 import java.time.Duration;
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
-import static io.simplelocalize.cli.util.FileListReaderUtil.LANGUAGE_TEMPLATE_KEY;
-
-public final class SimpleLocalizeClient
+//TODO create request object and URL builder
+public class SimpleLocalizeClient
 {
   private static final String PRODUCTION_BASE_URL = "https://api.simplelocalize.io";
+  //  private static final String PRODUCTION_BASE_URL = "http://localhost:8080";
   private static final String TOKEN_HEADER_NAME = "X-SimpleLocalize-Token";
+
   private final HttpClient httpClient;
   private final String baseUrl;
   private final String apiKey;
-  private final String profile;
 
   private final Logger log = LoggerFactory.getLogger(SimpleLocalizeClient.class);
+  private final FileWriter fileWriter;
+  private final ObjectMapper objectMapper;
   private final SecureRandom random;
 
-  public SimpleLocalizeClient(String baseUrl, String apiKey, String profile)
+  public SimpleLocalizeClient(String baseUrl, String apiKey)
   {
     Objects.requireNonNull(apiKey);
     this.apiKey = apiKey;
-
-    if (StringUtils.isEmpty(profile))
-    {
-      this.profile = "default";
-    } else
-    {
-      this.profile = profile;
-    }
     this.baseUrl = baseUrl;
     this.random = new SecureRandom();
+    this.objectMapper = new ObjectMapper();
+    this.fileWriter = new FileWriter();
     this.httpClient = HttpClient.newBuilder()
             .connectTimeout(Duration.ofMinutes(5))
             .build();
   }
 
-  public static SimpleLocalizeClient withProductionServer(String apiKey, String profile)
+  public static SimpleLocalizeClient withProductionServer(String apiKey)
   {
-    return new SimpleLocalizeClient(PRODUCTION_BASE_URL, apiKey, profile);
+    return new SimpleLocalizeClient(PRODUCTION_BASE_URL, apiKey);
+  }
+
+  public static SimpleLocalizeClient withProductionServer(Configuration configuration)
+  {
+    return new SimpleLocalizeClient(PRODUCTION_BASE_URL, configuration.getApiKey());
   }
 
   public void sendKeys(Collection<String> keys) throws IOException, InterruptedException
   {
     HttpRequest httpRequest = HttpRequest.newBuilder()
             .POST(ClientBodyBuilders.ofKeysBody(keys))
-            .uri(URI.create(baseUrl + "/cli/v1/keys?profile=" + profile))
+            .uri(URI.create(baseUrl + "/cli/v1/keys"))
             .header(HttpHeaders.CONTENT_TYPE, "application/json")
             .header(TOKEN_HEADER_NAME, apiKey)
             .build();
@@ -90,7 +98,8 @@ public final class SimpleLocalizeClient
     }
   }
 
-  public void uploadFile(Path uploadPath, String languageKey, String uploadFormat, String uploadOptions) throws IOException, InterruptedException
+  //TODO create request object
+  public void uploadFile(Path uploadPath, String languageKey, String uploadFormat, String uploadOptions, String relativePath) throws IOException, InterruptedException
   {
     int pseudoRandomNumber = (int) (random.nextDouble() * 1_000_000_000);
     String boundary = "simplelocalize" + pseudoRandomNumber;
@@ -107,6 +116,12 @@ public final class SimpleLocalizeClient
     {
       endpointUrl += "&uploadOptions=" + uploadOptions;
     }
+
+    if (StringUtils.isNotEmpty(relativePath))
+    {
+      endpointUrl += "&projectPath=" + relativePath;
+    }
+
     HttpRequest httpRequest = HttpRequest.newBuilder()
             .POST(ClientBodyBuilders.ofMimeMultipartData(formData, boundary))
             .uri(URI.create(endpointUrl))
@@ -127,6 +142,7 @@ public final class SimpleLocalizeClient
 
   }
 
+  //TODO create request object
   public void downloadFile(Path downloadPath, String downloadFormat, String languageKey) throws IOException, InterruptedException
   {
     String endpointUrl = baseUrl + "/cli/v1/download?downloadFormat=" + downloadFormat;
@@ -142,45 +158,82 @@ public final class SimpleLocalizeClient
             .build();
 
     log.info(" 🌍 Downloading to {}", downloadPath);
-    log.info(" 🌍 Requesting file");
     HttpResponse<byte[]> httpResponse = httpClient.send(httpRequest, HttpResponse.BodyHandlers.ofByteArray());
     if (httpResponse.statusCode() != 200)
     {
-      log.error(" 😝 Request failed");
+      log.error(" 😝 Download failed");
       log.error("{} - {}", httpResponse.statusCode(), httpResponse.body());
       return;
     }
     byte[] body = httpResponse.body();
 
     boolean isFileFormatWithAllLanguages = downloadFormat.equalsIgnoreCase("multi-language-json");
+
     if (isRequestedTranslationsForSpecificLanguage || isFileFormatWithAllLanguages)
     {
       Files.createDirectories(downloadPath.getParent());
       Files.write(downloadPath, body);
     } else
     {
-      saveAsMultipleFiles(downloadPath, body);
+      fileWriter.saveAsMultipleFiles(downloadPath, body);
     }
 
     log.info(" 🎉 Download success!");
   }
 
-  private void saveAsMultipleFiles(Path downloadPath, byte[] body) throws IOException
+  //TODO create request object
+  @Beta
+  public void downloadMultiFile(Path downloadPath, String downloadFormat, String languageKey) throws IOException, InterruptedException
   {
-    String[] splitByLanguageTemplateKey = StringUtils.splitByWholeSeparator(downloadPath.toString(), LANGUAGE_TEMPLATE_KEY);
-    String directoriesPartBeforeTemplateKeyWithPrefix = splitByLanguageTemplateKey[0];
-    String directoriesPartBeforeTemplateKey = removePrefix(directoriesPartBeforeTemplateKeyWithPrefix);
-    Files.createDirectories(Path.of(directoriesPartBeforeTemplateKey));
-    Path fileSavePath = Path.of(directoriesPartBeforeTemplateKey + File.separator + "translations.zip");
+    FileFormat.logWarningIfUnknownOrDeprecatedFileFormat(downloadFormat);
+    String endpointUrl = baseUrl + "/cli/v2/download?downloadFormat=" + downloadFormat;
+    boolean isRequestedTranslationsForSpecificLanguage = StringUtils.isNotEmpty(languageKey);
+    if (isRequestedTranslationsForSpecificLanguage)
+    {
+      endpointUrl += "&languageKey=" + languageKey;
+    }
+    endpointUrl += "&exportOptions=" + "MULTI_FILE";
 
-    Files.write(fileSavePath, body);
-    ZipUtils.unzip(fileSavePath.toString(), downloadPath.toString(), LANGUAGE_TEMPLATE_KEY);
-    Files.delete(fileSavePath);
+    HttpRequest httpRequest = HttpRequest.newBuilder()
+            .GET()
+            .uri(URI.create(endpointUrl))
+            .header(TOKEN_HEADER_NAME, apiKey)
+            .build();
+
+    HttpResponse<String> httpResponse = httpClient.send(httpRequest, HttpResponse.BodyHandlers.ofString());
+    if (httpResponse.statusCode() != 200)
+    {
+      log.error(" 😝 Download failed");
+      log.error("{} - {}", httpResponse.statusCode(), httpResponse.body());
+      return;
+    }
+    String body = httpResponse.body();
+    ExportResponse exportResponse = objectMapper.readValue(body, ExportResponse.class);
+    List<DownloadableFile> downloadableFiles = exportResponse.getFiles();
+    downloadableFiles
+            .parallelStream()
+            .forEach(downloadableFile -> saveFile(downloadableFile, downloadPath));
+    log.info(" 🎉 Download success!");
   }
 
-  private String removePrefix(String directoriesPartBeforeTemplateKeyWithPrefix)
+  private void saveFile(DownloadableFile downloadableFile, Path downloadPath)
   {
-    return StringUtils.substringBeforeLast(directoriesPartBeforeTemplateKeyWithPrefix, File.separator);
+    String url = downloadableFile.getUrl();
+    Path savePath = Paths.get(downloadPath.toString(), downloadableFile.getProjectPath());
+
+    HttpRequest httpRequest = HttpRequest.newBuilder()
+            .GET()
+            .uri(URI.create(url))
+            .build();
+    try
+    {
+      log.info(" 🌍 Downloading to {}", savePath);
+      Files.createDirectories(savePath.getParent());
+      httpClient.send(httpRequest, HttpResponse.BodyHandlers.ofFile(savePath));
+    } catch (IOException | InterruptedException e)
+    {
+      log.error(" 😝 Download failed: {}", savePath, e);
+    }
   }
 
   public int fetchGateCheckStatus() throws IOException, InterruptedException
@@ -188,7 +241,7 @@ public final class SimpleLocalizeClient
 
     HttpRequest httpRequest = HttpRequest.newBuilder()
             .GET()
-            .uri(URI.create(baseUrl + "/cli/v1/analysis?profile=" + profile))
+            .uri(URI.create(baseUrl + "/cli/v1/analysis"))
             .header(TOKEN_HEADER_NAME, apiKey)
             .build();
 

@@ -1,6 +1,6 @@
 package io.simplelocalize.cli.extraction.keys;
 
-import io.simplelocalize.cli.util.FileContentUtil;
+import io.simplelocalize.cli.io.FileContentReader;
 
 import java.nio.file.Path;
 import java.util.Set;
@@ -12,9 +12,10 @@ import java.util.stream.Stream;
 public class ReactIntlKeyExtractor implements KeyExtractor {
 
   @Override
-  public Set<String> extractKeysFromFile(Path filePath) {
-    String fileContent = FileContentUtil.tryReadContent(filePath);
-    fileContent = FileContentUtil.transformTextToOneLine(fileContent);
+  public Set<String> extractKeysFromFile(Path filePath)
+  {
+    String fileContent = FileContentReader.tryReadContent(filePath);
+    fileContent = FileContentReader.transformTextToOneLine(fileContent);
 
     Set<String> formattedMessageIds = matchFormattedMessageIds(fileContent);
     Set<String> formattedHTMLMessageIds = matchFormattedHTMLMessageIds(fileContent);

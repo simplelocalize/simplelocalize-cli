@@ -16,6 +16,7 @@ import picocli.CommandLine.Option;
 import java.io.IOException;
 import java.nio.file.Path;
 
+
 @Command(
         name = "simplelocalize-cli",
         description =
@@ -26,7 +27,7 @@ import java.nio.file.Path;
                 },
         mixinStandardHelpOptions = true,
         version = {
-                "SimpleLocalize CLI: 1.1.1",
+                "SimpleLocalize CLI: 1.2.0",
                 "JVM: ${java.version} (${java.vendor} ${java.vm.name} ${java.vm.version})",
                 "OS: ${os.name} ${os.version} ${os.arch}"}
 )
@@ -63,8 +64,9 @@ public class SimplelocalizeCliCommand implements Runnable
     {
       configuration.setSearchDir(searchDirectory);
     }
-    ExtractCommand extractCommand = new ExtractCommand();
-    extractCommand.invoke(configuration);
+
+    ExtractCommand extractCommand = new ExtractCommand(configuration);
+    extractCommand.invoke();
   }
 
   @Command(name = "sync", description = "Synchronize (Upload & Download) translations with SimpleLocalize editor. Use 'simplelocalize-cli sync --help' to learn more about the parameters.")
@@ -75,11 +77,12 @@ public class SimplelocalizeCliCommand implements Runnable
           @Option(names = {"--uploadOptions"}, description = "(Optional) Read more about 'uploadOptions' param at docs.simplelocalize.io") String uploadOptions,
           @Option(names = {"--downloadPath"}, description = "Directory where translations should be downloaded") Path downloadPath,
           @Option(names = {"--downloadFormat"}, description = "Download format for translation file") String downloadFormat,
-          @Option(names = {"--languageKey"}, description = "(Optional) Specify language key for single file upload") String languageKey
+          @Option(names = {"--languageKey"}, description = "(Optional) Specify language key for single file upload") String languageKey,
+          @Option(names = {"--downloadOptions"}, description = "(Optional) Download options") String downloadOptions
   ) throws IOException
   {
     upload(apiKey, uploadPath, uploadFormat, languageKey, uploadOptions);
-    download(apiKey, downloadPath, downloadFormat, languageKey);
+    download(apiKey, downloadPath, downloadFormat, languageKey, downloadOptions);
   }
 
   @Command(name = "upload", description = "Upload translations or translation keys to SimpleLocalize editor. Use 'simplelocalize-cli upload --help' to learn more about the parameters.")
@@ -119,8 +122,8 @@ public class SimplelocalizeCliCommand implements Runnable
       configuration.setUploadOptions(uploadOptions);
     }
 
-    UploadCommand uploadCommand = new UploadCommand();
-    uploadCommand.invoke(configuration);
+    UploadCommand uploadCommand = new UploadCommand(configuration);
+    uploadCommand.invoke();
   }
 
   @Command(name = "download", description = "Download translations in ready to use format for your i18n library. Use 'simplelocalize-cli download --help' to learn more about the parameters.")
@@ -128,7 +131,8 @@ public class SimplelocalizeCliCommand implements Runnable
           @Option(names = {"--apiKey"}, description = "Project API Key") String apiKey,
           @Option(names = {"--downloadPath"}, description = "Directory where translations should be downloaded") Path downloadPath,
           @Option(names = {"--downloadFormat"}, description = "Download format for translation file") String downloadFormat,
-          @Option(names = {"--languageKey"}, description = "(Optional) Setup languageKey parameter to download file with only one language translations") String languageKey
+          @Option(names = {"--languageKey"}, description = "(Optional) Setup languageKey parameter to download file with only one language translations") String languageKey,
+          @Option(names = {"--downloadOptions"}, description = "(Optional) Download options") String downloadOptions
   )
   {
     ConfigurationLoader configurationLoader = new ConfigurationLoader();
@@ -150,8 +154,13 @@ public class SimplelocalizeCliCommand implements Runnable
     {
       configuration.setLanguageKey(languageKey);
     }
-    DownloadCommand downloadCommand = new DownloadCommand();
-    downloadCommand.invoke(configuration);
+    if (StringUtils.isNotEmpty(downloadOptions))
+    {
+      configuration.setDownloadOptions(downloadOptions);
+    }
+
+    DownloadCommand downloadCommand = new DownloadCommand(configuration);
+    downloadCommand.invoke();
   }
 
   @Command(name = "validate", hidden = true)
@@ -166,8 +175,8 @@ public class SimplelocalizeCliCommand implements Runnable
     {
       configuration.setApiKey(apiKey);
     }
-    ValidateCommand validateCommand = new ValidateCommand();
-    validateCommand.invoke(configuration);
+    ValidateCommand validateCommand = new ValidateCommand(configuration);
+    validateCommand.invoke();
   }
 
   public void run()

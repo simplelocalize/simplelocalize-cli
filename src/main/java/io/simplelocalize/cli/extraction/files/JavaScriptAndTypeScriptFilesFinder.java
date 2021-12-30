@@ -18,7 +18,7 @@ public class JavaScriptAndTypeScriptFilesFinder implements FilesFinder {
       return walk
               .filter(Files::isRegularFile)
               .filter(isNotNodeModule())
-              .filter(isJavaScriptFile())
+              .filter(isJavaScriptOrTypeScriptFile())
               .collect(Collectors.toList());
     } catch (IOException e) {
       throw new ProjectProcessException("Could not process files in path: " + path, e);
@@ -34,7 +34,8 @@ public class JavaScriptAndTypeScriptFilesFinder implements FilesFinder {
     };
   }
 
-  private Predicate<Path> isJavaScriptFile() {
+  private Predicate<Path> isJavaScriptOrTypeScriptFile()
+  {
     return filePath -> {
       String filename = filePath.toString();
       String TS_TSX_JS_JSX = ".*\\.(t|j)s.?$";

@@ -19,8 +19,8 @@ public class DownloadCommandTest
     configuration.setDownloadFormat("android");
 
     //when
-    DownloadCommand downloadCommand = new DownloadCommand();
-    downloadCommand.invoke(configuration);
+    DownloadCommand downloadCommand = new DownloadCommand(configuration);
+    downloadCommand.invoke();
 
     //then
     Assertions.assertThat(Path.of("./junit/download-test/values-pl/strings.xml")).exists();
@@ -38,8 +38,8 @@ public class DownloadCommandTest
     configuration.setDownloadFormat("android");
 
     //when
-    DownloadCommand downloadCommand = new DownloadCommand();
-    downloadCommand.invoke(configuration);
+    DownloadCommand downloadCommand = new DownloadCommand(configuration);
+    downloadCommand.invoke();
 
     //then
     Assertions.assertThat(Path.of("./junit/download-test/values-pl-test/strings.xml")).exists();
@@ -57,8 +57,8 @@ public class DownloadCommandTest
     configuration.setDownloadFormat("single-language-json");
 
     //when
-    DownloadCommand downloadCommand = new DownloadCommand();
-    downloadCommand.invoke(configuration);
+    DownloadCommand downloadCommand = new DownloadCommand(configuration);
+    downloadCommand.invoke();
 
     //then
     Assertions.assertThat(Path.of("./junit/download-test/jsons/de.json")).exists();
@@ -76,8 +76,8 @@ public class DownloadCommandTest
     configuration.setDownloadFormat("multi-language-json");
 
     //when
-    DownloadCommand downloadCommand = new DownloadCommand();
-    downloadCommand.invoke(configuration);
+    DownloadCommand downloadCommand = new DownloadCommand(configuration);
+    downloadCommand.invoke();
 
     //then
     Assertions.assertThat(Path.of("./junit/download-test/multi-language-file/multi-language-file.json")).exists();

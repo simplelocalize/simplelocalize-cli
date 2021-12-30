@@ -1,6 +1,7 @@
 package io.simplelocalize.cli.extraction;
 
 import io.simplelocalize.cli.extraction.processor.ExtractionProcessor;
+import io.simplelocalize.cli.extraction.processor.YahooReactIntlProcessor;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -17,7 +18,7 @@ public class ExtractionProcessorFactoryTest
     ExtractionProcessor forType = projectProcessorFactory.createForType("yahoo/react-intl");
 
     //then
-    Assertions.assertThat(forType).isNotNull();
+    Assertions.assertThat(forType).isInstanceOf(YahooReactIntlProcessor.class);
   }
 
   @Test
@@ -28,7 +29,7 @@ public class ExtractionProcessorFactoryTest
 
     //when
     Assertions.assertThatThrownBy(() -> {
-      projectProcessorFactory.createForType("unknown projec type");
+      projectProcessorFactory.createForType("unknown project type");
     });
 
     //then
