@@ -1,7 +1,7 @@
 package io.simplelocalize.cli.extraction.processor;
 
+import io.simplelocalize.cli.TestResourcesUtility;
 import io.simplelocalize.cli.extraction.ExtractionResult;
-import io.simplelocalize.cli.extraction.files.TestResourcesUtility;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

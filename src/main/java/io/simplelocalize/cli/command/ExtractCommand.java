@@ -20,14 +20,19 @@ public class ExtractCommand implements CliCommand
 
   private static final Logger log = LoggerFactory.getLogger(ExtractCommand.class);
 
-  public void invoke(Configuration configuration)
+  private final SimpleLocalizeClient client;
+  private final Configuration configuration;
+
+  public ExtractCommand(Configuration configuration)
+  {
+    this.configuration = configuration;
+    this.client = SimpleLocalizeClient.withProductionServer(configuration);
+  }
+
+  public void invoke()
   {
     String searchDir = configuration.getSearchDir();
-    String apiKey = configuration.getApiKey();
     String projectType = configuration.getProjectType();
-    String profile = configuration.getProfile();
-
-    SimpleLocalizeClient client = SimpleLocalizeClient.withProductionServer(apiKey, profile);
 
     log.info(" 🕵️‍♂️ Running keys extraction");
     ProjectProcessorFactory processorFactory = new ProjectProcessorFactory();

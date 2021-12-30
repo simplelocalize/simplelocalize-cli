@@ -1,11 +1,13 @@
 package io.simplelocalize.cli.util;
 
 import io.simplelocalize.cli.client.dto.FileToUpload;
+import io.simplelocalize.cli.configuration.Configuration;
 import io.simplelocalize.cli.io.FileListReader;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 
@@ -20,8 +22,12 @@ public class FileListReaderTest
     //given
     String path = "./junit/multi-file";
 
+    Configuration configuration = new Configuration();
+    configuration.setUploadFormat("multi-language-json");
+    configuration.setUploadPath(Path.of(path));
+
     //when
-    List<FileToUpload> result = sut.getFilesToUploadByUploadFormat(Paths.get(path), "multi-language-json");
+    List<FileToUpload> result = sut.getFilesForMultiFileUpload(configuration);
 
     //then
     Assertions.assertThat(result).hasSize(2);

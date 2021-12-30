@@ -1,8 +1,14 @@
 package io.simplelocalize.cli.client;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.common.annotations.Beta;
 import com.google.common.collect.Maps;
 import com.google.common.net.HttpHeaders;
 import com.jayway.jsonpath.JsonPath;
+import io.simplelocalize.cli.client.dto.DownloadableFile;
+import io.simplelocalize.cli.client.dto.ExportResponse;
+import io.simplelocalize.cli.client.dto.FileFormat;
+import io.simplelocalize.cli.configuration.Configuration;
 import io.simplelocalize.cli.io.FileWriter;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -15,56 +21,58 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.security.SecureRandom;
 import java.time.Duration;
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
 
-public final class SimpleLocalizeClient
+public class SimpleLocalizeClient
 {
-  private static final String PRODUCTION_BASE_URL = "https://api.simplelocalize.io";
+  //  private static final String PRODUCTION_BASE_URL = "https://api.simplelocalize.io";
+  private static final String PRODUCTION_BASE_URL = "http://localhost:8080";
   private static final String TOKEN_HEADER_NAME = "X-SimpleLocalize-Token";
+
   private final HttpClient httpClient;
   private final String baseUrl;
   private final String apiKey;
-  private final String profile;
 
   private final Logger log = LoggerFactory.getLogger(SimpleLocalizeClient.class);
   private final FileWriter fileWriter;
+  private final ObjectMapper objectMapper;
   private final SecureRandom random;
 
-  public SimpleLocalizeClient(String baseUrl, String apiKey, String profile)
+  public SimpleLocalizeClient(String baseUrl, String apiKey)
   {
     Objects.requireNonNull(apiKey);
     this.apiKey = apiKey;
-
-    if (StringUtils.isEmpty(profile))
-    {
-      this.profile = "default";
-    } else
-    {
-      this.profile = profile;
-    }
     this.baseUrl = baseUrl;
     this.random = new SecureRandom();
+    this.objectMapper = new ObjectMapper();
     this.fileWriter = new FileWriter();
     this.httpClient = HttpClient.newBuilder()
             .connectTimeout(Duration.ofMinutes(5))
             .build();
   }
 
-  public static SimpleLocalizeClient withProductionServer(String apiKey, String profile)
+  public static SimpleLocalizeClient withProductionServer(String apiKey)
   {
-    return new SimpleLocalizeClient(PRODUCTION_BASE_URL, apiKey, profile);
+    return new SimpleLocalizeClient(PRODUCTION_BASE_URL, apiKey);
+  }
+
+  public static SimpleLocalizeClient withProductionServer(Configuration configuration)
+  {
+    return new SimpleLocalizeClient(PRODUCTION_BASE_URL, configuration.getApiKey());
   }
 
   public void sendKeys(Collection<String> keys) throws IOException, InterruptedException
   {
     HttpRequest httpRequest = HttpRequest.newBuilder()
             .POST(ClientBodyBuilders.ofKeysBody(keys))
-            .uri(URI.create(baseUrl + "/cli/v1/keys?profile=" + profile))
+            .uri(URI.create(baseUrl + "/cli/v1/keys"))
             .header(HttpHeaders.CONTENT_TYPE, "application/json")
             .header(TOKEN_HEADER_NAME, apiKey)
             .build();
@@ -90,7 +98,7 @@ public final class SimpleLocalizeClient
     }
   }
 
-  public void uploadFile(Path uploadPath, String languageKey, String uploadFormat, String uploadOptions) throws IOException, InterruptedException
+  public void uploadFile(Path uploadPath, String languageKey, String uploadFormat, String uploadOptions, String relativePath) throws IOException, InterruptedException
   {
     int pseudoRandomNumber = (int) (random.nextDouble() * 1_000_000_000);
     String boundary = "simplelocalize" + pseudoRandomNumber;
@@ -107,6 +115,12 @@ public final class SimpleLocalizeClient
     {
       endpointUrl += "&uploadOptions=" + uploadOptions;
     }
+
+    if (StringUtils.isNotEmpty(relativePath))
+    {
+      endpointUrl += "&projectPath=" + relativePath;
+    }
+
     HttpRequest httpRequest = HttpRequest.newBuilder()
             .POST(ClientBodyBuilders.ofMimeMultipartData(formData, boundary))
             .uri(URI.create(endpointUrl))
@@ -127,6 +141,7 @@ public final class SimpleLocalizeClient
 
   }
 
+  @Deprecated
   public void downloadFile(Path downloadPath, String downloadFormat, String languageKey) throws IOException, InterruptedException
   {
     String endpointUrl = baseUrl + "/cli/v2/download?downloadFormat=" + downloadFormat;
@@ -153,7 +168,6 @@ public final class SimpleLocalizeClient
 
     boolean isFileFormatWithAllLanguages = downloadFormat.equalsIgnoreCase("multi-language-json");
 
-    //here I should decide if I should write downloaded file as single file or multiple files with multiple languages
     if (isRequestedTranslationsForSpecificLanguage || isFileFormatWithAllLanguages)
     {
       Files.createDirectories(downloadPath.getParent());
@@ -166,12 +180,66 @@ public final class SimpleLocalizeClient
     log.info(" 🎉 Download success!");
   }
 
+  @Beta
+  public void downloadMultiFile(Path downloadPath, String downloadFormat, String languageKey) throws IOException, InterruptedException
+  {
+    FileFormat.logWarningIfUnknownOrDeprecatedFileFormat(downloadFormat);
+    String endpointUrl = baseUrl + "/cli/v2/download?downloadFormat=" + downloadFormat;
+    boolean isRequestedTranslationsForSpecificLanguage = StringUtils.isNotEmpty(languageKey);
+    if (isRequestedTranslationsForSpecificLanguage)
+    {
+      endpointUrl += "&languageKey=" + languageKey;
+    }
+    endpointUrl += "&exportOptions=" + "MULTI_FILE";
+
+    HttpRequest httpRequest = HttpRequest.newBuilder()
+            .GET()
+            .uri(URI.create(endpointUrl))
+            .header(TOKEN_HEADER_NAME, apiKey)
+            .build();
+
+    HttpResponse<String> httpResponse = httpClient.send(httpRequest, HttpResponse.BodyHandlers.ofString());
+    if (httpResponse.statusCode() != 200)
+    {
+      log.error(" 😝 Download failed");
+      log.error("{} - {}", httpResponse.statusCode(), httpResponse.body());
+      return;
+    }
+    String body = httpResponse.body();
+    ExportResponse exportResponse = objectMapper.readValue(body, ExportResponse.class);
+    List<DownloadableFile> downloadableFiles = exportResponse.getFiles();
+    downloadableFiles
+            .parallelStream()
+            .forEach(downloadableFile -> saveFile(downloadableFile, downloadPath));
+    log.info(" 🎉 Download success!");
+  }
+
+  private void saveFile(DownloadableFile downloadableFile, Path downloadPath)
+  {
+    String url = downloadableFile.getUrl();
+    Path savePath = Paths.get(downloadPath.toString(), downloadableFile.getProjectPath());
+
+    HttpRequest httpRequest = HttpRequest.newBuilder()
+            .GET()
+            .uri(URI.create(url))
+            .build();
+    try
+    {
+      log.info(" 🌍 Downloading to {}", savePath);
+      Files.createDirectories(savePath.getParent());
+      httpClient.send(httpRequest, HttpResponse.BodyHandlers.ofFile(savePath));
+    } catch (IOException | InterruptedException e)
+    {
+      log.error(" 😝 Download failed", e);
+    }
+  }
+
   public int fetchGateCheckStatus() throws IOException, InterruptedException
   {
 
     HttpRequest httpRequest = HttpRequest.newBuilder()
             .GET()
-            .uri(URI.create(baseUrl + "/cli/v1/analysis?profile=" + profile))
+            .uri(URI.create(baseUrl + "/cli/v1/analysis"))
             .header(TOKEN_HEADER_NAME, apiKey)
             .build();
 

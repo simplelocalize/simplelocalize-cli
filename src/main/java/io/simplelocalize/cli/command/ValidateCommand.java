@@ -9,12 +9,15 @@ public class ValidateCommand implements CliCommand
 {
   private static final Logger log = LoggerFactory.getLogger(ValidateCommand.class);
 
-  public void invoke(Configuration configuration)
-  {
-    String apiKey = configuration.getApiKey();
-    String profile = configuration.getProfile();
-    SimpleLocalizeClient client = SimpleLocalizeClient.withProductionServer(apiKey, profile);
+  private final SimpleLocalizeClient client;
 
+  public ValidateCommand(Configuration configuration)
+  {
+    this.client = SimpleLocalizeClient.withProductionServer(configuration);
+  }
+
+  public void invoke()
+  {
     try
     {
       int status = client.fetchGateCheckStatus();

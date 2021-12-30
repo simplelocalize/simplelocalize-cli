@@ -13,11 +13,6 @@ import static io.simplelocalize.cli.io.FileListReader.LANGUAGE_TEMPLATE_KEY;
 public class FileWriter
 {
 
-  public void writeFiles()
-  {
-
-  }
-
   public void saveAsMultipleFiles(Path downloadPath, byte[] body) throws IOException
   {
     String[] splitByLanguageTemplateKey = StringUtils.splitByWholeSeparator(downloadPath.toString(), LANGUAGE_TEMPLATE_KEY);

@@ -2,6 +2,7 @@ package io.simplelocalize.cli.io;
 
 import com.google.common.collect.Lists;
 import io.simplelocalize.cli.client.dto.FileToUpload;
+import io.simplelocalize.cli.configuration.Configuration;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.File;
@@ -56,8 +57,14 @@ public class FileListReader
     }
   }
 
-  public List<FileToUpload> getFilesToUploadByUploadFormat(Path configurationUploadPath, String uploadFormat) throws IOException
+  public List<FileToUpload> getFilesForMultiFileUpload(Configuration configuration) throws IOException
   {
+    Path configurationUploadPath = configuration.getUploadPath();
+    String uploadFormat = configuration.getUploadFormat();
+    if (!"multi-language-json".equals(uploadFormat))
+    {
+      throw new IllegalArgumentException("Currently, only 'multi-language-json' upload format is supported with 'MULTI_FILE' upload option");
+    }
     String fileExtension = ".json";
     List<FileToUpload> output = Lists.newArrayList();
 

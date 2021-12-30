@@ -70,7 +70,7 @@ public class SimpleLocalizeClientTest
     SimpleLocalizeClient client = new SimpleLocalizeClient(MOCK_SERVER_BASE_URL, "81707741b64e68427e1a2c20e75095b1", "default");
 
     //when
-    client.uploadFile(Path.of("./test.json"), null, "multi-language-json", "");
+    client.uploadFile(Path.of("./test.json"), null, "multi-language-json", "", "");
 
     //then
   }

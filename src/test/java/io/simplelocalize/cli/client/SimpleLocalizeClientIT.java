@@ -20,7 +20,7 @@ public class SimpleLocalizeClientIT
   {
     //given
     String projectApiKey = "237b305f6b2273e92ac857eb44d7f33b";
-    SimpleLocalizeClient client = SimpleLocalizeClient.withProductionServer(projectApiKey, "default");
+    SimpleLocalizeClient client = SimpleLocalizeClient.withProductionServer(projectApiKey);
 
     //when
     client.sendKeys(List.of("test"));
@@ -33,10 +33,10 @@ public class SimpleLocalizeClientIT
   {
     //given
     String projectApiKey = "81707741b64e68427e1a2c20e75095b1";
-    SimpleLocalizeClient client = SimpleLocalizeClient.withProductionServer(projectApiKey, "default");
+    SimpleLocalizeClient client = SimpleLocalizeClient.withProductionServer(projectApiKey);
 
     //when
-    client.uploadFile(Path.of("./test.json"), null, "multi-language-json", "");
+    client.uploadFile(Path.of("./test.json"), null, "multi-language-json", "", "");
 
     //then
   }
@@ -46,7 +46,7 @@ public class SimpleLocalizeClientIT
   {
     //given
     String projectApiKey = "96a7b6ca75c79d4af4dfd5db2946fdd4";
-    SimpleLocalizeClient client = SimpleLocalizeClient.withProductionServer(projectApiKey, "default");
+    SimpleLocalizeClient client = SimpleLocalizeClient.withProductionServer(projectApiKey);
 
     //when
     client.downloadFile(Path.of("./i18n"), "java-properties", "");
@@ -59,7 +59,7 @@ public class SimpleLocalizeClientIT
   {
     //given
     String projectApiKey = "96a7b6ca75c79d4af4dfd5db2946fdd4";
-    SimpleLocalizeClient client = SimpleLocalizeClient.withProductionServer(projectApiKey, "default");
+    SimpleLocalizeClient client = SimpleLocalizeClient.withProductionServer(projectApiKey);
 
     //when
     client.downloadFile(Path.of("./messages_test.properties"), "java-properties", "en");
