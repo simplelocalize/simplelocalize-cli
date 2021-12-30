@@ -26,7 +26,64 @@ curl -s https://get.simplelocalize.io/install | bash
 simplelocalize [COMMAND] --apiKey <PROJECT_API_KEY> rest of parameters...
 ```
 
-## Available commands
+## Example configuration file
+
+```yaml
+
+# Upload command
+uploadPath: ./src
+uploadFormat: multi-language-json
+uploadOptions: MULTI_FILE
+languageKey: en
+ignorePaths:
+  - './ignore/*/regex/*'
+  - './ignore/directory'
+
+# Download command
+downloadPath: ./src
+downloadFormat: multi-language-json
+downloadOptions: MULTI_FILE
+languageKey: en
+
+# Extract command
+searchDir: ./src
+projectType: yahoo/react-intl
+ignoreKeys:
+  - 'WELCOME'
+  - 'ABOUT-US'
+  
+
+
+```
+
+## Upload Translations
+
+```properties
+simplelocalize upload --apiKey <PROJECT_API_KEY>
+```
+
+
+## Download Translations
+
+```properties
+simplelocalize download --apiKey <PROJECT_API_KEY>
+```
+
+
+## Sync Translations
+
+```properties
+simplelocalize sync --apiKey <PROJECT_API_KEY>
+```
+
+
+## Extract Translation Keys
+
+```properties
+simplelocalize extract --apiKey <PROJECT_API_KEY>
+```
+
+## Commands documentation
 
 Rememebr to [get API Key for your SimpleLocalize project](https://simplelocalize.io/docs/cli/get-started/) before your start.
 
