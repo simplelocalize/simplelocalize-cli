@@ -11,6 +11,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.regex.Matcher;
@@ -26,7 +27,7 @@ public class FileListReader
 
   public List<FileToUpload> findFilesWithTemplateKey(Path uploadPathWithTemplateKey, String templateKey) throws IOException
   {
-    List<FileToUpload> output = new ArrayList();
+    List<FileToUpload> output = new ArrayList<>();
     String filePathWithTemplate = uploadPathWithTemplateKey.toString();
 
     String[] splitUploadPath = StringUtils.splitByWholeSeparator(filePathWithTemplate, templateKey);
@@ -74,7 +75,7 @@ public class FileListReader
       throw new UnsupportedOperationException();
     }
     String fileExtension = ".json";
-    List<FileToUpload> output = new ArrayList();
+    List<FileToUpload> output = new ArrayList<>();
 
     try (Stream<Path> foundFilesStream = Files.walk(configurationUploadPath, 10))
     {

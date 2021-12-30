@@ -21,7 +21,7 @@ public class AndroidProcessor implements ExtractionProcessor
   {
 
     Set<String> foundKeys = new LinkedHashSet<>();
-    List<Path> foundFiles = new ArrayList();
+    List<Path> foundFiles = new ArrayList<>();
 
     GenericExtensionFilesFinder filesFinder = new GenericExtensionFilesFinder();
     List<Path> javaFiles = filesFinder.findFilesToProcess(searchDirectory, ".java");
