@@ -47,13 +47,17 @@ public final class ConfigurationLoader
       log.info(" 🗄 Loaded configuration file from: {}", configurationFilePath);
     } catch (Exception e)
     {
-      log.info(" 🗄 Using default configuration. Configuration file not found at: {}", configurationFilePath);
-      configuration = new Configuration();
-      configuration.setSearchDir(CURRENT_DIRECTORY);
-      return configuration;
+      log.error(" 🗄 Unable to load configuration", e);
+      return new Configuration();
     }
 
     String uploadToken = configuration.getUploadToken();
+
+    if (StringUtils.isNotEmpty(uploadToken))
+    {
+      log.warn("DEPRECATION WARNING: Please use 'apiKey' property instead 'uploadToken' in your configuration file.");
+    }
+
     String apiKey = configuration.getApiKey();
     if (StringUtils.isEmpty(apiKey))
     {

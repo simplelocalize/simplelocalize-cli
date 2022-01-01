@@ -11,14 +11,11 @@ public class Configuration
 
   private String apiKey;
 
-  @Deprecated
-  private String uploadToken;
-
   private String projectType;
   private String searchDir;
   private Set<String> ignoreKeys = Set.of();
 
-  private Set<String> ignorePaths;
+  private Set<String> ignorePaths = Set.of();
 
   private Path uploadPath;
   private String uploadFormat;
@@ -29,6 +26,9 @@ public class Configuration
   private String downloadOptions;
 
   private String languageKey;
+
+  @Deprecated
+  private String uploadToken;
 
   public String getSearchDir()
   {
