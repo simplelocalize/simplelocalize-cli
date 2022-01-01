@@ -5,12 +5,27 @@ import org.junit.jupiter.api.Test;
 
 import java.nio.file.Path;
 
-public class ConfigurationLoaderTest {
+public class ConfigurationLoaderTest
+{
 
   private final ConfigurationLoader loader = new ConfigurationLoader();
 
+
   @Test
-  public void shouldLoadConfiguration() throws Exception {
+  public void shouldLoadConfiguration2() throws Exception
+  {
+    //given
+
+    //when
+    Configuration configuration = loader.loadOrGetDefault(Path.of("/Users/jpomykala/Workspace/demo-multi-file/simplelocalize.yml"));
+
+    //then
+    Assertions.assertThat(configuration).isNotNull();
+  }
+
+  @Test
+  public void shouldLoadConfiguration() throws Exception
+  {
     //given
     ClassLoader classLoader = getClass().getClassLoader();
     String pathToConfig = classLoader.getResource("simplelocalize.yml").toURI().toString().replace("file:", "");

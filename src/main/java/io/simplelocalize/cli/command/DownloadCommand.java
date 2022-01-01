@@ -7,7 +7,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
-import java.nio.file.Path;
 import java.util.Locale;
 
 public class DownloadCommand implements CliCommand
@@ -25,7 +24,7 @@ public class DownloadCommand implements CliCommand
 
   public void invoke()
   {
-    Path downloadPath = configuration.getDownloadPath();
+    String downloadPath = configuration.getDownloadPath();
     String downloadFormat = configuration.getDownloadFormat();
     String languageKey = configuration.getLanguageKey();
     String downloadOptions = configuration.getDownloadOptions();
@@ -35,7 +34,7 @@ public class DownloadCommand implements CliCommand
     {
       if (isMultiFileDownload(downloadOptions))
       {
-        client.downloadMultiFile(downloadPath, downloadFormat, languageKey);
+        client.downloadMultiFile(downloadPath, downloadFormat);
       } else
       {
         client.downloadFile(downloadPath, downloadFormat, languageKey);

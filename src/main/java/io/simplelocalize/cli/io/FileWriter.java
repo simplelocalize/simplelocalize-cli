@@ -13,16 +13,16 @@ import static io.simplelocalize.cli.io.FileListReader.LANGUAGE_TEMPLATE_KEY;
 public class FileWriter
 {
 
-  public void saveAsMultipleFiles(Path downloadPath, byte[] body) throws IOException
+  public void saveAsMultipleFiles(String downloadPath, byte[] body) throws IOException
   {
-    String[] splitByLanguageTemplateKey = StringUtils.splitByWholeSeparator(downloadPath.toString(), LANGUAGE_TEMPLATE_KEY);
+    String[] splitByLanguageTemplateKey = StringUtils.splitByWholeSeparator(downloadPath, LANGUAGE_TEMPLATE_KEY);
     String directoriesPartBeforeTemplateKeyWithPrefix = splitByLanguageTemplateKey[0];
     String directoriesPartBeforeTemplateKey = removePrefix(directoriesPartBeforeTemplateKeyWithPrefix);
     Files.createDirectories(Path.of(directoriesPartBeforeTemplateKey));
     Path fileSavePath = Path.of(directoriesPartBeforeTemplateKey + File.separator + "translations.zip");
 
     Files.write(fileSavePath, body);
-    ZipUtils.unzip(fileSavePath.toString(), downloadPath.toString(), LANGUAGE_TEMPLATE_KEY);
+    ZipUtils.unzip(fileSavePath.toString(), downloadPath, LANGUAGE_TEMPLATE_KEY);
     Files.delete(fileSavePath);
   }
 

@@ -15,7 +15,7 @@ public class DownloadCommandTest
     //given
     Configuration configuration = new Configuration();
     configuration.setApiKey("a72ca590eaba1a4e642189d102fe255ca65e14fbbf07dd82892841b9ac5ddbdb");
-    configuration.setDownloadPath(Path.of("./junit/download-test/values-{lang}/strings.xml"));
+    configuration.setDownloadPath("./junit/download-test/values-{lang}/strings.xml");
     configuration.setDownloadFormat("android");
 
     //when
@@ -34,7 +34,7 @@ public class DownloadCommandTest
     //given
     Configuration configuration = new Configuration();
     configuration.setApiKey("a72ca590eaba1a4e642189d102fe255ca65e14fbbf07dd82892841b9ac5ddbdb");
-    configuration.setDownloadPath(Path.of("./junit/download-test/values-{lang}-test/strings.xml"));
+    configuration.setDownloadPath("./junit/download-test/values-{lang}-test/strings.xml");
     configuration.setDownloadFormat("android");
 
     //when
@@ -53,7 +53,7 @@ public class DownloadCommandTest
     //given
     Configuration configuration = new Configuration();
     configuration.setApiKey("a72ca590eaba1a4e642189d102fe255ca65e14fbbf07dd82892841b9ac5ddbdb");
-    configuration.setDownloadPath(Path.of("./junit/download-test/jsons/{lang}.json"));
+    configuration.setDownloadPath("./junit/download-test/jsons/{lang}.json");
     configuration.setDownloadFormat("single-language-json");
 
     //when
@@ -72,7 +72,7 @@ public class DownloadCommandTest
     //given
     Configuration configuration = new Configuration();
     configuration.setApiKey("a72ca590eaba1a4e642189d102fe255ca65e14fbbf07dd82892841b9ac5ddbdb");
-    configuration.setDownloadPath(Path.of("./junit/download-test/multi-language-file/multi-language-file.json"));
+    configuration.setDownloadPath("./junit/download-test/multi-language-file/multi-language-file.json");
     configuration.setDownloadFormat("multi-language-json");
 
     //when

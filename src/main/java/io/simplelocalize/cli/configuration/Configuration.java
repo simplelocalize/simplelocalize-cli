@@ -2,7 +2,6 @@ package io.simplelocalize.cli.configuration;
 
 import io.micronaut.core.annotation.Introspected;
 
-import java.nio.file.Path;
 import java.util.Set;
 
 @Introspected
@@ -17,11 +16,11 @@ public class Configuration
 
   private Set<String> ignorePaths = Set.of();
 
-  private Path uploadPath;
+  private String uploadPath;
   private String uploadFormat;
   private String uploadOptions;
 
-  private Path downloadPath;
+  private String downloadPath;
   private String downloadFormat;
   private String downloadOptions;
 
@@ -80,12 +79,12 @@ public class Configuration
     this.uploadToken = uploadToken;
   }
 
-  public Path getUploadPath()
+  public String getUploadPath()
   {
     return uploadPath;
   }
 
-  public void setUploadPath(Path uploadPath)
+  public void setUploadPath(String uploadPath)
   {
     this.uploadPath = uploadPath;
   }
@@ -100,12 +99,12 @@ public class Configuration
     this.uploadFormat = uploadFormat;
   }
 
-  public Path getDownloadPath()
+  public String getDownloadPath()
   {
     return downloadPath;
   }
 
-  public void setDownloadPath(Path downloadPath)
+  public void setDownloadPath(String downloadPath)
   {
     this.downloadPath = downloadPath;
   }

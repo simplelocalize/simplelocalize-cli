@@ -11,6 +11,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -25,10 +26,9 @@ public class FileListReader
   private static final Logger log = LoggerFactory.getLogger(UploadCommand.class);
   public static final String LANGUAGE_TEMPLATE_KEY = "{lang}";
 
-  public List<FileToUpload> findFilesWithTemplateKey(Path uploadPathWithTemplateKey, String templateKey) throws IOException
+  public List<FileToUpload> findFilesWithTemplateKey(String filePathWithTemplate, String templateKey) throws IOException
   {
     List<FileToUpload> output = new ArrayList<>();
-    String filePathWithTemplate = uploadPathWithTemplateKey.toString();
 
     String[] splitUploadPath = StringUtils.splitByWholeSeparator(filePathWithTemplate, templateKey);
     String firstPart = splitUploadPath[0];
@@ -65,7 +65,7 @@ public class FileListReader
 
   public List<FileToUpload> findFilesForMultiFileUpload(Configuration configuration) throws IOException
   {
-    Path configurationUploadPath = configuration.getUploadPath();
+    String configurationUploadPath = configuration.getUploadPath();
     String uploadFormat = configuration.getUploadFormat();
     Set<String> ignorePaths = configuration.getIgnorePaths();
 
@@ -77,7 +77,7 @@ public class FileListReader
     String fileExtension = ".json";
     List<FileToUpload> output = new ArrayList<>();
 
-    try (Stream<Path> foundFilesStream = Files.walk(configurationUploadPath, 10))
+    try (Stream<Path> foundFilesStream = Files.walk(Paths.get(configurationUploadPath), 10))
     {
       var foundPaths = foundFilesStream.collect(Collectors.toList());
       var foundFiles = foundPaths.stream()

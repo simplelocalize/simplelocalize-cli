@@ -8,7 +8,7 @@
 
 SimpleLocalize CLI to simplifies the process of translation in web apps, mobile apps, and games. It can:
 - find translation keys in your local files
-- upload existing translation files or transaltion keys
+- upload existing translation files or translation keys
 - download translation file in ready to use format for already used i18n library like: i18next, Android, iOS, and many others
 
 
@@ -37,7 +37,6 @@ apiKey: API_KEY
 uploadPath: ./src
 uploadFormat: multi-language-json
 uploadOptions: MULTI_FILE
-languageKey: en
 ignorePaths:
   - './ignore/*/regex/*'
   - './ignore/directory'
@@ -46,6 +45,7 @@ ignorePaths:
 downloadPath: ./src
 downloadFormat: multi-language-json
 downloadOptions: MULTI_FILE
+
 languageKey: en
 
 # Extract command
@@ -84,15 +84,15 @@ simplelocalize extract --apiKey <PROJECT_API_KEY>
 ```
 
 ## Custom configuration file
-By default SimpleLocalize will load configuration from file named `simplelocalize.yml`. You can load configuration from different location using `--configuration` parameters.
+By default, SimpleLocalize will load configuration from file named `simplelocalize.yml`. You can load configuration from different location using `--configuration` parameters.
 
 ```properties
-simplelocalize upload --apiKey <PROJECT_API_KEY> --configuration ./my-configuration.yml
+simplelocalize --configuration ./my-configuration.yml upload --apiKey <PROJECT_API_KEY>
 ```
 
 ## Commands documentation
 
-Rememebr to [get API Key for your SimpleLocalize project](https://simplelocalize.io/docs/cli/get-started/) before your start.
+Please remember to [get API Key for your SimpleLocalize project](https://simplelocalize.io/docs/cli/get-started/) before your start.
 
 - `simplelocalize extract` - learn more [how to extract translation keys from local files](https://simplelocalize.io/docs/cli/i18n-keys-extraction/)
 - `simplelocalize upload` - learn more [how to upload translations or translation keys](https://simplelocalize.io/docs/cli/upload-translations/)

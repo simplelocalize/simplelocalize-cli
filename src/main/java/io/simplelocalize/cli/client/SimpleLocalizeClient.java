@@ -23,12 +23,12 @@ import java.security.SecureRandom;
 import java.time.Duration;
 import java.util.*;
 
-//TODO create request object and URL builder
 public class SimpleLocalizeClient
 {
-  private static final String PRODUCTION_BASE_URL = "https://api.simplelocalize.io";
   //  private static final String PRODUCTION_BASE_URL = "http://localhost:8080";
+  private static final String PRODUCTION_BASE_URL = "https://api.simplelocalize.io";
   private static final String TOKEN_HEADER_NAME = "X-SimpleLocalize-Token";
+  private static final String CONTENT_TYPE_HEADER_NAME = "Content-Type";
 
   private final HttpClient httpClient;
   private final String baseUrl;
@@ -41,6 +41,7 @@ public class SimpleLocalizeClient
 
   public SimpleLocalizeClient(String baseUrl, String apiKey)
   {
+    Objects.requireNonNull(baseUrl);
     Objects.requireNonNull(apiKey);
     this.apiKey = apiKey;
     this.baseUrl = baseUrl;
@@ -50,11 +51,6 @@ public class SimpleLocalizeClient
     this.httpClient = HttpClient.newBuilder()
             .connectTimeout(Duration.ofMinutes(5))
             .build();
-  }
-
-  public static SimpleLocalizeClient withProductionServer(String apiKey)
-  {
-    return new SimpleLocalizeClient(PRODUCTION_BASE_URL, apiKey);
   }
 
   public static SimpleLocalizeClient withProductionServer(Configuration configuration)
@@ -67,7 +63,7 @@ public class SimpleLocalizeClient
     HttpRequest httpRequest = HttpRequest.newBuilder()
             .POST(ClientBodyBuilders.ofKeysBody(keys))
             .uri(URI.create(baseUrl + "/cli/v1/keys"))
-            .header("Content-Type", "application/json")
+            .header(CONTENT_TYPE_HEADER_NAME, "application/json")
             .header(TOKEN_HEADER_NAME, apiKey)
             .build();
 
@@ -88,24 +84,22 @@ public class SimpleLocalizeClient
     {
       String message = JsonPath.read(json, "$.msg");
       log.error(" 😝 There was a problem with your request: {}", message);
-      System.exit(1);
+      throw new IllegalStateException();
     }
   }
 
-  //TODO create request object
   public void uploadFile(Path uploadPath, String languageKey, String uploadFormat, String uploadOptions, String relativePath) throws IOException, InterruptedException
   {
     int pseudoRandomNumber = (int) (random.nextDouble() * 1_000_000_000);
     String boundary = "simplelocalize" + pseudoRandomNumber;
     Map<Object, Object> formData = new HashMap<>();
     formData.put("file", uploadPath);
-    log.info(" 🌍 Uploading {} with language key '{}'", uploadPath, languageKey);
+    String endpointUrl = baseUrl + "/cli/v1/upload?uploadFormat=" + uploadFormat;
     if (StringUtils.isNotEmpty(languageKey))
     {
-      formData.put("languageKey", languageKey);
+      endpointUrl += "&languageKey=" + languageKey;
     }
 
-    String endpointUrl = baseUrl + "/cli/v1/upload?uploadFormat=" + uploadFormat;
     if (StringUtils.isNotEmpty(uploadOptions))
     {
       endpointUrl += "&uploadOptions=" + uploadOptions;
@@ -120,24 +114,20 @@ public class SimpleLocalizeClient
             .POST(ClientBodyBuilders.ofMimeMultipartData(formData, boundary))
             .uri(URI.create(endpointUrl))
             .header(TOKEN_HEADER_NAME, apiKey)
-            .header("Content-Type", "multipart/form-data; boundary=" + boundary)
+            .header(CONTENT_TYPE_HEADER_NAME, "multipart/form-data; boundary=" + boundary)
             .build();
 
+    log.info(" 🌍 Uploading {}", uploadPath);
     HttpResponse<String> httpResponse = httpClient.send(httpRequest, HttpResponse.BodyHandlers.ofString());
-
-    if (httpResponse.statusCode() == 200)
-    {
-      log.info(" 🎉 Upload success");
-    } else
+    if (httpResponse.statusCode() != 200)
     {
       log.error(" 😝 Upload failed");
       log.error("{} - {}", httpResponse.statusCode(), httpResponse.body());
+      throw new IllegalStateException();
     }
-
   }
 
-  //TODO create request object
-  public void downloadFile(Path downloadPath, String downloadFormat, String languageKey) throws IOException, InterruptedException
+  public void downloadFile(String downloadPath, String downloadFormat, String languageKey) throws IOException, InterruptedException
   {
     String endpointUrl = baseUrl + "/cli/v1/download?downloadFormat=" + downloadFormat;
     boolean isRequestedTranslationsForSpecificLanguage = StringUtils.isNotEmpty(languageKey);
@@ -157,7 +147,7 @@ public class SimpleLocalizeClient
     {
       log.error(" 😝 Download failed");
       log.error("{} - {}", httpResponse.statusCode(), httpResponse.body());
-      return;
+      throw new IllegalStateException();
     }
     byte[] body = httpResponse.body();
 
@@ -165,8 +155,8 @@ public class SimpleLocalizeClient
 
     if (isRequestedTranslationsForSpecificLanguage || isFileFormatWithAllLanguages)
     {
-      Files.createDirectories(downloadPath.getParent());
-      Files.write(downloadPath, body);
+      Files.createDirectories(Paths.get(downloadPath).getParent());
+      Files.write(Paths.get(downloadPath), body);
     } else
     {
       fileWriter.saveAsMultipleFiles(downloadPath, body);
@@ -175,17 +165,10 @@ public class SimpleLocalizeClient
     log.info(" 🎉 Download success!");
   }
 
-  //TODO create request object
-  public void downloadMultiFile(Path downloadPath, String downloadFormat, String languageKey) throws IOException, InterruptedException
+  public void downloadMultiFile(String downloadPath, String downloadFormat) throws IOException, InterruptedException
   {
     FileFormat.logWarningIfUnknownOrDeprecatedFileFormat(downloadFormat);
-    String endpointUrl = baseUrl + "/cli/v2/download?downloadFormat=" + downloadFormat;
-    boolean isRequestedTranslationsForSpecificLanguage = StringUtils.isNotEmpty(languageKey);
-    if (isRequestedTranslationsForSpecificLanguage)
-    {
-      endpointUrl += "&languageKey=" + languageKey;
-    }
-    endpointUrl += "&exportOptions=" + "MULTI_FILE";
+    String endpointUrl = baseUrl + "/cli/v2/download?exportOptions=MULTI_FILE&downloadFormat=" + downloadFormat;
 
     HttpRequest httpRequest = HttpRequest.newBuilder()
             .GET()
@@ -198,7 +181,7 @@ public class SimpleLocalizeClient
     {
       log.error(" 😝 Download failed");
       log.error("{} - {}", httpResponse.statusCode(), httpResponse.body());
-      return;
+      throw new IllegalStateException();
     }
     String body = httpResponse.body();
     ExportResponse exportResponse = objectMapper.readValue(body, ExportResponse.class);
@@ -209,10 +192,10 @@ public class SimpleLocalizeClient
     log.info(" 🎉 Download success!");
   }
 
-  private void saveFile(DownloadableFile downloadableFile, Path downloadPath)
+  private void saveFile(DownloadableFile downloadableFile, String downloadPath)
   {
     String url = downloadableFile.getUrl();
-    Path savePath = Paths.get(downloadPath.toString(), downloadableFile.getProjectPath());
+    Path savePath = Paths.get(downloadPath, downloadableFile.getProjectPath());
 
     HttpRequest httpRequest = HttpRequest.newBuilder()
             .GET()
@@ -226,6 +209,7 @@ public class SimpleLocalizeClient
     } catch (IOException | InterruptedException e)
     {
       log.error(" 😝 Download failed: {}", savePath, e);
+      throw new IllegalStateException();
     }
   }
 

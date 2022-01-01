@@ -7,7 +7,6 @@ import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
-import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 import java.util.Set;
@@ -26,7 +25,7 @@ public class FileListReaderTest
     Configuration configuration = new Configuration();
     configuration.setUploadFormat("multi-language-json");
     configuration.setIgnorePaths(Set.of("./junit/*/ignore-me/*"));
-    configuration.setUploadPath(Path.of(path));
+    configuration.setUploadPath(path);
 
     //when
     List<FileToUpload> result = sut.findFilesForMultiFileUpload(configuration);
@@ -46,7 +45,7 @@ public class FileListReaderTest
     Configuration configuration = new Configuration();
     configuration.setUploadFormat("multi-language-json");
     configuration.setIgnorePaths(Set.of("./junit/multi-file/ignore-me/*-second.json"));
-    configuration.setUploadPath(Path.of(path));
+    configuration.setUploadPath(path);
 
     //when
     List<FileToUpload> result = sut.findFilesForMultiFileUpload(configuration);
@@ -63,7 +62,7 @@ public class FileListReaderTest
     String path = "./junit/lang-in-directory/{lang}/strings.xml";
 
     //when
-    List<FileToUpload> result = sut.findFilesWithTemplateKey(Paths.get(path), "{lang}");
+    List<FileToUpload> result = sut.findFilesWithTemplateKey(path, "{lang}");
 
     //then
     Assertions.assertThat(result).hasSize(2);
@@ -78,7 +77,7 @@ public class FileListReaderTest
     String path = "./junit/lang-in-directory-with-prefix/values-{lang}/strings.xml";
 
     //when
-    List<FileToUpload> result = sut.findFilesWithTemplateKey(Paths.get(path), "{lang}");
+    List<FileToUpload> result = sut.findFilesWithTemplateKey(path, "{lang}");
 
     //then
     Assertions.assertThat(result).hasSize(2);
@@ -93,7 +92,7 @@ public class FileListReaderTest
     String path = "./junit/lang-in-filename/{lang}.json";
 
     //when
-    List<FileToUpload> result = sut.findFilesWithTemplateKey(Paths.get(path), "{lang}");
+    List<FileToUpload> result = sut.findFilesWithTemplateKey(path, "{lang}");
 
     //then
     Assertions.assertThat(result).hasSize(2);
@@ -108,7 +107,7 @@ public class FileListReaderTest
     String path = "./junit/lang-in-filename-suffix/messages_{lang}.properties";
 
     //when
-    List<FileToUpload> result = sut.findFilesWithTemplateKey(Paths.get(path), "{lang}");
+    List<FileToUpload> result = sut.findFilesWithTemplateKey(path, "{lang}");
 
     //then
     Assertions.assertThat(result).hasSize(3);

@@ -10,7 +10,7 @@ import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
@@ -33,8 +33,7 @@ public class UploadCommand implements CliCommand
 
   public void invoke()
   {
-    Path configurationUploadPath = configuration.getUploadPath();
-    String uploadPath = configurationUploadPath.toString();
+    String uploadPath = configuration.getUploadPath();
 
     List<FileToUpload> filesToUpload = List.of();
     try
@@ -71,8 +70,7 @@ public class UploadCommand implements CliCommand
 
   private List<FileToUpload> getFilesToUpload(Configuration configuration) throws IOException
   {
-    Path configurationUploadPath = configuration.getUploadPath();
-    String uploadPath = configurationUploadPath.toString();
+    String uploadPath = configuration.getUploadPath();
     boolean hasLanguageKeyInPath = uploadPath.contains(LANGUAGE_TEMPLATE_KEY);
     String uploadLanguageKey = configuration.getLanguageKey();
     boolean isMultiFileUpload = isMultiFileUpload(configuration.getUploadOptions());
@@ -83,7 +81,7 @@ public class UploadCommand implements CliCommand
     }
     if (isMultiFileUpload)
     {
-      File uploadPathFile = configurationUploadPath.toFile();
+      File uploadPathFile = Paths.get(uploadPath).toFile();
       if (!uploadPathFile.isDirectory())
       {
         log.error(" 😝 You must a directory with '--uploadPath' parameter in order to use 'MULTI_FILE' upload option.");
@@ -93,9 +91,9 @@ public class UploadCommand implements CliCommand
     }
     if (hasLanguageKeyInPath)
     {
-      return fileListReader.findFilesWithTemplateKey(configurationUploadPath, LANGUAGE_TEMPLATE_KEY);
+      return fileListReader.findFilesWithTemplateKey(uploadPath, LANGUAGE_TEMPLATE_KEY);
     }
-    FileToUpload fileToUpload = FileToUpload.of(configurationUploadPath, uploadLanguageKey);
+    FileToUpload fileToUpload = FileToUpload.of(Paths.get(uploadPath), uploadLanguageKey);
     return Collections.singletonList(fileToUpload);
   }
 

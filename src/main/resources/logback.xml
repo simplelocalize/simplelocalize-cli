@@ -3,7 +3,7 @@
         <encoder>
             <!-- @formatter:on -->
             <pattern>
-               --> %msg%n
+               %msg%n
             </pattern>
             <!-- @formatter:off -->
         </encoder>
