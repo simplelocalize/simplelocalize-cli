@@ -101,7 +101,7 @@ jobs:
       - name: "Install Native Image"
         run: gu install native-image
       - name: "Build Native Image"
-        run: native-image --no-server --report-unsupported-elements-at-runtime -cp simplelocalize-cli-*.jar -H:Name="simplelocalize-cli" io.simplelocalize.cli.SimplelocalizeCliCommand
+        run: native-image --no-server --report-unsupported-elements-at-runtime -cp simplelocalize-cli-*.jar -H:Name="simplelocalize-cli-${{matrix.label}}" io.simplelocalize.cli.SimplelocalizeCliCommand
       - name: "Upload artifact"
         uses: actions/upload-artifact@v2
         with:
