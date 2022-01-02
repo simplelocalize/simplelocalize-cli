@@ -49,6 +49,12 @@ public class UploadCommand implements CliCommand
     {
       try
       {
+        long length = fileToUpload.getPath().toFile().length();
+        if (length == 0)
+        {
+          log.warn(" 🤔 Skipping an empty file: {}", fileToUpload.getPath());
+          continue;
+        }
         String language = fileToUpload.getLanguage();
         String uploadFormat = configuration.getUploadFormat();
         String uploadOptions = configuration.getUploadOptions();

@@ -44,10 +44,10 @@ public final class ConfigurationLoader
     {
       InputStream inputStream = new FileInputStream(file);
       configuration = yaml.load(inputStream);
-      log.info(" 🗄 Loaded configuration file from: {}", configurationFilePath);
+      log.info(" 🗄  Loaded configuration file from: {}", configurationFilePath);
     } catch (Exception e)
     {
-      log.error(" 🗄 Unable to load configuration", e);
+      log.error(" 🗄  Unable to load configuration", e);
       return new Configuration();
     }
 
