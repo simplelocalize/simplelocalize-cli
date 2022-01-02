@@ -62,6 +62,7 @@ public class UploadCommand implements CliCommand
 
         if (isMultiFileUpload(uploadOptions))
         {
+          language = null;
           String filePath = fileToUpload.getPath().toString();
           relativePath = filePath.replaceFirst(uploadPath, "");
         }
