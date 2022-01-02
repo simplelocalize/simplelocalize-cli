@@ -64,7 +64,7 @@ public class SimpleLocalizeClientTest
   }
 
   @Test
-  void shouldUploadFile() throws Exception
+  void shouldUploadFileWithLanguageKey() throws Exception
   {
     //given
     SimpleLocalizeClient client = new SimpleLocalizeClient(MOCK_SERVER_BASE_URL, "81707741b64e68427e1a2c20e75095b1");
@@ -72,6 +72,8 @@ public class SimpleLocalizeClientTest
                             .withMethod("POST")
                             .withPath("/cli/v1/upload")
                             .withQueryStringParameter("uploadFormat", "multi-language-json")
+                            .withQueryStringParameter("importOptions", "MULTI_FILE")
+                            .withQueryStringParameter("projectPath", "./my-path/my-file/test.json")
                             .withHeader("X-SimpleLocalize-Token", "81707741b64e68427e1a2c20e75095b1"),
                     Times.exactly(1))
             .respond(
@@ -82,7 +84,32 @@ public class SimpleLocalizeClientTest
             );
 
     //when
-    client.uploadFile(Path.of("./junit/mock-server/test.json"), null, "multi-language-json", "", "");
+    client.uploadFile(Path.of("./junit/mock-server/test.json"), null, "multi-language-json", "MULTI_FILE", "./my-path/my-file/test.json");
+
+    //then
+  }
+
+  @Test
+  void shouldUploadFile() throws Exception
+  {
+    //given
+    SimpleLocalizeClient client = new SimpleLocalizeClient(MOCK_SERVER_BASE_URL, "81707741b64e68427e1a2c20e75095b1");
+    mockServer.when(request()
+                            .withMethod("POST")
+                            .withPath("/cli/v1/upload")
+                            .withQueryStringParameter("uploadFormat", "multi-language-json")
+                            .withQueryStringParameter("languageKey", "en")
+                            .withHeader("X-SimpleLocalize-Token", "81707741b64e68427e1a2c20e75095b1"),
+                    Times.exactly(1))
+            .respond(
+                    response()
+                            .withStatusCode(200)
+                            .withBody("{ msg: 'OK' }")
+                            .withDelay(TimeUnit.SECONDS, 1)
+            );
+
+    //when
+    client.uploadFile(Path.of("./junit/mock-server/test.json"), "en", "multi-language-json", null, null);
 
     //then
   }

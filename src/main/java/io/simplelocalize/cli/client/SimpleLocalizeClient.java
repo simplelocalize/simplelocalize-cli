@@ -88,7 +88,7 @@ public class SimpleLocalizeClient
     }
   }
 
-  public void uploadFile(Path uploadPath, String languageKey, String uploadFormat, String uploadOptions, String relativePath) throws IOException, InterruptedException
+  public void uploadFile(Path uploadPath, String languageKey, String uploadFormat, String importOptions, String relativePath) throws IOException, InterruptedException
   {
     int pseudoRandomNumber = (int) (random.nextDouble() * 1_000_000_000);
     String boundary = "simplelocalize" + pseudoRandomNumber;
@@ -100,9 +100,9 @@ public class SimpleLocalizeClient
       endpointUrl += "&languageKey=" + languageKey;
     }
 
-    if (StringUtils.isNotEmpty(uploadOptions))
+    if (StringUtils.isNotEmpty(importOptions))
     {
-      endpointUrl += "&uploadOptions=" + uploadOptions;
+      endpointUrl += "&importOptions=" + importOptions;
     }
 
     if (StringUtils.isNotEmpty(relativePath))
