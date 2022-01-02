@@ -1,7 +1,6 @@
 package io.simplelocalize.cli.io;
 
 import io.simplelocalize.cli.client.dto.FileToUpload;
-import io.simplelocalize.cli.command.UploadCommand;
 import io.simplelocalize.cli.configuration.Configuration;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -23,7 +22,7 @@ import java.util.stream.Stream;
 public class FileListReader
 {
 
-  private static final Logger log = LoggerFactory.getLogger(UploadCommand.class);
+  private static final Logger log = LoggerFactory.getLogger(FileListReader.class);
   public static final String LANGUAGE_TEMPLATE_KEY = "{lang}";
 
   public List<FileToUpload> findFilesWithTemplateKey(String filePathWithTemplate, String templateKey) throws IOException

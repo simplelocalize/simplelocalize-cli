@@ -121,8 +121,8 @@ public class SimpleLocalizeClient
     HttpResponse<String> httpResponse = httpClient.send(httpRequest, HttpResponse.BodyHandlers.ofString());
     if (httpResponse.statusCode() != 200)
     {
-      log.error(" 😝 Upload failed");
-      log.error("{} - {}", httpResponse.statusCode(), httpResponse.body());
+      String message = JsonPath.read(httpResponse.body(), "$.msg");
+      log.error(" 😝 Upload failed: {}", message);
       throw new IllegalStateException();
     }
   }
@@ -145,8 +145,8 @@ public class SimpleLocalizeClient
     HttpResponse<byte[]> httpResponse = httpClient.send(httpRequest, HttpResponse.BodyHandlers.ofByteArray());
     if (httpResponse.statusCode() != 200)
     {
-      log.error(" 😝 Download failed");
-      log.error("{} - {}", httpResponse.statusCode(), httpResponse.body());
+      String message = JsonPath.read(httpResponse.body(), "$.msg");
+      log.error(" 😝 Download failed: {}", message);
       throw new IllegalStateException();
     }
     byte[] body = httpResponse.body();
@@ -179,8 +179,8 @@ public class SimpleLocalizeClient
     HttpResponse<String> httpResponse = httpClient.send(httpRequest, HttpResponse.BodyHandlers.ofString());
     if (httpResponse.statusCode() != 200)
     {
-      log.error(" 😝 Download failed");
-      log.error("{} - {}", httpResponse.statusCode(), httpResponse.body());
+      String message = JsonPath.read(httpResponse.body(), "$.msg");
+      log.error(" 😝 Download failed: {}", message);
       throw new IllegalStateException();
     }
     String body = httpResponse.body();
