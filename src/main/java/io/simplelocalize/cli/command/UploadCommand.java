@@ -3,6 +3,7 @@ package io.simplelocalize.cli.command;
 import io.simplelocalize.cli.client.SimpleLocalizeClient;
 import io.simplelocalize.cli.client.dto.FileToUpload;
 import io.simplelocalize.cli.configuration.Configuration;
+import io.simplelocalize.cli.configuration.ConfigurationValidator;
 import io.simplelocalize.cli.io.FileListReader;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -23,16 +24,19 @@ public class UploadCommand implements CliCommand
   private final FileListReader fileListReader;
   private final SimpleLocalizeClient client;
   private final Configuration configuration;
+  private final ConfigurationValidator configurationValidator;
 
   public UploadCommand(Configuration configuration)
   {
     this.configuration = configuration;
     this.client = SimpleLocalizeClient.withProductionServer(configuration);
     this.fileListReader = new FileListReader();
+    this.configurationValidator = new ConfigurationValidator();
   }
 
   public void invoke()
   {
+    configurationValidator.validateUploadConfiguration(configuration);
     String uploadPath = configuration.getUploadPath();
 
     List<FileToUpload> filesToUpload = List.of();
@@ -71,6 +75,7 @@ public class UploadCommand implements CliCommand
       } catch (InterruptedException | IOException e)
       {
         log.warn(" 😝 File {} could not be uploaded", fileToUpload.getPath(), e);
+        Thread.currentThread().interrupt();
       }
     }
   }

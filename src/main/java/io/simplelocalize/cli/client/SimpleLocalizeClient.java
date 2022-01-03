@@ -2,9 +2,9 @@ package io.simplelocalize.cli.client;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jayway.jsonpath.JsonPath;
+import io.simplelocalize.cli.Version;
 import io.simplelocalize.cli.client.dto.DownloadableFile;
 import io.simplelocalize.cli.client.dto.ExportResponse;
-import io.simplelocalize.cli.client.dto.FileFormat;
 import io.simplelocalize.cli.configuration.Configuration;
 import io.simplelocalize.cli.io.FileWriter;
 import org.apache.commons.lang3.StringUtils;
@@ -25,10 +25,11 @@ import java.util.*;
 
 public class SimpleLocalizeClient
 {
-  //  private static final String PRODUCTION_BASE_URL = "http://localhost:8080";
   private static final String PRODUCTION_BASE_URL = "https://api.simplelocalize.io";
   private static final String TOKEN_HEADER_NAME = "X-SimpleLocalize-Token";
+  private static final String CLI_VERSION_HEADER_NAME = "X-SimpleLocalize-Cli-Version";
   private static final String CONTENT_TYPE_HEADER_NAME = "Content-Type";
+  private static final String ERROR_MESSAGE_PATH = "&.msg";
 
   private final HttpClient httpClient;
   private final String baseUrl;
@@ -64,6 +65,7 @@ public class SimpleLocalizeClient
             .POST(ClientBodyBuilders.ofKeysBody(keys))
             .uri(URI.create(baseUrl + "/cli/v1/keys"))
             .header(CONTENT_TYPE_HEADER_NAME, "application/json")
+            .header(CLI_VERSION_HEADER_NAME, Version.NUMBER)
             .header(TOKEN_HEADER_NAME, apiKey)
             .build();
 
@@ -82,7 +84,7 @@ public class SimpleLocalizeClient
 
     } else
     {
-      String message = JsonPath.read(json, "$.msg");
+      String message = JsonPath.read(json, ERROR_MESSAGE_PATH);
       log.error(" 😝 There was a problem with your request: {}", message);
       throw new IllegalStateException();
     }
@@ -114,6 +116,7 @@ public class SimpleLocalizeClient
             .POST(ClientBodyBuilders.ofMimeMultipartData(formData, boundary))
             .uri(URI.create(endpointUrl))
             .header(TOKEN_HEADER_NAME, apiKey)
+            .header(CLI_VERSION_HEADER_NAME, Version.NUMBER)
             .header(CONTENT_TYPE_HEADER_NAME, "multipart/form-data; boundary=" + boundary)
             .build();
 
@@ -121,7 +124,7 @@ public class SimpleLocalizeClient
     HttpResponse<String> httpResponse = httpClient.send(httpRequest, HttpResponse.BodyHandlers.ofString());
     if (httpResponse.statusCode() != 200)
     {
-      String message = JsonPath.read(httpResponse.body(), "$.msg");
+      String message = JsonPath.read(httpResponse.body(), ERROR_MESSAGE_PATH);
       log.error(" 😝 Upload failed: {}", message);
       throw new IllegalStateException();
     }
@@ -138,6 +141,7 @@ public class SimpleLocalizeClient
     HttpRequest httpRequest = HttpRequest.newBuilder()
             .GET()
             .uri(URI.create(endpointUrl))
+            .header(CLI_VERSION_HEADER_NAME, Version.NUMBER)
             .header(TOKEN_HEADER_NAME, apiKey)
             .build();
 
@@ -145,7 +149,7 @@ public class SimpleLocalizeClient
     HttpResponse<byte[]> httpResponse = httpClient.send(httpRequest, HttpResponse.BodyHandlers.ofByteArray());
     if (httpResponse.statusCode() != 200)
     {
-      String message = JsonPath.read(httpResponse.body(), "$.msg");
+      String message = JsonPath.read(httpResponse.body(), ERROR_MESSAGE_PATH);
       log.error(" 😝 Download failed: {}", message);
       throw new IllegalStateException();
     }
@@ -167,19 +171,19 @@ public class SimpleLocalizeClient
 
   public void downloadMultiFile(String downloadPath, String downloadFormat) throws IOException, InterruptedException
   {
-    FileFormat.logWarningIfUnknownOrDeprecatedFileFormat(downloadFormat);
     String endpointUrl = baseUrl + "/cli/v2/download?exportOptions=MULTI_FILE&downloadFormat=" + downloadFormat;
 
     HttpRequest httpRequest = HttpRequest.newBuilder()
             .GET()
             .uri(URI.create(endpointUrl))
+            .header(CLI_VERSION_HEADER_NAME, Version.NUMBER)
             .header(TOKEN_HEADER_NAME, apiKey)
             .build();
 
     HttpResponse<String> httpResponse = httpClient.send(httpRequest, HttpResponse.BodyHandlers.ofString());
     if (httpResponse.statusCode() != 200)
     {
-      String message = JsonPath.read(httpResponse.body(), "$.msg");
+      String message = JsonPath.read(httpResponse.body(), ERROR_MESSAGE_PATH);
       log.error(" 😝 Download failed: {}", message);
       throw new IllegalStateException();
     }
@@ -213,12 +217,35 @@ public class SimpleLocalizeClient
     }
   }
 
+  public HttpResponse<String> validateApiKey() throws IOException, InterruptedException
+  {
+    HttpRequest httpRequest = HttpRequest.newBuilder()
+            .GET()
+            .uri(URI.create(baseUrl + "/cli/v1/validate/auth"))
+            .header(CLI_VERSION_HEADER_NAME, Version.NUMBER)
+            .header(TOKEN_HEADER_NAME, apiKey)
+            .build();
+    return httpClient.send(httpRequest, HttpResponse.BodyHandlers.ofString());
+  }
+
+  public HttpResponse<String> validateFileFormat(String fileFormat) throws IOException, InterruptedException
+  {
+    HttpRequest httpRequest = HttpRequest.newBuilder()
+            .GET()
+            .uri(URI.create(baseUrl + "/cli/v1/validate?fileFormat=" + fileFormat))
+            .header(CLI_VERSION_HEADER_NAME, Version.NUMBER)
+            .header(TOKEN_HEADER_NAME, apiKey)
+            .build();
+    return httpClient.send(httpRequest, HttpResponse.BodyHandlers.ofString());
+  }
+
   public int fetchGateCheckStatus() throws IOException, InterruptedException
   {
 
     HttpRequest httpRequest = HttpRequest.newBuilder()
             .GET()
             .uri(URI.create(baseUrl + "/cli/v1/analysis"))
+            .header(CLI_VERSION_HEADER_NAME, Version.NUMBER)
             .header(TOKEN_HEADER_NAME, apiKey)
             .build();
 
@@ -234,7 +261,7 @@ public class SimpleLocalizeClient
       return status;
     } else
     {
-      String message = JsonPath.read(json, "$.msg");
+      String message = JsonPath.read(json, ERROR_MESSAGE_PATH);
       log.error(" 😝 There was a problem with your request: {}", message);
     }
     return -1;

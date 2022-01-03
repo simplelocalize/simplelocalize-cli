@@ -26,9 +26,6 @@ public class Configuration
 
   private String languageKey;
 
-  @Deprecated
-  private String uploadToken;
-
   public String getSearchDir()
   {
     return searchDir;
@@ -67,16 +64,6 @@ public class Configuration
   public void setIgnoreKeys(Set<String> ignoreKeys)
   {
     this.ignoreKeys = ignoreKeys;
-  }
-
-  public String getUploadToken()
-  {
-    return uploadToken;
-  }
-
-  public void setUploadToken(String uploadToken)
-  {
-    this.uploadToken = uploadToken;
   }
 
   public String getUploadPath()

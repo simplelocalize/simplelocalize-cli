@@ -10,11 +10,6 @@ import java.util.stream.Collectors;
 
 public final class ProjectProcessorFactory
 {
-
-  public ProjectProcessorFactory()
-  {
-  }
-
   public ExtractionProcessor createForType(String projectType)
   {
     Objects.requireNonNull(projectType, "Could not create ProjectProcessor for null project type");

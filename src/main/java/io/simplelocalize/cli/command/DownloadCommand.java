@@ -2,6 +2,7 @@ package io.simplelocalize.cli.command;
 
 import io.simplelocalize.cli.client.SimpleLocalizeClient;
 import io.simplelocalize.cli.configuration.Configuration;
+import io.simplelocalize.cli.configuration.ConfigurationValidator;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,15 +16,19 @@ public class DownloadCommand implements CliCommand
 
   private final SimpleLocalizeClient client;
   private final Configuration configuration;
+  private final ConfigurationValidator configurationValidator;
 
   public DownloadCommand(Configuration configuration)
   {
     this.configuration = configuration;
     this.client = SimpleLocalizeClient.withProductionServer(configuration);
+    this.configurationValidator = new ConfigurationValidator();
   }
 
   public void invoke()
   {
+    configurationValidator.validateDownloadConfiguration(configuration);
+
     String downloadPath = configuration.getDownloadPath();
     String downloadFormat = configuration.getDownloadFormat();
     String languageKey = configuration.getLanguageKey();
