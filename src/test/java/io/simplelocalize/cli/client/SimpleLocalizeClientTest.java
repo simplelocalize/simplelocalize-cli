@@ -73,7 +73,7 @@ public class SimpleLocalizeClientTest
                             .withMethod("POST")
                             .withPath("/cli/v1/upload")
                             .withQueryStringParameter("uploadFormat", "multi-language-json")
-                            .withQueryStringParameter("importOptions", "MULTI_FILE")
+                            .withQueryStringParameter("uploadOptions", "MULTI_FILE")
                             .withQueryStringParameter("projectPath", "./my-path/my-file/test.json")
                             .withHeader("X-SimpleLocalize-Token", "81707741b64e68427e1a2c20e75095b1"),
                     Times.exactly(1))
