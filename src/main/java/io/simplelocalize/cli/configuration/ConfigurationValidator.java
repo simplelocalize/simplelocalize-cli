@@ -8,45 +8,44 @@ import java.util.Set;
 
 public final class ConfigurationValidator
 {
-
-
   private static final Logger log = LoggerFactory.getLogger(ConfigurationValidator.class);
 
   public void validateUploadConfiguration(Configuration configuration)
   {
-    Set<String> options = configuration.getUploadOptions();
-    validateCommonOptions(options, "uploadOptions");
-    validateApiKey(configuration);
+    validateIsNotEmptyOrNull(configuration.getApiKey(), "apiKey");
+    validateIsNotEmptyOrNull(configuration.getUploadFormat(), "uploadFormat");
+    validateIsNotEmptyOrNull(configuration.getUploadPath(), "uploadPath");
+    validateCommonOptions(configuration.getUploadOptions(), "uploadOptions");
   }
 
   public void validateDownloadConfiguration(Configuration configuration)
   {
-    Set<String> options = configuration.getDownloadOptions();
-    validateCommonOptions(options, "downloadOptions");
-    validateApiKey(configuration);
+    validateIsNotEmptyOrNull(configuration.getApiKey(), "apiKey");
+    validateIsNotEmptyOrNull(configuration.getDownloadFormat(), "downloadFormat");
+    validateIsNotEmptyOrNull(configuration.getDownloadPath(), "downloadPath");
+    validateCommonOptions(configuration.getDownloadOptions(), "downloadOptions");
   }
 
-  private void validateApiKey(Configuration configuration)
+  private void validateIsNotEmptyOrNull(String format, String argumentName)
   {
 
-    String apiKey = configuration.getApiKey();
-    if (StringUtils.isEmpty(apiKey))
+    if (StringUtils.isEmpty(format))
     {
-      log.error("Missing 'apiKey' value");
+      log.error("Missing '{}' value", argumentName);
       throw new IllegalArgumentException();
     }
   }
 
-  private void validateCommonOptions(Set<String> optionsArgumentValue, String argumentName)
+  private void validateCommonOptions(Set<String> options, String argumentName)
   {
-    for (String value : optionsArgumentValue)
+    for (String value : options)
     {
       try
       {
         Options.valueOf(value);
       } catch (Exception e)
       {
-        log.error("Incorrect value '{}' in '{}' field", optionsArgumentValue, argumentName);
+        log.error("Incorrect value '{}' in '{}' field. Received: {}", options, argumentName, options);
         throw new IllegalArgumentException();
       }
     }
