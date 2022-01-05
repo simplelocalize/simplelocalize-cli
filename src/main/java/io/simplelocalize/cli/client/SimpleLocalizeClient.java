@@ -147,6 +147,9 @@ public class SimpleLocalizeClient
     {
       endpointUrl += "&languageKey=" + languageKey;
     }
+
+    endpointUrl += "&downloadOptions=" + String.join(",", downloadOptions);
+
     HttpRequest httpRequest = HttpRequest.newBuilder()
             .GET()
             .uri(URI.create(endpointUrl))
