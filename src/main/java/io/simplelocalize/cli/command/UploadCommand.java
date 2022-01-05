@@ -49,6 +49,9 @@ public class UploadCommand implements CliCommand
       System.exit(1);
     }
 
+
+    log.info(" 📄  Found {} files to upload", filesToUpload.size());
+
     for (FileToUpload fileToUpload : filesToUpload)
     {
       try
