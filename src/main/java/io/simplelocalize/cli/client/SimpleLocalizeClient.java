@@ -29,7 +29,7 @@ public class SimpleLocalizeClient
   private static final String TOKEN_HEADER_NAME = "X-SimpleLocalize-Token";
   private static final String CLI_VERSION_HEADER_NAME = "X-SimpleLocalize-Cli-Version";
   private static final String CONTENT_TYPE_HEADER_NAME = "Content-Type";
-  private static final String ERROR_MESSAGE_PATH = "&.msg";
+  private static final String ERROR_MESSAGE_PATH = "$.msg";
 
   private final HttpClient httpClient;
   private final String baseUrl;
@@ -90,7 +90,14 @@ public class SimpleLocalizeClient
     }
   }
 
-  public void uploadFile(Path uploadPath, String languageKey, String uploadFormat, String importOptions, String relativePath) throws IOException, InterruptedException
+  //TODO Create request object
+  public void uploadFile(
+          Path uploadPath,
+          String languageKey,
+          String uploadFormat,
+          Set<String> importOptions,
+          String relativePath
+  ) throws IOException, InterruptedException
   {
     int pseudoRandomNumber = (int) (random.nextDouble() * 1_000_000_000);
     String boundary = "simplelocalize" + pseudoRandomNumber;
@@ -102,9 +109,9 @@ public class SimpleLocalizeClient
       endpointUrl += "&languageKey=" + languageKey;
     }
 
-    if (StringUtils.isNotEmpty(importOptions))
+    if (!importOptions.isEmpty())
     {
-      endpointUrl += "&importOptions=" + importOptions;
+      endpointUrl += "&importOptions=" + String.join(",", importOptions);
     }
 
     if (StringUtils.isNotEmpty(relativePath))
@@ -130,7 +137,7 @@ public class SimpleLocalizeClient
     }
   }
 
-  public void downloadFile(String downloadPath, String downloadFormat, String languageKey) throws IOException, InterruptedException
+  public void downloadFile(String downloadPath, String downloadFormat, String languageKey, Set<String> downloadOptions) throws IOException, InterruptedException
   {
     String endpointUrl = baseUrl + "/cli/v1/download?downloadFormat=" + downloadFormat;
     boolean isRequestedTranslationsForSpecificLanguage = StringUtils.isNotEmpty(languageKey);
@@ -169,9 +176,9 @@ public class SimpleLocalizeClient
     log.info(" 🎉 Download success!");
   }
 
-  public void downloadMultiFile(String downloadPath, String downloadFormat) throws IOException, InterruptedException
+  public void downloadMultiFile(String downloadPath, String downloadFormat, Set<String> downloadOptions) throws IOException, InterruptedException
   {
-    String endpointUrl = baseUrl + "/cli/v2/download?exportOptions=MULTI_FILE&downloadFormat=" + downloadFormat;
+    String endpointUrl = baseUrl + "/cli/v2/download?downloadFormat=" + downloadFormat + "&downloadOptions=" + String.join(",", downloadOptions);
 
     HttpRequest httpRequest = HttpRequest.newBuilder()
             .GET()
@@ -213,7 +220,6 @@ public class SimpleLocalizeClient
     } catch (IOException | InterruptedException e)
     {
       log.error(" 😝 Download failed: {}", savePath, e);
-      throw new IllegalStateException();
     }
   }
 

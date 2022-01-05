@@ -3,12 +3,12 @@ package io.simplelocalize.cli.command;
 import io.simplelocalize.cli.client.SimpleLocalizeClient;
 import io.simplelocalize.cli.configuration.Configuration;
 import io.simplelocalize.cli.configuration.ConfigurationValidator;
-import org.apache.commons.lang3.StringUtils;
+import io.simplelocalize.cli.configuration.Options;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
-import java.util.Locale;
+import java.util.Set;
 
 public class DownloadCommand implements CliCommand
 {
@@ -32,17 +32,17 @@ public class DownloadCommand implements CliCommand
     String downloadPath = configuration.getDownloadPath();
     String downloadFormat = configuration.getDownloadFormat();
     String languageKey = configuration.getLanguageKey();
-    String downloadOptions = configuration.getDownloadOptions();
+    Set<String> downloadOptions = configuration.getDownloadOptions();
 
     log.info(" 🌍 Downloading translation files");
     try
     {
       if (isMultiFileDownload(downloadOptions))
       {
-        client.downloadMultiFile(downloadPath, downloadFormat);
+        client.downloadMultiFile(downloadPath, downloadFormat, downloadOptions);
       } else
       {
-        client.downloadFile(downloadPath, downloadFormat, languageKey);
+        client.downloadFile(downloadPath, downloadFormat, languageKey, downloadOptions);
       }
     } catch (InterruptedException e)
     {
@@ -55,12 +55,8 @@ public class DownloadCommand implements CliCommand
     }
   }
 
-  private boolean isMultiFileDownload(String downloadOptions)
+  private boolean isMultiFileDownload(Set<String> downloadOptions)
   {
-    if (StringUtils.isEmpty(downloadOptions))
-    {
-      return false;
-    }
-    return downloadOptions.toUpperCase(Locale.ROOT).contains("MULTI_FILE");
+    return downloadOptions.contains(Options.MULTI_FILE.name());
   }
 }

@@ -15,6 +15,7 @@ import picocli.CommandLine.Option;
 
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.Set;
 
 
 @Command(
@@ -79,10 +80,10 @@ public class SimplelocalizeCliCommand implements Runnable
           @Option(names = {"--apiKey"}, description = "Project API Key") String apiKey,
           @Option(names = {"--uploadPath"}, description = "Path to file with translation or translation keys to upload. Use '{lang}' to define language key if you are uploading more than one file with translations.") String uploadPath,
           @Option(names = {"--uploadFormat"}, description = "Translations or keys format") String uploadFormat,
-          @Option(names = {"--uploadOptions"}, description = "(Optional) Read more about 'uploadOptions' param at docs.simplelocalize.io") String uploadOptions,
+          @Option(names = {"--uploadOptions"}, description = "(Optional) Read more about 'uploadOptions' param at docs.simplelocalize.io") Set<String> uploadOptions,
           @Option(names = {"--downloadPath"}, description = "Directory where translations should be downloaded") String downloadPath,
           @Option(names = {"--downloadFormat"}, description = "Download format for translation file") String downloadFormat,
-          @Option(names = {"--downloadOptions"}, description = "(Optional) Download options") String downloadOptions,
+          @Option(names = {"--downloadOptions"}, description = "(Optional) Download options") Set<String> downloadOptions,
           @Option(names = {"--languageKey"}, description = "(Optional) Specify language key for single file upload") String languageKey
   ) throws IOException
   {
@@ -97,7 +98,7 @@ public class SimplelocalizeCliCommand implements Runnable
           @Option(names = {"--apiKey"}, description = "Project API Key") String apiKey,
           @Option(names = {"--uploadPath"}, description = "Path to file with translation or translation keys to upload. Use '{lang}' to define language key if you are uploading more than one file with translations.") String uploadPath,
           @Option(names = {"--uploadFormat"}, description = "Translations or keys format") String uploadFormat,
-          @Option(names = {"--uploadOptions"}, description = "(Optional) Read more about 'uploadOptions' param at docs.simplelocalize.io") String uploadOptions,
+          @Option(names = {"--uploadOptions"}, description = "(Optional) Read more about 'uploadOptions' param at docs.simplelocalize.io") Set<String> uploadOptions,
           @Option(names = {"--languageKey"}, description = "(Optional) Specify language key for single file upload") String languageKey
   ) throws IOException
   {
@@ -124,7 +125,7 @@ public class SimplelocalizeCliCommand implements Runnable
       configuration.setLanguageKey(languageKey);
     }
 
-    if (StringUtils.isNotEmpty(uploadOptions))
+    if (uploadOptions != null)
     {
       configuration.setUploadOptions(uploadOptions);
     }
@@ -140,7 +141,7 @@ public class SimplelocalizeCliCommand implements Runnable
           @Option(names = {"--apiKey"}, description = "Project API Key") String apiKey,
           @Option(names = {"--downloadPath"}, description = "Directory where translations should be downloaded") String downloadPath,
           @Option(names = {"--downloadFormat"}, description = "Download format for translation file") String downloadFormat,
-          @Option(names = {"--downloadOptions"}, description = "(Optional) Download options") String downloadOptions,
+          @Option(names = {"--downloadOptions"}, description = "(Optional) Download options") Set<String> downloadOptions,
           @Option(names = {"--languageKey"}, description = "(Optional) Setup languageKey parameter to download file with only one language translations") String languageKey
   )
   {
@@ -163,7 +164,7 @@ public class SimplelocalizeCliCommand implements Runnable
     {
       configuration.setLanguageKey(languageKey);
     }
-    if (StringUtils.isNotEmpty(downloadOptions))
+    if (downloadOptions != null)
     {
       configuration.setDownloadOptions(downloadOptions);
     }

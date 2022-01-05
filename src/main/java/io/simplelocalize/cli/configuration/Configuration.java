@@ -2,6 +2,7 @@ package io.simplelocalize.cli.configuration;
 
 import io.micronaut.core.annotation.Introspected;
 
+import java.util.HashSet;
 import java.util.Set;
 
 @Introspected
@@ -12,17 +13,17 @@ public class Configuration
 
   private String projectType;
   private String searchDir;
-  private Set<String> ignoreKeys = Set.of();
+  private Set<String> ignoreKeys = new HashSet<>();
 
-  private Set<String> ignorePaths = Set.of();
+  private Set<String> ignorePaths = new HashSet<>();
 
   private String uploadPath;
   private String uploadFormat;
-  private String uploadOptions;
+  private Set<String> uploadOptions = new HashSet<>();
 
   private String downloadPath;
   private String downloadFormat;
-  private String downloadOptions;
+  private Set<String> downloadOptions = new HashSet<>();
 
   private String languageKey;
 
@@ -101,12 +102,12 @@ public class Configuration
     return downloadFormat;
   }
 
-  public String getDownloadOptions()
+  public Set<String> getDownloadOptions()
   {
     return downloadOptions;
   }
 
-  public void setDownloadOptions(String downloadOptions)
+  public void setDownloadOptions(Set<String> downloadOptions)
   {
     this.downloadOptions = downloadOptions;
   }
@@ -126,12 +127,12 @@ public class Configuration
     this.languageKey = languageKey;
   }
 
-  public String getUploadOptions()
+  public Set<String> getUploadOptions()
   {
     return uploadOptions;
   }
 
-  public void setUploadOptions(String uploadOptions)
+  public void setUploadOptions(Set<String> uploadOptions)
   {
     this.uploadOptions = uploadOptions;
   }

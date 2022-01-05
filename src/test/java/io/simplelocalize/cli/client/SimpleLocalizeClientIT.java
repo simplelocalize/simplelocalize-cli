@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import java.nio.file.Path;
+import java.util.Collections;
 import java.util.List;
 
 
@@ -40,7 +41,7 @@ class SimpleLocalizeClientIT
     SimpleLocalizeClient client = SimpleLocalizeClient.withProductionServer(configuration);
 
     //when
-    client.uploadFile(Path.of("./test.json"), null, "multi-language-json", "", "");
+    client.uploadFile(Path.of("./test.json"), null, "multi-language-json", Collections.emptySet(), "");
 
     //then
   }
@@ -55,7 +56,7 @@ class SimpleLocalizeClientIT
     SimpleLocalizeClient client = SimpleLocalizeClient.withProductionServer(configuration);
 
     //when
-    client.downloadFile("./i18n", "java-properties", "");
+    client.downloadFile("./i18n", "java-properties", "", Collections.emptySet());
 
     //then
   }
@@ -70,7 +71,7 @@ class SimpleLocalizeClientIT
     SimpleLocalizeClient client = SimpleLocalizeClient.withProductionServer(configuration);
 
     //when
-    client.downloadFile("./messages_test.properties", "java-properties", "en");
+    client.downloadFile("./messages_test.properties", "java-properties", "en", Collections.emptySet());
 
     //then
   }

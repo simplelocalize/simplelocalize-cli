@@ -9,7 +9,9 @@ import org.mockserver.matchers.Times;
 import org.mockserver.model.StringBody;
 
 import java.nio.file.Path;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 import static org.mockserver.integration.ClientAndServer.startClientAndServer;
@@ -52,7 +54,7 @@ public class SimpleLocalizeClientTest
                     response()
                             .withStatusCode(200)
                             .withBody("{ msg: 'OK', data: { uniqueKeysProcessed: 1, processedWithWarnings: false } }")
-                            .withDelay(TimeUnit.SECONDS, 1)
+                            .withDelay(TimeUnit.MILLISECONDS, 200)
             );
 
     SimpleLocalizeClient client = new SimpleLocalizeClient(MOCK_SERVER_BASE_URL, "237b305f6b2273e92ac857eb44d7f33b");
@@ -80,11 +82,11 @@ public class SimpleLocalizeClientTest
                     response()
                             .withStatusCode(200)
                             .withBody("{ msg: 'OK' }")
-                            .withDelay(TimeUnit.SECONDS, 1)
+                            .withDelay(TimeUnit.MILLISECONDS, 200)
             );
 
     //when
-    client.uploadFile(Path.of("./junit/mock-server/test.json"), null, "multi-language-json", "MULTI_FILE", "./my-path/my-file/test.json");
+    client.uploadFile(Path.of("./junit/mock-server/test.json"), null, "multi-language-json", Set.of("MULTI_FILE"), "./my-path/my-file/test.json");
 
     //then
   }
@@ -105,11 +107,11 @@ public class SimpleLocalizeClientTest
                     response()
                             .withStatusCode(200)
                             .withBody("{ msg: 'OK' }")
-                            .withDelay(TimeUnit.SECONDS, 1)
+                            .withDelay(TimeUnit.MILLISECONDS, 200)
             );
 
     //when
-    client.uploadFile(Path.of("./junit/mock-server/test.json"), "en", "multi-language-json", null, null);
+    client.uploadFile(Path.of("./junit/mock-server/test.json"), "en", "multi-language-json", Set.of(), null);
 
     //then
   }
@@ -129,11 +131,11 @@ public class SimpleLocalizeClientTest
                     response()
                             .withStatusCode(200)
                             .withBody("{ msg: 'OK' }")
-                            .withDelay(TimeUnit.SECONDS, 1)
+                            .withDelay(TimeUnit.MILLISECONDS, 200)
             );
 
     //when
-    client.downloadFile("./i18n", "java-properties", "");
+    client.downloadFile("./i18n", "java-properties", "", Set.of());
 
     //then
   }
@@ -154,10 +156,10 @@ public class SimpleLocalizeClientTest
                     response()
                             .withStatusCode(200)
                             .withBody("{ msg: 'OK' }")
-                            .withDelay(TimeUnit.SECONDS, 1)
+                            .withDelay(TimeUnit.MILLISECONDS, 200)
             );
     //when
-    client.downloadFile("./messages_test.properties", "java-properties", "en");
+    client.downloadFile("./messages_test.properties", "java-properties", "en", Set.of());
 
     //then
   }
@@ -170,7 +172,7 @@ public class SimpleLocalizeClientTest
     mockServer.when(request()
                             .withMethod("GET")
                             .withPath("/cli/v2/download")
-                            .withQueryStringParameter("exportOptions", "MULTI_FILE")
+                            .withQueryStringParameter("downloadOptions", "MULTI_FILE")
                             .withQueryStringParameter("downloadFormat", "java-properties")
                             .withHeader("X-SimpleLocalize-Token", "96a7b6ca75c79d4af4dfd5db2946fdd4"),
                     Times.exactly(1))
@@ -178,10 +180,39 @@ public class SimpleLocalizeClientTest
                     response()
                             .withStatusCode(200)
                             .withBody("{ \"files\": [{\"projectPath\": \"./junit/mock-server/my-file.properties\", \"url\": \"https://simplelocalize.io\"}] }")
-                            .withDelay(TimeUnit.SECONDS, 1)
+                            .withDelay(TimeUnit.MILLISECONDS, 200)
             );
     //when
-    client.downloadMultiFile("./", "java-properties");
+    client.downloadMultiFile("./", "java-properties", Set.of("MULTI_FILE"));
+
+    //then
+  }
+
+  @Test
+  void shouldDownloadWithManyOptions() throws Exception
+  {
+    //given
+    SimpleLocalizeClient client = new SimpleLocalizeClient(MOCK_SERVER_BASE_URL, "96a7b6ca75c79d4af4dfd5db2946fdd4");
+    mockServer.when(request()
+                            .withMethod("GET")
+                            .withPath("/cli/v2/download")
+                            .withQueryStringParameter("downloadOptions", "MULTI_FILE,USE_NESTED_JSON")
+                            .withQueryStringParameter("downloadFormat", "java-properties")
+                            .withHeader("X-SimpleLocalize-Token", "96a7b6ca75c79d4af4dfd5db2946fdd4"),
+                    Times.exactly(1))
+            .respond(
+                    response()
+                            .withStatusCode(200)
+                            .withBody("{ \"files\": [{\"projectPath\": \"./junit/mock-server/my-file.properties\", \"url\": \"https://simplelocalize.io\"}] }")
+                            .withDelay(TimeUnit.MILLISECONDS, 200)
+            );
+
+    Set<String> options = new LinkedHashSet<>();
+    options.add("MULTI_FILE");
+    options.add("USE_NESTED_JSON");
+
+    //when
+    client.downloadMultiFile("./", "java-properties", options);
 
     //then
   }

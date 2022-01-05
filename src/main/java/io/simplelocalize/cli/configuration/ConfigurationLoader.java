@@ -1,6 +1,5 @@
 package io.simplelocalize.cli.configuration;
 
-import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.yaml.snakeyaml.Yaml;
@@ -16,7 +15,6 @@ import java.nio.file.Path;
 public final class ConfigurationLoader
 {
 
-  private static final String CURRENT_DIRECTORY = ".";
   private static final Path DEFAULT_CONFIG_FILE_NAME = Path.of("simplelocalize.yml");
 
   private final Logger log = LoggerFactory.getLogger(ConfigurationLoader.class);
@@ -50,26 +48,6 @@ public final class ConfigurationLoader
       log.error(" 🗄  Unable to load configuration", e);
       return new Configuration();
     }
-
-    String uploadToken = configuration.getUploadToken();
-
-    if (StringUtils.isNotEmpty(uploadToken))
-    {
-      log.warn("DEPRECATION WARNING: Please use 'apiKey' property instead 'uploadToken' in your configuration file.");
-    }
-
-    String apiKey = configuration.getApiKey();
-    if (StringUtils.isEmpty(apiKey))
-    {
-      configuration.setApiKey(uploadToken);
-    }
-
-    String searchDir = configuration.getSearchDir();
-    if (StringUtils.isEmpty(searchDir))
-    {
-      configuration.setSearchDir(CURRENT_DIRECTORY);
-    }
-
     return configuration;
 
   }

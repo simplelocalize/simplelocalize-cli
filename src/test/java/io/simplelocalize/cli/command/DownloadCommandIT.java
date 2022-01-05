@@ -2,11 +2,13 @@ package io.simplelocalize.cli.command;
 
 import io.simplelocalize.cli.configuration.Configuration;
 import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import java.nio.file.Path;
 
-public class DownloadCommandTest
+@Disabled
+public class DownloadCommandIT
 {
 
   @Test

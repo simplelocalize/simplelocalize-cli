@@ -4,6 +4,7 @@ import io.simplelocalize.cli.client.SimpleLocalizeClient;
 import io.simplelocalize.cli.client.dto.FileToUpload;
 import io.simplelocalize.cli.configuration.Configuration;
 import io.simplelocalize.cli.configuration.ConfigurationValidator;
+import io.simplelocalize.cli.configuration.Options;
 import io.simplelocalize.cli.io.FileListReader;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -14,7 +15,7 @@ import java.io.IOException;
 import java.nio.file.Paths;
 import java.util.Collections;
 import java.util.List;
-import java.util.Locale;
+import java.util.Set;
 
 import static io.simplelocalize.cli.io.FileListReader.LANGUAGE_TEMPLATE_KEY;
 
@@ -61,10 +62,10 @@ public class UploadCommand implements CliCommand
         }
         String language = fileToUpload.getLanguage();
         String uploadFormat = configuration.getUploadFormat();
-        String uploadOptions = configuration.getUploadOptions();
+        Set<String> uploadOptions = configuration.getUploadOptions();
+        boolean isMultiFileUpload = uploadOptions.contains(Options.MULTI_FILE.name());
         String relativePath = null;
-
-        if (isMultiFileUpload(uploadOptions))
+        if (isMultiFileUpload)
         {
           language = null;
           String filePath = fileToUpload.getPath().toString();
@@ -85,7 +86,8 @@ public class UploadCommand implements CliCommand
     String uploadPath = configuration.getUploadPath();
     boolean hasLanguageKeyInPath = uploadPath.contains(LANGUAGE_TEMPLATE_KEY);
     String uploadLanguageKey = configuration.getLanguageKey();
-    boolean isMultiFileUpload = isMultiFileUpload(configuration.getUploadOptions());
+    Set<String> uploadOptions = configuration.getUploadOptions();
+    boolean isMultiFileUpload = uploadOptions.contains(Options.MULTI_FILE.name());
     if (hasLanguageKeyInPath && StringUtils.isNotBlank(uploadLanguageKey))
     {
       log.error(" 😝 You cannot use '{lang}' param in upload path and '--languageKey' option together.");
@@ -107,14 +109,5 @@ public class UploadCommand implements CliCommand
     }
     FileToUpload fileToUpload = FileToUpload.of(Paths.get(uploadPath), uploadLanguageKey);
     return Collections.singletonList(fileToUpload);
-  }
-
-  private boolean isMultiFileUpload(String uploadOptions)
-  {
-    if (StringUtils.isEmpty(uploadOptions))
-    {
-      return false;
-    }
-    return uploadOptions.toUpperCase(Locale.ROOT).contains("MULTI_FILE");
   }
 }

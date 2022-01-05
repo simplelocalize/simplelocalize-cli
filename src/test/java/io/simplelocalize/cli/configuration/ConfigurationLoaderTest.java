@@ -39,21 +39,7 @@ public class ConfigurationLoaderTest
     Assertions.assertThat(configuration.getProjectType()).isEqualTo("yahoo/react-intl");
     Assertions.assertThat(configuration.getSearchDir()).isEqualTo("./target/test-classes/react-intl");
   }
-
-  @Test
-  public void shouldLoadConfigurationWithCurrentDirectory() throws Exception {
-    //given
-    ClassLoader classLoader = getClass().getClassLoader();
-    String pathToConfig = classLoader.getResource("simplelocalize-without-search-dir.yml").toURI().toString().replace("file:", "");
-
-    //when
-    Configuration configuration = loader.loadOrGetDefault(Path.of(pathToConfig));
-
-    //then
-    Assertions.assertThat(configuration.getSearchDir()).isEqualTo(".");
-  }
-
-
+  
   @Test
   public void shouldLoadEmptyConfigurationNotFound() throws Exception
   {
@@ -81,18 +67,5 @@ public class ConfigurationLoaderTest
     //then
     Assertions.assertThat(configuration).isNotNull();
     Assertions.assertThat(configuration.getApiKey()).isNull();
-  }
-
-  @Test
-  public void shouldLoadConfigurationWithDeprecatedUploadTokenAsApiKey() throws Exception {
-    //given
-    ClassLoader classLoader = getClass().getClassLoader();
-    String pathToConfig = classLoader.getResource("simplelocalize-with-deprecated-upload-token.yml").toURI().toString().replace("file:", "");
-
-    //when
-    Configuration configuration = loader.loadOrGetDefault(Path.of(pathToConfig));
-
-    //then
-    Assertions.assertThat(configuration.getApiKey()).isEqualTo("abc");
   }
 }

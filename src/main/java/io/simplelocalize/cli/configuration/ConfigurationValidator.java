@@ -1,29 +1,28 @@
 package io.simplelocalize.cli.configuration;
 
-import io.simplelocalize.cli.client.SimpleLocalizeClient;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.IOException;
-import java.net.http.HttpResponse;
+import java.util.Set;
 
 public final class ConfigurationValidator
 {
+
 
   private static final Logger log = LoggerFactory.getLogger(ConfigurationValidator.class);
 
   public void validateUploadConfiguration(Configuration configuration)
   {
-    String uploadOptions = configuration.getUploadOptions();
-    validateCommonOptions(uploadOptions, "uploadOptions");
+    Set<String> options = configuration.getUploadOptions();
+    validateCommonOptions(options, "uploadOptions");
     validateApiKey(configuration);
   }
 
   public void validateDownloadConfiguration(Configuration configuration)
   {
-    String uploadOptions = configuration.getDownloadOptions();
-    validateCommonOptions(uploadOptions, "downloadOption");
+    Set<String> options = configuration.getDownloadOptions();
+    validateCommonOptions(options, "downloadOptions");
     validateApiKey(configuration);
   }
 
@@ -38,32 +37,18 @@ public final class ConfigurationValidator
     }
   }
 
-  private void validateApiKeyAgainstRealApi(Configuration configuration)
+  private void validateCommonOptions(Set<String> optionsArgumentValue, String argumentName)
   {
-    SimpleLocalizeClient client = SimpleLocalizeClient.withProductionServer(configuration);
-    try
+    for (String value : optionsArgumentValue)
     {
-      HttpResponse<String> httpResponse = client.validateApiKey();
-      if (httpResponse.statusCode() != 200)
+      try
       {
-        log.error("Incorrect 'apiKey' value");
+        Options.valueOf(value);
+      } catch (Exception e)
+      {
+        log.error("Incorrect value '{}' in '{}' field", optionsArgumentValue, argumentName);
         throw new IllegalArgumentException();
       }
-    } catch (IOException | InterruptedException e)
-    {
-      log.warn("Unable to validate apiKey");
-      Thread.currentThread().interrupt();
-    }
-  }
-
-  private void validateCommonOptions(String optionsArgumentValue, String argumentName)
-  {
-    boolean hasOptions = StringUtils.isNotEmpty(optionsArgumentValue);
-    boolean isMultiFile = optionsArgumentValue.equalsIgnoreCase("MULTI_FILE");
-    if (hasOptions && !isMultiFile)
-    {
-      log.error("Incorrect value '{}' in '{}' field", optionsArgumentValue, argumentName);
-      throw new IllegalArgumentException();
     }
   }
 
