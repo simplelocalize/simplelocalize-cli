@@ -95,7 +95,7 @@ public class SimpleLocalizeClient
           Path uploadPath,
           String languageKey,
           String uploadFormat,
-          List<String> importOptions,
+          List<String> uploadOptions,
           String relativePath
   ) throws IOException, InterruptedException
   {
@@ -109,9 +109,9 @@ public class SimpleLocalizeClient
       endpointUrl += "&languageKey=" + languageKey;
     }
 
-    if (!importOptions.isEmpty())
+    if (!uploadOptions.isEmpty())
     {
-      endpointUrl += "&importOptions=" + String.join(",", importOptions);
+      endpointUrl += "&uploadOptions=" + String.join(",", uploadOptions);
     }
 
     if (StringUtils.isNotEmpty(relativePath))
