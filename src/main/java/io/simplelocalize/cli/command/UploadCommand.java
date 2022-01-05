@@ -15,7 +15,6 @@ import java.io.IOException;
 import java.nio.file.Paths;
 import java.util.Collections;
 import java.util.List;
-import java.util.Set;
 
 import static io.simplelocalize.cli.io.FileListReader.LANGUAGE_TEMPLATE_KEY;
 
@@ -62,7 +61,7 @@ public class UploadCommand implements CliCommand
         }
         String language = fileToUpload.getLanguage();
         String uploadFormat = configuration.getUploadFormat();
-        Set<String> uploadOptions = configuration.getUploadOptions();
+        List<String> uploadOptions = configuration.getUploadOptions();
         boolean isMultiFileUpload = uploadOptions.contains(Options.MULTI_FILE.name());
         String relativePath = null;
         if (isMultiFileUpload)
@@ -86,7 +85,7 @@ public class UploadCommand implements CliCommand
     String uploadPath = configuration.getUploadPath();
     boolean hasLanguageKeyInPath = uploadPath.contains(LANGUAGE_TEMPLATE_KEY);
     String uploadLanguageKey = configuration.getLanguageKey();
-    Set<String> uploadOptions = configuration.getUploadOptions();
+    List<String> uploadOptions = configuration.getUploadOptions();
     boolean isMultiFileUpload = uploadOptions.contains(Options.MULTI_FILE.name());
     if (hasLanguageKeyInPath && StringUtils.isNotBlank(uploadLanguageKey))
     {

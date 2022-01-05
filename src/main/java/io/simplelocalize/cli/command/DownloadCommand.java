@@ -8,7 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
-import java.util.Set;
+import java.util.List;
 
 public class DownloadCommand implements CliCommand
 {
@@ -32,7 +32,7 @@ public class DownloadCommand implements CliCommand
     String downloadPath = configuration.getDownloadPath();
     String downloadFormat = configuration.getDownloadFormat();
     String languageKey = configuration.getLanguageKey();
-    Set<String> downloadOptions = configuration.getDownloadOptions();
+    List<String> downloadOptions = configuration.getDownloadOptions();
 
     log.info(" 🌍 Downloading translation files");
     try
@@ -55,7 +55,7 @@ public class DownloadCommand implements CliCommand
     }
   }
 
-  private boolean isMultiFileDownload(Set<String> downloadOptions)
+  private boolean isMultiFileDownload(List<String> downloadOptions)
   {
     return downloadOptions.contains(Options.MULTI_FILE.name());
   }

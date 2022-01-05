@@ -95,7 +95,7 @@ public class SimpleLocalizeClient
           Path uploadPath,
           String languageKey,
           String uploadFormat,
-          Set<String> importOptions,
+          List<String> importOptions,
           String relativePath
   ) throws IOException, InterruptedException
   {
@@ -137,7 +137,9 @@ public class SimpleLocalizeClient
     }
   }
 
-  public void downloadFile(String downloadPath, String downloadFormat, String languageKey, Set<String> downloadOptions) throws IOException, InterruptedException
+  public void downloadFile(String downloadPath, String downloadFormat,
+                           String languageKey,
+                           List<String> downloadOptions) throws IOException, InterruptedException
   {
     String endpointUrl = baseUrl + "/cli/v1/download?downloadFormat=" + downloadFormat;
     boolean isRequestedTranslationsForSpecificLanguage = StringUtils.isNotEmpty(languageKey);
@@ -176,7 +178,7 @@ public class SimpleLocalizeClient
     log.info(" 🎉 Download success!");
   }
 
-  public void downloadMultiFile(String downloadPath, String downloadFormat, Set<String> downloadOptions) throws IOException, InterruptedException
+  public void downloadMultiFile(String downloadPath, String downloadFormat, List<String> downloadOptions) throws IOException, InterruptedException
   {
     String endpointUrl = baseUrl + "/cli/v2/download?downloadFormat=" + downloadFormat + "&downloadOptions=" + String.join(",", downloadOptions);
 

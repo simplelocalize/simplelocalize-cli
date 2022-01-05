@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -40,7 +41,7 @@ public class ExtractCommand implements CliCommand
     List<Path> processedFiles = result.getProcessedFiles();
     log.info(" 📦 Found {} unique keys in {} components", keys.size(), processedFiles.size());
 
-    Set<String> ignoredKeys = configuration.getIgnoreKeys();
+    Set<String> ignoredKeys = new HashSet<>(configuration.getIgnoreKeys());
     keys.removeAll(ignoredKeys);
 
     try

@@ -13,7 +13,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -66,7 +65,7 @@ public class FileListReader
   {
     String configurationUploadPath = configuration.getUploadPath();
     String uploadFormat = configuration.getUploadFormat();
-    Set<String> ignorePaths = configuration.getIgnorePaths();
+    List<String> ignorePaths = configuration.getIgnorePaths();
 
     if (!"multi-language-json".equals(uploadFormat))
     {
@@ -92,7 +91,7 @@ public class FileListReader
     }
   }
 
-  private boolean isIgnoredPath(Set<String> ignorePaths, Path path)
+  private boolean isIgnoredPath(List<String> ignorePaths, Path path)
   {
     String pathString = path.toString();
     for (String ignorePath : ignorePaths)

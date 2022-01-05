@@ -3,7 +3,7 @@ package io.simplelocalize.cli.configuration;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import java.util.Set;
+import java.util.List;
 
 class ConfigurationValidatorTest
 {
@@ -18,7 +18,7 @@ class ConfigurationValidatorTest
     configuration.setApiKey("my-api-key");
     configuration.setUploadFormat("multi-language-json");
     configuration.setUploadPath("./path");
-    configuration.setUploadOptions(Set.of("MULTI_FILE", "USE_NESTED_JSON"));
+    configuration.setUploadOptions(List.of("MULTI_FILE", "USE_NESTED_JSON"));
 
     //when
     configurationValidator.validateUploadConfiguration(configuration);
@@ -35,7 +35,7 @@ class ConfigurationValidatorTest
     configuration.setApiKey("my-api-key");
     configuration.setDownloadFormat("multi-language-json");
     configuration.setDownloadPath("./path");
-    configuration.setDownloadOptions(Set.of("MULTI_FILE", "USE_NESTED_JSON"));
+    configuration.setDownloadOptions(List.of("MULTI_FILE", "USE_NESTED_JSON"));
 
     //when
     configurationValidator.validateDownloadConfiguration(configuration);
@@ -51,7 +51,7 @@ class ConfigurationValidatorTest
     configuration.setApiKey("my-api-key");
     configuration.setDownloadFormat("multi-language-json");
     configuration.setDownloadPath("./path");
-    configuration.setDownloadOptions(Set.of("multi_file", "USE_NESTED_JSON"));
+    configuration.setDownloadOptions(List.of("multi_file", "USE_NESTED_JSON"));
 
     //when
     Assertions.assertThrows(IllegalArgumentException.class, () -> {
@@ -68,7 +68,7 @@ class ConfigurationValidatorTest
     configuration.setApiKey("");
     configuration.setDownloadFormat("multi-language-json");
     configuration.setDownloadPath("./path");
-    configuration.setDownloadOptions(Set.of("USE_NESTED_JSON"));
+    configuration.setDownloadOptions(List.of("USE_NESTED_JSON"));
 
     //when
     Assertions.assertThrows(IllegalArgumentException.class, () -> {
@@ -85,7 +85,7 @@ class ConfigurationValidatorTest
     configuration.setApiKey("my-api-key");
     configuration.setDownloadFormat("multi-language-json");
     configuration.setDownloadPath("./path");
-    configuration.setDownloadOptions(Set.of("MULTI_FILE", "USE_NESTED_JSON", ""));
+    configuration.setDownloadOptions(List.of("MULTI_FILE", "USE_NESTED_JSON", ""));
 
     //when
     Assertions.assertThrows(IllegalArgumentException.class, () -> {

@@ -41,7 +41,7 @@ class SimpleLocalizeClientIT
     SimpleLocalizeClient client = SimpleLocalizeClient.withProductionServer(configuration);
 
     //when
-    client.uploadFile(Path.of("./test.json"), null, "multi-language-json", Collections.emptySet(), "");
+    client.uploadFile(Path.of("./test.json"), null, "multi-language-json", Collections.emptyList(), "");
 
     //then
   }
@@ -56,7 +56,7 @@ class SimpleLocalizeClientIT
     SimpleLocalizeClient client = SimpleLocalizeClient.withProductionServer(configuration);
 
     //when
-    client.downloadFile("./i18n", "java-properties", "", Collections.emptySet());
+    client.downloadFile("./i18n", "java-properties", "", Collections.emptyList());
 
     //then
   }
@@ -71,7 +71,7 @@ class SimpleLocalizeClientIT
     SimpleLocalizeClient client = SimpleLocalizeClient.withProductionServer(configuration);
 
     //when
-    client.downloadFile("./messages_test.properties", "java-properties", "en", Collections.emptySet());
+    client.downloadFile("./messages_test.properties", "java-properties", "en", Collections.emptyList());
 
     //then
   }

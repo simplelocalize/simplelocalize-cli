@@ -9,7 +9,6 @@ import org.junit.jupiter.api.Test;
 import java.io.IOException;
 import java.nio.file.Paths;
 import java.util.List;
-import java.util.Set;
 
 public class FileListReaderTest
 {
@@ -24,7 +23,7 @@ public class FileListReaderTest
 
     Configuration configuration = new Configuration();
     configuration.setUploadFormat("multi-language-json");
-    configuration.setIgnorePaths(Set.of("./junit/*/ignore-me/*"));
+    configuration.setIgnorePaths(List.of("./junit/*/ignore-me/*"));
     configuration.setUploadPath(path);
 
     //when
@@ -44,7 +43,7 @@ public class FileListReaderTest
 
     Configuration configuration = new Configuration();
     configuration.setUploadFormat("multi-language-json");
-    configuration.setIgnorePaths(Set.of("./junit/multi-file/ignore-me/*-second.json"));
+    configuration.setIgnorePaths(List.of("./junit/multi-file/ignore-me/*-second.json"));
     configuration.setUploadPath(path);
 
     //when

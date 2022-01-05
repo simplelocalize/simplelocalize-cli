@@ -9,9 +9,8 @@ import org.mockserver.matchers.Times;
 import org.mockserver.model.StringBody;
 
 import java.nio.file.Path;
-import java.util.LinkedHashSet;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 import static org.mockserver.integration.ClientAndServer.startClientAndServer;
@@ -86,7 +85,7 @@ public class SimpleLocalizeClientTest
             );
 
     //when
-    client.uploadFile(Path.of("./junit/mock-server/test.json"), null, "multi-language-json", Set.of("MULTI_FILE"), "./my-path/my-file/test.json");
+    client.uploadFile(Path.of("./junit/mock-server/test.json"), null, "multi-language-json", List.of("MULTI_FILE"), "./my-path/my-file/test.json");
 
     //then
   }
@@ -111,7 +110,7 @@ public class SimpleLocalizeClientTest
             );
 
     //when
-    client.uploadFile(Path.of("./junit/mock-server/test.json"), "en", "multi-language-json", Set.of(), null);
+    client.uploadFile(Path.of("./junit/mock-server/test.json"), "en", "multi-language-json", List.of(), null);
 
     //then
   }
@@ -135,7 +134,7 @@ public class SimpleLocalizeClientTest
             );
 
     //when
-    client.downloadFile("./i18n", "java-properties", "", Set.of());
+    client.downloadFile("./i18n", "java-properties", "", List.of());
 
     //then
   }
@@ -159,7 +158,7 @@ public class SimpleLocalizeClientTest
                             .withDelay(TimeUnit.MILLISECONDS, 200)
             );
     //when
-    client.downloadFile("./messages_test.properties", "java-properties", "en", Set.of());
+    client.downloadFile("./messages_test.properties", "java-properties", "en", List.of());
 
     //then
   }
@@ -183,7 +182,7 @@ public class SimpleLocalizeClientTest
                             .withDelay(TimeUnit.MILLISECONDS, 200)
             );
     //when
-    client.downloadMultiFile("./", "java-properties", Set.of("MULTI_FILE"));
+    client.downloadMultiFile("./", "java-properties", List.of("MULTI_FILE"));
 
     //then
   }
@@ -207,7 +206,7 @@ public class SimpleLocalizeClientTest
                             .withDelay(TimeUnit.MILLISECONDS, 200)
             );
 
-    Set<String> options = new LinkedHashSet<>();
+    List<String> options = new ArrayList<>();
     options.add("MULTI_FILE");
     options.add("USE_NESTED_JSON");
 

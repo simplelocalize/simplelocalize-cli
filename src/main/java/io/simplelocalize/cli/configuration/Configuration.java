@@ -2,8 +2,8 @@ package io.simplelocalize.cli.configuration;
 
 import io.micronaut.core.annotation.Introspected;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 @Introspected
 public class Configuration
@@ -13,17 +13,17 @@ public class Configuration
 
   private String projectType;
   private String searchDir;
-  private Set<String> ignoreKeys = new HashSet<>();
+  private List<String> ignoreKeys = new ArrayList<>();
 
-  private Set<String> ignorePaths = new HashSet<>();
+  private List<String> ignorePaths = new ArrayList<>();
 
   private String uploadPath;
   private String uploadFormat;
-  private Set<String> uploadOptions = new HashSet<>();
+  private List<String> uploadOptions = new ArrayList<>();
 
   private String downloadPath;
   private String downloadFormat;
-  private Set<String> downloadOptions = new HashSet<>();
+  private List<String> downloadOptions = new ArrayList<>();
 
   private String languageKey;
 
@@ -57,12 +57,12 @@ public class Configuration
     this.projectType = projectType;
   }
 
-  public Set<String> getIgnoreKeys()
+  public List<String> getIgnoreKeys()
   {
     return ignoreKeys;
   }
 
-  public void setIgnoreKeys(Set<String> ignoreKeys)
+  public void setIgnoreKeys(List<String> ignoreKeys)
   {
     this.ignoreKeys = ignoreKeys;
   }
@@ -102,12 +102,12 @@ public class Configuration
     return downloadFormat;
   }
 
-  public Set<String> getDownloadOptions()
+  public List<String> getDownloadOptions()
   {
     return downloadOptions;
   }
 
-  public void setDownloadOptions(Set<String> downloadOptions)
+  public void setDownloadOptions(List<String> downloadOptions)
   {
     this.downloadOptions = downloadOptions;
   }
@@ -127,22 +127,22 @@ public class Configuration
     this.languageKey = languageKey;
   }
 
-  public Set<String> getUploadOptions()
+  public List<String> getUploadOptions()
   {
     return uploadOptions;
   }
 
-  public void setUploadOptions(Set<String> uploadOptions)
+  public void setUploadOptions(List<String> uploadOptions)
   {
     this.uploadOptions = uploadOptions;
   }
 
-  public Set<String> getIgnorePaths()
+  public List<String> getIgnorePaths()
   {
     return ignorePaths;
   }
 
-  public void setIgnorePaths(Set<String> ignorePaths)
+  public void setIgnorePaths(List<String> ignorePaths)
   {
     this.ignorePaths = ignorePaths;
   }
