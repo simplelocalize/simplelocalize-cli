@@ -45,7 +45,7 @@ public final class ConfigurationLoader
       log.info(" 🗄  Loaded configuration file from: {}", configurationFilePath);
     } catch (Exception e)
     {
-      log.error(" 🗄  Unable to load configuration", e);
+      log.error(" 🗄  Unable to load configuration: {}", e.getMessage());
       return new Configuration();
     }
     return configuration;
