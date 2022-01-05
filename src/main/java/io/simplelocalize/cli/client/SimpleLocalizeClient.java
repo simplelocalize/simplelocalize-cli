@@ -111,7 +111,7 @@ public class SimpleLocalizeClient
 
     if (!uploadOptions.isEmpty())
     {
-      endpointUrl += "&uploadOptions=" + String.join(",", uploadOptions);
+      endpointUrl += "&importOptions=" + String.join(",", uploadOptions);
     }
 
     if (StringUtils.isNotEmpty(relativePath))
