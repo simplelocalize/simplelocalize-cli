@@ -18,9 +18,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.security.SecureRandom;
 import java.time.Duration;
-import java.util.Collection;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 
 import static io.simplelocalize.cli.util.FileListReaderUtil.LANGUAGE_TEMPLATE_KEY;
 
@@ -28,6 +26,7 @@ public final class SimpleLocalizeClient
 {
   private static final String PRODUCTION_BASE_URL = "https://api.simplelocalize.io";
   private static final String TOKEN_HEADER_NAME = "X-SimpleLocalize-Token";
+  private static final List<String> SINGLE_FILE_FORMATS = List.of("multi-language-json", "csv-translations", "excel", "csv");
   private final HttpClient httpClient;
   private final String baseUrl;
   private final String apiKey;
@@ -152,10 +151,16 @@ public final class SimpleLocalizeClient
     }
     byte[] body = httpResponse.body();
 
-    boolean isFileFormatWithAllLanguages = downloadFormat.equalsIgnoreCase("multi-language-json");
+    boolean isFileFormatWithAllLanguages = isSingleFileFormat(downloadFormat);
     if (isRequestedTranslationsForSpecificLanguage || isFileFormatWithAllLanguages)
     {
-      Files.createDirectories(downloadPath.getParent());
+
+      Optional<Path> directoryPath = Optional.of(downloadPath).map(Path::getParent);
+      if (directoryPath.isPresent())
+      {
+        Files.createDirectories(directoryPath.get());
+      }
+
       Files.write(downloadPath, body);
     } else
     {
@@ -210,4 +215,8 @@ public final class SimpleLocalizeClient
     return -1;
   }
 
+  public boolean isSingleFileFormat(String downloadFormat)
+  {
+    return SINGLE_FILE_FORMATS.stream().anyMatch(format -> format.equalsIgnoreCase(downloadFormat));
+  }
 }
