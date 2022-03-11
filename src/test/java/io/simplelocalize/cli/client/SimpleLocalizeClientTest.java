@@ -2,14 +2,19 @@ package io.simplelocalize.cli.client;
 
 import com.google.common.net.HttpHeaders;
 import io.simplelocalize.cli.client.dto.DownloadRequest;
+import io.simplelocalize.cli.client.dto.DownloadableFile;
 import io.simplelocalize.cli.client.dto.UploadRequest;
+import io.simplelocalize.cli.exception.ApiRequestException;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.mockserver.integration.ClientAndServer;
 import org.mockserver.matchers.Times;
+import org.mockserver.model.MediaType;
 import org.mockserver.model.StringBody;
 
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -55,7 +60,7 @@ public class SimpleLocalizeClientTest
             .respond(
                     response()
                             .withStatusCode(200)
-                            .withBody("{ msg: 'OK', data: { uniqueKeysProcessed: 1, processedWithWarnings: false } }")
+                            .withBody("{ 'msg': 'OK', data: { uniqueKeysProcessed: 1, processedWithWarnings: false } }")
                             .withDelay(TimeUnit.MILLISECONDS, 200)
             );
 
@@ -76,14 +81,14 @@ public class SimpleLocalizeClientTest
                             .withMethod("POST")
                             .withPath("/cli/v1/upload")
                             .withQueryStringParameter("uploadFormat", "multi-language-json")
-                            .withQueryStringParameter("uploadOptions", "MULTI_FILE")
+                            .withQueryStringParameter("importOptions", "MULTI_FILE")
                             .withQueryStringParameter("projectPath", "./my-path/my-file/test.json")
                             .withHeader("X-SimpleLocalize-Token", "81707741b64e68427e1a2c20e75095b1"),
                     Times.exactly(1))
             .respond(
                     response()
                             .withStatusCode(200)
-                            .withBody("{ msg: 'OK' }")
+                            .withBody("{ 'msg': 'OK' }")
                             .withDelay(TimeUnit.MILLISECONDS, 200)
             );
 
@@ -116,7 +121,7 @@ public class SimpleLocalizeClientTest
             .respond(
                     response()
                             .withStatusCode(200)
-                            .withBody("{ msg: 'OK' }")
+                            .withBody("{ 'msg': 'OK' }")
                             .withDelay(TimeUnit.MILLISECONDS, 200)
             );
 
@@ -148,7 +153,7 @@ public class SimpleLocalizeClientTest
             .respond(
                     response()
                             .withStatusCode(200)
-                            .withBody("{ msg: 'OK' }")
+                            .withBody("{ 'msg': 'OK' }")
                             .withDelay(TimeUnit.MILLISECONDS, 200)
             );
 
@@ -180,7 +185,7 @@ public class SimpleLocalizeClientTest
             .respond(
                     response()
                             .withStatusCode(200)
-                            .withBody("{ msg: 'OK' }")
+                            .withBody("{ 'msg': 'OK' }")
                             .withDelay(TimeUnit.MILLISECONDS, 200)
             );
 
@@ -193,6 +198,41 @@ public class SimpleLocalizeClientTest
 
     //when
     client.downloadFile(downloadRequest);
+
+    //then
+  }
+
+
+  @Test
+  void shouldThrowExceptionOnHttpStatusError() throws Exception
+  {
+    //given
+    SimpleLocalizeClient client = new SimpleLocalizeClient(MOCK_SERVER_BASE_URL, "96a7b6ca75c79d4af4dfd5db2946fdd4");
+    mockServer.when(request()
+                            .withMethod("GET")
+                            .withPath("/cli/v1/download")
+                            .withQueryStringParameter("downloadFormat", "unknown-format")
+                            .withQueryStringParameter("languageKey", "en")
+                            .withHeader("X-SimpleLocalize-Token", "96a7b6ca75c79d4af4dfd5db2946fdd4"),
+                    Times.exactly(1))
+            .respond(
+                    response()
+                            .withStatusCode(400)
+                            .withBody("{ 'msg': 'not ok' }")
+                            .withDelay(TimeUnit.MILLISECONDS, 200)
+            );
+
+    DownloadRequest downloadRequest = aDownloadRequest()
+            .withPath("./messages_test.properties")
+            .withFormat("unknown-format")
+            .withLanguageKey("en")
+            .withOptions(List.of())
+            .build();
+
+    //when
+    Assertions
+            .assertThatThrownBy(() -> client.downloadFile(downloadRequest))
+            .isInstanceOf(ApiRequestException.class);
 
     //then
   }
@@ -223,7 +263,7 @@ public class SimpleLocalizeClientTest
             .build();
 
     //when
-    client.downloadMultiFile(downloadRequest);
+    client.fetchDownloadableFiles(downloadRequest);
 
     //then
   }
@@ -255,8 +295,61 @@ public class SimpleLocalizeClientTest
 
 
     //when
-    client.downloadMultiFile(downloadRequest);
+    client.fetchDownloadableFiles(downloadRequest);
 
     //then
+  }
+
+
+  @Test
+  void shouldDownloadS3File() throws Exception
+  {
+    //given
+    SimpleLocalizeClient client = new SimpleLocalizeClient(MOCK_SERVER_BASE_URL, "96a7b6ca75c79d4af4dfd5db2946fdd4");
+    mockServer.when(request()
+                            .withMethod("GET")
+                            .withPath("/s3/file"),
+                    Times.exactly(1))
+            .respond(
+                    response()
+                            .withStatusCode(200)
+                            .withContentType(MediaType.APPLICATION_JSON_UTF_8)
+                            .withBody("{}".getBytes(StandardCharsets.UTF_8))
+                            .withDelay(TimeUnit.MILLISECONDS, 200)
+            );
+
+    DownloadableFile downloadableFile = new DownloadableFile();
+    downloadableFile.setUrl(MOCK_SERVER_BASE_URL + "/s3/file");
+    downloadableFile.setProjectPath("./");
+    String downloadPath = "file.json";
+
+    //when
+    client.downloadFile(downloadableFile, downloadPath);
+
+    //then
+  }
+
+  @Test
+  void shouldValidateQuality() throws Exception
+  {
+    //given
+    SimpleLocalizeClient client = new SimpleLocalizeClient(MOCK_SERVER_BASE_URL, "96a7b6ca75c79d4af4dfd5db2946fdd4");
+    mockServer.when(request()
+                            .withMethod("GET")
+                            .withPath("/cli/v1/validate/gate")
+                            .withHeader("X-SimpleLocalize-Token", "96a7b6ca75c79d4af4dfd5db2946fdd4"),
+                    Times.exactly(1))
+            .respond(
+                    response()
+                            .withStatusCode(200)
+                            .withBody("{'data':{'passed': true, 'message': 'ok', 'status': 200}}")
+                            .withDelay(TimeUnit.MILLISECONDS, 200)
+            );
+
+    //when
+    int validateGate = client.validateGate();
+
+    //then
+    Assertions.assertThat(validateGate).isEqualTo(200);
   }
 }

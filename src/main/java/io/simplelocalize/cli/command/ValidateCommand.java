@@ -20,7 +20,7 @@ public class ValidateCommand implements CliCommand
   {
     try
     {
-      int status = client.fetchGateCheckStatus();
+      int status = client.validateGate();
       System.exit(status);
     } catch (Exception e)
     {

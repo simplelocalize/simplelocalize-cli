@@ -18,7 +18,7 @@ class ConfigurationValidatorTest
     configuration.setApiKey("my-api-key");
     configuration.setUploadFormat("multi-language-json");
     configuration.setUploadPath("./path");
-    configuration.setUploadOptions(List.of("MULTI_FILE", "USE_NESTED_JSON"));
+    configuration.setUploadOptions(List.of("MULTI_FILE", "WRITE_NESTED"));
 
     //when
     configurationValidator.validateUploadConfiguration(configuration);
@@ -35,7 +35,7 @@ class ConfigurationValidatorTest
     configuration.setApiKey("my-api-key");
     configuration.setDownloadFormat("multi-language-json");
     configuration.setDownloadPath("./path");
-    configuration.setDownloadOptions(List.of("MULTI_FILE", "USE_NESTED_JSON"));
+    configuration.setDownloadOptions(List.of("MULTI_FILE", "WRITE_NESTED"));
 
     //when
     configurationValidator.validateDownloadConfiguration(configuration);
@@ -51,7 +51,7 @@ class ConfigurationValidatorTest
     configuration.setApiKey("my-api-key");
     configuration.setDownloadFormat("multi-language-json");
     configuration.setDownloadPath("./path");
-    configuration.setDownloadOptions(List.of("multi_file", "USE_NESTED_JSON"));
+    configuration.setDownloadOptions(List.of("multi_file", "WRITE_NESTED"));
 
     //when
     Assertions.assertThrows(IllegalArgumentException.class, () -> {
@@ -68,7 +68,7 @@ class ConfigurationValidatorTest
     configuration.setApiKey("");
     configuration.setDownloadFormat("multi-language-json");
     configuration.setDownloadPath("./path");
-    configuration.setDownloadOptions(List.of("USE_NESTED_JSON"));
+    configuration.setDownloadOptions(List.of("WRITE_NESTED"));
 
     //when
     Assertions.assertThrows(IllegalArgumentException.class, () -> {
@@ -85,7 +85,7 @@ class ConfigurationValidatorTest
     configuration.setApiKey("my-api-key");
     configuration.setDownloadFormat("multi-language-json");
     configuration.setDownloadPath("./path");
-    configuration.setDownloadOptions(List.of("MULTI_FILE", "USE_NESTED_JSON", ""));
+    configuration.setDownloadOptions(List.of("MULTI_FILE", "WRITE_NESTED", ""));
 
     //when
     Assertions.assertThrows(IllegalArgumentException.class, () -> {
