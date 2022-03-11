@@ -33,7 +33,6 @@ public class SimpleLocalizeClient
   private static final String CONTENT_TYPE_HEADER_NAME = "Content-Type";
   private static final List<String> SINGLE_FILE_FORMATS = List.of("multi-language-json", "csv-translations", "excel", "csv");
   private static final String ERROR_MESSAGE_PATH = "$.msg";
-
   private final HttpClient httpClient;
   private final String baseUrl;
   private final String apiKey;
@@ -169,11 +168,16 @@ public class SimpleLocalizeClient
     byte[] body = httpResponse.body();
 
     boolean isFileFormatWithAllLanguages = isSingleFileFormat(downloadFormat);
-
     if (isRequestedTranslationsForSpecificLanguage || isFileFormatWithAllLanguages)
     {
-      Files.createDirectories(Paths.get(downloadPath).getParent());
-      Files.write(Paths.get(downloadPath), body);
+
+      Optional<Path> directoryPath = Optional.of(downloadPath).map(Path::getParent);
+      if (directoryPath.isPresent())
+      {
+        Files.createDirectories(directoryPath.get());
+      }
+
+      Files.write(downloadPath, body);
     } else
     {
       fileWriter.saveAsMultipleFiles(downloadPath, body);
