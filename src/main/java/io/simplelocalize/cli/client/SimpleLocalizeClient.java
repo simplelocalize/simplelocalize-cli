@@ -3,8 +3,10 @@ package io.simplelocalize.cli.client;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jayway.jsonpath.JsonPath;
 import io.simplelocalize.cli.Version;
+import io.simplelocalize.cli.client.dto.DownloadRequest;
 import io.simplelocalize.cli.client.dto.DownloadableFile;
 import io.simplelocalize.cli.client.dto.ExportResponse;
+import io.simplelocalize.cli.client.dto.UploadRequest;
 import io.simplelocalize.cli.configuration.Configuration;
 import io.simplelocalize.cli.io.FileWriter;
 import org.apache.commons.lang3.StringUtils;
@@ -29,6 +31,7 @@ public class SimpleLocalizeClient
   private static final String TOKEN_HEADER_NAME = "X-SimpleLocalize-Token";
   private static final String CLI_VERSION_HEADER_NAME = "X-SimpleLocalize-Cli-Version";
   private static final String CONTENT_TYPE_HEADER_NAME = "Content-Type";
+  private static final List<String> SINGLE_FILE_FORMATS = List.of("multi-language-json", "csv-translations", "excel", "csv");
   private static final String ERROR_MESSAGE_PATH = "$.msg";
 
   private final HttpClient httpClient;
@@ -90,30 +93,27 @@ public class SimpleLocalizeClient
     }
   }
 
-  //TODO Create request object
-  public void uploadFile(
-          Path uploadPath,
-          String languageKey,
-          String uploadFormat,
-          List<String> uploadOptions,
-          String relativePath
-  ) throws IOException, InterruptedException
+  public void uploadFile(UploadRequest uploadRequest) throws IOException, InterruptedException
   {
     int pseudoRandomNumber = (int) (random.nextDouble() * 1_000_000_000);
     String boundary = "simplelocalize" + pseudoRandomNumber;
     Map<Object, Object> formData = new HashMap<>();
+    Path uploadPath = uploadRequest.getPath();
     formData.put("file", uploadPath);
-    String endpointUrl = baseUrl + "/cli/v1/upload?uploadFormat=" + uploadFormat;
+    String endpointUrl = baseUrl + "/cli/v1/upload?uploadFormat=" + uploadRequest.getFormat();
+    String languageKey = uploadRequest.getLanguageKey();
     if (StringUtils.isNotEmpty(languageKey))
     {
       endpointUrl += "&languageKey=" + languageKey;
     }
 
+    List<String> uploadOptions = uploadRequest.getOptions();
     if (!uploadOptions.isEmpty())
     {
       endpointUrl += "&importOptions=" + String.join(",", uploadOptions);
     }
 
+    String relativePath = uploadRequest.getRelativePath();
     if (StringUtils.isNotEmpty(relativePath))
     {
       endpointUrl += "&projectPath=" + relativePath;
@@ -137,18 +137,18 @@ public class SimpleLocalizeClient
     }
   }
 
-  public void downloadFile(String downloadPath, String downloadFormat,
-                           String languageKey,
-                           List<String> downloadOptions) throws IOException, InterruptedException
+  public void downloadFile(DownloadRequest downloadRequest) throws IOException, InterruptedException
   {
+    String downloadFormat = downloadRequest.getFormat();
     String endpointUrl = baseUrl + "/cli/v1/download?downloadFormat=" + downloadFormat;
+    String languageKey = downloadRequest.getLanguageKey();
     boolean isRequestedTranslationsForSpecificLanguage = StringUtils.isNotEmpty(languageKey);
     if (isRequestedTranslationsForSpecificLanguage)
     {
       endpointUrl += "&languageKey=" + languageKey;
     }
 
-    endpointUrl += "&downloadOptions=" + String.join(",", downloadOptions);
+    endpointUrl += "&downloadOptions=" + String.join(",", downloadRequest.getOptions());
 
     HttpRequest httpRequest = HttpRequest.newBuilder()
             .GET()
@@ -157,6 +157,7 @@ public class SimpleLocalizeClient
             .header(TOKEN_HEADER_NAME, apiKey)
             .build();
 
+    String downloadPath = downloadRequest.getPath();
     log.info(" 🌍 Downloading to {}", downloadPath);
     HttpResponse<byte[]> httpResponse = httpClient.send(httpRequest, HttpResponse.BodyHandlers.ofByteArray());
     if (httpResponse.statusCode() != 200)
@@ -167,7 +168,7 @@ public class SimpleLocalizeClient
     }
     byte[] body = httpResponse.body();
 
-    boolean isFileFormatWithAllLanguages = downloadFormat.equalsIgnoreCase("multi-language-json");
+    boolean isFileFormatWithAllLanguages = isSingleFileFormat(downloadFormat);
 
     if (isRequestedTranslationsForSpecificLanguage || isFileFormatWithAllLanguages)
     {
@@ -181,8 +182,11 @@ public class SimpleLocalizeClient
     log.info(" 🎉 Download success!");
   }
 
-  public void downloadMultiFile(String downloadPath, String downloadFormat, List<String> downloadOptions) throws IOException, InterruptedException
+  public void downloadMultiFile(DownloadRequest downloadRequest) throws IOException, InterruptedException
   {
+    String downloadFormat = downloadRequest.getFormat();
+    List<String> downloadOptions = downloadRequest.getOptions();
+    String downloadPath = downloadRequest.getPath();
     String endpointUrl = baseUrl + "/cli/v2/download?downloadFormat=" + downloadFormat + "&downloadOptions=" + String.join(",", downloadOptions);
 
     HttpRequest httpRequest = HttpRequest.newBuilder()
@@ -278,4 +282,8 @@ public class SimpleLocalizeClient
     return -1;
   }
 
+  public boolean isSingleFileFormat(String downloadFormat)
+  {
+    return SINGLE_FILE_FORMATS.stream().anyMatch(format -> format.equalsIgnoreCase(downloadFormat));
+  }
 }

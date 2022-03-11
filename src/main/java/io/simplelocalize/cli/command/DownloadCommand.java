@@ -1,6 +1,7 @@
 package io.simplelocalize.cli.command;
 
 import io.simplelocalize.cli.client.SimpleLocalizeClient;
+import io.simplelocalize.cli.client.dto.DownloadRequest;
 import io.simplelocalize.cli.configuration.Configuration;
 import io.simplelocalize.cli.configuration.ConfigurationValidator;
 import io.simplelocalize.cli.configuration.Options;
@@ -9,6 +10,8 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.util.List;
+
+import static io.simplelocalize.cli.client.dto.DownloadRequest.DownloadRequestBuilder.aDownloadRequest;
 
 public class DownloadCommand implements CliCommand
 {
@@ -35,14 +38,22 @@ public class DownloadCommand implements CliCommand
     List<String> downloadOptions = configuration.getDownloadOptions();
 
     log.info(" 🌍 Downloading translation files");
+
+    DownloadRequest downloadRequest = aDownloadRequest()
+            .withPath(downloadPath)
+            .withFormat(downloadFormat)
+            .withOptions(downloadOptions)
+            .withLanguageKey(languageKey)
+            .build();
+
     try
     {
       if (isMultiFileDownload(downloadOptions))
       {
-        client.downloadMultiFile(downloadPath, downloadFormat, downloadOptions);
+        client.downloadMultiFile(downloadRequest);
       } else
       {
-        client.downloadFile(downloadPath, downloadFormat, languageKey, downloadOptions);
+        client.downloadFile(downloadRequest);
       }
     } catch (InterruptedException e)
     {

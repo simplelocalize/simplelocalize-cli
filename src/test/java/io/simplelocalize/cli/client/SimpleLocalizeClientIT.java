@@ -1,5 +1,7 @@
 package io.simplelocalize.cli.client;
 
+import io.simplelocalize.cli.client.dto.DownloadRequest;
+import io.simplelocalize.cli.client.dto.UploadRequest;
 import io.simplelocalize.cli.configuration.Configuration;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
@@ -7,6 +9,9 @@ import org.junit.jupiter.api.Test;
 import java.nio.file.Path;
 import java.util.Collections;
 import java.util.List;
+
+import static io.simplelocalize.cli.client.dto.DownloadRequest.DownloadRequestBuilder.aDownloadRequest;
+import static io.simplelocalize.cli.client.dto.UploadRequest.UploadFileRequestBuilder.anUploadFileRequest;
 
 
 /**
@@ -40,8 +45,16 @@ class SimpleLocalizeClientIT
     configuration.setApiKey(projectApiKey);
     SimpleLocalizeClient client = SimpleLocalizeClient.withProductionServer(configuration);
 
+    UploadRequest uploadRequest = anUploadFileRequest()
+            .withPath(Path.of("./test.json"))
+            .withLanguageKey(null)
+            .withFormat("multi-language-json")
+            .withOptions(Collections.emptyList())
+            .withRelativePath("")
+            .build();
+
     //when
-    client.uploadFile(Path.of("./test.json"), null, "multi-language-json", Collections.emptyList(), "");
+    client.uploadFile(uploadRequest);
 
     //then
   }
@@ -55,8 +68,15 @@ class SimpleLocalizeClientIT
     configuration.setApiKey(projectApiKey);
     SimpleLocalizeClient client = SimpleLocalizeClient.withProductionServer(configuration);
 
+    DownloadRequest downloadRequest = aDownloadRequest()
+            .withPath("./i18n")
+            .withFormat("java-properties")
+            .withLanguageKey("")
+            .withOptions(Collections.emptyList())
+            .build();
+
     //when
-    client.downloadFile("./i18n", "java-properties", "", Collections.emptyList());
+    client.downloadFile(downloadRequest);
 
     //then
   }
@@ -70,8 +90,15 @@ class SimpleLocalizeClientIT
     configuration.setApiKey(projectApiKey);
     SimpleLocalizeClient client = SimpleLocalizeClient.withProductionServer(configuration);
 
+    DownloadRequest downloadRequest = aDownloadRequest()
+            .withPath("./messages_test.properties")
+            .withFormat("java-properties")
+            .withLanguageKey("en")
+            .withOptions(Collections.emptyList())
+            .build();
+
     //when
-    client.downloadFile("./messages_test.properties", "java-properties", "en", Collections.emptyList());
+    client.downloadFile(downloadRequest);
 
     //then
   }

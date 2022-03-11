@@ -2,6 +2,7 @@ package io.simplelocalize.cli.command;
 
 import io.simplelocalize.cli.client.SimpleLocalizeClient;
 import io.simplelocalize.cli.client.dto.FileToUpload;
+import io.simplelocalize.cli.client.dto.UploadRequest;
 import io.simplelocalize.cli.configuration.Configuration;
 import io.simplelocalize.cli.configuration.ConfigurationValidator;
 import io.simplelocalize.cli.configuration.Options;
@@ -16,6 +17,7 @@ import java.nio.file.Paths;
 import java.util.Collections;
 import java.util.List;
 
+import static io.simplelocalize.cli.client.dto.UploadRequest.UploadFileRequestBuilder.anUploadFileRequest;
 import static io.simplelocalize.cli.io.FileListReader.LANGUAGE_TEMPLATE_KEY;
 
 public class UploadCommand implements CliCommand
@@ -72,7 +74,15 @@ public class UploadCommand implements CliCommand
           relativePath = filePath.replaceFirst(uploadPath, "");
         }
 
-        client.uploadFile(fileToUpload.getPath(), language, uploadFormat, uploadOptions, relativePath);
+        UploadRequest uploadRequest = anUploadFileRequest()
+                .withLanguageKey(language)
+                .withPath(fileToUpload.getPath())
+                .withFormat(uploadFormat)
+                .withOptions(uploadOptions)
+                .withRelativePath(relativePath)
+                .build();
+
+        client.uploadFile(uploadRequest);
       } catch (InterruptedException | IOException e)
       {
         log.warn(" 😝 File {} could not be uploaded", fileToUpload.getPath(), e);
