@@ -67,6 +67,13 @@ jobs:
         run: |
           call "C:\Program Files (x86)\Microsoft Visual Studio\2017\BuildTools\VC\Auxiliary\Build\vcvars64.bat"
           ./graalvm-ce-java11-20.1.0/bin/native-image --no-server --report-unsupported-elements-at-runtime -cp simplelocalize-cli-${{env.VERSION}}.jar -H:Name="simplelocalize-cli-windows" io.simplelocalize.cli.SimplelocalizeCliCommand
+      - name: "Optimize executable"
+        uses: crazy-max/ghaction-upx@v1
+        with:
+          version: latest
+          files: |
+            simplelocalize-cli-windows.exe
+          args: -fq
       - name: 'Upload artifact'
         uses: actions/upload-artifact@v2
         with:
