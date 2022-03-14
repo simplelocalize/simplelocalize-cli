@@ -7,6 +7,7 @@ import io.simplelocalize.cli.command.ExtractCommand;
 import io.simplelocalize.cli.command.UploadCommand;
 import io.simplelocalize.cli.configuration.Configuration;
 import io.simplelocalize.cli.configuration.ConfigurationLoader;
+import io.simplelocalize.cli.configuration.ConfigurationValidator;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -68,7 +69,8 @@ public class SimplelocalizeCliCommand implements Runnable
     {
       configuration.setSearchDir(searchDirectory);
     }
-
+    ConfigurationValidator configurationValidator = new ConfigurationValidator();
+    configurationValidator.validateDownloadConfiguration(configuration);
     ExtractCommand extractCommand = new ExtractCommand(configuration);
     extractCommand.invoke();
   }
@@ -130,6 +132,8 @@ public class SimplelocalizeCliCommand implements Runnable
       configuration.setUploadOptions(uploadOptions);
     }
 
+    ConfigurationValidator configurationValidator = new ConfigurationValidator();
+    configurationValidator.validateDownloadConfiguration(configuration);
     UploadCommand uploadCommand = new UploadCommand(configuration);
     uploadCommand.invoke();
   }
@@ -168,7 +172,8 @@ public class SimplelocalizeCliCommand implements Runnable
     {
       configuration.setDownloadOptions(downloadOptions);
     }
-
+    ConfigurationValidator configurationValidator = new ConfigurationValidator();
+    configurationValidator.validateDownloadConfiguration(configuration);
     SimpleLocalizeClient client = SimpleLocalizeClient.withProductionServer(configuration.getApiKey());
     DownloadCommand downloadCommand = new DownloadCommand(client, configuration);
     downloadCommand.invoke();

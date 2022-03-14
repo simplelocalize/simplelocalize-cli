@@ -1,10 +1,9 @@
 package io.simplelocalize.cli.configuration;
 
+import io.simplelocalize.cli.exception.ConfigurationException;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.util.List;
 
 public final class ConfigurationValidator
 {
@@ -15,7 +14,6 @@ public final class ConfigurationValidator
     validateIsNotEmptyOrNull(configuration.getApiKey(), "apiKey");
     validateIsNotEmptyOrNull(configuration.getUploadFormat(), "uploadFormat");
     validateIsNotEmptyOrNull(configuration.getUploadPath(), "uploadPath");
-    validateCommonOptions(configuration.getUploadOptions(), "uploadOptions");
   }
 
   public void validateDownloadConfiguration(Configuration configuration)
@@ -23,7 +21,6 @@ public final class ConfigurationValidator
     validateIsNotEmptyOrNull(configuration.getApiKey(), "apiKey");
     validateIsNotEmptyOrNull(configuration.getDownloadFormat(), "downloadFormat");
     validateIsNotEmptyOrNull(configuration.getDownloadPath(), "downloadPath");
-    validateCommonOptions(configuration.getDownloadOptions(), "downloadOptions");
   }
 
   private void validateIsNotEmptyOrNull(String format, String argumentName)
@@ -32,22 +29,7 @@ public final class ConfigurationValidator
     if (StringUtils.isEmpty(format))
     {
       log.error("Missing '{}' value", argumentName);
-      throw new IllegalArgumentException();
-    }
-  }
-
-  private void validateCommonOptions(List<String> options, String argumentName)
-  {
-    for (String value : options)
-    {
-      try
-      {
-        Options.valueOf(value);
-      } catch (Exception e)
-      {
-        log.error("Incorrect value '{}' in '{}' field. Received: {}", options, argumentName, options);
-        throw new IllegalArgumentException();
-      }
+      throw new ConfigurationException();
     }
   }
 

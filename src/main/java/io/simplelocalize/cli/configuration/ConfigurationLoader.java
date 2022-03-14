@@ -1,5 +1,6 @@
 package io.simplelocalize.cli.configuration;
 
+import io.simplelocalize.cli.exception.ConfigurationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.yaml.snakeyaml.Yaml;
@@ -7,6 +8,7 @@ import org.yaml.snakeyaml.constructor.Constructor;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
@@ -43,10 +45,14 @@ public final class ConfigurationLoader
       InputStream inputStream = new FileInputStream(file);
       configuration = yaml.load(inputStream);
       log.info(" 🗄  Loaded configuration file from: {}", configurationFilePath);
+    } catch (FileNotFoundException e)
+    {
+      log.info(" 🗄  No default configuration file at ./simplelocalize.yml");
+      return new Configuration();
     } catch (Exception e)
     {
-      log.error(" 🗄  Unable to load configuration: {}", e.getMessage());
-      return new Configuration();
+      log.error(" 😝 Unable to load configuration: {}", e.getMessage());
+      throw new ConfigurationException();
     }
     return configuration;
 
