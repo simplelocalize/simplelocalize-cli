@@ -2,6 +2,7 @@ package io.simplelocalize.cli.client.dto;
 
 import java.nio.file.Path;
 import java.util.List;
+import java.util.Objects;
 
 public class UploadRequest
 {
@@ -94,5 +95,20 @@ public class UploadRequest
       uploadRequest.path = this.uploadPath;
       return uploadRequest;
     }
+  }
+
+  @Override
+  public boolean equals(Object o)
+  {
+    if (this == o) return true;
+    if (o == null || getClass() != o.getClass()) return false;
+    UploadRequest that = (UploadRequest) o;
+    return Objects.equals(path, that.path) && Objects.equals(languageKey, that.languageKey) && Objects.equals(format, that.format) && Objects.equals(options, that.options) && Objects.equals(relativePath, that.relativePath);
+  }
+
+  @Override
+  public int hashCode()
+  {
+    return Objects.hash(path, languageKey, format, options, relativePath);
   }
 }

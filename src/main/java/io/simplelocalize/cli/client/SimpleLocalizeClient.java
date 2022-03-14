@@ -7,7 +7,6 @@ import io.simplelocalize.cli.client.dto.DownloadRequest;
 import io.simplelocalize.cli.client.dto.DownloadableFile;
 import io.simplelocalize.cli.client.dto.ExportResponse;
 import io.simplelocalize.cli.client.dto.UploadRequest;
-import io.simplelocalize.cli.configuration.Configuration;
 import io.simplelocalize.cli.exception.ApiRequestException;
 import io.simplelocalize.cli.io.FileWriter;
 import org.apache.commons.lang3.StringUtils;
@@ -56,9 +55,14 @@ public class SimpleLocalizeClient
             .build();
   }
 
-  public static SimpleLocalizeClient withProductionServer(Configuration configuration)
+  public static SimpleLocalizeClient withCustomServer(String baseUrl, String apiKey)
   {
-    return new SimpleLocalizeClient(PRODUCTION_BASE_URL, configuration.getApiKey());
+    return new SimpleLocalizeClient(baseUrl, apiKey);
+  }
+
+  public static SimpleLocalizeClient withProductionServer(String apiKey)
+  {
+    return withCustomServer(PRODUCTION_BASE_URL, apiKey);
   }
 
   public void sendKeys(Collection<String> keys) throws IOException, InterruptedException

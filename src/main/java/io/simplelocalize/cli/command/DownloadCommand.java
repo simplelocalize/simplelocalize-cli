@@ -22,10 +22,17 @@ public class DownloadCommand implements CliCommand
   private final Configuration configuration;
   private final ConfigurationValidator configurationValidator;
 
+  public DownloadCommand(SimpleLocalizeClient client, Configuration configuration)
+  {
+    this.configuration = configuration;
+    this.client = client;
+    this.configurationValidator = new ConfigurationValidator();
+  }
+
   public DownloadCommand(Configuration configuration)
   {
     this.configuration = configuration;
-    this.client = SimpleLocalizeClient.withProductionServer(configuration);
+    this.client = SimpleLocalizeClient.withProductionServer(configuration.getApiKey());
     this.configurationValidator = new ConfigurationValidator();
   }
 

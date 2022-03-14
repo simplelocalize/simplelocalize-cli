@@ -24,7 +24,7 @@ public class ExtractCommand implements CliCommand
   public ExtractCommand(Configuration configuration)
   {
     this.configuration = configuration;
-    this.client = SimpleLocalizeClient.withProductionServer(configuration);
+    this.client = SimpleLocalizeClient.withProductionServer(configuration.getApiKey());
   }
 
   public void invoke()

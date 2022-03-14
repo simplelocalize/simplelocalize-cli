@@ -13,7 +13,7 @@ public class ValidateCommand implements CliCommand
 
   public ValidateCommand(Configuration configuration)
   {
-    this.client = SimpleLocalizeClient.withProductionServer(configuration);
+    this.client = SimpleLocalizeClient.withProductionServer(configuration.getApiKey());
   }
 
   public void invoke()

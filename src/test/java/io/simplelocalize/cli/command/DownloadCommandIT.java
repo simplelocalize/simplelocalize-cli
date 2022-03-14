@@ -7,16 +7,21 @@ import org.junit.jupiter.api.Test;
 
 import java.nio.file.Path;
 
+/**
+ * Tests against production server
+ */
 @Disabled
 public class DownloadCommandIT
 {
+
+  private final String API_KEY = "my-api-key";
 
   @Test
   public void shouldDownloadToDirectoryWithPrefix() throws Exception
   {
     //given
     Configuration configuration = new Configuration();
-    configuration.setApiKey("a72ca590eaba1a4e642189d102fe255ca65e14fbbf07dd82892841b9ac5ddbdb");
+    configuration.setApiKey(API_KEY);
     configuration.setDownloadPath("./junit/download-test/values-{lang}/strings.xml");
     configuration.setDownloadFormat("android");
 
@@ -35,7 +40,7 @@ public class DownloadCommandIT
   {
     //given
     Configuration configuration = new Configuration();
-    configuration.setApiKey("a72ca590eaba1a4e642189d102fe255ca65e14fbbf07dd82892841b9ac5ddbdb");
+    configuration.setApiKey(API_KEY);
     configuration.setDownloadPath("./junit/download-test/values-{lang}-test/strings.xml");
     configuration.setDownloadFormat("android");
 
@@ -54,7 +59,7 @@ public class DownloadCommandIT
   {
     //given
     Configuration configuration = new Configuration();
-    configuration.setApiKey("a72ca590eaba1a4e642189d102fe255ca65e14fbbf07dd82892841b9ac5ddbdb");
+    configuration.setApiKey(API_KEY);
     configuration.setDownloadPath("./junit/download-test/jsons/{lang}.json");
     configuration.setDownloadFormat("single-language-json");
 
@@ -73,7 +78,7 @@ public class DownloadCommandIT
   {
     //given
     Configuration configuration = new Configuration();
-    configuration.setApiKey("a72ca590eaba1a4e642189d102fe255ca65e14fbbf07dd82892841b9ac5ddbdb");
+    configuration.setApiKey(API_KEY);
     configuration.setDownloadPath("./junit/download-test/multi-language-file/multi-language-file.json");
     configuration.setDownloadFormat("multi-language-json");
 

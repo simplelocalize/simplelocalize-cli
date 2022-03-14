@@ -1,6 +1,7 @@
 package io.simplelocalize.cli;
 
 import io.micronaut.configuration.picocli.PicocliRunner;
+import io.simplelocalize.cli.client.SimpleLocalizeClient;
 import io.simplelocalize.cli.command.DownloadCommand;
 import io.simplelocalize.cli.command.ExtractCommand;
 import io.simplelocalize.cli.command.UploadCommand;
@@ -168,7 +169,8 @@ public class SimplelocalizeCliCommand implements Runnable
       configuration.setDownloadOptions(downloadOptions);
     }
 
-    DownloadCommand downloadCommand = new DownloadCommand(configuration);
+    SimpleLocalizeClient client = SimpleLocalizeClient.withProductionServer(configuration.getApiKey());
+    DownloadCommand downloadCommand = new DownloadCommand(client, configuration);
     downloadCommand.invoke();
   }
 

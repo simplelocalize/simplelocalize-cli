@@ -28,6 +28,7 @@ public class DownloadableFile
     this.projectPath = projectPath;
   }
 
+
   @Override
   public boolean equals(Object o)
   {
@@ -41,5 +42,40 @@ public class DownloadableFile
   public int hashCode()
   {
     return Objects.hash(url, projectPath);
+  }
+
+  public static final class DownloadableFileBuilder
+  {
+    private String url;
+    private String projectPath;
+
+    private DownloadableFileBuilder()
+    {
+    }
+
+    public static DownloadableFileBuilder aDownloadableFile()
+    {
+      return new DownloadableFileBuilder();
+    }
+
+    public DownloadableFileBuilder withUrl(String url)
+    {
+      this.url = url;
+      return this;
+    }
+
+    public DownloadableFileBuilder withProjectPath(String projectPath)
+    {
+      this.projectPath = projectPath;
+      return this;
+    }
+
+    public DownloadableFile build()
+    {
+      DownloadableFile downloadableFile = new DownloadableFile();
+      downloadableFile.setUrl(url);
+      downloadableFile.setProjectPath(projectPath);
+      return downloadableFile;
+    }
   }
 }

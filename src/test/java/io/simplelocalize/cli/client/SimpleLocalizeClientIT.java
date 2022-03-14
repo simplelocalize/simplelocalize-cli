@@ -2,7 +2,6 @@ package io.simplelocalize.cli.client;
 
 import io.simplelocalize.cli.client.dto.DownloadRequest;
 import io.simplelocalize.cli.client.dto.UploadRequest;
-import io.simplelocalize.cli.configuration.Configuration;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
@@ -26,9 +25,7 @@ class SimpleLocalizeClientIT
   void shouldSendKeys() throws Exception
   {
     //given
-    Configuration configuration = new Configuration();
-    configuration.setApiKey("237b305f6b2273e92ac857eb44d7f33b");
-    SimpleLocalizeClient client = SimpleLocalizeClient.withProductionServer(configuration);
+    SimpleLocalizeClient client = SimpleLocalizeClient.withProductionServer("237b305f6b2273e92ac857eb44d7f33b");
 
     //when
     client.sendKeys(List.of("test"));
@@ -40,10 +37,7 @@ class SimpleLocalizeClientIT
   void shouldUploadFile() throws Exception
   {
     //given
-    String projectApiKey = "81707741b64e68427e1a2c20e75095b1";
-    Configuration configuration = new Configuration();
-    configuration.setApiKey(projectApiKey);
-    SimpleLocalizeClient client = SimpleLocalizeClient.withProductionServer(configuration);
+    SimpleLocalizeClient client = SimpleLocalizeClient.withProductionServer("81707741b64e68427e1a2c20e75095b1");
 
     UploadRequest uploadRequest = anUploadFileRequest()
             .withPath(Path.of("./test.json"))
@@ -63,10 +57,7 @@ class SimpleLocalizeClientIT
   void shouldDownloadFileToDirectory() throws Exception
   {
     //given
-    String projectApiKey = "96a7b6ca75c79d4af4dfd5db2946fdd4";
-    Configuration configuration = new Configuration();
-    configuration.setApiKey(projectApiKey);
-    SimpleLocalizeClient client = SimpleLocalizeClient.withProductionServer(configuration);
+    SimpleLocalizeClient client = SimpleLocalizeClient.withProductionServer("96a7b6ca75c79d4af4dfd5db2946fdd4");
 
     DownloadRequest downloadRequest = aDownloadRequest()
             .withPath("./i18n")
@@ -85,10 +76,7 @@ class SimpleLocalizeClientIT
   void shouldDownloadFileToFile() throws Exception
   {
     //given
-    String projectApiKey = "96a7b6ca75c79d4af4dfd5db2946fdd4";
-    Configuration configuration = new Configuration();
-    configuration.setApiKey(projectApiKey);
-    SimpleLocalizeClient client = SimpleLocalizeClient.withProductionServer(configuration);
+    SimpleLocalizeClient client = SimpleLocalizeClient.withProductionServer("96a7b6ca75c79d4af4dfd5db2946fdd4");
 
     DownloadRequest downloadRequest = aDownloadRequest()
             .withPath("./messages_test.properties")

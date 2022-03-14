@@ -1,6 +1,7 @@
 package io.simplelocalize.cli.client.dto;
 
 import java.util.List;
+import java.util.Objects;
 
 public class DownloadRequest
 {
@@ -9,6 +10,7 @@ public class DownloadRequest
   private String format;
   private String languageKey;
   private List<String> options;
+
 
   public String getPath()
   {
@@ -80,4 +82,20 @@ public class DownloadRequest
       return downloadRequest;
     }
   }
+
+  @Override
+  public boolean equals(Object o)
+  {
+    if (this == o) return true;
+    if (o == null || getClass() != o.getClass()) return false;
+    DownloadRequest that = (DownloadRequest) o;
+    return Objects.equals(path, that.path) && Objects.equals(format, that.format) && Objects.equals(languageKey, that.languageKey) && Objects.equals(options, that.options);
+  }
+
+  @Override
+  public int hashCode()
+  {
+    return Objects.hash(path, format, languageKey, options);
+  }
+
 }
