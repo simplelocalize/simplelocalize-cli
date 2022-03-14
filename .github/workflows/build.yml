@@ -70,7 +70,6 @@ jobs:
       - name: "Optimize executable"
         uses: svenstaro/upx-action@v2
         with:
-          version: latest
           file: simplelocalize-cli-windows.exe
           args: --best
       - name: 'Upload artifact'

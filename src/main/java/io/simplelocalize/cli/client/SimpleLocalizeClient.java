@@ -183,14 +183,29 @@ public class SimpleLocalizeClient
       com.jayway.jsonpath.Configuration parseContext = com.jayway.jsonpath.Configuration
               .defaultConfiguration()
               .addOptions(Option.SUPPRESS_EXCEPTIONS);
-      String message = JsonPath.using(parseContext).parse(httpResponse.body()).read(ERROR_MESSAGE_PATH);
+
+      Object responseBody = httpResponse.body();
+      String stringBody = safeCastHttpBodyToString(responseBody);
+      String message = JsonPath.using(parseContext).parse(stringBody).read(ERROR_MESSAGE_PATH);
       if (message == null)
       {
         message = "Unknown error, HTTP Status: " + httpResponse.statusCode();
       }
       log.error(" 😝 Request failed: {}", message);
-      throw new ApiRequestException(httpResponse);
+      throw new ApiRequestException(message, httpResponse);
     }
+  }
+
+  private String safeCastHttpBodyToString(Object responseBody)
+  {
+    if (responseBody instanceof byte[])
+    {
+      return new String((byte[]) responseBody);
+    } else if (responseBody instanceof String)
+    {
+      return (String) responseBody;
+    }
+    return "";
   }
 
 

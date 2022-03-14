@@ -232,7 +232,8 @@ public class SimpleLocalizeClientTest
     //when
     Assertions
             .assertThatThrownBy(() -> client.downloadFile(downloadRequest))
-            .isInstanceOf(ApiRequestException.class);
+            .isInstanceOf(ApiRequestException.class)
+            .hasMessage("not ok");
 
     //then
   }

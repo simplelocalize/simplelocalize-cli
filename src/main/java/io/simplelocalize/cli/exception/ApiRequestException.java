@@ -9,8 +9,9 @@ public class ApiRequestException extends RuntimeException
 
   private final transient HttpResponse<?> httpResponse;
 
-  public ApiRequestException(HttpResponse<?> httpResponse)
+  public ApiRequestException(String apiMessage, HttpResponse<?> httpResponse)
   {
+    super(apiMessage);
     this.httpResponse = httpResponse;
   }
 
