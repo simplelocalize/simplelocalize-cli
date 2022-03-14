@@ -290,9 +290,6 @@
                 <artifactId>jacoco-maven-plugin</artifactId>
                 <version>${jacoco.version}</version>
                 <configuration>
-                    <!--                    <excludes>-->
-                    <!--                        <exclude>**/Configuration.*</exclude>-->
-                    <!--                    </excludes>-->
                 </configuration>
 
 
@@ -327,44 +324,6 @@
                         </goals>
                     </execution>
                 </executions>
-
-
-                <!--                <executions>-->
-                <!--                    <execution>-->
-                <!--                        <id>default-prepare-agent</id>-->
-                <!--                        <goals>-->
-                <!--                            <goal>prepare-agent</goal>-->
-                <!--                        </goals>-->
-                <!--                        <phase>test-compile</phase>-->
-                <!--                    </execution>-->
-                <!--                    <execution>-->
-                <!--                        <id>default-report</id>-->
-                <!--                        <goals>-->
-                <!--                            <goal>report</goal>-->
-                <!--                        </goals>-->
-                <!--                    </execution>-->
-                <!--                    <execution>-->
-                <!--                        <id>default-check</id>-->
-                <!--                        <goals>-->
-                <!--                            <goal>check</goal>-->
-                <!--                        </goals>-->
-                <!--                        <configuration>-->
-                <!--                            <rules>-->
-                <!--                                <rule>-->
-                <!--                                    <element>BUNDLE</element>-->
-                <!--                                    <limits>-->
-                <!--                                        <limit>-->
-                <!--                                            <counter>COMPLEXITY</counter>-->
-                <!--                                            <value>COVEREDRATIO</value>-->
-                <!--                                            <minimum>0.60</minimum>-->
-                <!--                                        </limit>-->
-                <!--                                    </limits>-->
-                <!--                                </rule>-->
-                <!--                            </rules>-->
-                <!--                        </configuration>-->
-                <!--                    </execution>-->
-                <!--                </executions>-->
-
             </plugin>
         </plugins>
     </build>

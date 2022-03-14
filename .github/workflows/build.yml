@@ -102,6 +102,13 @@ jobs:
         run: gu install native-image
       - name: "Build Native Image"
         run: native-image --no-server --report-unsupported-elements-at-runtime -cp simplelocalize-cli-*.jar -H:Name="simplelocalize-cli-${{matrix.label}}" io.simplelocalize.cli.SimplelocalizeCliCommand
+      - name: "Optimize executable"
+        uses: crazy-max/ghaction-upx@v1
+        with:
+          version: latest
+          files: |
+            simplelocalize-cli-${{ matrix.label }}
+          args: -fq
       - name: "Upload artifact"
         uses: actions/upload-artifact@v2
         with:
