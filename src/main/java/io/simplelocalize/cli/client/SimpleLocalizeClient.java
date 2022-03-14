@@ -26,6 +26,7 @@ import java.time.Duration;
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 public class SimpleLocalizeClient
 {
@@ -97,13 +98,13 @@ public class SimpleLocalizeClient
     if (isRequestedTranslationsForSpecificLanguage || isFileFormatWithAllLanguages)
     {
 
-      Optional<Path> directoryPath = Optional.of(downloadPath).map(Path::getParent);
+      Optional<Path> directoryPath = Optional.of(downloadPath).map(Path::of).map(Path::getParent);
       if (directoryPath.isPresent())
       {
         Files.createDirectories(directoryPath.get());
       }
 
-      Files.write(downloadPath, body);
+      Files.write(Path.of(downloadPath), body);
     } else
     {
       fileWriter.saveAsMultipleFiles(downloadPath, body);
