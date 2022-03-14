@@ -134,9 +134,13 @@ public class SimpleLocalizeClient
       log.info(" 🌍 Downloading to {}", savePath);
       Files.createDirectories(savePath.getParent());
       httpClient.send(httpRequest, HttpResponse.BodyHandlers.ofFile(savePath));
-    } catch (IOException | InterruptedException e)
+    } catch (IOException e)
     {
       log.error(" 😝 Download failed: {}", savePath, e);
+    } catch (InterruptedException e)
+    {
+      log.error(" 😝 Download failed: {}", savePath, e);
+      Thread.currentThread().interrupt();
     }
   }
 
