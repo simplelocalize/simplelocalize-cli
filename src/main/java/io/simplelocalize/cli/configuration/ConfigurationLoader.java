@@ -1,6 +1,6 @@
 package io.simplelocalize.cli.configuration;
 
-import com.google.common.base.Strings;
+import io.simplelocalize.cli.exception.ConfigurationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.yaml.snakeyaml.Yaml;
@@ -8,6 +8,7 @@ import org.yaml.snakeyaml.constructor.Constructor;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
@@ -16,7 +17,6 @@ import java.nio.file.Path;
 public final class ConfigurationLoader
 {
 
-  private static final String CURRENT_DIRECTORY = ".";
   private static final Path DEFAULT_CONFIG_FILE_NAME = Path.of("simplelocalize.yml");
 
   private final Logger log = LoggerFactory.getLogger(ConfigurationLoader.class);
@@ -44,28 +44,16 @@ public final class ConfigurationLoader
     {
       InputStream inputStream = new FileInputStream(file);
       configuration = yaml.load(inputStream);
-      log.info(" 🗄 Loaded configuration file from: {}", configurationFilePath);
+      log.info(" 🗄  Loaded configuration file from: {}", configurationFilePath);
+    } catch (FileNotFoundException e)
+    {
+      log.info(" 🗄  No default configuration file at ./simplelocalize.yml");
+      return new Configuration();
     } catch (Exception e)
     {
-      log.info(" 🗄 Using default configuration. Configuration file not found at: {}", configurationFilePath);
-      configuration = new Configuration();
-      configuration.setSearchDir(CURRENT_DIRECTORY);
-      return configuration;
+      log.error(" 😝 Unable to load configuration: {}", e.getMessage());
+      throw new ConfigurationException();
     }
-
-    String uploadToken = configuration.getUploadToken();
-    String apiKey = configuration.getApiKey();
-    if (Strings.isNullOrEmpty(apiKey))
-    {
-      configuration.setApiKey(uploadToken);
-    }
-
-    String searchDir = configuration.getSearchDir();
-    if (Strings.isNullOrEmpty(searchDir))
-    {
-      configuration.setSearchDir(CURRENT_DIRECTORY);
-    }
-
     return configuration;
 
   }

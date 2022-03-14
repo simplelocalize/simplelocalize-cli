@@ -1,14 +1,18 @@
 package io.simplelocalize.cli.client;
 
-import com.google.common.collect.Maps;
-import com.google.common.net.HttpHeaders;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jayway.jsonpath.JsonPath;
-import io.simplelocalize.cli.util.ZipUtils;
+import com.jayway.jsonpath.Option;
+import io.simplelocalize.cli.client.dto.DownloadRequest;
+import io.simplelocalize.cli.client.dto.DownloadableFile;
+import io.simplelocalize.cli.client.dto.ExportResponse;
+import io.simplelocalize.cli.client.dto.UploadRequest;
+import io.simplelocalize.cli.exception.ApiRequestException;
+import io.simplelocalize.cli.io.FileWriter;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.net.http.HttpClient;
@@ -16,207 +20,193 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.security.SecureRandom;
+import java.nio.file.Paths;
 import java.time.Duration;
-import java.util.*;
+import java.util.Collection;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 
-import static io.simplelocalize.cli.util.FileListReaderUtil.LANGUAGE_TEMPLATE_KEY;
-
-public final class SimpleLocalizeClient
+public class SimpleLocalizeClient
 {
   private static final String PRODUCTION_BASE_URL = "https://api.simplelocalize.io";
-  private static final String TOKEN_HEADER_NAME = "X-SimpleLocalize-Token";
+
   private static final List<String> SINGLE_FILE_FORMATS = List.of("multi-language-json", "csv-translations", "excel", "csv");
+  private static final String ERROR_MESSAGE_PATH = "$.msg";
   private final HttpClient httpClient;
-  private final String baseUrl;
-  private final String apiKey;
-  private final String profile;
+  private final SimpleLocalizeHttpRequestFactory httpRequestFactory;
+  private final SimpleLocalizeUriFactory uriFactory;
 
   private final Logger log = LoggerFactory.getLogger(SimpleLocalizeClient.class);
-  private final SecureRandom random;
+  private final FileWriter fileWriter;
+  private final ObjectMapper objectMapper;
 
-  public SimpleLocalizeClient(String baseUrl, String apiKey, String profile)
+  public SimpleLocalizeClient(String baseUrl, String apiKey)
   {
-    Objects.requireNonNull(apiKey);
-    this.apiKey = apiKey;
 
-    if (StringUtils.isEmpty(profile))
-    {
-      this.profile = "default";
-    } else
-    {
-      this.profile = profile;
-    }
-    this.baseUrl = baseUrl;
-    this.random = new SecureRandom();
+    Objects.requireNonNull(baseUrl);
+    Objects.requireNonNull(apiKey);
+    this.uriFactory = new SimpleLocalizeUriFactory(baseUrl);
+    this.httpRequestFactory = new SimpleLocalizeHttpRequestFactory(apiKey);
+    this.objectMapper = new ObjectMapper();
+    this.fileWriter = new FileWriter();
     this.httpClient = HttpClient.newBuilder()
             .connectTimeout(Duration.ofMinutes(5))
             .build();
   }
 
-  public static SimpleLocalizeClient withProductionServer(String apiKey, String profile)
+  public static SimpleLocalizeClient withCustomServer(String baseUrl, String apiKey)
   {
-    return new SimpleLocalizeClient(PRODUCTION_BASE_URL, apiKey, profile);
+    return new SimpleLocalizeClient(baseUrl, apiKey);
+  }
+
+  public static SimpleLocalizeClient withProductionServer(String apiKey)
+  {
+    return withCustomServer(PRODUCTION_BASE_URL, apiKey);
   }
 
   public void sendKeys(Collection<String> keys) throws IOException, InterruptedException
   {
-    HttpRequest httpRequest = HttpRequest.newBuilder()
-            .POST(ClientBodyBuilders.ofKeysBody(keys))
-            .uri(URI.create(baseUrl + "/cli/v1/keys?profile=" + profile))
-            .header(HttpHeaders.CONTENT_TYPE, "application/json")
-            .header(TOKEN_HEADER_NAME, apiKey)
-            .build();
-
+    URI uri = uriFactory.buildSendKeysURI();
+    HttpRequest httpRequest = httpRequestFactory.createSendKeysRequest(uri, keys);
     HttpResponse<String> httpResponse = httpClient.send(httpRequest, HttpResponse.BodyHandlers.ofString());
-    String json = httpResponse.body();
-
-    if (httpResponse.statusCode() == 200)
-    {
-      int keysProcessed = JsonPath.read(json, "$.data.uniqueKeysProcessed");
-      boolean processedWithWarning = JsonPath.read(json, "$.data.processedWithWarnings");
-      if (processedWithWarning)
-      {
-        log.warn(" 🤨 SimpleLocalize processed your request with warnings, but it was successful.");
-      }
-      log.info(" 🎉 Successfully uploaded {} keys", keysProcessed);
-
-    } else
-    {
-      String message = JsonPath.read(json, "$.msg");
-      log.error(" 😝 There was a problem with your request: {}", message);
-      System.exit(1);
-    }
+    throwOnError(httpResponse);
+    int keysProcessed = JsonPath.read(httpResponse.body(), "$.data.uniqueKeysProcessed");
+    log.info(" 🎉 Successfully uploaded {} keys", keysProcessed);
   }
 
-  public void uploadFile(Path uploadPath, String languageKey, String uploadFormat, String uploadOptions) throws IOException, InterruptedException
+  public void uploadFile(UploadRequest uploadRequest) throws IOException, InterruptedException
   {
-    int pseudoRandomNumber = (int) (random.nextDouble() * 1_000_000_000);
-    String boundary = "simplelocalize" + pseudoRandomNumber;
-    Map<Object, Object> formData = Maps.newHashMap();
-    formData.put("file", uploadPath);
-    log.info(" 🌍 Uploading {} with language key '{}'", uploadPath, languageKey);
-    if (StringUtils.isNotEmpty(languageKey))
-    {
-      formData.put("languageKey", languageKey);
-    }
-
-    String endpointUrl = baseUrl + "/cli/v1/upload?uploadFormat=" + uploadFormat;
-    if (StringUtils.isNotEmpty(uploadOptions))
-    {
-      endpointUrl += "&uploadOptions=" + uploadOptions;
-    }
-    HttpRequest httpRequest = HttpRequest.newBuilder()
-            .POST(ClientBodyBuilders.ofMimeMultipartData(formData, boundary))
-            .uri(URI.create(endpointUrl))
-            .header(TOKEN_HEADER_NAME, apiKey)
-            .header("Content-Type", "multipart/form-data; boundary=" + boundary)
-            .build();
-
+    Path uploadPath = uploadRequest.getPath();
+    URI uri = uriFactory.buildUploadUri(uploadRequest);
+    HttpRequest httpRequest = httpRequestFactory.createUploadFileRequest(uri, uploadRequest);
+    log.info(" 🌍 Uploading {}", uploadPath);
     HttpResponse<String> httpResponse = httpClient.send(httpRequest, HttpResponse.BodyHandlers.ofString());
-
-    if (httpResponse.statusCode() == 200)
-    {
-      log.info(" 🎉 Upload success");
-    } else
-    {
-      log.error(" 😝 Upload failed");
-      log.error("{} - {}", httpResponse.statusCode(), httpResponse.body());
-    }
-
+    throwOnError(httpResponse);
   }
 
-  public void downloadFile(Path downloadPath, String downloadFormat, String languageKey) throws IOException, InterruptedException
-  {
-    String endpointUrl = baseUrl + "/cli/v1/download?downloadFormat=" + downloadFormat;
-    boolean isRequestedTranslationsForSpecificLanguage = StringUtils.isNotEmpty(languageKey);
-    if (isRequestedTranslationsForSpecificLanguage)
-    {
-      endpointUrl += "&languageKey=" + languageKey;
-    }
-    HttpRequest httpRequest = HttpRequest.newBuilder()
-            .GET()
-            .uri(URI.create(endpointUrl))
-            .header(TOKEN_HEADER_NAME, apiKey)
-            .build();
 
+  public void downloadFile(DownloadRequest downloadRequest) throws IOException, InterruptedException
+  {
+    URI downloadUri = uriFactory.buildDownloadUri(downloadRequest);
+    HttpRequest httpRequest = httpRequestFactory.createGetRequest(downloadUri).build();
+    String downloadPath = downloadRequest.getPath();
     log.info(" 🌍 Downloading to {}", downloadPath);
-    log.info(" 🌍 Requesting file");
     HttpResponse<byte[]> httpResponse = httpClient.send(httpRequest, HttpResponse.BodyHandlers.ofByteArray());
-    if (httpResponse.statusCode() != 200)
-    {
-      log.error(" 😝 Request failed");
-      log.error("{} - {}", httpResponse.statusCode(), httpResponse.body());
-      return;
-    }
+    throwOnError(httpResponse);
     byte[] body = httpResponse.body();
-
+    String languageKey = downloadRequest.getLanguageKey();
+    boolean isRequestedTranslationsForSpecificLanguage = StringUtils.isNotEmpty(languageKey);
+    String downloadFormat = downloadRequest.getFormat();
     boolean isFileFormatWithAllLanguages = isSingleFileFormat(downloadFormat);
     if (isRequestedTranslationsForSpecificLanguage || isFileFormatWithAllLanguages)
     {
 
-      Optional<Path> directoryPath = Optional.of(downloadPath).map(Path::getParent);
+      Optional<Path> directoryPath = Optional.of(downloadPath).map(Path::of).map(Path::getParent);
       if (directoryPath.isPresent())
       {
         Files.createDirectories(directoryPath.get());
       }
 
-      Files.write(downloadPath, body);
+      Files.write(Path.of(downloadPath), body);
     } else
     {
-      saveAsMultipleFiles(downloadPath, body);
+      fileWriter.saveAsMultipleFiles(downloadPath, body);
     }
 
     log.info(" 🎉 Download success!");
   }
 
-  private void saveAsMultipleFiles(Path downloadPath, byte[] body) throws IOException
+  public List<DownloadableFile> fetchDownloadableFiles(DownloadRequest downloadRequest) throws IOException, InterruptedException
   {
-    String[] splitByLanguageTemplateKey = StringUtils.splitByWholeSeparator(downloadPath.toString(), LANGUAGE_TEMPLATE_KEY);
-    String directoriesPartBeforeTemplateKeyWithPrefix = splitByLanguageTemplateKey[0];
-    String directoriesPartBeforeTemplateKey = removePrefix(directoriesPartBeforeTemplateKeyWithPrefix);
-    Files.createDirectories(Path.of(directoriesPartBeforeTemplateKey));
-    Path fileSavePath = Path.of(directoriesPartBeforeTemplateKey + File.separator + "translations.zip");
-
-    Files.write(fileSavePath, body);
-    ZipUtils.unzip(fileSavePath.toString(), downloadPath.toString(), LANGUAGE_TEMPLATE_KEY);
-    Files.delete(fileSavePath);
-  }
-
-  private String removePrefix(String directoriesPartBeforeTemplateKeyWithPrefix)
-  {
-    return StringUtils.substringBeforeLast(directoriesPartBeforeTemplateKeyWithPrefix, File.separator);
-  }
-
-  public int fetchGateCheckStatus() throws IOException, InterruptedException
-  {
-
-    HttpRequest httpRequest = HttpRequest.newBuilder()
-            .GET()
-            .uri(URI.create(baseUrl + "/cli/v1/analysis?profile=" + profile))
-            .header(TOKEN_HEADER_NAME, apiKey)
-            .build();
-
+    URI downloadUri = uriFactory.buildDownloadUriV2(downloadRequest);
+    HttpRequest httpRequest = httpRequestFactory.createGetRequest(downloadUri).build();
     HttpResponse<String> httpResponse = httpClient.send(httpRequest, HttpResponse.BodyHandlers.ofString());
-    String json = httpResponse.body();
-
-    if (httpResponse.statusCode() == 200)
-    {
-      String gateResult = JsonPath.read(json, "$.data.gateResult");
-      String message = JsonPath.read(json, "$.data.message");
-      int status = JsonPath.read(json, "$.data.status");
-      log.info(" 🌍 Gate result: {} (status: {}, message: {})", gateResult, status, message);
-      return status;
-    } else
-    {
-      String message = JsonPath.read(json, "$.msg");
-      log.error(" 😝 There was a problem with your request: {}", message);
-    }
-    return -1;
+    throwOnError(httpResponse);
+    String body = httpResponse.body();
+    ExportResponse exportResponse = objectMapper.readValue(body, ExportResponse.class);
+    return exportResponse.getFiles();
   }
 
-  public boolean isSingleFileFormat(String downloadFormat)
+  public void downloadFile(DownloadableFile downloadableFile, String downloadPath)
+  {
+    String url = downloadableFile.getUrl();
+    Path savePath = Paths.get(downloadPath, downloadableFile.getProjectPath());
+    HttpRequest httpRequest = httpRequestFactory.createGetRequest(URI.create(url)).build();
+    try
+    {
+      log.info(" 🌍 Downloading to {}", savePath);
+      Files.createDirectories(savePath.getParent());
+      httpClient.send(httpRequest, HttpResponse.BodyHandlers.ofFile(savePath));
+    } catch (IOException e)
+    {
+      log.error(" 😝 Download failed: {}", savePath, e);
+    } catch (InterruptedException e)
+    {
+      log.error(" 😝 Download failed: {}", savePath, e);
+      Thread.currentThread().interrupt();
+    }
+  }
+
+  public HttpResponse<String> validateConfiguration() throws IOException, InterruptedException
+  {
+    URI uri = uriFactory.buildValidateConfigurationUri();
+    HttpRequest httpRequest = httpRequestFactory.createBaseRequest(uri).build();
+    HttpResponse<String> httpResponse = httpClient.send(httpRequest, HttpResponse.BodyHandlers.ofString());
+    throwOnError(httpResponse);
+    return httpResponse;
+  }
+
+  public int validateGate() throws IOException, InterruptedException
+  {
+    URI validateUri = uriFactory.buildValidateGateUri();
+    HttpRequest httpRequest = httpRequestFactory.createGetRequest(validateUri).build();
+    HttpResponse<String> httpResponse = httpClient.send(httpRequest, HttpResponse.BodyHandlers.ofString());
+    throwOnError(httpResponse);
+    String json = httpResponse.body();
+    Boolean passed = JsonPath.read(json, "$.data.passed");
+    String message = JsonPath.read(json, "$.data.message");
+    int status = JsonPath.read(json, "$.data.status");
+    log.info(" 🌍 Gate result: {} (status: {}, message: {})", passed, status, message);
+    return status;
+  }
+
+  private boolean isSingleFileFormat(String downloadFormat)
   {
     return SINGLE_FILE_FORMATS.stream().anyMatch(format -> format.equalsIgnoreCase(downloadFormat));
   }
+
+  private void throwOnError(HttpResponse<?> httpResponse)
+  {
+    if (httpResponse.statusCode() != 200)
+    {
+      com.jayway.jsonpath.Configuration parseContext = com.jayway.jsonpath.Configuration
+              .defaultConfiguration()
+              .addOptions(Option.SUPPRESS_EXCEPTIONS);
+
+      Object responseBody = httpResponse.body();
+      String stringBody = safeCastHttpBodyToString(responseBody);
+      String message = JsonPath.using(parseContext).parse(stringBody).read(ERROR_MESSAGE_PATH);
+      if (message == null)
+      {
+        message = "Unknown error, HTTP Status: " + httpResponse.statusCode();
+      }
+      log.error(" 😝 Request failed: {}", message);
+      throw new ApiRequestException(message, httpResponse);
+    }
+  }
+
+  private String safeCastHttpBodyToString(Object responseBody)
+  {
+    if (responseBody instanceof byte[])
+    {
+      return new String((byte[]) responseBody);
+    } else if (responseBody instanceof String)
+    {
+      return (String) responseBody;
+    }
+    return "";
+  }
+
+
 }

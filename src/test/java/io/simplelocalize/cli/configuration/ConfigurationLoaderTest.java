@@ -1,83 +1,90 @@
 package io.simplelocalize.cli.configuration;
 
+import io.simplelocalize.cli.exception.ConfigurationException;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import java.nio.file.Path;
 
-public class ConfigurationLoaderTest {
+class ConfigurationLoaderTest
+{
 
   private final ConfigurationLoader loader = new ConfigurationLoader();
 
+
   @Test
-  public void shouldLoadConfiguration() throws Exception {
+  void shouldReturnDefaultConfigurationNotFound() throws Exception
+  {
+    //given
+    Path configurationFilePath = Path.of("./non-existing-configuration.yml");
+
+    //when
+    Configuration configuration = loader.loadOrGetDefault(configurationFilePath);
+
+    //then
+    Assertions.assertThat(configuration).isNotNull();
+  }
+
+  @Test
+  void shouldReturnDefaultConfigurationWhenNoPathProvided() throws Exception
+  {
+    //given
+    Path configurationFilePath = null;
+
+    //when
+    Configuration configuration = loader.loadOrGetDefault(configurationFilePath);
+
+    //then
+    Assertions.assertThat(configuration).isNotNull();
+  }
+
+  @Test
+  void shouldLoadConfiguration() throws Exception
+  {
     //given
     ClassLoader classLoader = getClass().getClassLoader();
     String pathToConfig = classLoader.getResource("simplelocalize.yml").toURI().toString().replace("file:", "");
+    Path configurationFilePath = Path.of(pathToConfig);
 
     //when
-    Configuration configuration = loader.loadOrGetDefault(Path.of(pathToConfig));
+    Configuration configuration = loader.loadOrGetDefault(configurationFilePath);
 
     //then
     Assertions.assertThat(configuration).isNotNull();
-    Assertions.assertThat(configuration.getApiKey()).isEqualTo("abc-apiKey");
+    Assertions.assertThat(configuration.getApiKey()).isEqualTo("my-api-key");
     Assertions.assertThat(configuration.getProjectType()).isEqualTo("yahoo/react-intl");
     Assertions.assertThat(configuration.getSearchDir()).isEqualTo("./target/test-classes/react-intl");
+    Assertions.assertThat(configuration.getIgnoreKeys()).containsExactlyInAnyOrder("key one", "key_two");
+
+    Assertions.assertThat(configuration.getUploadPath()).isEqualTo("./my-upload-path");
+    Assertions.assertThat(configuration.getUploadFormat()).isEqualTo("my-upload-format");
+    Assertions.assertThat(configuration.getUploadOptions()).containsExactlyInAnyOrder("MULTI_FILE");
+
+    Assertions.assertThat(configuration.getDownloadPath()).isEqualTo("./my-download-path");
+    Assertions.assertThat(configuration.getDownloadFormat()).isEqualTo("my-download-format");
+    Assertions.assertThat(configuration.getDownloadOptions()).containsExactlyInAnyOrder("MULTI_FILE", "WRITE_NESTED");
+
+    Assertions.assertThat(configuration.getLanguageKey()).isEqualTo("en");
+
+    Assertions.assertThat(configuration.getIgnorePaths())
+            .containsExactlyInAnyOrder(
+                    "./ignore/path/1",
+                    "./**/ignore/",
+                    "./file.json",
+                    "my-file.json"
+            );
   }
 
   @Test
-  public void shouldLoadConfigurationWithCurrentDirectory() throws Exception {
-    //given
-    ClassLoader classLoader = getClass().getClassLoader();
-    String pathToConfig = classLoader.getResource("simplelocalize-without-search-dir.yml").toURI().toString().replace("file:", "");
-
-    //when
-    Configuration configuration = loader.loadOrGetDefault(Path.of(pathToConfig));
-
-    //then
-    Assertions.assertThat(configuration.getSearchDir()).isEqualTo(".");
-  }
-
-
-  @Test
-  public void shouldLoadEmptyConfigurationNotFound() throws Exception
-  {
-    //given
-    String pathToConfig = "somepath";
-
-    //when
-    Configuration configuration = loader.loadOrGetDefault(Path.of(pathToConfig));
-
-    //then
-    Assertions.assertThat(configuration).isNotNull();
-    Assertions.assertThat(configuration.getApiKey()).isNull();
-  }
-
-  @Test
-  public void shouldLoadEmptyConfigurationFileWhenInvalidFile() throws Exception
+  void shouldThrowErrorWhenInvalidFile() throws Exception
   {
     //given
     ClassLoader classLoader = getClass().getClassLoader();
     String pathToConfig = classLoader.getResource("simplelocalize-invalid.yml").toURI().toString().replace("file:", "");
 
-    //when
-    Configuration configuration = loader.loadOrGetDefault(Path.of(pathToConfig));
-
-    //then
-    Assertions.assertThat(configuration).isNotNull();
-    Assertions.assertThat(configuration.getApiKey()).isNull();
-  }
-
-  @Test
-  public void shouldLoadConfigurationWithDeprecatedUploadTokenAsApiKey() throws Exception {
-    //given
-    ClassLoader classLoader = getClass().getClassLoader();
-    String pathToConfig = classLoader.getResource("simplelocalize-with-deprecated-upload-token.yml").toURI().toString().replace("file:", "");
-
-    //when
-    Configuration configuration = loader.loadOrGetDefault(Path.of(pathToConfig));
-
-    //then
-    Assertions.assertThat(configuration.getApiKey()).isEqualTo("abc");
+    //when & then
+    Assertions
+            .assertThatThrownBy(() -> loader.loadOrGetDefault(Path.of(pathToConfig)))
+            .isInstanceOf(ConfigurationException.class);
   }
 }

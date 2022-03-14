@@ -1,9 +1,9 @@
 package io.simplelocalize.cli.extraction.keys;
 
-import com.google.common.collect.Sets;
-import io.simplelocalize.cli.util.FileContentUtil;
+import io.simplelocalize.cli.io.FileContentReader;
 
 import java.nio.file.Path;
+import java.util.HashSet;
 import java.util.Set;
 import java.util.regex.MatchResult;
 import java.util.regex.Pattern;
@@ -12,12 +12,16 @@ import java.util.stream.Collectors;
 public class IEighteenNextKeyExtractor implements KeyExtractor {
 
   @Override
-  public Set<String> extractKeysFromFile(Path filePath) {
-    String fileContent = FileContentUtil.tryReadContent(filePath);
-    fileContent = FileContentUtil.transformTextToOneLine(fileContent);
+  public Set<String> extractKeysFromFile(Path filePath)
+  {
+    String fileContent = FileContentReader.tryReadContent(filePath);
+    fileContent = FileContentReader.transformTextToOneLine(fileContent);
+    Set<String> output = new HashSet<>();
     Set<String> ts = matchT(fileContent);
     Set<String> i18nKeys = matchI18nKey(fileContent);
-    return Sets.union(ts,i18nKeys);
+    output.addAll(ts);
+    output.addAll(i18nKeys);
+    return output;
   }
 
   private Set<String> matchI18nKey(String fileContent) {

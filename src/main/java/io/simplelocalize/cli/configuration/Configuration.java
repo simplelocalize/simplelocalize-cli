@@ -1,146 +1,78 @@
 package io.simplelocalize.cli.configuration;
 
 import io.micronaut.core.annotation.Introspected;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.builder.EqualsBuilder;
-import org.apache.commons.lang3.builder.HashCodeBuilder;
 
-import java.nio.file.Path;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 @Introspected
-public class Configuration {
+public class Configuration
+{
 
   private String apiKey;
-  private String uploadToken;
 
   private String projectType;
   private String searchDir;
-  private Set<String> ignoreKeys = Set.of();
+  private List<String> ignoreKeys = new ArrayList<>();
 
-  private Path uploadPath;
+  private List<String> ignorePaths = new ArrayList<>();
+
+  private String uploadPath;
   private String uploadFormat;
-  private String uploadOptions;
+  private List<String> uploadOptions = new ArrayList<>();
 
-  private Path downloadPath;
+  private String downloadPath;
   private String downloadFormat;
+  private List<String> downloadOptions = new ArrayList<>();
 
   private String languageKey;
-  private String profile;
 
-  public Configuration()
+  public String getSearchDir()
   {
-  }
-
-  public Configuration(String searchDir, String uploadToken, String apiKey, String projectType, Path uploadPath, String uploadFormat, String languageKey, String uploadOptions, Set<String> ignoreKeys, String profile, Path downloadPath, String downloadFormat)
-  {
-    this.searchDir = searchDir;
-
-    this.projectType = projectType;
-    this.ignoreKeys = ignoreKeys;
-
-    this.uploadPath = uploadPath;
-    this.uploadFormat = uploadFormat;
-    this.uploadOptions = uploadOptions;
-
-    this.downloadPath = downloadPath;
-    this.downloadFormat = downloadFormat;
-
-    this.languageKey = languageKey;
-
-    if (StringUtils.isEmpty(apiKey))
-    {
-      this.apiKey = uploadToken;
-    } else
-    {
-      this.apiKey = apiKey;
-    }
-    this.profile = profile;
-
-  }
-
-  @Override
-  public boolean equals(Object o) {
-    if (this == o) return true;
-
-    if (o == null || getClass() != o.getClass()) return false;
-
-    Configuration that = (Configuration) o;
-
-    return new EqualsBuilder()
-            .append(searchDir, that.searchDir)
-            .append(apiKey, that.apiKey)
-            .append(profile, that.profile)
-            .append(projectType, that.projectType)
-            .append(ignoreKeys, that.ignoreKeys)
-            .isEquals();
-  }
-
-  @Override
-  public int hashCode() {
-    return new HashCodeBuilder(17, 37)
-            .append(searchDir)
-            .append(apiKey)
-            .append(profile)
-            .append(projectType)
-            .append(ignoreKeys)
-            .toHashCode();
-  }
-
-  public String getSearchDir() {
     return searchDir;
   }
 
-  public void setSearchDir(String searchDir) {
+  public void setSearchDir(String searchDir)
+  {
     this.searchDir = searchDir;
   }
 
-  public String getApiKey() {
+  public String getApiKey()
+  {
     return apiKey;
   }
 
-  public void setApiKey(String apiKey) {
+  public void setApiKey(String apiKey)
+  {
     this.apiKey = apiKey;
   }
 
-  public String getProjectType() {
+  public String getProjectType()
+  {
     return projectType;
   }
 
-  public void setProjectType(String projectType) {
+  public void setProjectType(String projectType)
+  {
     this.projectType = projectType;
   }
 
-  public Set<String> getIgnoreKeys() {
+  public List<String> getIgnoreKeys()
+  {
     return ignoreKeys;
   }
 
-  public void setIgnoreKeys(Set<String> ignoreKeys) {
+  public void setIgnoreKeys(List<String> ignoreKeys)
+  {
     this.ignoreKeys = ignoreKeys;
   }
 
-  public String getUploadToken() {
-    return uploadToken;
-  }
-
-  public void setUploadToken(String uploadToken) {
-    this.uploadToken = uploadToken;
-  }
-
-  public String getProfile() {
-    return profile;
-  }
-
-  public void setProfile(String profile) {
-    this.profile = profile;
-  }
-
-  public Path getUploadPath()
+  public String getUploadPath()
   {
     return uploadPath;
   }
 
-  public void setUploadPath(Path uploadPath)
+  public void setUploadPath(String uploadPath)
   {
     this.uploadPath = uploadPath;
   }
@@ -155,12 +87,12 @@ public class Configuration {
     this.uploadFormat = uploadFormat;
   }
 
-  public Path getDownloadPath()
+  public String getDownloadPath()
   {
     return downloadPath;
   }
 
-  public void setDownloadPath(Path downloadPath)
+  public void setDownloadPath(String downloadPath)
   {
     this.downloadPath = downloadPath;
   }
@@ -168,6 +100,16 @@ public class Configuration {
   public String getDownloadFormat()
   {
     return downloadFormat;
+  }
+
+  public List<String> getDownloadOptions()
+  {
+    return downloadOptions;
+  }
+
+  public void setDownloadOptions(List<String> downloadOptions)
+  {
+    this.downloadOptions = downloadOptions;
   }
 
   public void setDownloadFormat(String downloadFormat)
@@ -185,13 +127,23 @@ public class Configuration {
     this.languageKey = languageKey;
   }
 
-  public String getUploadOptions()
+  public List<String> getUploadOptions()
   {
     return uploadOptions;
   }
 
-  public void setUploadOptions(String uploadOptions)
+  public void setUploadOptions(List<String> uploadOptions)
   {
     this.uploadOptions = uploadOptions;
+  }
+
+  public List<String> getIgnorePaths()
+  {
+    return ignorePaths;
+  }
+
+  public void setIgnorePaths(List<String> ignorePaths)
+  {
+    this.ignorePaths = ignorePaths;
   }
 }

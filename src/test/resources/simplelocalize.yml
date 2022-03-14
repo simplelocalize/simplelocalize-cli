@@ -1,4 +1,22 @@
-searchDir: ./target/test-classes/react-intl
-uploadToken: abc
-apiKey: abc-apiKey
+apiKey: my-api-key
 projectType: yahoo/react-intl
+searchDir: ./target/test-classes/react-intl
+ignoreKeys:
+  - key one
+  - key_two
+uploadPath: ./my-upload-path
+uploadFormat: my-upload-format
+uploadOptions:
+  - MULTI_FILE
+downloadPath: ./my-download-path
+downloadFormat: my-download-format
+downloadOptions:
+  - WRITE_NESTED
+  - MULTI_FILE
+languageKey: en
+
+ignorePaths:
+  - ./ignore/path/1
+  - ./**/ignore/
+  - ./file.json
+  - my-file.json

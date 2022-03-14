@@ -1,6 +1,7 @@
 package io.simplelocalize.cli.extraction.files;
 
 
+import io.simplelocalize.cli.TestResourcesUtility;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -27,7 +28,7 @@ public class JavaScriptAndTypeScriptFilesFinderTest {
   @Test
   public void shouldThrowWhenFileNotFound() throws Exception {
     //given
-    Path path = Paths.get("some path");
+    Path path = Paths.get("some invalid path");
 
     //when
     Assertions.assertThatThrownBy(() -> javaScriptAndTypeScriptFilesFinder.findFilesToProcess(path));

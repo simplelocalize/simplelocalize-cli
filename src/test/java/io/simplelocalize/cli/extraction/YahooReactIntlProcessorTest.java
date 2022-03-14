@@ -1,6 +1,6 @@
 package io.simplelocalize.cli.extraction;
 
-import io.simplelocalize.cli.extraction.files.TestResourcesUtility;
+import io.simplelocalize.cli.TestResourcesUtility;
 import io.simplelocalize.cli.extraction.processor.YahooReactIntlProcessor;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;

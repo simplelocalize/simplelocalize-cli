@@ -1,12 +1,13 @@
 package io.simplelocalize.cli;
 
 import io.micronaut.configuration.picocli.PicocliRunner;
+import io.simplelocalize.cli.client.SimpleLocalizeClient;
 import io.simplelocalize.cli.command.DownloadCommand;
 import io.simplelocalize.cli.command.ExtractCommand;
 import io.simplelocalize.cli.command.UploadCommand;
-import io.simplelocalize.cli.command.ValidateCommand;
 import io.simplelocalize.cli.configuration.Configuration;
 import io.simplelocalize.cli.configuration.ConfigurationLoader;
+import io.simplelocalize.cli.configuration.ConfigurationValidator;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,6 +16,8 @@ import picocli.CommandLine.Option;
 
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.List;
+
 
 @Command(
         name = "simplelocalize-cli",
@@ -22,19 +25,20 @@ import java.nio.file.Path;
                 {
                         "SimpleLocalize CLI is an official Localization CLI Tool for SimpleLocalize.io Platform",
                         "Usage: 'simplelocalize-cli [command]'",
-                        "Check https://docs.simplelocalize.io to learn more."
+                        "Visit https://docs.simplelocalize.io to learn more."
                 },
         mixinStandardHelpOptions = true,
         version = {
-                "SimpleLocalize CLI: 1.1.2",
+                "SimpleLocalize CLI: " + Version.NUMBER,
                 "JVM: ${java.version} (${java.vendor} ${java.vm.name} ${java.vm.version})",
                 "OS: ${os.name} ${os.version} ${os.arch}"}
 )
 public class SimplelocalizeCliCommand implements Runnable
 {
+
   private static final Logger log = LoggerFactory.getLogger(SimplelocalizeCliCommand.class);
 
-  @Option(names = {"-c", "--config"}, description = "Configuration file path (default: ./simplelocalize.yml)")
+  @Option(names = {"-c", "--config"}, description = "Configuration file (default: ./simplelocalize.yml)")
   Path configurationFilePath;
 
   public static void main(String[] args)
@@ -42,7 +46,9 @@ public class SimplelocalizeCliCommand implements Runnable
     PicocliRunner.run(SimplelocalizeCliCommand.class, args);
   }
 
-  @Command(name = "extract", description = "Extract translation keys from project files. Use 'simplelocalize-cli extract --help' to learn more about the parameters.")
+  @Command(
+          name = "extract",
+          description = "Extract translation keys from project files. Use 'simplelocalize-cli extract --help' to learn more about the parameters.")
   public void extract(
           @Option(names = {"--apiKey"}, description = "Project API Key") String apiKey,
           @Option(names = {"--projectType"}, description = "Project type tells CLI how to find i18n keys in your project files") String projectType,
@@ -63,32 +69,39 @@ public class SimplelocalizeCliCommand implements Runnable
     {
       configuration.setSearchDir(searchDirectory);
     }
-    ExtractCommand extractCommand = new ExtractCommand();
-    extractCommand.invoke(configuration);
+    ConfigurationValidator configurationValidator = new ConfigurationValidator();
+    configurationValidator.validateDownloadConfiguration(configuration);
+    ExtractCommand extractCommand = new ExtractCommand(configuration);
+    extractCommand.invoke();
   }
 
-  @Command(name = "sync", description = "Synchronize (Upload & Download) translations with SimpleLocalize editor. Use 'simplelocalize-cli sync --help' to learn more about the parameters.")
+  @Command(
+          name = "sync",
+          description = "Synchronize (Upload & Download) translations with SimpleLocalize editor. Use 'simplelocalize-cli sync --help' to learn more about the parameters.")
   public void sync(
           @Option(names = {"--apiKey"}, description = "Project API Key") String apiKey,
-          @Option(names = {"--uploadPath"}, description = "Path to file with translation or translation keys to upload. Use '{lang}' to define language key if you are uploading more than one file with translations.") Path uploadPath,
+          @Option(names = {"--uploadPath"}, description = "Path to file with translation or translation keys to upload. Use '{lang}' to define language key if you are uploading more than one file with translations.") String uploadPath,
           @Option(names = {"--uploadFormat"}, description = "Translations or keys format") String uploadFormat,
-          @Option(names = {"--uploadOptions"}, description = "(Optional) Read more about 'uploadOptions' param at docs.simplelocalize.io") String uploadOptions,
-          @Option(names = {"--downloadPath"}, description = "Directory where translations should be downloaded") Path downloadPath,
+          @Option(names = {"--uploadOptions"}, split = ",", description = "(Optional) Read more about 'uploadOptions' param at docs.simplelocalize.io") List<String> uploadOptions,
+          @Option(names = {"--downloadPath"}, description = "Directory where translations should be downloaded") String downloadPath,
           @Option(names = {"--downloadFormat"}, description = "Download format for translation file") String downloadFormat,
+          @Option(names = {"--downloadOptions"}, split = ",", description = "(Optional) Download options") List<String> downloadOptions,
           @Option(names = {"--languageKey"}, description = "(Optional) Specify language key for single file upload") String languageKey
   ) throws IOException
   {
-    upload(apiKey, uploadPath, uploadFormat, languageKey, uploadOptions);
-    download(apiKey, downloadPath, downloadFormat, languageKey);
+    upload(apiKey, uploadPath, uploadFormat, uploadOptions, languageKey);
+    download(apiKey, downloadPath, downloadFormat, downloadOptions, languageKey);
   }
 
-  @Command(name = "upload", description = "Upload translations or translation keys to SimpleLocalize editor. Use 'simplelocalize-cli upload --help' to learn more about the parameters.")
+  @Command(
+          name = "upload",
+          description = "Upload translations or translation keys to SimpleLocalize editor. Use 'simplelocalize-cli upload --help' to learn more about the parameters.")
   public void upload(
           @Option(names = {"--apiKey"}, description = "Project API Key") String apiKey,
-          @Option(names = {"--uploadPath"}, description = "Path to file with translation or translation keys to upload. Use '{lang}' to define language key if you are uploading more than one file with translations.") Path uploadPath,
+          @Option(names = {"--uploadPath"}, description = "Path to file with translation or translation keys to upload. Use '{lang}' to define language key if you are uploading more than one file with translations.") String uploadPath,
           @Option(names = {"--uploadFormat"}, description = "Translations or keys format") String uploadFormat,
-          @Option(names = {"--languageKey"}, description = "(Optional) Specify language key for single file upload") String languageKey,
-          @Option(names = {"--uploadOptions"}, description = "(Optional) Read more about 'uploadOptions' param at docs.simplelocalize.io") String uploadOptions
+          @Option(names = {"--uploadOptions"}, split = ",", description = "(Optional) Read more about 'uploadOptions' param at docs.simplelocalize.io") List<String> uploadOptions,
+          @Option(names = {"--languageKey"}, description = "(Optional) Specify language key for single file upload") String languageKey
   ) throws IOException
   {
     ConfigurationLoader configurationLoader = new ConfigurationLoader();
@@ -99,7 +112,7 @@ public class SimplelocalizeCliCommand implements Runnable
       configuration.setApiKey(apiKey);
     }
 
-    if (uploadPath != null)
+    if (StringUtils.isNotEmpty(uploadPath))
     {
       configuration.setUploadPath(uploadPath);
     }
@@ -114,20 +127,25 @@ public class SimplelocalizeCliCommand implements Runnable
       configuration.setLanguageKey(languageKey);
     }
 
-    if (StringUtils.isNotEmpty(uploadOptions))
+    if (uploadOptions != null)
     {
       configuration.setUploadOptions(uploadOptions);
     }
 
-    UploadCommand uploadCommand = new UploadCommand();
-    uploadCommand.invoke(configuration);
+    ConfigurationValidator configurationValidator = new ConfigurationValidator();
+    configurationValidator.validateDownloadConfiguration(configuration);
+    UploadCommand uploadCommand = new UploadCommand(configuration);
+    uploadCommand.invoke();
   }
 
-  @Command(name = "download", description = "Download translations in ready to use format for your i18n library. Use 'simplelocalize-cli download --help' to learn more about the parameters.")
+  @Command(
+          name = "download",
+          description = "Download translations in ready to use format for your i18n library. Use 'simplelocalize-cli download --help' to learn more about the parameters.")
   public void download(
           @Option(names = {"--apiKey"}, description = "Project API Key") String apiKey,
-          @Option(names = {"--downloadPath"}, description = "Directory where translations should be downloaded") Path downloadPath,
+          @Option(names = {"--downloadPath"}, description = "Directory where translations should be downloaded") String downloadPath,
           @Option(names = {"--downloadFormat"}, description = "Download format for translation file") String downloadFormat,
+          @Option(names = {"--downloadOptions"}, split = ",", description = "(Optional) Download options") List<String> downloadOptions,
           @Option(names = {"--languageKey"}, description = "(Optional) Setup languageKey parameter to download file with only one language translations") String languageKey
   )
   {
@@ -138,7 +156,7 @@ public class SimplelocalizeCliCommand implements Runnable
     {
       configuration.setApiKey(apiKey);
     }
-    if (downloadPath != null)
+    if (StringUtils.isNotEmpty(downloadPath))
     {
       configuration.setDownloadPath(downloadPath);
     }
@@ -150,35 +168,19 @@ public class SimplelocalizeCliCommand implements Runnable
     {
       configuration.setLanguageKey(languageKey);
     }
-    DownloadCommand downloadCommand = new DownloadCommand();
-    downloadCommand.invoke(configuration);
-  }
-
-  @Command(name = "validate", hidden = true)
-  public void validate(
-          @Option(names = {"--apiKey"}, description = "Project API Key") String apiKey
-  )
-  {
-    ConfigurationLoader configurationLoader = new ConfigurationLoader();
-    Configuration configuration = configurationLoader.loadOrGetDefault(configurationFilePath);
-
-    if (StringUtils.isNotEmpty(apiKey))
+    if (downloadOptions != null)
     {
-      configuration.setApiKey(apiKey);
+      configuration.setDownloadOptions(downloadOptions);
     }
-    ValidateCommand validateCommand = new ValidateCommand();
-    validateCommand.invoke(configuration);
+    ConfigurationValidator configurationValidator = new ConfigurationValidator();
+    configurationValidator.validateDownloadConfiguration(configuration);
+    SimpleLocalizeClient client = SimpleLocalizeClient.withProductionServer(configuration.getApiKey());
+    DownloadCommand downloadCommand = new DownloadCommand(client, configuration);
+    downloadCommand.invoke();
   }
 
   public void run()
   {
-    log.warn(" 🤨 You are running CLI without specifying a command. We will run 'extract' command as a default but please adjust your configuration to invoke some command explicitly. Learn more https://docs.simplelocalize.io");
-
-    ConfigurationLoader configurationLoader = new ConfigurationLoader();
-    Configuration configuration = configurationLoader.loadOrGetDefault(configurationFilePath);
-
-    extract(configuration.getApiKey(), configuration.getProjectType(), configuration.getSearchDir());
+    log.warn(" 🤨 Please specify a command. Visit https://simplelocalize.io/docs/cli/get-started/ to learn more.");
   }
-
-
 }

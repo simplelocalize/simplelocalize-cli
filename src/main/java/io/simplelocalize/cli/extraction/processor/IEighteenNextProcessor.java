@@ -1,11 +1,11 @@
 package io.simplelocalize.cli.extraction.processor;
 
-import com.google.common.collect.Sets;
 import io.simplelocalize.cli.extraction.ExtractionResult;
 import io.simplelocalize.cli.extraction.files.JavaScriptAndTypeScriptFilesFinder;
 import io.simplelocalize.cli.extraction.keys.IEighteenNextKeyExtractor;
 
 import java.nio.file.Path;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -20,7 +20,7 @@ public class IEighteenNextProcessor implements ExtractionProcessor
 
     List<Path> foundFiles = filesFinder.findFilesToProcess(searchDirectory);
 
-    Set<String> keys = Sets.newHashSet();
+    Set<String> keys = new HashSet<>();
     for (Path file : foundFiles)
     {
       Set<String> batchKeys = keyExtractor.extractKeysFromFile(file);

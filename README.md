@@ -8,7 +8,7 @@
 
 SimpleLocalize CLI to simplifies the process of translation in web apps, mobile apps, and games. It can:
 - find translation keys in your local files
-- upload existing translation files or transaltion keys
+- upload existing translation files or translation keys
 - download translation file in ready to use format for already used i18n library like: i18next, Android, iOS, and many others
 
 
@@ -26,9 +26,73 @@ curl -s https://get.simplelocalize.io/install | bash
 simplelocalize [COMMAND] --apiKey <PROJECT_API_KEY> rest of parameters...
 ```
 
-## Available commands
+## Example configuration file
 
-Rememebr to [get API Key for your SimpleLocalize project](https://simplelocalize.io/docs/cli/get-started/) before your start.
+Filename: `simplelocalize.yml`
+
+```yaml
+apiKey: API_KEY
+
+# Upload command
+uploadPath: ./src
+uploadFormat: multi-language-json
+uploadOptions: MULTI_FILE
+ignorePaths:
+  - './ignore/*/regex/*'
+  - './ignore/directory'
+
+# Download command
+downloadPath: ./src
+downloadFormat: multi-language-json
+downloadOptions: MULTI_FILE
+
+languageKey: en
+
+# Extract command
+searchDir: ./src
+projectType: yahoo/react-intl
+ignoreKeys:
+  - 'WELCOME'
+  - 'ABOUT-US'
+```
+
+## Upload Translations
+
+```properties
+simplelocalize upload --apiKey <PROJECT_API_KEY>
+```
+
+
+## Download Translations
+
+```properties
+simplelocalize download --apiKey <PROJECT_API_KEY>
+```
+
+
+## Sync Translations
+Sync command combines upload and download commend execution.
+```properties
+simplelocalize sync --apiKey <PROJECT_API_KEY>
+```
+
+
+## Extract Translation Keys
+
+```properties
+simplelocalize extract --apiKey <PROJECT_API_KEY>
+```
+
+## Custom configuration file
+By default, SimpleLocalize will load configuration from file named `simplelocalize.yml`. You can load configuration from different location using `--configuration` parameters.
+
+```properties
+simplelocalize --configuration ./my-configuration.yml upload --apiKey <PROJECT_API_KEY>
+```
+
+## Commands documentation
+
+Please remember to [get API Key for your SimpleLocalize project](https://simplelocalize.io/docs/cli/get-started/) before your start.
 
 - `simplelocalize extract` - learn more [how to extract translation keys from local files](https://simplelocalize.io/docs/cli/i18n-keys-extraction/)
 - `simplelocalize upload` - learn more [how to upload translations or translation keys](https://simplelocalize.io/docs/cli/upload-translations/)

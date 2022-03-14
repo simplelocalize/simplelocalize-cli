@@ -1,6 +1,5 @@
 package io.simplelocalize.cli.util;
 
-import io.simplelocalize.cli.client.SimpleLocalizeClient;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,7 +15,7 @@ import java.util.zip.ZipInputStream;
 
 public class ZipUtils
 {
-  private static final Logger log = LoggerFactory.getLogger(SimpleLocalizeClient.class);
+  private static final Logger log = LoggerFactory.getLogger(ZipUtils.class);
 
   private ZipUtils()
   {
