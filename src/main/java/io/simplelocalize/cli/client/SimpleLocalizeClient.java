@@ -143,7 +143,7 @@ public class SimpleLocalizeClient
       log.error(" 😝 Download failed: {}", savePath, e);
     } catch (InterruptedException e)
     {
-      log.error(" 😝 Download failed: {}", savePath, e);
+      log.error(" 😝 Download interrupted: {}", savePath, e);
       Thread.currentThread().interrupt();
     }
   }

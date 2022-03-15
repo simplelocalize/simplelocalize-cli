@@ -11,11 +11,11 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Paths;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 import static io.simplelocalize.cli.client.dto.UploadRequest.UploadFileRequestBuilder.anUploadFileRequest;
 import static io.simplelocalize.cli.io.FileListReader.LANGUAGE_TEMPLATE_KEY;
@@ -52,7 +52,7 @@ public class UploadCommand implements CliCommand
     List<FileToUpload> filesToUpload = List.of();
     try
     {
-      filesToUpload = getFilesToUpload(configuration);
+      filesToUpload = findMatchingFiles(configuration);
     } catch (IOException e)
     {
       log.error(" 😝 Matching files could not be found", e);
@@ -60,67 +60,59 @@ public class UploadCommand implements CliCommand
     }
 
     log.info(" 📄  Found {} files to upload", filesToUpload.size());
+    String languageKey = configuration.getLanguageKey();
     for (FileToUpload fileToUpload : filesToUpload)
     {
       try
       {
+        String fileLanguageKey = Optional.of(fileToUpload).map(FileToUpload::getLanguage).orElse("");
+        boolean hasLanguageKey = StringUtils.isNotBlank(languageKey);
+        boolean isLanguageMatching = fileLanguageKey.equals(languageKey);
+        if (!isLanguageMatching && hasLanguageKey)
+        {
+          log.info(" 🤔 Skipping '{}' language file: {}", fileToUpload.getLanguage(), fileToUpload.getPath());
+          continue;
+        }
+
         long length = fileToUpload.getPath().toFile().length();
         if (length == 0)
         {
-          log.warn(" 🤔 Skipping an empty file: {}", fileToUpload.getPath());
+          log.warn(" 🤔 Skipping empty file: {}", fileToUpload.getPath());
           continue;
         }
-        String language = fileToUpload.getLanguage();
+
         String uploadFormat = configuration.getUploadFormat();
         List<String> uploadOptions = configuration.getUploadOptions();
         boolean isMultiFileUpload = uploadOptions.contains(Options.MULTI_FILE.name());
-        String relativePath = null;
         if (isMultiFileUpload)
         {
-          language = null;
-          String filePath = fileToUpload.getPath().toString();
-          relativePath = filePath.replaceFirst(uploadPath, "");
+          fileLanguageKey = null;
         }
 
         UploadRequest uploadRequest = anUploadFileRequest()
-                .withLanguageKey(language)
+                .withLanguageKey(fileLanguageKey)
                 .withPath(fileToUpload.getPath())
                 .withFormat(uploadFormat)
                 .withOptions(uploadOptions)
-                .withRelativePath(relativePath)
                 .build();
 
         client.uploadFile(uploadRequest);
-      } catch (InterruptedException | IOException e)
+      } catch (IOException e)
       {
-        log.warn(" 😝 File {} could not be uploaded", fileToUpload.getPath(), e);
+        log.warn(" 😝 Upload failed: {}", fileToUpload.getPath(), e);
+      } catch (InterruptedException e)
+      {
+        log.error(" 😝 Upload interrupted: {}", fileToUpload.getPath(), e);
         Thread.currentThread().interrupt();
       }
     }
   }
 
-  private List<FileToUpload> getFilesToUpload(Configuration configuration) throws IOException
+  private List<FileToUpload> findMatchingFiles(Configuration configuration) throws IOException
   {
     String uploadPath = configuration.getUploadPath();
     boolean hasLanguageKeyInPath = uploadPath.contains(LANGUAGE_TEMPLATE_KEY);
     String uploadLanguageKey = configuration.getLanguageKey();
-    List<String> uploadOptions = configuration.getUploadOptions();
-    boolean isMultiFileUpload = uploadOptions.contains(Options.MULTI_FILE.name());
-    if (hasLanguageKeyInPath && StringUtils.isNotBlank(uploadLanguageKey))
-    {
-      log.error(" 😝 You cannot use '{lang}' param in upload path and '--languageKey' option together.");
-      System.exit(1);
-    }
-    if (isMultiFileUpload)
-    {
-      File uploadPathFile = Paths.get(uploadPath).toFile();
-      if (!uploadPathFile.isDirectory())
-      {
-        log.error(" 😝 You must a directory with '--uploadPath' parameter in order to use 'MULTI_FILE' upload option.");
-        System.exit(1);
-      }
-      return fileListReader.findFilesForMultiFileUpload(configuration);
-    }
     if (hasLanguageKeyInPath)
     {
       return fileListReader.findFilesWithTemplateKey(uploadPath);

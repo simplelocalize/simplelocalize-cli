@@ -44,7 +44,6 @@ class SimpleLocalizeClientIT
             .withLanguageKey(null)
             .withFormat("multi-language-json")
             .withOptions(Collections.emptyList())
-            .withRelativePath("")
             .build();
 
     //when

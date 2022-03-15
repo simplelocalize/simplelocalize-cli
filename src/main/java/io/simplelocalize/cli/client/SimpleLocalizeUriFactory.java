@@ -67,12 +67,6 @@ public class SimpleLocalizeUriFactory
     {
       endpointUrl += "&importOptions=" + String.join(",", uploadOptions);
     }
-
-    String relativePath = uploadRequest.getRelativePath();
-    if (StringUtils.isNotEmpty(relativePath))
-    {
-      endpointUrl += "&projectPath=" + relativePath;
-    }
     return URI.create(endpointUrl);
   }
 

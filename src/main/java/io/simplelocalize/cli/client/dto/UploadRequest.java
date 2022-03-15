@@ -11,7 +11,6 @@ public class UploadRequest
   private String languageKey;
   private String format;
   private List<String> options;
-  private String relativePath;
 
   public Path getPath()
   {
@@ -33,18 +32,12 @@ public class UploadRequest
     return options;
   }
 
-  public String getRelativePath()
-  {
-    return relativePath;
-  }
-
   public static final class UploadFileRequestBuilder
   {
     private Path uploadPath;
     private String languageKey;
     private String uploadFormat;
     private List<String> uploadOptions;
-    private String relativePath;
 
     private UploadFileRequestBuilder()
     {
@@ -79,18 +72,12 @@ public class UploadRequest
       return this;
     }
 
-    public UploadFileRequestBuilder withRelativePath(String relativePath)
-    {
-      this.relativePath = relativePath;
-      return this;
-    }
 
     public UploadRequest build()
     {
       UploadRequest uploadRequest = new UploadRequest();
       uploadRequest.languageKey = this.languageKey;
       uploadRequest.format = this.uploadFormat;
-      uploadRequest.relativePath = this.relativePath;
       uploadRequest.options = this.uploadOptions;
       uploadRequest.path = this.uploadPath;
       return uploadRequest;
@@ -103,12 +90,12 @@ public class UploadRequest
     if (this == o) return true;
     if (o == null || getClass() != o.getClass()) return false;
     UploadRequest that = (UploadRequest) o;
-    return Objects.equals(path, that.path) && Objects.equals(languageKey, that.languageKey) && Objects.equals(format, that.format) && Objects.equals(options, that.options) && Objects.equals(relativePath, that.relativePath);
+    return Objects.equals(path, that.path) && Objects.equals(languageKey, that.languageKey) && Objects.equals(format, that.format) && Objects.equals(options, that.options);
   }
 
   @Override
   public int hashCode()
   {
-    return Objects.hash(path, languageKey, format, options, relativePath);
+    return Objects.hash(path, languageKey, format, options);
   }
 }

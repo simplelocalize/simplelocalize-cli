@@ -11,7 +11,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.nio.file.Path;
 import java.util.Collections;
-import java.util.List;
 
 @ExtendWith(MockitoExtension.class)
 class UploadCommandTest
@@ -42,56 +41,6 @@ class UploadCommandTest
                             .withOptions(Collections.emptyList())
                             .build(),
                     "languageKey", "path"
-            )
-    );
-  }
-
-  //TODO
-//  @Test
-//  public void shouldUploadMultiFileLocaleDirectory() throws Exception
-//  {
-//    //given
-//    Configuration configuration = new Configuration();
-//    configuration.setApiKey("my-api-key");
-//    configuration.setUploadPath("./junit/locale-directory/{lang}/");
-//    configuration.setUploadFormat("single-language-json");
-//
-//    //when
-//    UploadCommand uploadCommand = new UploadCommand(client, configuration);
-//    uploadCommand.invoke();
-//
-//    //then
-//    Mockito.verify(client, Mockito.times(4)).uploadFile(
-//            Mockito.refEq(UploadRequest.UploadFileRequestBuilder.anUploadFileRequest()
-//
-//                            .build(),
-//                    "languageKey", "path", "relativePath"
-//            )
-//    );
-//  }
-
-
-  @Test
-  public void shouldUploadTwelveFilesWithRelativePathInformation() throws Exception
-  {
-    //given
-    Configuration configuration = new Configuration();
-    configuration.setApiKey("my-api-key");
-    configuration.setUploadOptions(List.of("MULTI_FILE"));
-    configuration.setUploadPath("./junit/download-test/");
-    configuration.setUploadFormat("multi-language-json");
-
-    //when
-    UploadCommand uploadCommand = new UploadCommand(client, configuration);
-    uploadCommand.invoke();
-
-    //then
-    Mockito.verify(client, Mockito.times(7)).uploadFile(
-            Mockito.refEq(UploadRequest.UploadFileRequestBuilder.anUploadFileRequest()
-                            .withFormat("multi-language-json")
-                            .withOptions(List.of("MULTI_FILE"))
-                            .build(),
-                    "languageKey", "path", "relativePath"
             )
     );
   }
