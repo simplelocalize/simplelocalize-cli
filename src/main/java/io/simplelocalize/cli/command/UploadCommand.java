@@ -5,7 +5,6 @@ import io.simplelocalize.cli.client.dto.FileToUpload;
 import io.simplelocalize.cli.client.dto.UploadRequest;
 import io.simplelocalize.cli.configuration.Configuration;
 import io.simplelocalize.cli.configuration.ConfigurationValidator;
-import io.simplelocalize.cli.configuration.Options;
 import io.simplelocalize.cli.io.FileListReader;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -47,7 +46,6 @@ public class UploadCommand implements CliCommand
   public void invoke()
   {
     configurationValidator.validateUploadConfiguration(configuration);
-    String uploadPath = configuration.getUploadPath();
 
     List<FileToUpload> filesToUpload = List.of();
     try
@@ -83,12 +81,6 @@ public class UploadCommand implements CliCommand
 
         String uploadFormat = configuration.getUploadFormat();
         List<String> uploadOptions = configuration.getUploadOptions();
-        boolean isMultiFileUpload = uploadOptions.contains(Options.MULTI_FILE.name());
-        if (isMultiFileUpload)
-        {
-          fileLanguageKey = null;
-        }
-
         UploadRequest uploadRequest = anUploadFileRequest()
                 .withLanguageKey(fileLanguageKey)
                 .withPath(fileToUpload.getPath())

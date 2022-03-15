@@ -148,15 +148,6 @@ public class SimpleLocalizeClient
     }
   }
 
-  public HttpResponse<String> validateConfiguration() throws IOException, InterruptedException
-  {
-    URI uri = uriFactory.buildValidateConfigurationUri();
-    HttpRequest httpRequest = httpRequestFactory.createBaseRequest(uri).build();
-    HttpResponse<String> httpResponse = httpClient.send(httpRequest, HttpResponse.BodyHandlers.ofString());
-    throwOnError(httpResponse);
-    return httpResponse;
-  }
-
   public int validateGate() throws IOException, InterruptedException
   {
     URI validateUri = uriFactory.buildValidateGateUri();
