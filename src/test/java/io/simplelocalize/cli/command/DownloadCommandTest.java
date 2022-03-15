@@ -33,14 +33,13 @@ public class DownloadCommandTest
 
     //when
     Mockito.when(client.fetchDownloadableFiles(aDownloadRequest()
-                    .withPath("./my-project-path")
                     .withFormat("android")
                     .withLanguageKey("en")
                     .withOptions(List.of("SPLIT_BY_NAMESPACES"))
                     .build()))
             .thenReturn(List.of(
-                    aDownloadableFile().withNamespace("./path/1/").withUrl("https://s3.simplelocalize.io/file1.xml").build(),
-                    aDownloadableFile().withNamespace("./path/2/").withUrl("https://s3.simplelocalize.io/file2.xml").build()
+                    aDownloadableFile().withNamespace("common").withUrl("https://s3.simplelocalize.io/file1.xml").build(),
+                    aDownloadableFile().withNamespace("common").withUrl("https://s3.simplelocalize.io/file2.xml").build()
             ));
 
     DownloadCommand downloadCommand = new DownloadCommand(client, configuration);
@@ -49,11 +48,11 @@ public class DownloadCommandTest
     //then
     Mockito.verify(client, Mockito.times(1))
             .downloadFile(
-                    aDownloadableFile().withNamespace("./path/1/").withUrl("https://s3.simplelocalize.io/file1.xml").build(),
+                    aDownloadableFile().withNamespace("common").withUrl("https://s3.simplelocalize.io/file1.xml").build(),
                     "./my-project-path");
     Mockito.verify(client, Mockito.times(1))
             .downloadFile(
-                    aDownloadableFile().withNamespace("./path/2/").withUrl("https://s3.simplelocalize.io/file2.xml").build(),
+                    aDownloadableFile().withNamespace("common").withUrl("https://s3.simplelocalize.io/file2.xml").build(),
                     "./my-project-path");
   }
 }

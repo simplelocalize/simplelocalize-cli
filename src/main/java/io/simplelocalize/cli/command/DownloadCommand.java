@@ -51,7 +51,6 @@ public class DownloadCommand implements CliCommand
     }
 
     DownloadRequest downloadRequest = aDownloadRequest()
-            .withPath(downloadPath)
             .withFormat(downloadFormat)
             .withOptions(downloadOptions)
             .withLanguageKey(languageKey)

@@ -184,12 +184,11 @@ public class SimpleLocalizeClientTest
             .respond(
                     response()
                             .withStatusCode(200)
-                            .withBody("{ \"files\": [{\"projectPath\": \"./junit/mock-server/my-file.properties\", \"url\": \"https://simplelocalize.io\"}] }")
+                            .withBody("{ \"files\": [{\"namespace\": \"my-file\", \"url\": \"https://simplelocalize.io\"}] }")
                             .withDelay(TimeUnit.MILLISECONDS, 200)
             );
 
     DownloadRequest downloadRequest = aDownloadRequest()
-            .withPath("./")
             .withFormat("java-properties")
             .withOptions(List.of("SPLIT_BY_NAMESPACES"))
             .build();
@@ -215,12 +214,11 @@ public class SimpleLocalizeClientTest
             .respond(
                     response()
                             .withStatusCode(200)
-                            .withBody("{ \"files\": [{\"projectPath\": \"./junit/mock-server/my-file.properties\", \"url\": \"https://simplelocalize.io\"}] }")
+                            .withBody("{ \"files\": [{\"namespace\": \"my-file\", \"url\": \"https://simplelocalize.io\"}] }")
                             .withDelay(TimeUnit.MILLISECONDS, 200)
             );
 
     DownloadRequest downloadRequest = aDownloadRequest()
-            .withPath("./")
             .withFormat("java-properties")
             .withOptions(List.of("SPLIT_BY_NAMESPACES", "USE_NESTED_JSON"))
             .build();
@@ -252,7 +250,7 @@ public class SimpleLocalizeClientTest
 
     DownloadableFile downloadableFile = new DownloadableFile();
     downloadableFile.setUrl(MOCK_SERVER_BASE_URL + "/s3/file");
-    downloadableFile.setNamespace("./");
+    downloadableFile.setNamespace("common");
     String downloadPath = "file.json";
 
     //when

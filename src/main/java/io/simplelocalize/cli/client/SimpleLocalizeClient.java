@@ -22,8 +22,10 @@ import java.time.Duration;
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 import static io.simplelocalize.cli.TemplateKeys.LANGUAGE_TEMPLATE_KEY;
+import static io.simplelocalize.cli.TemplateKeys.NAMESPACE_TEMPLATE_KEY;
 
 public class SimpleLocalizeClient
 {
@@ -94,15 +96,20 @@ public class SimpleLocalizeClient
 
   public void downloadFile(DownloadableFile downloadableFile, String downloadPathTemplate)
   {
+    Optional<DownloadableFile> optionalDownloadableFile = Optional.of(downloadableFile);
     String downloadPath = downloadPathTemplate
-            .replace(LANGUAGE_TEMPLATE_KEY, downloadableFile.getNamespace())
-            .replace("{lang}", downloadableFile.getLanguage());
+            .replace(NAMESPACE_TEMPLATE_KEY, optionalDownloadableFile.map(DownloadableFile::getNamespace).orElse(""))
+            .replace(LANGUAGE_TEMPLATE_KEY, optionalDownloadableFile.map(DownloadableFile::getLanguage).orElse(""));
     Path savePath = Path.of(downloadPath);
     String url = downloadableFile.getUrl();
     HttpRequest httpRequest = httpRequestFactory.createGetRequest(URI.create(url)).build();
     try
     {
-      Files.createDirectories(savePath.getParent());
+      Path parentDirectory = savePath.getParent();
+      if (parentDirectory != null)
+      {
+        Files.createDirectories(parentDirectory);
+      }
       log.info(" 🌍 Downloading {}", savePath);
       httpClient.send(httpRequest, HttpResponse.BodyHandlers.ofFile(savePath));
     } catch (IOException e)
