@@ -10,7 +10,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 
 @Disabled
-public class SimplelocalizeCliCommandIT
+public class SimplelocalizeCliCommandIT // NOSONAR
 {
   private final static String API_KEY = "8fFC852d966FDBe2543428504ADe2Ca1c9039Ea02721CE28d9a62BEC2e5490e8";
 
@@ -57,7 +57,7 @@ public class SimplelocalizeCliCommandIT
               "--apiKey", API_KEY,
               "--uploadFormat", "multi-language-json",
               "--uploadPath", "/Users/jpomykala/Workspace/simplelocalize.io/application/cli/junit/multi-file",
-              "--uploadOptions", "MULTI_FILE"
+              "--uploadOptions", "SPLIT_BY_NAMESPACES"
       };
       PicocliRunner.run(SimplelocalizeCliCommand.class, ctx, args);
     }
@@ -75,7 +75,7 @@ public class SimplelocalizeCliCommandIT
               "--apiKey", API_KEY,
               "--downloadFormat", "multi-language-json",
               "--downloadPath", "/Users/jpomykala/Workspace/simplelocalize.io/application/cli/junit/multi-file/",
-              "--downloadOptions", "MULTI_FILE"
+              "--downloadOptions", "SPLIT_BY_NAMESPACES"
       };
       PicocliRunner.run(SimplelocalizeCliCommand.class, ctx, args);
     }

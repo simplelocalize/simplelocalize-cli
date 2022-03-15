@@ -29,7 +29,7 @@ public class FileContentReader
       return Files.readString(decodedFilePath, StandardCharsets.UTF_8);
     } catch (IOException e)
     {
-      log.warn("Cannot read file from path " + decodedFilePath.toString(), e);
+      log.warn("Cannot read file from path " + decodedFilePath, e);
     }
     return "";
   }

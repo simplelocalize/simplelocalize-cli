@@ -58,11 +58,11 @@ class ConfigurationLoaderTest
 
     Assertions.assertThat(configuration.getUploadPath()).isEqualTo("./my-upload-path");
     Assertions.assertThat(configuration.getUploadFormat()).isEqualTo("my-upload-format");
-    Assertions.assertThat(configuration.getUploadOptions()).containsExactlyInAnyOrder("MULTI_FILE");
+    Assertions.assertThat(configuration.getUploadOptions()).containsExactlyInAnyOrder("SPLIT_BY_NAMESPACES");
 
     Assertions.assertThat(configuration.getDownloadPath()).isEqualTo("./my-download-path");
     Assertions.assertThat(configuration.getDownloadFormat()).isEqualTo("my-download-format");
-    Assertions.assertThat(configuration.getDownloadOptions()).containsExactlyInAnyOrder("MULTI_FILE", "WRITE_NESTED");
+    Assertions.assertThat(configuration.getDownloadOptions()).containsExactlyInAnyOrder("SPLIT_BY_NAMESPACES", "WRITE_NESTED");
 
     Assertions.assertThat(configuration.getLanguageKey()).isEqualTo("en");
 

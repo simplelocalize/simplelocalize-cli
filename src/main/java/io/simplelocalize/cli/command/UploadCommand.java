@@ -11,13 +11,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
-import java.nio.file.Paths;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
 import static io.simplelocalize.cli.client.dto.UploadRequest.UploadFileRequestBuilder.anUploadFileRequest;
-import static io.simplelocalize.cli.io.FileListReader.LANGUAGE_TEMPLATE_KEY;
 
 public class UploadCommand implements CliCommand
 {
@@ -50,7 +47,7 @@ public class UploadCommand implements CliCommand
     List<FileToUpload> filesToUpload = List.of();
     try
     {
-      filesToUpload = findMatchingFiles(configuration);
+      filesToUpload = fileListReader.findFilesToUpload(configuration.getUploadPath());
     } catch (IOException e)
     {
       log.error(" 😝 Matching files could not be found", e);
@@ -98,18 +95,5 @@ public class UploadCommand implements CliCommand
         Thread.currentThread().interrupt();
       }
     }
-  }
-
-  private List<FileToUpload> findMatchingFiles(Configuration configuration) throws IOException
-  {
-    String uploadPath = configuration.getUploadPath();
-    boolean hasLanguageKeyInPath = uploadPath.contains(LANGUAGE_TEMPLATE_KEY);
-    String uploadLanguageKey = configuration.getLanguageKey();
-    if (hasLanguageKeyInPath)
-    {
-      return fileListReader.findFilesWithTemplateKey(uploadPath);
-    }
-    FileToUpload fileToUpload = FileToUpload.of(Paths.get(uploadPath), uploadLanguageKey);
-    return Collections.singletonList(fileToUpload);
   }
 }

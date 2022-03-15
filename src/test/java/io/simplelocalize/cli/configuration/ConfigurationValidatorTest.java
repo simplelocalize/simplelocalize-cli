@@ -19,7 +19,7 @@ class ConfigurationValidatorTest
     configuration.setApiKey("my-api-key");
     configuration.setUploadFormat("multi-language-json");
     configuration.setUploadPath("./path");
-    configuration.setUploadOptions(List.of("MULTI_FILE", "WRITE_NESTED"));
+    configuration.setUploadOptions(List.of("SPLIT_BY_NAMESPACES", "WRITE_NESTED"));
 
     //when
     configurationValidator.validateUploadConfiguration(configuration);
@@ -36,7 +36,7 @@ class ConfigurationValidatorTest
     configuration.setApiKey("my-api-key");
     configuration.setDownloadFormat("multi-language-json");
     configuration.setDownloadPath("./path");
-    configuration.setDownloadOptions(List.of("MULTI_FILE", "WRITE_NESTED"));
+    configuration.setDownloadOptions(List.of("SPLIT_BY_NAMESPACES", "WRITE_NESTED"));
 
     //when
     configurationValidator.validateDownloadConfiguration(configuration);

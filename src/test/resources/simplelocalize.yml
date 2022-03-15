@@ -7,12 +7,12 @@ ignoreKeys:
 uploadPath: ./my-upload-path
 uploadFormat: my-upload-format
 uploadOptions:
-  - MULTI_FILE
+  - SPLIT_BY_NAMESPACES
 downloadPath: ./my-download-path
 downloadFormat: my-download-format
 downloadOptions:
   - WRITE_NESTED
-  - MULTI_FILE
+  - SPLIT_BY_NAMESPACES
 languageKey: en
 
 ignorePaths:

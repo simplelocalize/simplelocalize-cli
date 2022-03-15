@@ -8,8 +8,6 @@ import io.simplelocalize.cli.client.dto.DownloadableFile;
 import io.simplelocalize.cli.client.dto.ExportResponse;
 import io.simplelocalize.cli.client.dto.UploadRequest;
 import io.simplelocalize.cli.exception.ApiRequestException;
-import io.simplelocalize.cli.io.FileWriter;
-import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -20,25 +18,23 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.time.Duration;
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
+
+import static io.simplelocalize.cli.TemplateKeys.LANGUAGE_TEMPLATE_KEY;
 
 public class SimpleLocalizeClient
 {
   private static final String PRODUCTION_BASE_URL = "https://api.simplelocalize.io";
 
-  private static final List<String> SINGLE_FILE_FORMATS = List.of("multi-language-json", "csv-translations", "excel", "csv");
   private static final String ERROR_MESSAGE_PATH = "$.msg";
   private final HttpClient httpClient;
   private final SimpleLocalizeHttpRequestFactory httpRequestFactory;
   private final SimpleLocalizeUriFactory uriFactory;
 
   private final Logger log = LoggerFactory.getLogger(SimpleLocalizeClient.class);
-  private final FileWriter fileWriter;
   private final ObjectMapper objectMapper;
 
   public SimpleLocalizeClient(String baseUrl, String apiKey)
@@ -49,7 +45,6 @@ public class SimpleLocalizeClient
     this.uriFactory = new SimpleLocalizeUriFactory(baseUrl);
     this.httpRequestFactory = new SimpleLocalizeHttpRequestFactory(apiKey);
     this.objectMapper = new ObjectMapper();
-    this.fileWriter = new FileWriter();
     this.httpClient = HttpClient.newBuilder()
             .connectTimeout(Duration.ofMinutes(5))
             .build();
@@ -85,41 +80,10 @@ public class SimpleLocalizeClient
     throwOnError(httpResponse);
   }
 
-
-  public void downloadFile(DownloadRequest downloadRequest) throws IOException, InterruptedException
-  {
-    String downloadPath = downloadRequest.getPath();
-    log.info(" 🌍 Downloading {}", downloadPath);
-    URI downloadUri = uriFactory.buildDownloadUri(downloadRequest);
-    HttpRequest httpRequest = httpRequestFactory.createGetRequest(downloadUri).build();
-    HttpResponse<byte[]> httpResponse = httpClient.send(httpRequest, HttpResponse.BodyHandlers.ofByteArray());
-    throwOnError(httpResponse);
-    byte[] body = httpResponse.body();
-    String languageKey = downloadRequest.getLanguageKey();
-    boolean isRequestedTranslationsForSpecificLanguage = StringUtils.isNotEmpty(languageKey);
-    String downloadFormat = downloadRequest.getFormat();
-    boolean isFileFormatWithAllLanguages = isSingleFileFormat(downloadFormat);
-    if (isRequestedTranslationsForSpecificLanguage || isFileFormatWithAllLanguages)
-    {
-
-      Optional<Path> directoryPath = Optional.of(downloadPath).map(Path::of).map(Path::getParent);
-      if (directoryPath.isPresent())
-      {
-        Files.createDirectories(directoryPath.get());
-      }
-
-      Files.write(Path.of(downloadPath), body);
-    } else
-    {
-      fileWriter.saveAsMultipleFiles(downloadPath, body);
-    }
-
-    log.info(" 🎉 Download success!");
-  }
-
   public List<DownloadableFile> fetchDownloadableFiles(DownloadRequest downloadRequest) throws IOException, InterruptedException
   {
-    URI downloadUri = uriFactory.buildDownloadUriV2(downloadRequest);
+    log.info(" 🌍 Preparing translation files");
+    URI downloadUri = uriFactory.buildDownloadUri(downloadRequest);
     HttpRequest httpRequest = httpRequestFactory.createGetRequest(downloadUri).build();
     HttpResponse<String> httpResponse = httpClient.send(httpRequest, HttpResponse.BodyHandlers.ofString());
     throwOnError(httpResponse);
@@ -128,15 +92,18 @@ public class SimpleLocalizeClient
     return exportResponse.getFiles();
   }
 
-  public void downloadFile(DownloadableFile downloadableFile, String downloadPath)
+  public void downloadFile(DownloadableFile downloadableFile, String downloadPathTemplate)
   {
-    Path savePath = Paths.get(downloadPath, downloadableFile.getProjectPath());
-    log.info(" 🌍 Downloading {}", savePath);
+    String downloadPath = downloadPathTemplate
+            .replace(LANGUAGE_TEMPLATE_KEY, downloadableFile.getNamespace())
+            .replace("{lang}", downloadableFile.getLanguage());
+    Path savePath = Path.of(downloadPath);
     String url = downloadableFile.getUrl();
     HttpRequest httpRequest = httpRequestFactory.createGetRequest(URI.create(url)).build();
     try
     {
       Files.createDirectories(savePath.getParent());
+      log.info(" 🌍 Downloading {}", savePath);
       httpClient.send(httpRequest, HttpResponse.BodyHandlers.ofFile(savePath));
     } catch (IOException e)
     {
@@ -160,11 +127,6 @@ public class SimpleLocalizeClient
     int status = JsonPath.read(json, "$.data.status");
     log.info(" 🌍 Gate result: {} (status: {}, message: {})", passed, status, message);
     return status;
-  }
-
-  private boolean isSingleFileFormat(String downloadFormat)
-  {
-    return SINGLE_FILE_FORMATS.stream().anyMatch(format -> format.equalsIgnoreCase(downloadFormat));
   }
 
   private void throwOnError(HttpResponse<?> httpResponse)

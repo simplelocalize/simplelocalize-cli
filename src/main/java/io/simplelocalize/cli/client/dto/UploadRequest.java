@@ -11,6 +11,7 @@ public class UploadRequest
   private String languageKey;
   private String format;
   private List<String> options;
+  private String namespace;
 
   public Path getPath()
   {
@@ -32,12 +33,37 @@ public class UploadRequest
     return options;
   }
 
+  public String getNamespace()
+  {
+    return namespace;
+  }
+
+  @Override
+  public boolean equals(Object o)
+  {
+    if (this == o) return true;
+    if (o == null || getClass() != o.getClass()) return false;
+    UploadRequest that = (UploadRequest) o;
+    return Objects.equals(path, that.path) &&
+            Objects.equals(languageKey, that.languageKey) &&
+            Objects.equals(format, that.format) &&
+            Objects.equals(options, that.options) &&
+            Objects.equals(namespace, that.namespace);
+  }
+
+  @Override
+  public int hashCode()
+  {
+    return Objects.hash(path, languageKey, format, options, namespace);
+  }
+
   public static final class UploadFileRequestBuilder
   {
     private Path uploadPath;
     private String languageKey;
     private String uploadFormat;
     private List<String> uploadOptions;
+    private String namespace;
 
     private UploadFileRequestBuilder()
     {
@@ -72,6 +98,12 @@ public class UploadRequest
       return this;
     }
 
+    public UploadFileRequestBuilder withNamespace(String namespace)
+    {
+      this.namespace = namespace;
+      return this;
+    }
+
 
     public UploadRequest build()
     {
@@ -80,22 +112,8 @@ public class UploadRequest
       uploadRequest.format = this.uploadFormat;
       uploadRequest.options = this.uploadOptions;
       uploadRequest.path = this.uploadPath;
+      uploadRequest.namespace = this.namespace;
       return uploadRequest;
     }
-  }
-
-  @Override
-  public boolean equals(Object o)
-  {
-    if (this == o) return true;
-    if (o == null || getClass() != o.getClass()) return false;
-    UploadRequest that = (UploadRequest) o;
-    return Objects.equals(path, that.path) && Objects.equals(languageKey, that.languageKey) && Objects.equals(format, that.format) && Objects.equals(options, that.options);
-  }
-
-  @Override
-  public int hashCode()
-  {
-    return Objects.hash(path, languageKey, format, options);
   }
 }
