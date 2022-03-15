@@ -21,10 +21,10 @@ public class ExtractCommand implements CliCommand
   private final SimpleLocalizeClient client;
   private final Configuration configuration;
 
-  public ExtractCommand(Configuration configuration)
+  public ExtractCommand(SimpleLocalizeClient client, Configuration configuration)
   {
     this.configuration = configuration;
-    this.client = SimpleLocalizeClient.withProductionServer(configuration.getApiKey());
+    this.client = client;
   }
 
   public void invoke()
@@ -49,7 +49,8 @@ public class ExtractCommand implements CliCommand
       client.uploadKeys(keys);
     } catch (Exception e)
     {
-      log.error(" 😝 Could not send keys chunk. Contact support: contact@simplelocalize.io", e);
+      log.error(" 😝 Keys upload failed. Contact support: contact@simplelocalize.io", e);
+      Thread.currentThread().interrupt();
     }
   }
 }
