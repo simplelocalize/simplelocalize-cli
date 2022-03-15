@@ -46,7 +46,7 @@ public class ExtractCommand implements CliCommand
 
     try
     {
-      client.sendKeys(keys);
+      client.uploadKeys(keys);
     } catch (Exception e)
     {
       log.error(" 😝 Could not send keys chunk. Contact support: contact@simplelocalize.io", e);

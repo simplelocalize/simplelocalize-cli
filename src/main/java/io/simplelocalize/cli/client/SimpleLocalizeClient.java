@@ -65,7 +65,7 @@ public class SimpleLocalizeClient
     return withCustomServer(PRODUCTION_BASE_URL, apiKey);
   }
 
-  public void sendKeys(Collection<String> keys) throws IOException, InterruptedException
+  public void uploadKeys(Collection<String> keys) throws IOException, InterruptedException
   {
     URI uri = uriFactory.buildSendKeysURI();
     HttpRequest httpRequest = httpRequestFactory.createSendKeysRequest(uri, keys);
@@ -78,9 +78,9 @@ public class SimpleLocalizeClient
   public void uploadFile(UploadRequest uploadRequest) throws IOException, InterruptedException
   {
     Path uploadPath = uploadRequest.getPath();
+    log.info(" 🌍 Uploading {}", uploadPath);
     URI uri = uriFactory.buildUploadUri(uploadRequest);
     HttpRequest httpRequest = httpRequestFactory.createUploadFileRequest(uri, uploadRequest);
-    log.info(" 🌍 Uploading {}", uploadPath);
     HttpResponse<String> httpResponse = httpClient.send(httpRequest, HttpResponse.BodyHandlers.ofString());
     throwOnError(httpResponse);
   }
@@ -88,10 +88,10 @@ public class SimpleLocalizeClient
 
   public void downloadFile(DownloadRequest downloadRequest) throws IOException, InterruptedException
   {
+    String downloadPath = downloadRequest.getPath();
+    log.info(" 🌍 Downloading {}", downloadPath);
     URI downloadUri = uriFactory.buildDownloadUri(downloadRequest);
     HttpRequest httpRequest = httpRequestFactory.createGetRequest(downloadUri).build();
-    String downloadPath = downloadRequest.getPath();
-    log.info(" 🌍 Downloading to {}", downloadPath);
     HttpResponse<byte[]> httpResponse = httpClient.send(httpRequest, HttpResponse.BodyHandlers.ofByteArray());
     throwOnError(httpResponse);
     byte[] body = httpResponse.body();
@@ -130,12 +130,12 @@ public class SimpleLocalizeClient
 
   public void downloadFile(DownloadableFile downloadableFile, String downloadPath)
   {
-    String url = downloadableFile.getUrl();
     Path savePath = Paths.get(downloadPath, downloadableFile.getProjectPath());
+    log.info(" 🌍 Downloading {}", savePath);
+    String url = downloadableFile.getUrl();
     HttpRequest httpRequest = httpRequestFactory.createGetRequest(URI.create(url)).build();
     try
     {
-      log.info(" 🌍 Downloading to {}", savePath);
       Files.createDirectories(savePath.getParent());
       httpClient.send(httpRequest, HttpResponse.BodyHandlers.ofFile(savePath));
     } catch (IOException e)

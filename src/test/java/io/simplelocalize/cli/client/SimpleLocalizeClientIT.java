@@ -28,7 +28,7 @@ class SimpleLocalizeClientIT
     SimpleLocalizeClient client = SimpleLocalizeClient.withProductionServer("237b305f6b2273e92ac857eb44d7f33b");
 
     //when
-    client.sendKeys(List.of("test"));
+    client.uploadKeys(List.of("test"));
 
     //then
   }

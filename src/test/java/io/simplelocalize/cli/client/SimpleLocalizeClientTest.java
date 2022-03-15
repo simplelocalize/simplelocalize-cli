@@ -67,7 +67,7 @@ public class SimpleLocalizeClientTest
     SimpleLocalizeClient client = new SimpleLocalizeClient(MOCK_SERVER_BASE_URL, "237b305f6b2273e92ac857eb44d7f33b");
 
     //when
-    client.sendKeys(givenKeys);
+    client.uploadKeys(givenKeys);
 
     //then
   }
