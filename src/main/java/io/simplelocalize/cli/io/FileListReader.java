@@ -1,5 +1,6 @@
 package io.simplelocalize.cli.io;
 
+import io.micronaut.core.util.AntPathMatcher;
 import io.simplelocalize.cli.client.dto.FileToUpload;
 import io.simplelocalize.cli.configuration.Configuration;
 import org.apache.commons.lang3.StringUtils;
@@ -24,41 +25,51 @@ public class FileListReader
   private static final Logger log = LoggerFactory.getLogger(FileListReader.class);
   public static final String LANGUAGE_TEMPLATE_KEY = "{lang}";
 
-  public List<FileToUpload> findFilesWithTemplateKey(String filePathWithTemplate, String templateKey) throws IOException
+  public List<FileToUpload> findFilesWithTemplateKey(String filePathWithTemplate) throws IOException
   {
     List<FileToUpload> output = new ArrayList<>();
 
-    String[] splitUploadPath = StringUtils.splitByWholeSeparator(filePathWithTemplate, templateKey);
-    String firstPart = splitUploadPath[0];
-    String fileName = StringUtils.substringAfterLast(firstPart, File.separator);
-    String secondPart = splitUploadPath[1];
+    String[] splitUploadPath = StringUtils.splitByWholeSeparator(filePathWithTemplate, LANGUAGE_TEMPLATE_KEY);
+    String beforeTemplatePart = splitUploadPath[0];
 
-    Path parentDir = Path.of(firstPart);
+    Path parentDir = Path.of(beforeTemplatePart);
 
     boolean exists = Files.exists(parentDir);
     if (!exists)
     {
-      String parentDirectory = StringUtils.substringBeforeLast(firstPart, File.separator);
+      String parentDirectory = StringUtils.substringBeforeLast(beforeTemplatePart, File.separator);
       parentDir = Path.of(parentDirectory);
     }
 
-    try (Stream<Path> foundFilesStream = Files.walk(parentDir, 10))
+    try (Stream<Path> foundFilesStream = Files.walk(parentDir, 3))
     {
+      AntPathMatcher antPathMatcher = new AntPathMatcher();
+      String pattern = filePathWithTemplate.replace(LANGUAGE_TEMPLATE_KEY, "**");
       var foundPaths = foundFilesStream.collect(Collectors.toList());
       var foundFiles = foundPaths.stream()
               .filter(Files::isRegularFile)
-              .filter(path -> path.toString().endsWith(secondPart) && path.toString().contains(fileName))
+              .filter(path -> antPathMatcher.matches(pattern, path.toString()))
               .collect(Collectors.toList());
       for (Path foundFile : foundFiles)
       {
-        String foundFilePathString = foundFile.toString();
-        String removedPrefix = StringUtils.remove(foundFilePathString, firstPart);
-        String removedSuffix = StringUtils.remove(removedPrefix, secondPart);
+        String removedSuffix = retainOnlyLanguageKey(filePathWithTemplate, foundFile);
         String language = StringUtils.remove(removedSuffix, File.separator);
         output.add(FileToUpload.of(foundFile, language));
       }
       return output;
     }
+  }
+
+  private String retainOnlyLanguageKey(String filePathWithTemplate, Path foundFilePath)
+  {
+    String[] splitUploadPath = StringUtils.splitByWholeSeparator(filePathWithTemplate, LANGUAGE_TEMPLATE_KEY);
+    String beforeTemplatePart = splitUploadPath[0];
+    String afterTemplatePart = splitUploadPath[1];
+    String fileName = foundFilePath.getFileName().toString();
+    String output = StringUtils.remove(foundFilePath.toString(), beforeTemplatePart);
+    output = StringUtils.remove(output, afterTemplatePart);
+    output = StringUtils.remove(output, fileName);
+    return output.replace(File.separator, "").trim();
   }
 
   public List<FileToUpload> findFilesForMultiFileUpload(Configuration configuration) throws IOException

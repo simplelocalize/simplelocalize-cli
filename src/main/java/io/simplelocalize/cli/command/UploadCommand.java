@@ -123,7 +123,7 @@ public class UploadCommand implements CliCommand
     }
     if (hasLanguageKeyInPath)
     {
-      return fileListReader.findFilesWithTemplateKey(uploadPath, LANGUAGE_TEMPLATE_KEY);
+      return fileListReader.findFilesWithTemplateKey(uploadPath);
     }
     FileToUpload fileToUpload = FileToUpload.of(Paths.get(uploadPath), uploadLanguageKey);
     return Collections.singletonList(fileToUpload);

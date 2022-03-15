@@ -46,6 +46,31 @@ class UploadCommandTest
     );
   }
 
+  //TODO
+//  @Test
+//  public void shouldUploadMultiFileLocaleDirectory() throws Exception
+//  {
+//    //given
+//    Configuration configuration = new Configuration();
+//    configuration.setApiKey("my-api-key");
+//    configuration.setUploadPath("./junit/locale-directory/{lang}/");
+//    configuration.setUploadFormat("single-language-json");
+//
+//    //when
+//    UploadCommand uploadCommand = new UploadCommand(client, configuration);
+//    uploadCommand.invoke();
+//
+//    //then
+//    Mockito.verify(client, Mockito.times(4)).uploadFile(
+//            Mockito.refEq(UploadRequest.UploadFileRequestBuilder.anUploadFileRequest()
+//
+//                            .build(),
+//                    "languageKey", "path", "relativePath"
+//            )
+//    );
+//  }
+
+
   @Test
   public void shouldUploadTwelveFilesWithRelativePathInformation() throws Exception
   {

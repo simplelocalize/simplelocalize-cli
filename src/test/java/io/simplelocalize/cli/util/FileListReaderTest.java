@@ -10,13 +10,36 @@ import java.io.IOException;
 import java.nio.file.Paths;
 import java.util.List;
 
-public class FileListReaderTest
+class FileListReaderTest
 {
 
   private final FileListReader sut = new FileListReader();
 
+
   @Test
-  public void shouldFindJsonFilesWithInDirectory() throws IOException
+  void shouldFindJsonFilesWithInLocaleDirectory() throws IOException
+  {
+    //given
+    String path = "./junit/locale-directory/{lang}/";
+
+    //when
+    List<FileToUpload> result = sut.findFilesWithTemplateKey(path);
+
+    //then
+    Assertions.assertThat(result).hasSize(4);
+    Assertions.assertThat(result).extracting(FileToUpload::getPath)
+            .containsExactlyInAnyOrder(
+                    Paths.get("./junit/locale-directory/en/common.json"),
+                    Paths.get("./junit/locale-directory/en/home.json"),
+                    Paths.get("./junit/locale-directory/pl/common.json"),
+                    Paths.get("./junit/locale-directory/pl/home.json")
+            );
+    Assertions.assertThat(result).extracting(FileToUpload::getLanguage)
+            .containsExactlyInAnyOrder("en", "en", "pl", "pl");
+  }
+
+  @Test
+  void shouldFindJsonFilesWithInDirectory() throws IOException
   {
     //given
     String path = "./junit/multi-file";
@@ -36,7 +59,7 @@ public class FileListReaderTest
   }
 
   @Test
-  public void shouldIgnoreFiles() throws IOException
+  void shouldIgnoreFiles() throws IOException
   {
     //given
     String path = "./junit/multi-file/ignore-me";
@@ -55,13 +78,13 @@ public class FileListReaderTest
   }
 
   @Test
-  public void shouldFindFilesWithLangInDirectoryName() throws IOException
+  void shouldFindFilesWithLangInDirectoryName() throws IOException
   {
     //given
     String path = "./junit/lang-in-directory/{lang}/strings.xml";
 
     //when
-    List<FileToUpload> result = sut.findFilesWithTemplateKey(path, "{lang}");
+    List<FileToUpload> result = sut.findFilesWithTemplateKey(path);
 
     //then
     Assertions.assertThat(result).hasSize(2);
@@ -70,13 +93,13 @@ public class FileListReaderTest
   }
 
   @Test
-  public void shouldFindFilesWithLangInDirectoryNameWithPrefix() throws IOException
+  void shouldFindFilesWithLangInDirectoryNameWithPrefix() throws IOException
   {
     //given
     String path = "./junit/lang-in-directory-with-prefix/values-{lang}/strings.xml";
 
     //when
-    List<FileToUpload> result = sut.findFilesWithTemplateKey(path, "{lang}");
+    List<FileToUpload> result = sut.findFilesWithTemplateKey(path);
 
     //then
     Assertions.assertThat(result).hasSize(2);
@@ -85,13 +108,13 @@ public class FileListReaderTest
   }
 
   @Test
-  public void shouldFindFilesWithLangInFilename() throws IOException
+  void shouldFindFilesWithLangInFilename() throws IOException
   {
     //given
     String path = "./junit/lang-in-filename/{lang}.json";
 
     //when
-    List<FileToUpload> result = sut.findFilesWithTemplateKey(path, "{lang}");
+    List<FileToUpload> result = sut.findFilesWithTemplateKey(path);
 
     //then
     Assertions.assertThat(result).hasSize(2);
@@ -100,13 +123,13 @@ public class FileListReaderTest
   }
 
   @Test
-  public void shouldFindFilesWithLangInFilenameAndProperties() throws IOException
+  void shouldFindFilesWithLangInFilenameAndProperties() throws IOException
   {
     //given
     String path = "./junit/lang-in-filename-suffix/messages_{lang}.properties";
 
     //when
-    List<FileToUpload> result = sut.findFilesWithTemplateKey(path, "{lang}");
+    List<FileToUpload> result = sut.findFilesWithTemplateKey(path);
 
     //then
     Assertions.assertThat(result).hasSize(3);

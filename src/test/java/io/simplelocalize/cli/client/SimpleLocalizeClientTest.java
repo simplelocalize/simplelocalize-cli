@@ -140,6 +140,40 @@ public class SimpleLocalizeClientTest
   }
 
   @Test
+  void shouldLogApiErrorMessageWhenUploadFileFailed() throws Exception
+  {
+    //given
+    SimpleLocalizeClient client = new SimpleLocalizeClient(MOCK_SERVER_BASE_URL, "81707741b64e68427e1a2c20e75095b1");
+    mockServer.when(request()
+                            .withMethod("POST")
+                            .withPath("/cli/v1/upload")
+                            .withQueryStringParameter("uploadFormat", "multi-language-json")
+                            .withQueryStringParameter("languageKey", "en")
+                            .withHeader("X-SimpleLocalize-Token", "81707741b64e68427e1a2c20e75095b1"),
+                    Times.exactly(1))
+            .respond(
+                    response()
+                            .withStatusCode(500)
+                            .withBody("{ 'msg': 'failure message' }")
+                            .withDelay(TimeUnit.MILLISECONDS, 200)
+            );
+
+    UploadRequest uploadRequest = anUploadFileRequest()
+            .withPath(Path.of("./junit/mock-server/test.json"))
+            .withLanguageKey("en")
+            .withFormat("multi-language-json")
+            .withOptions(List.of())
+            .withRelativePath(null)
+            .build();
+
+    //when & then
+    Assertions
+            .assertThatThrownBy(() -> client.uploadFile(uploadRequest))
+            .isInstanceOf(ApiRequestException.class)
+            .hasMessage("failure message");
+  }
+
+  @Test
   void shouldDownloadFileToDirectory() throws Exception
   {
     //given
@@ -229,13 +263,11 @@ public class SimpleLocalizeClientTest
             .withOptions(List.of())
             .build();
 
-    //when
+    //when & then
     Assertions
             .assertThatThrownBy(() -> client.downloadFile(downloadRequest))
             .isInstanceOf(ApiRequestException.class)
             .hasMessage("not ok");
-
-    //then
   }
 
   @Test
