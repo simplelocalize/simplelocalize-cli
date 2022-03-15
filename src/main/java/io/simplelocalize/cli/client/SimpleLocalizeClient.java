@@ -100,9 +100,9 @@ public class SimpleLocalizeClient
     String downloadPath = downloadPathTemplate
             .replace(NAMESPACE_TEMPLATE_KEY, optionalDownloadableFile.map(DownloadableFile::getNamespace).orElse(""))
             .replace(LANGUAGE_TEMPLATE_KEY, optionalDownloadableFile.map(DownloadableFile::getLanguage).orElse(""));
-    Path savePath = Path.of(downloadPath);
     String url = downloadableFile.getUrl();
     HttpRequest httpRequest = httpRequestFactory.createGetRequest(URI.create(url)).build();
+    Path savePath = Path.of(downloadPath);
     try
     {
       Path parentDirectory = savePath.getParent();

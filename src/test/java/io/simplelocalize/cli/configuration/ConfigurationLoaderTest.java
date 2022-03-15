@@ -65,14 +65,6 @@ class ConfigurationLoaderTest
     Assertions.assertThat(configuration.getDownloadOptions()).containsExactlyInAnyOrder("SPLIT_BY_NAMESPACES", "WRITE_NESTED");
 
     Assertions.assertThat(configuration.getLanguageKey()).isEqualTo("en");
-
-    Assertions.assertThat(configuration.getIgnorePaths())
-            .containsExactlyInAnyOrder(
-                    "./ignore/path/1",
-                    "./**/ignore/",
-                    "./file.json",
-                    "my-file.json"
-            );
   }
 
   @Test

@@ -14,9 +14,3 @@ downloadOptions:
   - WRITE_NESTED
   - SPLIT_BY_NAMESPACES
 languageKey: en
-
-ignorePaths:
-  - ./ignore/path/1
-  - ./**/ignore/
-  - ./file.json
-  - my-file.json
