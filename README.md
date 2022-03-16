@@ -58,28 +58,82 @@ ignoreKeys:
   - 'ABOUT-US'
 ```
 
-## Upload Translations
+### One file with translations
+
+```bash
+.
+└── locales
+    └── messages.json
+```
+
+Configuration:
+```
+uploadPath: /locales/messages.json
+uploadFormat: multi-language-json
+```
+
+
+### Single file with multiple language directories
+
+```bash
+.
+├── ca
+│   └── index.json
+├── en
+│   └── index.json
+└── es
+    └── index.json
+```
+
+Configuration:
+```
+uploadPath: /{lang}/index.json
+uploadFormat: single-language-json
+```
+
+### Multiple files with multiple language directories
+
+```bash
+.
+├── ca
+│   ├── common.json
+│   └── home.json
+├── en
+│   ├── common.json
+│   └── home.json
+└── es
+    ├── common.json
+    └── home.json
+```
+
+Configuration:
+```
+uploadPath: /{lang}/{ns}.json
+uploadFormat: single-language-json
+```
+
+## Upload translations
 
 ```properties
 simplelocalize upload --apiKey <PROJECT_API_KEY>
 ```
 
 
-## Download Translations
+## Download translations
 
 ```properties
 simplelocalize download --apiKey <PROJECT_API_KEY>
 ```
 
 
-## Sync Translations
+## Sync translations
 Sync command combines upload and download commend execution.
 ```properties
 simplelocalize sync --apiKey <PROJECT_API_KEY>
 ```
 
 
-## Extract Translation Keys
+## Extract translation keys
 
 ```properties
 simplelocalize extract --apiKey <PROJECT_API_KEY>
