@@ -15,8 +15,6 @@ public class Configuration
   private String searchDir;
   private List<String> ignoreKeys = new ArrayList<>();
 
-  private List<String> ignorePaths = new ArrayList<>();
-
   private String uploadPath;
   private String uploadFormat;
   private List<String> uploadOptions = new ArrayList<>();
@@ -137,13 +135,4 @@ public class Configuration
     this.uploadOptions = uploadOptions;
   }
 
-  public List<String> getIgnorePaths()
-  {
-    return ignorePaths;
-  }
-
-  public void setIgnorePaths(List<String> ignorePaths)
-  {
-    this.ignorePaths = ignorePaths;
-  }
 }

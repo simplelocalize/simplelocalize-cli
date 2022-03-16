@@ -1,10 +1,10 @@
 package io.simplelocalize.cli.command;
 
+import io.simplelocalize.cli.TemplateKeys;
 import io.simplelocalize.cli.client.SimpleLocalizeClient;
 import io.simplelocalize.cli.client.dto.DownloadRequest;
 import io.simplelocalize.cli.client.dto.DownloadableFile;
 import io.simplelocalize.cli.configuration.Configuration;
-import io.simplelocalize.cli.configuration.Options;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -39,10 +39,18 @@ public class DownloadCommand implements CliCommand
     String languageKey = configuration.getLanguageKey();
     List<String> downloadOptions = configuration.getDownloadOptions();
 
-    log.info(" 🌍 Downloading translation files");
+    if (downloadPath.contains(TemplateKeys.NAMESPACE_TEMPLATE_KEY))
+    {
+      downloadOptions.add("SPLIT_BY_NAMESPACES");
+    }
+
+
+    if (downloadPath.contains(TemplateKeys.LANGUAGE_TEMPLATE_KEY))
+    {
+      downloadOptions.add("SPLIT_BY_LANGUAGES");
+    }
 
     DownloadRequest downloadRequest = aDownloadRequest()
-            .withPath(downloadPath)
             .withFormat(downloadFormat)
             .withOptions(downloadOptions)
             .withLanguageKey(languageKey)
@@ -50,17 +58,11 @@ public class DownloadCommand implements CliCommand
 
     try
     {
-      if (isMultiFileDownload(downloadOptions))
-      {
-        List<DownloadableFile> downloadableFiles = client.fetchDownloadableFiles(downloadRequest);
-        downloadableFiles
-                .parallelStream()
-                .forEach(downloadableFile -> client.downloadFile(downloadableFile, downloadPath));
-        log.info(" 🎉 Download success!");
-      } else
-      {
-        client.downloadFile(downloadRequest);
-      }
+      List<DownloadableFile> downloadableFiles = client.fetchDownloadableFiles(downloadRequest);
+      downloadableFiles
+              .parallelStream()
+              .forEach(downloadableFile -> client.downloadFile(downloadableFile, downloadPath));
+      log.info(" 🎉 Download success!");
     } catch (InterruptedException e)
     {
       log.error(" 😝 Translations could not be downloaded", e);
@@ -72,8 +74,4 @@ public class DownloadCommand implements CliCommand
     }
   }
 
-  private boolean isMultiFileDownload(List<String> downloadOptions)
-  {
-    return downloadOptions.contains(Options.MULTI_FILE.name());
-  }
 }

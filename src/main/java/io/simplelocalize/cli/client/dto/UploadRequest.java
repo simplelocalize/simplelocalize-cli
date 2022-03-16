@@ -11,7 +11,7 @@ public class UploadRequest
   private String languageKey;
   private String format;
   private List<String> options;
-  private String relativePath;
+  private String namespace;
 
   public Path getPath()
   {
@@ -33,9 +33,28 @@ public class UploadRequest
     return options;
   }
 
-  public String getRelativePath()
+  public String getNamespace()
   {
-    return relativePath;
+    return namespace;
+  }
+
+  @Override
+  public boolean equals(Object o)
+  {
+    if (this == o) return true;
+    if (o == null || getClass() != o.getClass()) return false;
+    UploadRequest that = (UploadRequest) o;
+    return Objects.equals(path, that.path) &&
+            Objects.equals(languageKey, that.languageKey) &&
+            Objects.equals(format, that.format) &&
+            Objects.equals(options, that.options) &&
+            Objects.equals(namespace, that.namespace);
+  }
+
+  @Override
+  public int hashCode()
+  {
+    return Objects.hash(path, languageKey, format, options, namespace);
   }
 
   public static final class UploadFileRequestBuilder
@@ -44,7 +63,7 @@ public class UploadRequest
     private String languageKey;
     private String uploadFormat;
     private List<String> uploadOptions;
-    private String relativePath;
+    private String namespace;
 
     private UploadFileRequestBuilder()
     {
@@ -79,36 +98,22 @@ public class UploadRequest
       return this;
     }
 
-    public UploadFileRequestBuilder withRelativePath(String relativePath)
+    public UploadFileRequestBuilder withNamespace(String namespace)
     {
-      this.relativePath = relativePath;
+      this.namespace = namespace;
       return this;
     }
+
 
     public UploadRequest build()
     {
       UploadRequest uploadRequest = new UploadRequest();
       uploadRequest.languageKey = this.languageKey;
       uploadRequest.format = this.uploadFormat;
-      uploadRequest.relativePath = this.relativePath;
       uploadRequest.options = this.uploadOptions;
       uploadRequest.path = this.uploadPath;
+      uploadRequest.namespace = this.namespace;
       return uploadRequest;
     }
-  }
-
-  @Override
-  public boolean equals(Object o)
-  {
-    if (this == o) return true;
-    if (o == null || getClass() != o.getClass()) return false;
-    UploadRequest that = (UploadRequest) o;
-    return Objects.equals(path, that.path) && Objects.equals(languageKey, that.languageKey) && Objects.equals(format, that.format) && Objects.equals(options, that.options) && Objects.equals(relativePath, that.relativePath);
-  }
-
-  @Override
-  public int hashCode()
-  {
-    return Objects.hash(path, languageKey, format, options, relativePath);
   }
 }

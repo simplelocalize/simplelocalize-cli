@@ -1,33 +1,46 @@
 package io.simplelocalize.cli.client.dto;
 
 
+import io.micronaut.core.annotation.Introspected;
+
 import java.util.Objects;
 
+@Introspected
 public class DownloadableFile
 {
   private String url;
-  private String projectPath;
-
-  public String getUrl()
-  {
-    return url;
-  }
+  private String namespace;
+  private String language;
 
   public void setUrl(String url)
   {
     this.url = url;
   }
 
-  public String getProjectPath()
+  public String getNamespace()
   {
-    return projectPath;
+    return namespace;
   }
 
-  public void setProjectPath(String projectPath)
+  public void setNamespace(String namespace)
   {
-    this.projectPath = projectPath;
+    this.namespace = namespace;
   }
 
+  public String getUrl()
+  {
+    return url;
+  }
+
+  public String getLanguage()
+  {
+    return language;
+  }
+
+  public void setLanguage(String language)
+  {
+    this.language = language;
+  }
 
   @Override
   public boolean equals(Object o)
@@ -35,19 +48,21 @@ public class DownloadableFile
     if (this == o) return true;
     if (o == null || getClass() != o.getClass()) return false;
     DownloadableFile that = (DownloadableFile) o;
-    return url.equals(that.url) && projectPath.equals(that.projectPath);
+    return Objects.equals(url, that.url) && Objects.equals(namespace, that.namespace) && Objects.equals(language, that.language);
   }
 
   @Override
   public int hashCode()
   {
-    return Objects.hash(url, projectPath);
+    return Objects.hash(url, namespace, language);
   }
+
 
   public static final class DownloadableFileBuilder
   {
     private String url;
-    private String projectPath;
+    private String namespace;
+    private String language;
 
     private DownloadableFileBuilder()
     {
@@ -64,17 +79,24 @@ public class DownloadableFile
       return this;
     }
 
-    public DownloadableFileBuilder withProjectPath(String projectPath)
+    public DownloadableFileBuilder withNamespace(String namespace)
     {
-      this.projectPath = projectPath;
+      this.namespace = namespace;
+      return this;
+    }
+
+    public DownloadableFileBuilder withLanguage(String language)
+    {
+      this.language = language;
       return this;
     }
 
     public DownloadableFile build()
     {
       DownloadableFile downloadableFile = new DownloadableFile();
-      downloadableFile.setUrl(url);
-      downloadableFile.setProjectPath(projectPath);
+      downloadableFile.url = this.url;
+      downloadableFile.language = this.language;
+      downloadableFile.namespace = this.namespace;
       return downloadableFile;
     }
   }

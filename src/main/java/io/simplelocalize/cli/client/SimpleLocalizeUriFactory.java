@@ -25,18 +25,7 @@ public class SimpleLocalizeUriFactory
 
   URI buildDownloadUri(DownloadRequest downloadRequest)
   {
-    return buildDownloadUri(CLI_VERSION_1_API, downloadRequest);
-  }
-
-  URI buildDownloadUriV2(DownloadRequest downloadRequest)
-  {
-    return buildDownloadUri(CLI_VERSION_2_API, downloadRequest);
-  }
-
-  URI buildDownloadUri(String apiVersion, DownloadRequest downloadRequest)
-  {
-    String downloadFormat = downloadRequest.getFormat();
-    String endpointUrl = baseUrl + apiVersion + "/download?downloadFormat=" + downloadFormat;
+    String endpointUrl = baseUrl + CLI_VERSION_2_API + "/download?downloadFormat=" + downloadRequest.getFormat();
     String languageKey = downloadRequest.getLanguageKey();
     boolean isRequestedTranslationsForSpecificLanguage = StringUtils.isNotEmpty(languageKey);
     if (isRequestedTranslationsForSpecificLanguage)
@@ -55,7 +44,7 @@ public class SimpleLocalizeUriFactory
 
   URI buildUploadUri(UploadRequest uploadRequest)
   {
-    String endpointUrl = baseUrl + CLI_VERSION_1_API + "/upload?uploadFormat=" + uploadRequest.getFormat();
+    String endpointUrl = baseUrl + CLI_VERSION_2_API + "/upload?uploadFormat=" + uploadRequest.getFormat();
     String languageKey = uploadRequest.getLanguageKey();
     if (StringUtils.isNotEmpty(languageKey))
     {
@@ -65,27 +54,21 @@ public class SimpleLocalizeUriFactory
     List<String> uploadOptions = uploadRequest.getOptions();
     if (!uploadOptions.isEmpty())
     {
-      endpointUrl += "&importOptions=" + String.join(",", uploadOptions);
+      endpointUrl += "&uploadOptions=" + String.join(",", uploadOptions);
     }
 
-    String relativePath = uploadRequest.getRelativePath();
-    if (StringUtils.isNotEmpty(relativePath))
+    String namespace = uploadRequest.getNamespace();
+    if (StringUtils.isNotEmpty(namespace))
     {
-      endpointUrl += "&projectPath=" + relativePath;
+      endpointUrl += "&namespace=" + namespace;
     }
+
     return URI.create(endpointUrl);
-  }
-
-
-  URI buildValidateConfigurationUri()
-  {
-    return URI.create(baseUrl + CLI_VERSION_1_API + "/validate/configuration");
   }
 
   URI buildValidateGateUri()
   {
     return URI.create(baseUrl + CLI_VERSION_1_API + "/validate/gate");
   }
-
 
 }

@@ -1,6 +1,5 @@
 package io.simplelocalize.cli.client;
 
-import io.simplelocalize.cli.client.dto.DownloadRequest;
 import io.simplelocalize.cli.client.dto.UploadRequest;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
@@ -9,7 +8,6 @@ import java.nio.file.Path;
 import java.util.Collections;
 import java.util.List;
 
-import static io.simplelocalize.cli.client.dto.DownloadRequest.DownloadRequestBuilder.aDownloadRequest;
 import static io.simplelocalize.cli.client.dto.UploadRequest.UploadFileRequestBuilder.anUploadFileRequest;
 
 
@@ -28,7 +26,7 @@ class SimpleLocalizeClientIT
     SimpleLocalizeClient client = SimpleLocalizeClient.withProductionServer("237b305f6b2273e92ac857eb44d7f33b");
 
     //when
-    client.sendKeys(List.of("test"));
+    client.uploadKeys(List.of("test"));
 
     //then
   }
@@ -44,7 +42,6 @@ class SimpleLocalizeClientIT
             .withLanguageKey(null)
             .withFormat("multi-language-json")
             .withOptions(Collections.emptyList())
-            .withRelativePath("")
             .build();
 
     //when
@@ -53,41 +50,4 @@ class SimpleLocalizeClientIT
     //then
   }
 
-  @Test
-  void shouldDownloadFileToDirectory() throws Exception
-  {
-    //given
-    SimpleLocalizeClient client = SimpleLocalizeClient.withProductionServer("96a7b6ca75c79d4af4dfd5db2946fdd4");
-
-    DownloadRequest downloadRequest = aDownloadRequest()
-            .withPath("./i18n")
-            .withFormat("java-properties")
-            .withLanguageKey("")
-            .withOptions(Collections.emptyList())
-            .build();
-
-    //when
-    client.downloadFile(downloadRequest);
-
-    //then
-  }
-
-  @Test
-  void shouldDownloadFileToFile() throws Exception
-  {
-    //given
-    SimpleLocalizeClient client = SimpleLocalizeClient.withProductionServer("96a7b6ca75c79d4af4dfd5db2946fdd4");
-
-    DownloadRequest downloadRequest = aDownloadRequest()
-            .withPath("./messages_test.properties")
-            .withFormat("java-properties")
-            .withLanguageKey("en")
-            .withOptions(Collections.emptyList())
-            .build();
-
-    //when
-    client.downloadFile(downloadRequest);
-
-    //then
-  }
 }

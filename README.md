@@ -37,9 +37,6 @@ apiKey: API_KEY
 uploadPath: ./src
 uploadFormat: multi-language-json
 uploadOptions: MULTI_FILE
-ignorePaths:
-  - './ignore/*/regex/*'
-  - './ignore/directory'
 
 # Download command
 downloadPath: ./src

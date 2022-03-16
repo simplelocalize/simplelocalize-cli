@@ -5,17 +5,9 @@ import java.util.Objects;
 
 public class DownloadRequest
 {
-
-  private String path;
   private String format;
   private String languageKey;
   private List<String> options;
-
-
-  public String getPath()
-  {
-    return path;
-  }
 
   public String getFormat()
   {
@@ -34,7 +26,6 @@ public class DownloadRequest
 
   public static final class DownloadRequestBuilder
   {
-    private String path;
     private String format;
     private String languageKey;
     private List<String> options;
@@ -46,12 +37,6 @@ public class DownloadRequest
     public static DownloadRequestBuilder aDownloadRequest()
     {
       return new DownloadRequestBuilder();
-    }
-
-    public DownloadRequestBuilder withPath(String downloadPath)
-    {
-      this.path = downloadPath;
-      return this;
     }
 
     public DownloadRequestBuilder withFormat(String downloadFormat)
@@ -77,7 +62,6 @@ public class DownloadRequest
       DownloadRequest downloadRequest = new DownloadRequest();
       downloadRequest.options = this.options;
       downloadRequest.format = this.format;
-      downloadRequest.path = this.path;
       downloadRequest.languageKey = this.languageKey;
       return downloadRequest;
     }
@@ -89,13 +73,12 @@ public class DownloadRequest
     if (this == o) return true;
     if (o == null || getClass() != o.getClass()) return false;
     DownloadRequest that = (DownloadRequest) o;
-    return Objects.equals(path, that.path) && Objects.equals(format, that.format) && Objects.equals(languageKey, that.languageKey) && Objects.equals(options, that.options);
+    return Objects.equals(format, that.format) && Objects.equals(languageKey, that.languageKey) && Objects.equals(options, that.options);
   }
 
   @Override
   public int hashCode()
   {
-    return Objects.hash(path, format, languageKey, options);
+    return Objects.hash(format, languageKey, options);
   }
-
 }

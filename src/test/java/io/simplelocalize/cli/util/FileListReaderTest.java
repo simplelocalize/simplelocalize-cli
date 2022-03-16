@@ -1,7 +1,6 @@
 package io.simplelocalize.cli.util;
 
 import io.simplelocalize.cli.client.dto.FileToUpload;
-import io.simplelocalize.cli.configuration.Configuration;
 import io.simplelocalize.cli.io.FileListReader;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -10,111 +9,201 @@ import java.io.IOException;
 import java.nio.file.Paths;
 import java.util.List;
 
-public class FileListReaderTest
+import static io.simplelocalize.cli.client.dto.FileToUpload.FileToUploadBuilder.aFileToUpload;
+
+class FileListReaderTest
 {
 
   private final FileListReader sut = new FileListReader();
 
+
   @Test
-  public void shouldFindJsonFilesWithInDirectory() throws IOException
+  void shouldFindJsonFilesWithInLocaleDirectoryWhenNamespaceFirst() throws IOException
   {
     //given
-    String path = "./junit/multi-file";
-
-    Configuration configuration = new Configuration();
-    configuration.setUploadFormat("multi-language-json");
-    configuration.setIgnorePaths(List.of("./junit/*/ignore-me/*"));
-    configuration.setUploadPath(path);
+    String path = "./junit/locale-directory-namespace-first/{ns}/{lang}.json";
 
     //when
-    List<FileToUpload> result = sut.findFilesForMultiFileUpload(configuration);
+    List<FileToUpload> result = sut.findFilesToUpload(path);
 
     //then
-    Assertions.assertThat(result).hasSize(2);
-    Assertions.assertThat(result).extracting(FileToUpload::getPath).containsExactlyInAnyOrder(Paths.get("./junit/multi-file/about-page/componentY.json"), Paths.get("./junit/multi-file/welcome-page/componentX.json"));
-    Assertions.assertThat(result).extracting(FileToUpload::getLanguage).containsExactlyInAnyOrder(null, null);
+    Assertions.assertThat(result)
+            .containsExactlyInAnyOrder(
+                    aFileToUpload()
+                            .withPath(Paths.get("./junit/locale-directory-namespace-first/common/en.json"))
+                            .withLanguage("en")
+                            .withNamespace("common")
+                            .build(),
+                    aFileToUpload()
+                            .withPath(Paths.get("./junit/locale-directory-namespace-first/home/en.json"))
+                            .withLanguage("en")
+                            .withNamespace("home")
+                            .build(),
+                    aFileToUpload()
+                            .withPath(Paths.get("./junit/locale-directory-namespace-first/common/pl.json"))
+                            .withLanguage("pl")
+                            .withNamespace("common")
+                            .build(),
+                    aFileToUpload()
+                            .withPath(Paths.get("./junit/locale-directory-namespace-first/home/pl.json"))
+                            .withLanguage("pl")
+                            .withNamespace("home")
+                            .build()
+            );
   }
 
   @Test
-  public void shouldIgnoreFiles() throws IOException
+  void shouldFindJsonFilesWithInLocaleDirectory() throws IOException
   {
     //given
-    String path = "./junit/multi-file/ignore-me";
-
-    Configuration configuration = new Configuration();
-    configuration.setUploadFormat("multi-language-json");
-    configuration.setIgnorePaths(List.of("./junit/multi-file/ignore-me/*-second.json"));
-    configuration.setUploadPath(path);
+    String path = "./junit/locale-directory/{lang}/{ns}.json";
 
     //when
-    List<FileToUpload> result = sut.findFilesForMultiFileUpload(configuration);
+    List<FileToUpload> result = sut.findFilesToUpload(path);
 
     //then
-    Assertions.assertThat(result).hasSize(1);
-    Assertions.assertThat(result).extracting(FileToUpload::getPath).containsExactlyInAnyOrder(Paths.get("./junit/multi-file/ignore-me/ignore-me.json"));
+    Assertions.assertThat(result)
+            .containsExactlyInAnyOrder(
+                    aFileToUpload()
+                            .withPath(Paths.get("./junit/locale-directory/en/common.json"))
+                            .withLanguage("en")
+                            .withNamespace("common")
+                            .build(),
+                    aFileToUpload()
+                            .withPath(Paths.get("./junit/locale-directory/en/home.json"))
+                            .withLanguage("en")
+                            .withNamespace("home")
+                            .build(),
+                    aFileToUpload()
+                            .withPath(Paths.get("./junit/locale-directory/pl/common.json"))
+                            .withLanguage("pl")
+                            .withNamespace("common")
+                            .build(),
+                    aFileToUpload()
+                            .withPath(Paths.get("./junit/locale-directory/pl/home.json"))
+                            .withLanguage("pl")
+                            .withNamespace("home")
+                            .build()
+            );
   }
 
   @Test
-  public void shouldFindFilesWithLangInDirectoryName() throws IOException
+  void shouldFindFilesWithLangInDirectoryName() throws IOException
   {
     //given
     String path = "./junit/lang-in-directory/{lang}/strings.xml";
 
     //when
-    List<FileToUpload> result = sut.findFilesWithTemplateKey(path, "{lang}");
+    List<FileToUpload> result = sut.findFilesToUpload(path);
 
     //then
-    Assertions.assertThat(result).hasSize(2);
-    Assertions.assertThat(result).extracting(FileToUpload::getPath).containsExactlyInAnyOrder(Paths.get("./junit/lang-in-directory/en/strings.xml"), Paths.get("./junit/lang-in-directory/es/strings.xml"));
-    Assertions.assertThat(result).extracting(FileToUpload::getLanguage).containsExactlyInAnyOrder("en", "es");
+    Assertions.assertThat(result).containsExactlyInAnyOrder(
+            aFileToUpload()
+                    .withPath(Paths.get("./junit/lang-in-directory/en/strings.xml"))
+                    .withLanguage("en")
+                    .withNamespace(null)
+                    .build(),
+            aFileToUpload()
+                    .withPath(Paths.get("./junit/lang-in-directory/es/strings.xml"))
+                    .withLanguage("es")
+                    .withNamespace(null)
+                    .build()
+    );
   }
 
   @Test
-  public void shouldFindFilesWithLangInDirectoryNameWithPrefix() throws IOException
+  void shouldFindFilesWithLangInDirectoryNameWithPrefix() throws IOException
   {
     //given
     String path = "./junit/lang-in-directory-with-prefix/values-{lang}/strings.xml";
 
     //when
-    List<FileToUpload> result = sut.findFilesWithTemplateKey(path, "{lang}");
+    List<FileToUpload> result = sut.findFilesToUpload(path);
 
     //then
-    Assertions.assertThat(result).hasSize(2);
-    Assertions.assertThat(result).extracting(FileToUpload::getPath).containsExactlyInAnyOrder(Paths.get("./junit/lang-in-directory-with-prefix/values-en/strings.xml"), Paths.get("./junit/lang-in-directory-with-prefix/values-es/strings.xml"));
-    Assertions.assertThat(result).extracting(FileToUpload::getLanguage).containsExactlyInAnyOrder("en", "es");
+    Assertions.assertThat(result).containsExactlyInAnyOrder(
+            aFileToUpload()
+                    .withPath(Paths.get("./junit/lang-in-directory-with-prefix/values-en/strings.xml"))
+                    .withLanguage("en")
+                    .withNamespace(null)
+                    .build(),
+            aFileToUpload()
+                    .withPath(Paths.get("./junit/lang-in-directory-with-prefix/values-es/strings.xml"))
+                    .withLanguage("es")
+                    .withNamespace(null)
+                    .build()
+    );
   }
 
   @Test
-  public void shouldFindFilesWithLangInFilename() throws IOException
+  void shouldFindFilesWithLangInFilename() throws IOException
   {
     //given
     String path = "./junit/lang-in-filename/{lang}.json";
 
     //when
-    List<FileToUpload> result = sut.findFilesWithTemplateKey(path, "{lang}");
+    List<FileToUpload> result = sut.findFilesToUpload(path);
 
     //then
-    Assertions.assertThat(result).hasSize(2);
-    Assertions.assertThat(result).extracting(FileToUpload::getPath).containsExactlyInAnyOrder(Paths.get("./junit/lang-in-filename/en.json"), Paths.get("./junit/lang-in-filename/es.json"));
-    Assertions.assertThat(result).extracting(FileToUpload::getLanguage).containsExactlyInAnyOrder("en", "es");
+    Assertions.assertThat(result).containsExactlyInAnyOrder(
+            aFileToUpload()
+                    .withPath(Paths.get("./junit/lang-in-filename/en.json"))
+                    .withLanguage("en")
+                    .withNamespace(null)
+                    .build(),
+            aFileToUpload()
+                    .withPath(Paths.get("./junit/lang-in-filename/es.json"))
+                    .withLanguage("es")
+                    .withNamespace(null)
+                    .build()
+    );
   }
 
   @Test
-  public void shouldFindFilesWithLangInFilenameAndProperties() throws IOException
+  void shouldFindFilesWithLangInFilenameAndProperties() throws IOException
   {
     //given
     String path = "./junit/lang-in-filename-suffix/messages_{lang}.properties";
 
     //when
-    List<FileToUpload> result = sut.findFilesWithTemplateKey(path, "{lang}");
+    List<FileToUpload> result = sut.findFilesToUpload(path);
 
     //then
-    Assertions.assertThat(result).hasSize(3);
-    Assertions.assertThat(result).extracting(FileToUpload::getPath).containsExactlyInAnyOrder(
-            Paths.get("./junit/lang-in-filename-suffix/messages_de.properties"),
-            Paths.get("./junit/lang-in-filename-suffix/messages_pl-PL.properties"),
-            Paths.get("./junit/lang-in-filename-suffix/messages_pl.properties")
+    Assertions.assertThat(result).containsExactlyInAnyOrder(
+            aFileToUpload()
+                    .withPath(Paths.get("./junit/lang-in-filename-suffix/messages_de.properties"))
+                    .withLanguage("de")
+                    .withNamespace(null)
+                    .build(),
+            aFileToUpload()
+                    .withPath(Paths.get("./junit/lang-in-filename-suffix/messages_pl-PL.properties"))
+                    .withLanguage("pl-PL")
+                    .withNamespace(null)
+                    .build(),
+            aFileToUpload()
+                    .withPath(Paths.get("./junit/lang-in-filename-suffix/messages_pl.properties"))
+                    .withLanguage("pl")
+                    .withNamespace(null)
+                    .build()
     );
-    Assertions.assertThat(result).extracting(FileToUpload::getLanguage).containsExactlyInAnyOrder("pl", "pl-PL", "de");
+  }
+
+  @Test
+  void shouldFindOneWithoutTemplateKeys() throws IOException
+  {
+    //given
+    String path = "./junit/lang-in-filename-suffix/messages_pl.properties";
+
+    //when
+    List<FileToUpload> result = sut.findFilesToUpload(path);
+
+    //then
+    Assertions.assertThat(result).containsExactlyInAnyOrder(
+            aFileToUpload()
+                    .withPath(Paths.get("./junit/lang-in-filename-suffix/messages_pl.properties"))
+                    .withLanguage(null)
+                    .withNamespace(null)
+                    .build()
+    );
   }
 }

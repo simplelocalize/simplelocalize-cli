@@ -71,7 +71,8 @@ public class SimplelocalizeCliCommand implements Runnable
     }
     ConfigurationValidator configurationValidator = new ConfigurationValidator();
     configurationValidator.validateDownloadConfiguration(configuration);
-    ExtractCommand extractCommand = new ExtractCommand(configuration);
+    SimpleLocalizeClient client = SimpleLocalizeClient.withProductionServer(configuration.getApiKey());
+    ExtractCommand extractCommand = new ExtractCommand(client, configuration);
     extractCommand.invoke();
   }
 
