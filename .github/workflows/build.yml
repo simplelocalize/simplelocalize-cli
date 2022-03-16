@@ -80,7 +80,7 @@ jobs:
 
   build-unix:
     needs: [build-jar]
-    name: "Build Unix executable"
+    name: "Build ${{ matrix.os }} executable"
     strategy:
       matrix:
         os: [ubuntu-latest, macos-latest]
