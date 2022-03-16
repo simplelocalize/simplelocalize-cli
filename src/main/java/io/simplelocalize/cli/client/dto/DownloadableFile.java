@@ -1,8 +1,11 @@
 package io.simplelocalize.cli.client.dto;
 
 
+import io.micronaut.core.annotation.Introspected;
+
 import java.util.Objects;
 
+@Introspected
 public class DownloadableFile
 {
   private String url;
