@@ -30,7 +30,7 @@ curl -s https://get.simplelocalize.io/install | bash
 simplelocalize -c config.yml [COMMAND] --apiKey <PROJECT_API_KEY> --uploadaPath <UPLOAD_PATH> other arguments...
 ```
 
-## Example configuration file
+## Configuration file
 Use configuration file in order to simplify your bash command. Arguments used in command always overrides properties set in configuration file.
 
 Filename: `simplelocalize.yml`
@@ -113,28 +113,28 @@ uploadPath: /{lang}/{ns}.json
 uploadFormat: single-language-json
 ```
 
-## Upload translations command
+## Upload translations
 
 ```properties
 simplelocalize upload --apiKey <PROJECT_API_KEY>
 ```
 
 
-## Download translations command
+## Download translations
 
 ```properties
 simplelocalize download --apiKey <PROJECT_API_KEY>
 ```
 
 
-## Sync translations command
+## Sync translations
 Sync command combines upload and download commend execution.
 ```properties
 simplelocalize sync --apiKey <PROJECT_API_KEY>
 ```
 
 
-## Extract translation keys command
+## Extract translation keys
 
 ```properties
 simplelocalize extract --apiKey <PROJECT_API_KEY>
