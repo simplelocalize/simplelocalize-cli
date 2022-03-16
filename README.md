@@ -27,10 +27,11 @@ curl -s https://get.simplelocalize.io/install | bash
 ## Usage
 
 ```properties
-simplelocalize [COMMAND] --apiKey <PROJECT_API_KEY> rest of parameters...
+simplelocalize -c config.yml [COMMAND] --apiKey <PROJECT_API_KEY> --uploadaPath <UPLOAD_PATH> other arguments...
 ```
 
 ## Example configuration file
+Use configuration file in order to simplify your bash command. Arguments used in command always overrides properties set in configuration file.
 
 Filename: `simplelocalize.yml`
 
@@ -58,7 +59,7 @@ ignoreKeys:
   - 'ABOUT-US'
 ```
 
-### One file with translations
+### Example: One file with translations
 
 ```bash
 .
@@ -73,7 +74,7 @@ uploadFormat: multi-language-json
 ```
 
 
-### Single file with multiple language directories
+### Example: Single file with multiple language directories
 
 ```bash
 .
@@ -91,7 +92,7 @@ uploadPath: /{lang}/index.json
 uploadFormat: single-language-json
 ```
 
-### Multiple files with multiple language directories
+### Example: Multiple files with multiple language directories
 
 ```bash
 .
@@ -112,35 +113,35 @@ uploadPath: /{lang}/{ns}.json
 uploadFormat: single-language-json
 ```
 
-## Upload translations
+## Upload translations command
 
 ```properties
 simplelocalize upload --apiKey <PROJECT_API_KEY>
 ```
 
 
-## Download translations
+## Download translations command
 
 ```properties
 simplelocalize download --apiKey <PROJECT_API_KEY>
 ```
 
 
-## Sync translations
+## Sync translations command
 Sync command combines upload and download commend execution.
 ```properties
 simplelocalize sync --apiKey <PROJECT_API_KEY>
 ```
 
 
-## Extract translation keys
+## Extract translation keys command
 
 ```properties
 simplelocalize extract --apiKey <PROJECT_API_KEY>
 ```
 
 ## Custom configuration file
-By default, SimpleLocalize will load configuration from file named `simplelocalize.yml`. You can load configuration from different location using `--configuration` parameters.
+By default, SimpleLocalize will load configuration from file named `simplelocalize.yml`. You can load configuration from different location using `-c` parameters.
 
 ```properties
 simplelocalize -c my-configuration.yml upload
