@@ -14,11 +14,15 @@ SimpleLocalize CLI to simplifies the process of translation in web apps, mobile 
 
 ## Installation
 
+### Version 2.0.X (recommended)
+```shell
+curl -s https://get.simplelocalize.io/2.0/install | bash
+```
+
+### Version 1.1.2
 ```shell
 curl -s https://get.simplelocalize.io/install | bash
 ```
-
-🥸 Tip: Run script above to update CLI to the newest version. 
 
 ## Usage
 
@@ -31,21 +35,22 @@ simplelocalize [COMMAND] --apiKey <PROJECT_API_KEY> rest of parameters...
 Filename: `simplelocalize.yml`
 
 ```yaml
+# Project API Key
 apiKey: API_KEY
 
-# Upload command
-uploadPath: ./src
-uploadFormat: multi-language-json
-uploadOptions: MULTI_FILE
+# Properties used by 'upload' command
+uploadPath: ./src/{lang}/{ns}.json
+uploadFormat: single-language-json
+uploadOptions:
+  - INCLUDE_NAMESPACE
 
-# Download command
-downloadPath: ./src
-downloadFormat: multi-language-json
-downloadOptions: MULTI_FILE
+# Properties used by 'download' command
+downloadPath: ./src/{ns}/messages_{lang}.json
+downloadFormat: single-language-json
+downloadOptions:
+  - WRITE_NESTED
 
-languageKey: en
-
-# Extract command
+# Properties used by 'extract' command
 searchDir: ./src
 projectType: yahoo/react-intl
 ignoreKeys:
@@ -84,7 +89,7 @@ simplelocalize extract --apiKey <PROJECT_API_KEY>
 By default, SimpleLocalize will load configuration from file named `simplelocalize.yml`. You can load configuration from different location using `--configuration` parameters.
 
 ```properties
-simplelocalize --configuration ./my-configuration.yml upload --apiKey <PROJECT_API_KEY>
+simplelocalize -c my-configuration.yml upload
 ```
 
 ## Commands documentation
