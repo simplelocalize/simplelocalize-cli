@@ -21,6 +21,7 @@ import java.util.concurrent.TimeUnit;
 
 import static io.simplelocalize.cli.client.dto.DownloadRequest.DownloadRequestBuilder.aDownloadRequest;
 import static io.simplelocalize.cli.client.dto.UploadRequest.UploadFileRequestBuilder.anUploadFileRequest;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockserver.integration.ClientAndServer.startClientAndServer;
 import static org.mockserver.model.HttpRequest.request;
 import static org.mockserver.model.HttpResponse.response;
@@ -251,12 +252,42 @@ public class SimpleLocalizeClientTest
     DownloadableFile downloadableFile = new DownloadableFile();
     downloadableFile.setUrl(MOCK_SERVER_BASE_URL + "/s3/file");
     downloadableFile.setNamespace("common");
-    String downloadPath = "file.json";
+    String downloadPath = "./junit/download-test/file.json";
 
     //when
     client.downloadFile(downloadableFile, downloadPath);
 
     //then
+    assertThat(Path.of(downloadPath)).isRegularFile();
+  }
+
+  @Test
+  void shouldDownloadAndTruncateBeforeWriting() throws Exception
+  {
+    //given
+    SimpleLocalizeClient client = new SimpleLocalizeClient(MOCK_SERVER_BASE_URL, "96a7b6ca75c79d4af4dfd5db2946fdd4");
+    mockServer.when(request()
+                            .withMethod("GET")
+                            .withPath("/s3/file"),
+                    Times.exactly(1))
+            .respond(
+                    response()
+                            .withStatusCode(200)
+                            .withContentType(MediaType.APPLICATION_JSON_UTF_8)
+                            .withBody("sample".getBytes(StandardCharsets.UTF_8))
+                            .withDelay(TimeUnit.MILLISECONDS, 200)
+            );
+
+    DownloadableFile downloadableFile = new DownloadableFile();
+    downloadableFile.setUrl(MOCK_SERVER_BASE_URL + "/s3/file");
+    downloadableFile.setNamespace("common");
+    String downloadPath = "./junit/truncate/file.json";
+
+    //when
+    client.downloadFile(downloadableFile, downloadPath);
+
+    //then
+    assertThat(Path.of(downloadPath)).hasContent("sample").isRegularFile();
   }
 
   @Test
@@ -280,6 +311,6 @@ public class SimpleLocalizeClientTest
     int validateGate = client.validateGate();
 
     //then
-    Assertions.assertThat(validateGate).isEqualTo(200);
+    assertThat(validateGate).isEqualTo(200);
   }
 }
