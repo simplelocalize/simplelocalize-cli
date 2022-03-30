@@ -18,6 +18,7 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.StandardOpenOption;
 import java.time.Duration;
 import java.util.Collection;
 import java.util.List;
@@ -111,7 +112,7 @@ public class SimpleLocalizeClient
         Files.createDirectories(parentDirectory);
       }
       log.info(" 🌍 Downloading {}", savePath);
-      httpClient.send(httpRequest, HttpResponse.BodyHandlers.ofFile(savePath));
+      httpClient.send(httpRequest, HttpResponse.BodyHandlers.ofFile(savePath, StandardOpenOption.CREATE, StandardOpenOption.WRITE, StandardOpenOption.TRUNCATE_EXISTING));
     } catch (IOException e)
     {
       log.error(" 😝 Download failed: {}", savePath, e);
