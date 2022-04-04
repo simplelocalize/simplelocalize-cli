@@ -69,7 +69,6 @@ public class UploadCommand implements CliCommand
         String fileLanguageKey = Optional.of(fileToUpload).map(FileToUpload::getLanguage).orElse("");
         boolean hasFileLanguageKey = StringUtils.isNotBlank(fileLanguageKey);
 
-
         String configurationLanguageKey = configuration.getLanguageKey();
         boolean hasConfigurationLanguageKey = StringUtils.isNotBlank(configurationLanguageKey);
 
@@ -88,7 +87,7 @@ public class UploadCommand implements CliCommand
 
         if (!hasFileLanguageKey && !hasConfigurationLanguageKey)
         {
-          log.warn(" 🤔 Uploading only translation keys, language key not present in '--uploadPath' nor '--languageKey' parameter, file: {}", fileToUpload.getPath());
+          log.info(" 🤔 Uploading only translation keys, language key not present in '--uploadPath' nor '--languageKey' parameter, file: {}", fileToUpload.getPath());
         }
 
         String uploadFormat = configuration.getUploadFormat();
