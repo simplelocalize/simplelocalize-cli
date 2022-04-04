@@ -73,6 +73,48 @@ class UploadCommandTest
   }
 
   @Test
+  public void shouldUploadOneFileWithOnlyTranslationKeys() throws Exception
+  {
+    //given
+    Configuration configuration = new Configuration();
+    configuration.setApiKey("my-api-key");
+    configuration.setUploadPath("./junit/download-test/values-en/strings.xml");
+    configuration.setUploadFormat("android");
+
+    //when
+    UploadCommand uploadCommand = new UploadCommand(client, configuration);
+    uploadCommand.invoke();
+
+    //then
+    Mockito.verify(client, Mockito.times(1)).uploadFile(
+            Mockito.refEq(UploadRequest.UploadFileRequestBuilder.anUploadFileRequest()
+                    .withPath(Path.of("./junit/download-test/values-en/strings.xml"))
+                    .withFormat("android")
+                    .withLanguageKey("")
+                    .withOptions(Collections.emptyList())
+                    .build()
+            )
+    );
+  }
+
+  @Test
+  public void shouldSkipEmptyFile() throws Exception
+  {
+    //given
+    Configuration configuration = new Configuration();
+    configuration.setApiKey("my-api-key");
+    configuration.setUploadPath("./junit/empty-test/strings.xml");
+    configuration.setUploadFormat("android");
+
+    //when
+    UploadCommand uploadCommand = new UploadCommand(client, configuration);
+    uploadCommand.invoke();
+
+    //then
+    Mockito.verifyNoInteractions(client);
+  }
+
+  @Test
   public void shouldUploadOneFile() throws Exception
   {
     //given
