@@ -55,32 +55,40 @@ public class UploadCommand implements CliCommand
     }
 
     log.info(" 📄  Found {} files to upload", filesToUpload.size());
-    String configurationLanguageKey = configuration.getLanguageKey();
     for (FileToUpload fileToUpload : filesToUpload)
     {
       try
       {
-        String fileLanguageKey = Optional.of(fileToUpload).map(FileToUpload::getLanguage).orElse("");
-        String requestLanguageKey = fileLanguageKey;
-        boolean hasFileLanguageKey = StringUtils.isNotBlank(fileLanguageKey);
-        boolean hasConfigurationLanguageKey = StringUtils.isNotBlank(configurationLanguageKey);
-        boolean isLanguageMatching = fileLanguageKey.equals(configurationLanguageKey);
-        if (!isLanguageMatching && hasConfigurationLanguageKey && hasFileLanguageKey)
-        {
-          log.info(" 🤔 Skipping '{}' language, file: {}", fileToUpload.getLanguage(), fileToUpload.getPath());
-          continue;
-        }
-
-        if (!hasFileLanguageKey && hasConfigurationLanguageKey)
-        {
-          requestLanguageKey = configurationLanguageKey;
-        }
-
         long length = fileToUpload.getPath().toFile().length();
         if (length == 0)
         {
           log.warn(" 🤔 Skipping empty file: {}", fileToUpload.getPath());
           continue;
+        }
+
+        String fileLanguageKey = Optional.of(fileToUpload).map(FileToUpload::getLanguage).orElse("");
+        boolean hasFileLanguageKey = StringUtils.isNotBlank(fileLanguageKey);
+
+
+        String configurationLanguageKey = configuration.getLanguageKey();
+        boolean hasConfigurationLanguageKey = StringUtils.isNotBlank(configurationLanguageKey);
+
+        boolean isLanguageMatching = fileLanguageKey.equals(configurationLanguageKey);
+        if (hasFileLanguageKey && hasConfigurationLanguageKey && !isLanguageMatching)
+        {
+          log.info(" 🤔 Skipping '{}' language, file: {}", fileToUpload.getLanguage(), fileToUpload.getPath());
+          continue;
+        }
+
+        String requestLanguageKey = fileLanguageKey;
+        if (hasConfigurationLanguageKey && !hasFileLanguageKey)
+        {
+          requestLanguageKey = configurationLanguageKey;
+        }
+
+        if (!hasFileLanguageKey && !hasConfigurationLanguageKey)
+        {
+          log.warn(" 🤔 Uploading only translation keys, language key not present in '--uploadPath' nor '--languageKey' parameter, file: {}", fileToUpload.getPath());
         }
 
         String uploadFormat = configuration.getUploadFormat();
