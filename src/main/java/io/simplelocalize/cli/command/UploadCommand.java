@@ -55,20 +55,10 @@ public class UploadCommand implements CliCommand
     }
 
     log.info(" 📄  Found {} files to upload", filesToUpload.size());
-    String languageKey = configuration.getLanguageKey();
     for (FileToUpload fileToUpload : filesToUpload)
     {
       try
       {
-        String fileLanguageKey = Optional.of(fileToUpload).map(FileToUpload::getLanguage).orElse("");
-        boolean hasLanguageKey = StringUtils.isNotBlank(languageKey);
-        boolean isLanguageMatching = fileLanguageKey.equals(languageKey);
-        if (!isLanguageMatching && hasLanguageKey)
-        {
-          log.info(" 🤔 Skipping '{}' language file: {}", fileToUpload.getLanguage(), fileToUpload.getPath());
-          continue;
-        }
-
         long length = fileToUpload.getPath().toFile().length();
         if (length == 0)
         {
@@ -76,11 +66,35 @@ public class UploadCommand implements CliCommand
           continue;
         }
 
+        String fileLanguageKey = Optional.of(fileToUpload).map(FileToUpload::getLanguage).orElse("");
+        boolean hasFileLanguageKey = StringUtils.isNotBlank(fileLanguageKey);
+
+        String configurationLanguageKey = configuration.getLanguageKey();
+        boolean hasConfigurationLanguageKey = StringUtils.isNotBlank(configurationLanguageKey);
+
+        boolean isLanguageMatching = fileLanguageKey.equals(configurationLanguageKey);
+        if (hasFileLanguageKey && hasConfigurationLanguageKey && !isLanguageMatching)
+        {
+          log.info(" 🤔 Skipping '{}' language, file: {}", fileToUpload.getLanguage(), fileToUpload.getPath());
+          continue;
+        }
+
+        String requestLanguageKey = fileLanguageKey;
+        if (hasConfigurationLanguageKey && !hasFileLanguageKey)
+        {
+          requestLanguageKey = configurationLanguageKey;
+        }
+
+        if (!hasFileLanguageKey && !hasConfigurationLanguageKey)
+        {
+          log.info(" 🤔 Uploading only translation keys, language key not present in '--uploadPath' nor '--languageKey' parameter, file: {}", fileToUpload.getPath());
+        }
+
         String uploadFormat = configuration.getUploadFormat();
         List<String> uploadOptions = configuration.getUploadOptions();
         UploadRequest uploadRequest = anUploadFileRequest()
                 .withPath(fileToUpload.getPath())
-                .withLanguageKey(fileLanguageKey)
+                .withLanguageKey(requestLanguageKey)
                 .withNamespace(fileToUpload.getNamespace())
                 .withFormat(uploadFormat)
                 .withOptions(uploadOptions)
