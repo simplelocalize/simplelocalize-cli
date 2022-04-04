@@ -46,6 +46,60 @@ class UploadCommandTest
   }
 
   @Test
+  public void shouldUploadOneFileWithLangTemplate() throws Exception
+  {
+    //given
+    Configuration configuration = new Configuration();
+    configuration.setApiKey("my-api-key");
+    configuration.setUploadPath("./junit/download-test/values-{lang}/strings.xml");
+    configuration.setLanguageKey("en");
+    configuration.setUploadFormat("android");
+
+    //when
+    UploadCommand uploadCommand = new UploadCommand(client, configuration);
+    uploadCommand.invoke();
+
+    //then
+    Mockito.verify(client, Mockito.times(1)).uploadFile(
+            Mockito.refEq(UploadRequest.UploadFileRequestBuilder.anUploadFileRequest()
+                            .withPath(Path.of("./junit/download-test/values-{lang}/strings.xml"))
+                            .withFormat("android")
+                            .withLanguageKey("en")
+                            .withOptions(Collections.emptyList())
+                            .build(),
+                    "path"
+            )
+    );
+  }
+
+  @Test
+  public void shouldUploadOneFile() throws Exception
+  {
+    //given
+    Configuration configuration = new Configuration();
+    configuration.setApiKey("my-api-key");
+    configuration.setUploadPath("./junit/download-test/values-en/strings.xml");
+    configuration.setLanguageKey("en");
+    configuration.setUploadFormat("android");
+
+    //when
+    UploadCommand uploadCommand = new UploadCommand(client, configuration);
+    uploadCommand.invoke();
+
+    //then
+    Mockito.verify(client, Mockito.times(1)).uploadFile(
+            Mockito.refEq(UploadRequest.UploadFileRequestBuilder.anUploadFileRequest()
+                            .withPath(Path.of("./junit/download-test/values-{lang}/strings.xml"))
+                            .withFormat("android")
+                            .withLanguageKey("en")
+                            .withOptions(Collections.emptyList())
+                            .build(),
+                    "path"
+            )
+    );
+  }
+
+  @Test
   public void shouldUploadZeroFiles() throws Exception
   {
     //given
