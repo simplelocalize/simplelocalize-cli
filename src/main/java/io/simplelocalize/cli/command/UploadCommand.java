@@ -67,7 +67,7 @@ public class UploadCommand implements CliCommand
         boolean isLanguageMatching = fileLanguageKey.equals(configurationLanguageKey);
         if (!isLanguageMatching && hasConfigurationLanguageKey && hasFileLanguageKey)
         {
-          log.info(" 🤔 Skipping '{}' language file: {}", fileToUpload.getLanguage(), fileToUpload.getPath());
+          log.info(" 🤔 Skipping '{}' language, file: {}", fileToUpload.getLanguage(), fileToUpload.getPath());
           continue;
         }
 
