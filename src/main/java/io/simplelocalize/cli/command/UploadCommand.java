@@ -55,18 +55,25 @@ public class UploadCommand implements CliCommand
     }
 
     log.info(" 📄  Found {} files to upload", filesToUpload.size());
-    String languageKey = configuration.getLanguageKey();
+    String configurationLanguageKey = configuration.getLanguageKey();
     for (FileToUpload fileToUpload : filesToUpload)
     {
       try
       {
         String fileLanguageKey = Optional.of(fileToUpload).map(FileToUpload::getLanguage).orElse("");
-        boolean hasLanguageKey = StringUtils.isNotBlank(languageKey);
-        boolean isLanguageMatching = fileLanguageKey.equals(languageKey);
-        if (!isLanguageMatching && hasLanguageKey)
+        String requestLanguageKey = fileLanguageKey;
+        boolean hasFileLanguageKey = StringUtils.isNotBlank(fileLanguageKey);
+        boolean hasConfigurationLanguageKey = StringUtils.isNotBlank(configurationLanguageKey);
+        boolean isLanguageMatching = fileLanguageKey.equals(configurationLanguageKey);
+        if (!isLanguageMatching && hasConfigurationLanguageKey && hasFileLanguageKey)
         {
           log.info(" 🤔 Skipping '{}' language file: {}", fileToUpload.getLanguage(), fileToUpload.getPath());
           continue;
+        }
+
+        if (!hasFileLanguageKey && hasConfigurationLanguageKey)
+        {
+          requestLanguageKey = configurationLanguageKey;
         }
 
         long length = fileToUpload.getPath().toFile().length();
@@ -80,7 +87,7 @@ public class UploadCommand implements CliCommand
         List<String> uploadOptions = configuration.getUploadOptions();
         UploadRequest uploadRequest = anUploadFileRequest()
                 .withPath(fileToUpload.getPath())
-                .withLanguageKey(fileLanguageKey)
+                .withLanguageKey(requestLanguageKey)
                 .withNamespace(fileToUpload.getNamespace())
                 .withFormat(uploadFormat)
                 .withOptions(uploadOptions)
