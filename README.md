@@ -43,7 +43,7 @@ apiKey: API_KEY
 uploadPath: ./src/{lang}/{ns}.json
 uploadFormat: single-language-json
 uploadOptions:
-  - INCLUDE_NAMESPACE
+  - UNESCAPE_NEW_LINES
 
 # Properties used by 'download' command
 downloadPath: ./src/{ns}/messages_{lang}.json
@@ -201,6 +201,10 @@ Please remember to [get API Key for your SimpleLocalize project](https://simplel
 ## Documentation 
 
 Head to [docs.simplelocalize.io](https://simplelocalize.io/docs/cli/get-started/) to learn the SimpleLocalize basics
+
+## How to build project, contribute or add features?
+
+[Please see CONTRIBUTING.md file](https://github.com/simplelocalize/simplelocalize-cli/blob/bd71926809085048bbe76ec1fea205c70f885acb/CONTRIBUTING.md)
 
 ## License
 
