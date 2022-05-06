@@ -1,6 +1,6 @@
 # How to contribute
 
-## How to build a project
+## How to build the project
 
 Java programs are packaged in a JAR files. To build a project to a Java file, you need to have installed Java 11+ (`java --version`) and Maven 3+ (`mvn --version`)
 
