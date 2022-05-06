@@ -2,10 +2,10 @@
 
 ## How to build a project
 
-Java programs are packaged in a JAR files. To build a project to a Java file you need to have installed Java 11+ (`java --version`) and Maven 3+ (`mvn --version`)
+Java programs are packaged in a JAR files. To build a project to a Java file, you need to have installed Java 11+ (`java --version`) and Maven 3+ (`mvn --version`)
 
 ### Installation
-The easiest and quickes way of installing Java and Maven is using [SDKMAN](https://sdkman.io) project.
+The easiest and quickest way of installing Java and Maven is using [SDKMAN](https://sdkman.io) project.
 
 #### Install SDKMAN
 `curl -s "https://get.sdkman.io" | bash`
@@ -36,7 +36,7 @@ You can pass arguments to CLI by adding them to the end of the command:
 
 
 ### Run tests
-To run project tests you can simply skip `--DskipTests` flag.
+To run project tests, you can simply skip `--DskipTests` flag.
 
 `mvn clean install --file pom.xml`
 
