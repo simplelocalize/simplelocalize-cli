@@ -50,3 +50,6 @@ The best way to build binary files is to run a Github Action [build.yaml](https:
 - Make a commit to invoke a new build action
 - Wait for successful build and download executables
 
+> Build might take some time, usually it takes less than ~20 minutes.
+
+![Where to find Github Actions artifacts](https://github.com/simplelocalize/simplelocalize-cli/blob/ac132cbc130d8654c18d3dc26b6316153e9e8ed0/artifacts.png)
