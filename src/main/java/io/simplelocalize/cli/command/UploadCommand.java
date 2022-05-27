@@ -19,11 +19,11 @@ import static io.simplelocalize.cli.client.dto.UploadRequest.UploadFileRequestBu
 public class UploadCommand implements CliCommand
 {
   private static final Logger log = LoggerFactory.getLogger(UploadCommand.class);
+  private static final List<String> MULTI_LANGUAGE_FORMATS = List.of("multi-language-json", "excel", "csv-translations");
   private final FileListReader fileListReader;
   private final SimpleLocalizeClient client;
   private final Configuration configuration;
   private final ConfigurationValidator configurationValidator;
-  private final List<String> MULTI_LANGUAGE_FORMATS = List.of("multi-language-json", "excel", "csv-translations");
 
   public UploadCommand(SimpleLocalizeClient client, Configuration configuration)
   {
