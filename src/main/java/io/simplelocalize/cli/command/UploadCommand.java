@@ -23,6 +23,7 @@ public class UploadCommand implements CliCommand
   private final SimpleLocalizeClient client;
   private final Configuration configuration;
   private final ConfigurationValidator configurationValidator;
+  private final List<String> MULTI_LANGUAGE_FORMATS = List.of("multi-language-json", "excel", "csv-translations");
 
   public UploadCommand(SimpleLocalizeClient client, Configuration configuration)
   {
@@ -85,9 +86,10 @@ public class UploadCommand implements CliCommand
           requestLanguageKey = configurationLanguageKey;
         }
 
-        if (!hasFileLanguageKey && !hasConfigurationLanguageKey)
+        boolean isMultiLanguageFormat = isMultiLanguageFormat(configuration.getUploadFormat());
+        if (!hasFileLanguageKey && !hasConfigurationLanguageKey && !isMultiLanguageFormat)
         {
-          log.info(" 🤔 Uploading only translation keys, language key not present in '--uploadPath' nor '--languageKey' parameter, file: {}", fileToUpload.getPath());
+          log.info(" 🤔 Language key not present in '--uploadPath' nor '--languageKey' parameter, file: {}", fileToUpload.getPath());
         }
 
         String uploadFormat = configuration.getUploadFormat();
@@ -110,5 +112,17 @@ public class UploadCommand implements CliCommand
         Thread.currentThread().interrupt();
       }
     }
+  }
+
+  private boolean isMultiLanguageFormat(String inputUploadFormat)
+  {
+    for (String uploadFormat : MULTI_LANGUAGE_FORMATS)
+    {
+      if (uploadFormat.equalsIgnoreCase(inputUploadFormat))
+      {
+        return true;
+      }
+    }
+    return false;
   }
 }
