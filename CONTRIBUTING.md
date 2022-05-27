@@ -28,11 +28,11 @@ Output JAR file will appear in `target` directory.
 
 ### Run JAR file
 
-`java -jar target/simplelocalize-cli-2.0.3.jar`
+`java -jar target/simplelocalize-cli-2.0.4.jar`
 
 You can pass arguments to CLI by adding them to the end of the command:
 
-`java -jar target/simplelocalize-cli-2.0.3.jar download`
+`java -jar target/simplelocalize-cli-2.0.4.jar download`
 
 
 ### Run tests
