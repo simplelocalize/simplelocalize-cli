@@ -9,6 +9,7 @@ import java.util.List;
 public class Configuration
 {
 
+  private String baseUrl;
   private String apiKey;
 
   private String projectType;
@@ -145,5 +146,15 @@ public class Configuration
   public void setCustomerId(String customerId)
   {
     this.customerId = customerId;
+  }
+
+  public String getBaseUrl()
+  {
+    return baseUrl;
+  }
+
+  public void setBaseUrl(String baseUrl)
+  {
+    this.baseUrl = baseUrl;
   }
 }

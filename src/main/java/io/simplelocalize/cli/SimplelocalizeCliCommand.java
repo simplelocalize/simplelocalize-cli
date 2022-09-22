@@ -52,7 +52,8 @@ public class SimplelocalizeCliCommand implements Runnable
   public void extract(
           @Option(names = {"--apiKey"}, description = "Project API Key") String apiKey,
           @Option(names = {"--projectType"}, description = "Project type tells CLI how to find i18n keys in your project files") String projectType,
-          @Option(names = {"--searchDir"}, description = "(Optional) Search directory tells CLI where to look for project files which may contain translation keys. Default: ./") String searchDirectory
+          @Option(names = {"--searchDir"}, description = "(Optional) Search directory tells CLI where to look for project files which may contain translation keys. Default: ./") String searchDirectory,
+          @Option(names = {"--baseUrl"}, description = "(Optional) Set custom server URL") String baseUrl
   )
   {
     ConfigurationLoader configurationLoader = new ConfigurationLoader();
@@ -69,7 +70,11 @@ public class SimplelocalizeCliCommand implements Runnable
     {
       configuration.setSearchDir(searchDirectory);
     }
-    SimpleLocalizeClient client = SimpleLocalizeClient.withProductionServer(configuration.getApiKey());
+    if (StringUtils.isNotEmpty(searchDirectory))
+    {
+      configuration.setSearchDir(searchDirectory);
+    }
+    SimpleLocalizeClient client = SimpleLocalizeClient.create(configuration.getBaseUrl(), configuration.getApiKey());
     ExtractCommand extractCommand = new ExtractCommand(client, configuration);
     extractCommand.invoke();
   }
@@ -86,12 +91,13 @@ public class SimplelocalizeCliCommand implements Runnable
           @Option(names = {"--downloadFormat"}, description = "Download format for translation file") String downloadFormat,
           @Option(names = {"--downloadOptions"}, split = ",", description = "(Optional) Download options") List<String> downloadOptions,
           @Option(names = {"--languageKey"}, description = "(Optional) Specify language key for single file upload") String languageKey,
-          @Option(names = {"--customerId"}, description = "Download translations for given customerId") String customerId
+          @Option(names = {"--customerId"}, description = "(Optional) Download translations for given customerId") String customerId,
+          @Option(names = {"--baseUrl"}, description = "(Optional) Set custom server URL") String baseUrl
 
   ) throws IOException
   {
-    upload(apiKey, uploadPath, uploadFormat, uploadOptions, languageKey, customerId);
-    download(apiKey, downloadPath, downloadFormat, downloadOptions, languageKey, customerId);
+    upload(apiKey, uploadPath, uploadFormat, uploadOptions, languageKey, customerId, baseUrl);
+    download(apiKey, downloadPath, downloadFormat, downloadOptions, languageKey, customerId, baseUrl);
   }
 
   @Command(
@@ -103,7 +109,8 @@ public class SimplelocalizeCliCommand implements Runnable
           @Option(names = {"--uploadFormat"}, description = "Translations or keys format") String uploadFormat,
           @Option(names = {"--uploadOptions"}, split = ",", description = "(Optional) Read more about 'uploadOptions' param at docs.simplelocalize.io") List<String> uploadOptions,
           @Option(names = {"--languageKey"}, description = "(Optional) Specify language key for single file upload") String languageKey,
-          @Option(names = {"--customerId"}, description = "Upload translations for given customerId") String customerId
+          @Option(names = {"--customerId"}, description = "Upload translations for given customerId") String customerId,
+          @Option(names = {"--baseUrl"}, description = "(Optional) Set custom server URL") String baseUrl
   ) throws IOException
   {
     ConfigurationLoader configurationLoader = new ConfigurationLoader();
@@ -134,6 +141,11 @@ public class SimplelocalizeCliCommand implements Runnable
       configuration.setCustomerId(languageKey);
     }
 
+    if (StringUtils.isNotEmpty(baseUrl))
+    {
+      configuration.setBaseUrl(baseUrl);
+    }
+
     if (uploadOptions != null)
     {
       configuration.setUploadOptions(uploadOptions);
@@ -141,7 +153,8 @@ public class SimplelocalizeCliCommand implements Runnable
 
     ConfigurationValidator configurationValidator = new ConfigurationValidator();
     configurationValidator.validateUploadConfiguration(configuration);
-    UploadCommand uploadCommand = new UploadCommand(configuration);
+    SimpleLocalizeClient client = SimpleLocalizeClient.create(configuration.getBaseUrl(), configuration.getApiKey());
+    UploadCommand uploadCommand = new UploadCommand(client, configuration);
     uploadCommand.invoke();
   }
 
@@ -154,7 +167,8 @@ public class SimplelocalizeCliCommand implements Runnable
           @Option(names = {"--downloadFormat"}, description = "Download format for translation file") String downloadFormat,
           @Option(names = {"--downloadOptions"}, split = ",", description = "(Optional) Download options") List<String> downloadOptions,
           @Option(names = {"--languageKey"}, description = "(Optional) Setup languageKey parameter to download file with only one language translations") String languageKey,
-          @Option(names = {"--customerId"}, description = "Download translations for given customerId") String customerId
+          @Option(names = {"--customerId"}, description = "(Optional) Download translations for given customerId") String customerId,
+          @Option(names = {"--baseUrl"}, description = "(Optional) Download translations for given customerId") String baseUrl
   )
   {
     ConfigurationLoader configurationLoader = new ConfigurationLoader();
@@ -180,13 +194,17 @@ public class SimplelocalizeCliCommand implements Runnable
     {
       configuration.setCustomerId(languageKey);
     }
+    if (StringUtils.isNotEmpty(baseUrl))
+    {
+      configuration.setBaseUrl(baseUrl);
+    }
     if (downloadOptions != null)
     {
       configuration.setDownloadOptions(downloadOptions);
     }
     ConfigurationValidator configurationValidator = new ConfigurationValidator();
     configurationValidator.validateDownloadConfiguration(configuration);
-    SimpleLocalizeClient client = SimpleLocalizeClient.withProductionServer(configuration.getApiKey());
+    SimpleLocalizeClient client = SimpleLocalizeClient.create(configuration.getBaseUrl(), configuration.getApiKey());
     DownloadCommand downloadCommand = new DownloadCommand(client, configuration);
     downloadCommand.invoke();
   }

@@ -1,5 +1,6 @@
 package io.simplelocalize.cli.command;
 
+import io.simplelocalize.cli.client.SimpleLocalizeClient;
 import io.simplelocalize.cli.configuration.Configuration;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Disabled;
@@ -15,6 +16,8 @@ public class DownloadCommandIT
 {
 
   private final String API_KEY = "my-api-key";
+  private static final String PRODUCTION_BASE_URL = "https://api.simplelocalize.io";
+
 
   @Test
   public void shouldDownloadToDirectoryWithPrefix() throws Exception
@@ -25,8 +28,10 @@ public class DownloadCommandIT
     configuration.setDownloadPath("./junit/download-test/values-{lang}/strings.xml");
     configuration.setDownloadFormat("android");
 
+    SimpleLocalizeClient client = SimpleLocalizeClient.create(PRODUCTION_BASE_URL, API_KEY);
+
     //when
-    DownloadCommand downloadCommand = new DownloadCommand(configuration);
+    DownloadCommand downloadCommand = new DownloadCommand(client, configuration);
     downloadCommand.invoke();
 
     //then
@@ -44,8 +49,10 @@ public class DownloadCommandIT
     configuration.setDownloadPath("./junit/download-test/values-{lang}-test/strings.xml");
     configuration.setDownloadFormat("android");
 
+    SimpleLocalizeClient client = SimpleLocalizeClient.create(PRODUCTION_BASE_URL, API_KEY);
+
     //when
-    DownloadCommand downloadCommand = new DownloadCommand(configuration);
+    DownloadCommand downloadCommand = new DownloadCommand(client, configuration);
     downloadCommand.invoke();
 
     //then
@@ -63,8 +70,10 @@ public class DownloadCommandIT
     configuration.setDownloadPath("./junit/download-test/jsons/{lang}.json");
     configuration.setDownloadFormat("single-language-json");
 
+    SimpleLocalizeClient client = SimpleLocalizeClient.create(PRODUCTION_BASE_URL, API_KEY);
+
     //when
-    DownloadCommand downloadCommand = new DownloadCommand(configuration);
+    DownloadCommand downloadCommand = new DownloadCommand(client, configuration);
     downloadCommand.invoke();
 
     //then
@@ -81,9 +90,10 @@ public class DownloadCommandIT
     configuration.setApiKey(API_KEY);
     configuration.setDownloadPath("./junit/download-test/multi-language-file/multi-language-file.json");
     configuration.setDownloadFormat("multi-language-json");
+    SimpleLocalizeClient client = SimpleLocalizeClient.create(PRODUCTION_BASE_URL, API_KEY);
 
     //when
-    DownloadCommand downloadCommand = new DownloadCommand(configuration);
+    DownloadCommand downloadCommand = new DownloadCommand(client, configuration);
     downloadCommand.invoke();
 
     //then

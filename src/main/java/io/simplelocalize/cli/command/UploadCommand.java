@@ -33,14 +33,6 @@ public class UploadCommand implements CliCommand
     this.configurationValidator = new ConfigurationValidator();
   }
 
-  public UploadCommand(Configuration configuration)
-  {
-    this.configuration = configuration;
-    this.client = SimpleLocalizeClient.withProductionServer(configuration.getApiKey());
-    this.fileListReader = new FileListReader();
-    this.configurationValidator = new ConfigurationValidator();
-  }
-
   public void invoke()
   {
     configurationValidator.validateUploadConfiguration(configuration);

@@ -26,12 +26,6 @@ public class DownloadCommand implements CliCommand
     this.client = client;
   }
 
-  public DownloadCommand(Configuration configuration)
-  {
-    this.configuration = configuration;
-    this.client = SimpleLocalizeClient.withProductionServer(configuration.getApiKey());
-  }
-
   public void invoke()
   {
     String downloadPath = configuration.getDownloadPath();
