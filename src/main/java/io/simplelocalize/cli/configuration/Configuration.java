@@ -9,6 +9,7 @@ import java.util.List;
 public class Configuration
 {
 
+  private String baseUrl = "https://api.simplelocalize.io";
   private String apiKey;
 
   private String projectType;
@@ -22,6 +23,8 @@ public class Configuration
   private String downloadPath;
   private String downloadFormat;
   private List<String> downloadOptions = new ArrayList<>();
+
+  private String customerId;
 
   private String languageKey;
 
@@ -135,4 +138,23 @@ public class Configuration
     this.uploadOptions = uploadOptions;
   }
 
+  public String getCustomerId()
+  {
+    return customerId;
+  }
+
+  public void setCustomerId(String customerId)
+  {
+    this.customerId = customerId;
+  }
+
+  public String getBaseUrl()
+  {
+    return baseUrl;
+  }
+
+  public void setBaseUrl(String baseUrl)
+  {
+    this.baseUrl = baseUrl;
+  }
 }

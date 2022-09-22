@@ -38,6 +38,13 @@ public class SimpleLocalizeUriFactory
     {
       endpointUrl += "&downloadOptions=" + String.join(",", downloadOptions);
     }
+
+    String customerId = downloadRequest.getCustomerId();
+    if (StringUtils.isNotEmpty(customerId))
+    {
+      endpointUrl += "&customerId=" + customerId;
+    }
+
     return URI.create(endpointUrl);
   }
 
@@ -61,6 +68,12 @@ public class SimpleLocalizeUriFactory
     if (StringUtils.isNotEmpty(namespace))
     {
       endpointUrl += "&namespace=" + namespace;
+    }
+
+    String customerId = uploadRequest.getCustomerId();
+    if (StringUtils.isNotEmpty(customerId))
+    {
+      endpointUrl += "&customerId=" + customerId;
     }
 
     return URI.create(endpointUrl);

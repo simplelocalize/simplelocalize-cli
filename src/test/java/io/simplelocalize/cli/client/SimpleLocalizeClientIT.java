@@ -19,11 +19,13 @@ import static io.simplelocalize.cli.client.dto.UploadRequest.UploadFileRequestBu
 class SimpleLocalizeClientIT
 {
 
+  private static final String BASE_URL = "https://api.simplelocalize.io";
+
   @Test
   void shouldSendKeys() throws Exception
   {
     //given
-    SimpleLocalizeClient client = SimpleLocalizeClient.withProductionServer("237b305f6b2273e92ac857eb44d7f33b");
+    SimpleLocalizeClient client = SimpleLocalizeClient.create(BASE_URL, "237b305f6b2273e92ac857eb44d7f33b");
 
     //when
     client.uploadKeys(List.of("test"));
@@ -35,7 +37,7 @@ class SimpleLocalizeClientIT
   void shouldUploadFile() throws Exception
   {
     //given
-    SimpleLocalizeClient client = SimpleLocalizeClient.withProductionServer("81707741b64e68427e1a2c20e75095b1");
+    SimpleLocalizeClient client = SimpleLocalizeClient.create(BASE_URL, "81707741b64e68427e1a2c20e75095b1");
 
     UploadRequest uploadRequest = anUploadFileRequest()
             .withPath(Path.of("./test.json"))

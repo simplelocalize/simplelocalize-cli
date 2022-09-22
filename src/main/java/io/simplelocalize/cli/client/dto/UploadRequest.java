@@ -13,6 +13,8 @@ public class UploadRequest
   private List<String> options;
   private String namespace;
 
+  private String customerId;
+
   public Path getPath()
   {
     return path;
@@ -38,6 +40,11 @@ public class UploadRequest
     return namespace;
   }
 
+  public String getCustomerId()
+  {
+    return customerId;
+  }
+
   @Override
   public boolean equals(Object o)
   {
@@ -48,14 +55,16 @@ public class UploadRequest
             Objects.equals(languageKey, that.languageKey) &&
             Objects.equals(format, that.format) &&
             Objects.equals(options, that.options) &&
+            Objects.equals(customerId, that.customerId) &&
             Objects.equals(namespace, that.namespace);
   }
 
   @Override
   public int hashCode()
   {
-    return Objects.hash(path, languageKey, format, options, namespace);
+    return Objects.hash(path, languageKey, format, options, customerId, namespace);
   }
+
 
   public static final class UploadFileRequestBuilder
   {
@@ -64,6 +73,7 @@ public class UploadRequest
     private String uploadFormat;
     private List<String> uploadOptions;
     private String namespace;
+    private String customerId;
 
     private UploadFileRequestBuilder()
     {
@@ -104,6 +114,12 @@ public class UploadRequest
       return this;
     }
 
+    public UploadFileRequestBuilder withCustomerId(String customerId)
+    {
+      this.customerId = customerId;
+      return this;
+    }
+
 
     public UploadRequest build()
     {
@@ -113,6 +129,7 @@ public class UploadRequest
       uploadRequest.options = this.uploadOptions;
       uploadRequest.path = this.uploadPath;
       uploadRequest.namespace = this.namespace;
+      uploadRequest.customerId = this.customerId;
       return uploadRequest;
     }
   }

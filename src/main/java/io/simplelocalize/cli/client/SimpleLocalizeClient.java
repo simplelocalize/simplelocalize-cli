@@ -30,7 +30,6 @@ import static io.simplelocalize.cli.TemplateKeys.NAMESPACE_TEMPLATE_KEY;
 
 public class SimpleLocalizeClient
 {
-  private static final String PRODUCTION_BASE_URL = "https://api.simplelocalize.io";
 
   private static final String ERROR_MESSAGE_PATH = "$.msg";
   private final HttpClient httpClient;
@@ -53,14 +52,9 @@ public class SimpleLocalizeClient
             .build();
   }
 
-  public static SimpleLocalizeClient withCustomServer(String baseUrl, String apiKey)
+  public static SimpleLocalizeClient create(String baseUrl, String apiKey)
   {
     return new SimpleLocalizeClient(baseUrl, apiKey);
-  }
-
-  public static SimpleLocalizeClient withProductionServer(String apiKey)
-  {
-    return withCustomServer(PRODUCTION_BASE_URL, apiKey);
   }
 
   public void uploadKeys(Collection<String> keys) throws IOException, InterruptedException

@@ -26,17 +26,12 @@ public class DownloadCommand implements CliCommand
     this.client = client;
   }
 
-  public DownloadCommand(Configuration configuration)
-  {
-    this.configuration = configuration;
-    this.client = SimpleLocalizeClient.withProductionServer(configuration.getApiKey());
-  }
-
   public void invoke()
   {
     String downloadPath = configuration.getDownloadPath();
     String downloadFormat = configuration.getDownloadFormat();
     String languageKey = configuration.getLanguageKey();
+    String customerId = configuration.getCustomerId();
     List<String> downloadOptions = configuration.getDownloadOptions();
 
     if (downloadPath.contains(TemplateKeys.NAMESPACE_TEMPLATE_KEY))
@@ -53,6 +48,7 @@ public class DownloadCommand implements CliCommand
     DownloadRequest downloadRequest = aDownloadRequest()
             .withFormat(downloadFormat)
             .withOptions(downloadOptions)
+            .withCustomerId(customerId)
             .withLanguageKey(languageKey)
             .build();
 

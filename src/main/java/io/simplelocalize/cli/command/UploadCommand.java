@@ -33,14 +33,6 @@ public class UploadCommand implements CliCommand
     this.configurationValidator = new ConfigurationValidator();
   }
 
-  public UploadCommand(Configuration configuration)
-  {
-    this.configuration = configuration;
-    this.client = SimpleLocalizeClient.withProductionServer(configuration.getApiKey());
-    this.fileListReader = new FileListReader();
-    this.configurationValidator = new ConfigurationValidator();
-  }
-
   public void invoke()
   {
     configurationValidator.validateUploadConfiguration(configuration);
@@ -93,12 +85,14 @@ public class UploadCommand implements CliCommand
         }
 
         String uploadFormat = configuration.getUploadFormat();
+        String customerId = configuration.getCustomerId();
         List<String> uploadOptions = configuration.getUploadOptions();
         UploadRequest uploadRequest = anUploadFileRequest()
                 .withPath(fileToUpload.getPath())
                 .withLanguageKey(requestLanguageKey)
                 .withNamespace(fileToUpload.getNamespace())
                 .withFormat(uploadFormat)
+                .withCustomerId(customerId)
                 .withOptions(uploadOptions)
                 .build();
 

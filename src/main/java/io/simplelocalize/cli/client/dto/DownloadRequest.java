@@ -7,6 +7,7 @@ public class DownloadRequest
 {
   private String format;
   private String languageKey;
+  private String customerId;
   private List<String> options;
 
   public String getFormat()
@@ -24,10 +25,31 @@ public class DownloadRequest
     return options;
   }
 
+  public String getCustomerId()
+  {
+    return customerId;
+  }
+
+  @Override
+  public boolean equals(Object o)
+  {
+    if (this == o) return true;
+    if (o == null || getClass() != o.getClass()) return false;
+    DownloadRequest that = (DownloadRequest) o;
+    return Objects.equals(format, that.format) && Objects.equals(languageKey, that.languageKey) && Objects.equals(customerId, that.customerId) && Objects.equals(options, that.options);
+  }
+
+  @Override
+  public int hashCode()
+  {
+    return Objects.hash(format, languageKey, customerId, options);
+  }
+
   public static final class DownloadRequestBuilder
   {
     private String format;
     private String languageKey;
+    private String customerId;
     private List<String> options;
 
     private DownloadRequestBuilder()
@@ -51,6 +73,12 @@ public class DownloadRequest
       return this;
     }
 
+    public DownloadRequestBuilder withCustomerId(String customerId)
+    {
+      this.customerId = customerId;
+      return this;
+    }
+
     public DownloadRequestBuilder withOptions(List<String> downloadOptions)
     {
       this.options = downloadOptions;
@@ -63,22 +91,8 @@ public class DownloadRequest
       downloadRequest.options = this.options;
       downloadRequest.format = this.format;
       downloadRequest.languageKey = this.languageKey;
+      downloadRequest.customerId = this.customerId;
       return downloadRequest;
     }
-  }
-
-  @Override
-  public boolean equals(Object o)
-  {
-    if (this == o) return true;
-    if (o == null || getClass() != o.getClass()) return false;
-    DownloadRequest that = (DownloadRequest) o;
-    return Objects.equals(format, that.format) && Objects.equals(languageKey, that.languageKey) && Objects.equals(options, that.options);
-  }
-
-  @Override
-  public int hashCode()
-  {
-    return Objects.hash(format, languageKey, options);
   }
 }
