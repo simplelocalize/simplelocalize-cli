@@ -58,6 +58,10 @@ public class SimplelocalizeCliCommand implements Runnable
   {
     ConfigurationLoader configurationLoader = new ConfigurationLoader();
     Configuration configuration = configurationLoader.loadOrGetDefault(configurationFilePath);
+    if (StringUtils.isNotEmpty(baseUrl))
+    {
+      configuration.setBaseUrl(baseUrl);
+    }
     if (StringUtils.isNotEmpty(apiKey))
     {
       configuration.setApiKey(apiKey);
@@ -109,12 +113,16 @@ public class SimplelocalizeCliCommand implements Runnable
           @Option(names = {"--uploadFormat"}, description = "Translations or keys format") String uploadFormat,
           @Option(names = {"--uploadOptions"}, split = ",", description = "(Optional) Read more about 'uploadOptions' param at docs.simplelocalize.io") List<String> uploadOptions,
           @Option(names = {"--languageKey"}, description = "(Optional) Specify language key for single file upload") String languageKey,
-          @Option(names = {"--customerId"}, description = "Upload translations for given customerId") String customerId,
+          @Option(names = {"--customerId"}, description = "(Optional) Upload translations for given customerId") String customerId,
           @Option(names = {"--baseUrl"}, description = "(Optional) Set custom server URL") String baseUrl
   ) throws IOException
   {
     ConfigurationLoader configurationLoader = new ConfigurationLoader();
     Configuration configuration = configurationLoader.loadOrGetDefault(configurationFilePath);
+    if (StringUtils.isNotEmpty(baseUrl))
+    {
+      configuration.setBaseUrl(baseUrl);
+    }
 
     if (StringUtils.isNotEmpty(apiKey))
     {
@@ -138,12 +146,7 @@ public class SimplelocalizeCliCommand implements Runnable
 
     if (StringUtils.isNotEmpty(customerId))
     {
-      configuration.setCustomerId(languageKey);
-    }
-
-    if (StringUtils.isNotEmpty(baseUrl))
-    {
-      configuration.setBaseUrl(baseUrl);
+      configuration.setCustomerId(customerId);
     }
 
     if (uploadOptions != null)
@@ -168,11 +171,15 @@ public class SimplelocalizeCliCommand implements Runnable
           @Option(names = {"--downloadOptions"}, split = ",", description = "(Optional) Download options") List<String> downloadOptions,
           @Option(names = {"--languageKey"}, description = "(Optional) Setup languageKey parameter to download file with only one language translations") String languageKey,
           @Option(names = {"--customerId"}, description = "(Optional) Download translations for given customerId") String customerId,
-          @Option(names = {"--baseUrl"}, description = "(Optional) Download translations for given customerId") String baseUrl
+          @Option(names = {"--baseUrl"}, description = "(Optional) Set custom server URL") String baseUrl
   )
   {
     ConfigurationLoader configurationLoader = new ConfigurationLoader();
     Configuration configuration = configurationLoader.loadOrGetDefault(configurationFilePath);
+    if (StringUtils.isNotEmpty(baseUrl))
+    {
+      configuration.setBaseUrl(baseUrl);
+    }
 
     if (StringUtils.isNotEmpty(apiKey))
     {
@@ -192,11 +199,7 @@ public class SimplelocalizeCliCommand implements Runnable
     }
     if (StringUtils.isNotEmpty(customerId))
     {
-      configuration.setCustomerId(languageKey);
-    }
-    if (StringUtils.isNotEmpty(baseUrl))
-    {
-      configuration.setBaseUrl(baseUrl);
+      configuration.setCustomerId(customerId);
     }
     if (downloadOptions != null)
     {
