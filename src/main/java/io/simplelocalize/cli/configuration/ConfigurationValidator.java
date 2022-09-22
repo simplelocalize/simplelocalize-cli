@@ -1,6 +1,5 @@
 package io.simplelocalize.cli.configuration;
 
-import io.simplelocalize.cli.exception.ConfigurationException;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,7 +28,7 @@ public final class ConfigurationValidator
     if (StringUtils.isEmpty(format))
     {
       log.error("Missing '{}' value", argumentName);
-      throw new ConfigurationException();
+      System.exit(1);
     }
   }
 
