@@ -93,12 +93,14 @@ public class UploadCommand implements CliCommand
         }
 
         String uploadFormat = configuration.getUploadFormat();
+        String customerId = configuration.getCustomerId();
         List<String> uploadOptions = configuration.getUploadOptions();
         UploadRequest uploadRequest = anUploadFileRequest()
                 .withPath(fileToUpload.getPath())
                 .withLanguageKey(requestLanguageKey)
                 .withNamespace(fileToUpload.getNamespace())
                 .withFormat(uploadFormat)
+                .withCustomerId(customerId)
                 .withOptions(uploadOptions)
                 .build();
 

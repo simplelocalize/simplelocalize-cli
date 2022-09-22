@@ -23,6 +23,8 @@ public class Configuration
   private String downloadFormat;
   private List<String> downloadOptions = new ArrayList<>();
 
+  private String customerId;
+
   private String languageKey;
 
   public String getSearchDir()
@@ -135,4 +137,13 @@ public class Configuration
     this.uploadOptions = uploadOptions;
   }
 
+  public String getCustomerId()
+  {
+    return customerId;
+  }
+
+  public void setCustomerId(String customerId)
+  {
+    this.customerId = customerId;
+  }
 }
