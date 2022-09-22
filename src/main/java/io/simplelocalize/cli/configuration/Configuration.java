@@ -9,7 +9,7 @@ import java.util.List;
 public class Configuration
 {
 
-  private String baseUrl;
+  private String baseUrl = "https://api.simplelocalize.io";
   private String apiKey;
 
   private String projectType;
