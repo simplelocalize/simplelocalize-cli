@@ -43,14 +43,14 @@ public class UploadCommand implements CliCommand
       uploadPath = WindowsUtils.convertToWindowsPath(uploadPath);
     }
 
-    List<FileToUpload> filesToUpload = List.of();
+    List<FileToUpload> filesToUpload;
     try
     {
       filesToUpload = fileListReader.findFilesToUpload(uploadPath);
-    } catch (IOException e)
+    } catch (Exception e)
     {
-      log.error("Matching files could not be found", e);
-      System.exit(1);
+      log.error("Matching files could not be found at {}", uploadPath, e);
+      throw new IllegalArgumentException("Matching files could not be found", e);
     }
 
     log.info("Found {} files to upload", filesToUpload.size());

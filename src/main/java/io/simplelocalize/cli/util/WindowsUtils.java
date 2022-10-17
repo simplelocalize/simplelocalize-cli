@@ -7,9 +7,11 @@ import java.util.Optional;
 
 public class WindowsUtils
 {
-
   private static final Logger log = LoggerFactory.getLogger(WindowsUtils.class);
 
+  private WindowsUtils()
+  {
+  }
 
   public static boolean isWindows()
   {
@@ -23,7 +25,7 @@ public class WindowsUtils
     boolean hasForwardSlash = path.contains("/");
     if (hasForwardSlash)
     {
-      log.info("Detected Windows machine and '/' in path. Converting to Windows path");
+      log.info("Detected Windows machine and '/' in file path");
       return path.replace("/", "\\");
     }
     return path;
