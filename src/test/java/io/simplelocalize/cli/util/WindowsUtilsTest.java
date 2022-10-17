@@ -1,11 +1,28 @@
 package io.simplelocalize.cli.util;
 
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 class WindowsUtilsTest
 {
+
+  private static String originalOsName;
+
+  @BeforeAll
+  static void beforeAll()
+  {
+    originalOsName = System.getProperty("os.name");
+  }
+
+  @AfterAll
+  static void tearDown()
+  {
+    System.setProperty("os.name", originalOsName);
+  }
+
   @Test
   void shouldReturnTrueWhenWindows()
   {
