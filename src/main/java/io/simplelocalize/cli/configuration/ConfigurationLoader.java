@@ -47,7 +47,7 @@ public final class ConfigurationLoader
       log.info("Loaded configuration file from: {}", configurationFilePath);
     } catch (FileNotFoundException e)
     {
-      log.info("No default configuration file at ./simplelocalize.yml");
+      log.info("No default configuration file.");
       return new Configuration();
     } catch (Exception e)
     {

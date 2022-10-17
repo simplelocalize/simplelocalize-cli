@@ -78,6 +78,8 @@ public class SimplelocalizeCliCommand implements Runnable
     {
       configuration.setSearchDir(searchDirectory);
     }
+    ConfigurationValidator configurationValidator = new ConfigurationValidator();
+    configurationValidator.validateExtractConfiguration(configuration);
     SimpleLocalizeClient client = SimpleLocalizeClient.create(configuration.getBaseUrl(), configuration.getApiKey());
     ExtractCommand extractCommand = new ExtractCommand(client, configuration);
     extractCommand.invoke();
@@ -156,6 +158,7 @@ public class SimplelocalizeCliCommand implements Runnable
 
     ConfigurationValidator configurationValidator = new ConfigurationValidator();
     configurationValidator.validateUploadConfiguration(configuration);
+
     SimpleLocalizeClient client = SimpleLocalizeClient.create(configuration.getBaseUrl(), configuration.getApiKey());
     UploadCommand uploadCommand = new UploadCommand(client, configuration);
     uploadCommand.invoke();

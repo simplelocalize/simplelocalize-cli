@@ -6,6 +6,7 @@ import io.simplelocalize.cli.client.dto.UploadRequest;
 import io.simplelocalize.cli.configuration.Configuration;
 import io.simplelocalize.cli.configuration.ConfigurationValidator;
 import io.simplelocalize.cli.io.FileListReader;
+import io.simplelocalize.cli.util.WindowsUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -37,13 +38,15 @@ public class UploadCommand implements CliCommand
   {
     configurationValidator.validateUploadConfiguration(configuration);
     String uploadPath = configuration.getUploadPath();
-    String uploadPathForWindows = uploadPath.replace("/", "\\");
-    configuration.setUploadPath(uploadPathForWindows);
+    if (WindowsUtils.isWindows())
+    {
+      uploadPath = WindowsUtils.convertToWindowsPath(uploadPath);
+    }
 
     List<FileToUpload> filesToUpload = List.of();
     try
     {
-      filesToUpload = fileListReader.findFilesToUpload(uploadPathForWindows);
+      filesToUpload = fileListReader.findFilesToUpload(uploadPath);
     } catch (IOException e)
     {
       log.error("Matching files could not be found", e);
