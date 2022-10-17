@@ -36,11 +36,14 @@ public class UploadCommand implements CliCommand
   public void invoke()
   {
     configurationValidator.validateUploadConfiguration(configuration);
+    String uploadPath = configuration.getUploadPath();
+    String uploadPathForWindows = uploadPath.replace("/", "\\");
+    configuration.setUploadPath(uploadPathForWindows);
 
     List<FileToUpload> filesToUpload = List.of();
     try
     {
-      filesToUpload = fileListReader.findFilesToUpload(configuration.getUploadPath());
+      filesToUpload = fileListReader.findFilesToUpload(uploadPathForWindows);
     } catch (IOException e)
     {
       log.error("Matching files could not be found", e);
