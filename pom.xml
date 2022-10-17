@@ -236,7 +236,6 @@
                     <compilerArgs>
                         <arg>-Amicronaut.processing.group=io.simplelocalize.cli</arg>
                         <arg>-Amicronaut.processing.module=simplelocalize-cli</arg>
-                        <arg>-Dmicronaut.env.deduction=false</arg>
                     </compilerArgs>
                 </configuration>
                 <executions>
