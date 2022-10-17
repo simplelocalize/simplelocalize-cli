@@ -29,12 +29,20 @@ curl -s https://get.simplelocalize.io/2.0/install | bash
 simplelocalize -c config.yml [COMMAND] --apiKey <PROJECT_API_KEY> ...
 ```
 
+> Remember to use bashslashes `\` in upload and download paths on Windows machines. `.\locales\translations.json` (Windows) instead `./locales/translations.json` (macOs/Linux) 
+
 ## Configuration file
 Use configuration file in order to simplify your bash command. Arguments used in command always overrides properties set in configuration file.
 
 Filename: `simplelocalize.yml`
 
 ```yaml
+# Get started with CLI: https://simplelocalize.io/docs/cli/get-started/
+# Available formats: https://simplelocalize.io/docs/general/file-formats/
+# Available import/export options: https://simplelocalize.io/docs/general/options/
+# Remember to use bashslashes '\'in upload and download paths on Windows machines.
+# Support: contact@simplelocalize.io
+
 # Project API Key
 apiKey: API_KEY
 
@@ -42,7 +50,9 @@ apiKey: API_KEY
 uploadPath: ./src/{lang}/{ns}.json
 uploadFormat: single-language-json
 uploadOptions:
-  - UNESCAPE_NEW_LINES
+  # by default 'upload' command only adds new keys and fills empty translations, 
+  # add this option to overwrite existing translations with values from uploaded file
+  - REPLACE_TRANSLATION_IF_FOUND 
 
 # Properties used by 'download' command
 downloadPath: ./src/{ns}/messages_{lang}.json
