@@ -79,7 +79,7 @@ public class SimpleLocalizeClient
 
   public List<DownloadableFile> fetchDownloadableFiles(DownloadRequest downloadRequest) throws IOException, InterruptedException
   {
-    log.info("Preparing translation files");
+    log.info("Preparing files to download");
     URI downloadUri = uriFactory.buildDownloadUri(downloadRequest);
     HttpRequest httpRequest = httpRequestFactory.createGetRequest(downloadUri).build();
     HttpResponse<String> httpResponse = httpClient.send(httpRequest, HttpResponse.BodyHandlers.ofString());

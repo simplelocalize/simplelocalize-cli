@@ -47,7 +47,7 @@ public class UploadCommand implements CliCommand
     try
     {
       filesToUpload = fileListReader.findFilesToUpload(uploadPath);
-    } catch (Exception e)
+    } catch (IOException e)
     {
       log.error("Matching files could not be found at {}", uploadPath, e);
       throw new IllegalArgumentException("Matching files could not be found", e);
