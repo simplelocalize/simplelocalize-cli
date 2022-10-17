@@ -32,7 +32,8 @@ simplelocalize -c config.yml [COMMAND] --apiKey <PROJECT_API_KEY> ...
 > Remember to use bashslashes `\` in upload and download paths on Windows machines. `.\locales\translations.json` (Windows) instead `./locales/translations.json` (macOs/Linux) 
 
 ## Configuration file
-Use configuration file in order to simplify your bash command. Arguments used in command always overrides properties set in configuration file.
+Use configuration file in order to simplify your bash command. Arguments used in command always overrides properties set in configuration file. Below you can
+find a sample configuration file.
 
 Filename: `simplelocalize.yml`
 
