@@ -44,14 +44,14 @@ public final class ConfigurationLoader
     {
       InputStream inputStream = new FileInputStream(file);
       configuration = yaml.load(inputStream);
-      log.info(" 🗄  Loaded configuration file from: {}", configurationFilePath);
+      log.info("Loaded configuration file from: {}", configurationFilePath);
     } catch (FileNotFoundException e)
     {
-      log.info(" 🗄  No default configuration file at ./simplelocalize.yml");
+      log.info("No default configuration file at ./simplelocalize.yml");
       return new Configuration();
     } catch (Exception e)
     {
-      log.error(" 😝 Unable to load configuration: {}", e.getMessage());
+      log.error("Unable to load configuration: {}", e.getMessage());
       throw new ConfigurationException();
     }
     return configuration;

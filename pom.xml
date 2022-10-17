@@ -4,7 +4,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>io.simplelocalize</groupId>
     <artifactId>simplelocalize-cli</artifactId>
-    <version>2.0.5</version>
+    <version>2.0.6</version>
     <packaging>jar</packaging>
     <name>simplelocalize-cli</name>
     <description>Official SimpleLocalize Command Line Interface</description>
@@ -236,6 +236,7 @@
                     <compilerArgs>
                         <arg>-Amicronaut.processing.group=io.simplelocalize.cli</arg>
                         <arg>-Amicronaut.processing.module=simplelocalize-cli</arg>
+                        <arg>-Dmicronaut.env.deduction=false</arg>
                     </compilerArgs>
                 </configuration>
                 <executions>

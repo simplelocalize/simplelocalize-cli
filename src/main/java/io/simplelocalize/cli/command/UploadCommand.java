@@ -43,11 +43,11 @@ public class UploadCommand implements CliCommand
       filesToUpload = fileListReader.findFilesToUpload(configuration.getUploadPath());
     } catch (IOException e)
     {
-      log.error(" 😝 Matching files could not be found", e);
+      log.error("Matching files could not be found", e);
       System.exit(1);
     }
 
-    log.info(" 📄  Found {} files to upload", filesToUpload.size());
+    log.info("Found {} files to upload", filesToUpload.size());
     for (FileToUpload fileToUpload : filesToUpload)
     {
       try
@@ -55,7 +55,7 @@ public class UploadCommand implements CliCommand
         long length = fileToUpload.getPath().toFile().length();
         if (length == 0)
         {
-          log.warn(" 🤔 Skipping empty file: {}", fileToUpload.getPath());
+          log.warn("Skipping empty file: {}", fileToUpload.getPath());
           continue;
         }
 
@@ -68,7 +68,7 @@ public class UploadCommand implements CliCommand
         boolean isLanguageMatching = fileLanguageKey.equals(configurationLanguageKey);
         if (hasFileLanguageKey && hasConfigurationLanguageKey && !isLanguageMatching)
         {
-          log.info(" 🤔 Skipping '{}' language, file: {}", fileToUpload.getLanguage(), fileToUpload.getPath());
+          log.info("Skipping '{}' language, file: {}", fileToUpload.getLanguage(), fileToUpload.getPath());
           continue;
         }
 
@@ -81,7 +81,7 @@ public class UploadCommand implements CliCommand
         boolean isMultiLanguageFormat = isMultiLanguageFormat(configuration.getUploadFormat());
         if (!hasFileLanguageKey && !hasConfigurationLanguageKey && !isMultiLanguageFormat)
         {
-          log.info(" 🤔 Language key not present in '--uploadPath' nor '--languageKey' parameter, file: {}", fileToUpload.getPath());
+          log.info("Language key not present in '--uploadPath' nor '--languageKey' parameter, file: {}", fileToUpload.getPath());
         }
 
         String uploadFormat = configuration.getUploadFormat();
@@ -99,10 +99,10 @@ public class UploadCommand implements CliCommand
         client.uploadFile(uploadRequest);
       } catch (IOException e)
       {
-        log.warn(" 😝 Upload failed: {}", fileToUpload.getPath(), e);
+        log.warn("Upload failed: {}", fileToUpload.getPath(), e);
       } catch (InterruptedException e)
       {
-        log.error(" 😝 Upload interrupted: {}", fileToUpload.getPath(), e);
+        log.error("Upload interrupted: {}", fileToUpload.getPath(), e);
         Thread.currentThread().interrupt();
       }
     }

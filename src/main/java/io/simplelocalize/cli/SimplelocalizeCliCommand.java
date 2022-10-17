@@ -25,7 +25,7 @@ import java.util.List;
                 {
                         "SimpleLocalize CLI is an official Localization CLI Tool for SimpleLocalize.io Platform",
                         "Usage: 'simplelocalize-cli [command]'",
-                        "Visit https://docs.simplelocalize.io to learn more."
+                        "Visit https://simplelocalize.io/docs/ to learn more."
                 },
         mixinStandardHelpOptions = true,
         version = {
@@ -89,8 +89,8 @@ public class SimplelocalizeCliCommand implements Runnable
   public void sync(
           @Option(names = {"--apiKey"}, description = "Project API Key") String apiKey,
           @Option(names = {"--uploadPath"}, description = "Path to file with translation or translation keys to upload. Use '{lang}' to define language key if you are uploading more than one file with translations.") String uploadPath,
-          @Option(names = {"--uploadFormat"}, description = "Translations or keys format") String uploadFormat,
-          @Option(names = {"--uploadOptions"}, split = ",", description = "(Optional) Read more about 'uploadOptions' param at docs.simplelocalize.io") List<String> uploadOptions,
+          @Option(names = {"--uploadFormat"}, description = "Translations file format") String uploadFormat,
+          @Option(names = {"--uploadOptions"}, split = ",", description = "(Optional) Upload options") List<String> uploadOptions,
           @Option(names = {"--downloadPath"}, description = "Directory where translations should be downloaded") String downloadPath,
           @Option(names = {"--downloadFormat"}, description = "Download format for translation file") String downloadFormat,
           @Option(names = {"--downloadOptions"}, split = ",", description = "(Optional) Download options") List<String> downloadOptions,
@@ -110,8 +110,8 @@ public class SimplelocalizeCliCommand implements Runnable
   public void upload(
           @Option(names = {"--apiKey"}, description = "Project API Key") String apiKey,
           @Option(names = {"--uploadPath"}, description = "Path to file with translation or translation keys to upload. Use '{lang}' to define language key if you are uploading more than one file with translations.") String uploadPath,
-          @Option(names = {"--uploadFormat"}, description = "Translations or keys format") String uploadFormat,
-          @Option(names = {"--uploadOptions"}, split = ",", description = "(Optional) Read more about 'uploadOptions' param at docs.simplelocalize.io") List<String> uploadOptions,
+          @Option(names = {"--uploadFormat"}, description = "Translations file format") String uploadFormat,
+          @Option(names = {"--uploadOptions"}, split = ",", description = "(Optional) Upload options") List<String> uploadOptions,
           @Option(names = {"--languageKey"}, description = "(Optional) Specify language key for single file upload") String languageKey,
           @Option(names = {"--customerId"}, description = "(Optional) Upload translations for given customerId") String customerId,
           @Option(names = {"--baseUrl"}, description = "(Optional) Set custom server URL") String baseUrl
@@ -167,7 +167,7 @@ public class SimplelocalizeCliCommand implements Runnable
   public void download(
           @Option(names = {"--apiKey"}, description = "Project API Key") String apiKey,
           @Option(names = {"--downloadPath"}, description = "Directory where translations should be downloaded") String downloadPath,
-          @Option(names = {"--downloadFormat"}, description = "Download format for translation file") String downloadFormat,
+          @Option(names = {"--downloadFormat"}, description = "Translations file format") String downloadFormat,
           @Option(names = {"--downloadOptions"}, split = ",", description = "(Optional) Download options") List<String> downloadOptions,
           @Option(names = {"--languageKey"}, description = "(Optional) Setup languageKey parameter to download file with only one language translations") String languageKey,
           @Option(names = {"--customerId"}, description = "(Optional) Download translations for given customerId") String customerId,
@@ -214,6 +214,6 @@ public class SimplelocalizeCliCommand implements Runnable
 
   public void run()
   {
-    log.warn(" 🤨 Please specify a command. Visit https://simplelocalize.io/docs/cli/get-started/ to learn more.");
+    log.warn("Please specify a command. Visit https://simplelocalize.io/docs/cli/get-started/ to learn more.");
   }
 }

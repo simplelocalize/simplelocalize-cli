@@ -58,14 +58,14 @@ public class DownloadCommand implements CliCommand
       downloadableFiles
               .parallelStream()
               .forEach(downloadableFile -> client.downloadFile(downloadableFile, downloadPath));
-      log.info(" 🎉 Download success!");
+      log.info("Download success!");
     } catch (InterruptedException e)
     {
-      log.error(" 😝 Translations could not be downloaded", e);
+      log.error("Translations could not be downloaded", e);
       Thread.currentThread().interrupt();
     } catch (IOException e)
     {
-      log.error(" 😝 Translations could not be downloaded", e);
+      log.error("Translations could not be downloaded", e);
       System.exit(1);
     }
   }
