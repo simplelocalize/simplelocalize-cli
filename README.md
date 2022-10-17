@@ -34,8 +34,6 @@ SimpleLocalize CLI offers a serveral commands to invoke, `upload`, `download`, `
 simplelocalize [command] ...parameters
 ```
 
-Remember to use bashslashes `\` in upload and download paths on Windows machines. `.\locales\translations.json` (Windows) instead `./locales/translations.json` (macOs/Linux) 
-
 ### Upload translations
 
 Command uploads translation files from given `<UPLOAD_PATH>` to SimpleLocalize.
