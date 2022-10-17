@@ -28,15 +28,89 @@ Use the same command to update SimpleLocalize CLI to the newest available versio
 
 ## Usage
 
+SimpleLocalize CLI offers a serveral commands to invoke, `upload`, `download`, `sync` and `extract`. All of them requrires `--apiKey=KEY` parameter. You can also create a `simplelocalize.yml` file with configuration.
+
 ```shell
-simplelocalize -c config.yml [COMMAND] --apiKey <PROJECT_API_KEY> ...
+simplelocalize [command] ...parameters
 ```
 
-> Remember to use bashslashes `\` in upload and download paths on Windows machines. `.\locales\translations.json` (Windows) instead `./locales/translations.json` (macOs/Linux) 
+Remember to use bashslashes `\` in upload and download paths on Windows machines. `.\locales\translations.json` (Windows) instead `./locales/translations.json` (macOs/Linux) 
+
+### Upload translations
+
+Command uploads translation files from given `<UPLOAD_PATH>` to SimpleLocalize.
+
+```shell
+simplelocalize upload 
+  --apiKey <PROJECT_API_KEY>
+  --uploadPath <UPLOAD_PATH>
+  --uploadFormat <UPLOAD_FORMAT>
+  --uploadOptions <UPLOAD_OPTIONS>
+```
+
+`--uploadOptions` parameter is optional. Use `REPLACE_TRANSLATION_IF_FOUND` option to update existing translations.
+
+Learn more about [upload translations command](https://simplelocalize.io/docs/cli/upload-translations/).
+
+### Download translations
+
+Command downloads translation files from SimpleLocalize to given `<DOWNLOAD_PATH>`.
+
+```shell
+simplelocalize download 
+  --apiKey <PROJECT_API_KEY>
+  --downloadPath <DOWNLOAD_PATH>
+  --downloadFormat <DOWNLOAD_FORMAT>
+  --downloadOptions <DOWNLOAD_OPTIONS>
+```
+
+`--downloadOptions` parameter is optional.
+
+Learn more about [download translations command](https://simplelocalize.io/docs/cli/download-translations/).
+
+### Sync translations
+
+Sync command combines upload and download command executions.
+
+```properties
+simplelocalize sync 
+  --apiKey <PROJECT_API_KEY>
+  --downloadPath <DOWNLOAD_PATH>
+  --downloadFormat <DOWNLOAD_FORMAT>
+  --downloadOptions <DOWNLOAD_OPTIONS>
+  --uploadPath <UPLOAD_PATH>
+  --uploadFormat <UPLOAD_FORMAT>
+  --uploadOptions <UPLOAD_OPTIONS>
+```
+
+`--downloadOptions` and `--uploadOptions` parameters are optional.
+
+## Extract translation keys
+
+Extract command finds and upload translation keys from project source code at `<SEARCH_DIRECTORY>` to SimpleLocalize.
+
+```properties
+simplelocalize extract 
+  --apiKey <PROJECT_API_KEY>
+  --searchDir <SEARCH_DIRECTOR>
+  --projectType <PROJECT_TYPE> 
+```
+
+See [available project types](https://simplelocalize.io/docs/cli/i18n-keys-extraction/).
+
 
 ## Configuration file
-Use configuration file in order to simplify your bash command. Arguments used in command always overrides properties set in configuration file. Below you can
-find a sample configuration file.
+Use configuration file in order to simplify your bash command. Arguments used in command always overrides properties set in configuration file. By default, SimpleLocalize will load configuration from file named `simplelocalize.yml`. You can load configuration from different location by using a `-c` parameters.
+
+```properties
+# Load default simplelocalize.yml file
+simplelocalize upload
+
+# Use configuration file at custom location
+simplelocalize -c my-configuration.yml upload
+```
+
+### Sample configuration file
 
 Filename: `simplelocalize.yml`
 
@@ -44,7 +118,7 @@ Filename: `simplelocalize.yml`
 # Get started with CLI: https://simplelocalize.io/docs/cli/get-started/
 # Available formats: https://simplelocalize.io/docs/general/file-formats/
 # Available import/export options: https://simplelocalize.io/docs/general/options/
-# Remember to use bashslashes '\' in upload and download paths on Windows machines.
+# Remember to use bashslashes '\' instead '/' in file paths on Windows machines.
 # Support: contact@simplelocalize.io
 
 # Project API Key
@@ -130,67 +204,6 @@ simplelocalize upload
   --apiKey <PROJECT_API_KEY>
   --uploadPath /{lang}/{ns}.json
   --uploadFormat single-language-json
-```
-
-## Upload translations
-
-```shell
-simplelocalize upload 
-  --apiKey <PROJECT_API_KEY>
-  --uploadPath <UPLOAD_PATH>
-  --uploadFormat <UPLOAD_FORMAT>
-  --uploadOptions <UPLOAD_OPTIONS>
-```
-
-`--uploadOptions` parameter is optional.
-
-Learn more about [upload translations command](https://simplelocalize.io/docs/cli/upload-translations/).
-
-## Download translations
-
-```shell
-simplelocalize download 
-  --apiKey <PROJECT_API_KEY>
-  --downloadPath <DOWNLOAD_PATH>
-  --downloadFormat <DOWNLOAD_FORMAT>
-  --downloadOptions <DOWNLOAD_OPTIONS>
-```
-
-`--downloadOptions` parameter is optional.
-
-Learn more about [download translations command](https://simplelocalize.io/docs/cli/download-translations/).
-
-## Sync translations
-Sync command combines upload and download commend execution.
-```properties
-simplelocalize sync 
-  --apiKey <PROJECT_API_KEY>
-  --downloadPath <DOWNLOAD_PATH>
-  --downloadFormat <DOWNLOAD_FORMAT>
-  --downloadOptions <DOWNLOAD_OPTIONS>
-  --uploadPath <UPLOAD_PATH>
-  --uploadFormat <UPLOAD_FORMAT>
-  --uploadOptions <UPLOAD_OPTIONS>
-```
-
-`--downloadOptions` and `--uploadOptions` parameters are optional.
-
-## Extract translation keys
-
-```properties
-simplelocalize extract 
-  --apiKey <PROJECT_API_KEY>
-  --searchDir <SEARCH_DIRECTOR>
-  --projectType <PROJECT_TYPE> 
-```
-
-See [available project types](https://simplelocalize.io/docs/cli/i18n-keys-extraction/).
-
-## Custom configuration file
-By default, SimpleLocalize will load configuration from file named `simplelocalize.yml`. You can load configuration from different location using `-c` parameters.
-
-```properties
-simplelocalize -c my-configuration.yml upload
 ```
 
 ## Commands documentation
