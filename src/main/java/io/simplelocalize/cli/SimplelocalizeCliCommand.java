@@ -24,14 +24,13 @@ import java.util.List;
         description =
                 {
                         "SimpleLocalize CLI is an official Localization CLI Tool for SimpleLocalize.io Platform",
-                        "Usage: 'simplelocalize-cli [command]'",
+                        "Usage: 'simplelocalize [command]'",
                         "Visit https://simplelocalize.io/docs/ to learn more."
                 },
         mixinStandardHelpOptions = true,
         version = {
                 "SimpleLocalize CLI: " + Version.NUMBER,
-                "JVM: ${java.version} (${java.vendor} ${java.vm.name} ${java.vm.version})",
-                "OS: ${os.name} ${os.version} ${os.arch}"}
+                "Operating system: ${os.name} ${os.version} ${os.arch}"}
 )
 public class SimplelocalizeCliCommand implements Runnable
 {
