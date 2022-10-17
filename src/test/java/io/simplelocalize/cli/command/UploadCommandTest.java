@@ -4,8 +4,8 @@ import io.simplelocalize.cli.client.SimpleLocalizeClient;
 import io.simplelocalize.cli.client.dto.UploadRequest;
 import io.simplelocalize.cli.configuration.Configuration;
 import org.assertj.core.api.Assertions;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
@@ -24,14 +24,14 @@ class UploadCommandTest
 
   private static String originalOsName;
 
-  @BeforeAll
-  static void beforeAll()
+  @BeforeEach
+  void beforeAll()
   {
     originalOsName = System.getProperty("os.name");
   }
 
-  @AfterAll
-  static void tearDown()
+  @AfterEach
+  void tearDown()
   {
     System.setProperty("os.name", originalOsName);
   }
