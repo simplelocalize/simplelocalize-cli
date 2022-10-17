@@ -24,7 +24,9 @@ curl -s https://get.simplelocalize.io/2.0/install | bash
 . { iwr -useb https://get.simplelocalize.io/2.0/install-windows } | iex;
 ```
 
-Use the same command to update SimpleLocalize CLI to the newest available version.
+Use the same command to update SimpleLocalize CLI to the newest available version. 
+
+You can also put the exact CLI version in URL to make sure the CLI won't change overtime, eg.: `https://get.simplelocalize.io/2.0.6/install` or `https://get.simplelocalize.io/2.0.6/install-windows`.
 
 ## Usage
 
@@ -116,7 +118,6 @@ Filename: `simplelocalize.yml`
 # Get started with CLI: https://simplelocalize.io/docs/cli/get-started/
 # Available formats: https://simplelocalize.io/docs/general/file-formats/
 # Available import/export options: https://simplelocalize.io/docs/general/options/
-# Remember to use bashslashes '\' instead '/' in file paths on Windows machines.
 # Support: contact@simplelocalize.io
 
 # Project API Key
