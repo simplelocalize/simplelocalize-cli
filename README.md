@@ -17,7 +17,7 @@ SimpleLocalize CLI to simplifies the process of translation in web apps, mobile 
 Installation process is automated by command-line scripts. Both scripts for Windows (PowerShell) and macOS/Linux/Windows downloads a binary file with CLI, copies it to user files and makes it available to run anywhere in the system from a command-line.
 
 ```shell
-# macOs / Linux / Windows (Shell)
+# macOs / Linux / Windows (WSL)
 curl -s https://get.simplelocalize.io/2.0/install | bash
 
 # Windows (PowerShell)
