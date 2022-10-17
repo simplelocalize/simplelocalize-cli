@@ -3,6 +3,9 @@ package io.simplelocalize.cli.command;
 import io.simplelocalize.cli.client.SimpleLocalizeClient;
 import io.simplelocalize.cli.client.dto.UploadRequest;
 import io.simplelocalize.cli.configuration.Configuration;
+import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
@@ -18,6 +21,20 @@ class UploadCommandTest
 
   @Mock
   private SimpleLocalizeClient client = new SimpleLocalizeClient("https://simplelocalize.io", "my-api-key");
+
+  private static String originalOsName;
+
+  @BeforeEach
+  void beforeAll()
+  {
+    originalOsName = System.getProperty("os.name");
+  }
+
+  @AfterEach
+  void tearDown()
+  {
+    System.setProperty("os.name", originalOsName);
+  }
 
 
   @Test
@@ -159,4 +176,20 @@ class UploadCommandTest
   }
 
 
+  @Test
+  public void shouldThrowMatchingFilesCouldNotBeFoundWhenFakeWindows() throws Exception
+  {
+    //given
+    System.setProperty("os.name", "Windows 10");
+    Configuration configuration = new Configuration();
+    configuration.setApiKey("my-api-key");
+    configuration.setUploadPath("./junit/download-test/values-en/strings.xml");
+    configuration.setUploadFormat("android");
+
+    //when & then
+    UploadCommand uploadCommand = new UploadCommand(client, configuration);
+    Assertions
+            .assertThatThrownBy(uploadCommand::invoke)
+            .isInstanceOf(IllegalArgumentException.class);
+  }
 }

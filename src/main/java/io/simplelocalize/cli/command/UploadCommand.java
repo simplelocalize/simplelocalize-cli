@@ -6,6 +6,7 @@ import io.simplelocalize.cli.client.dto.UploadRequest;
 import io.simplelocalize.cli.configuration.Configuration;
 import io.simplelocalize.cli.configuration.ConfigurationValidator;
 import io.simplelocalize.cli.io.FileListReader;
+import io.simplelocalize.cli.util.WindowsUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -36,18 +37,23 @@ public class UploadCommand implements CliCommand
   public void invoke()
   {
     configurationValidator.validateUploadConfiguration(configuration);
-
-    List<FileToUpload> filesToUpload = List.of();
-    try
+    String uploadPath = configuration.getUploadPath();
+    if (WindowsUtils.isWindows())
     {
-      filesToUpload = fileListReader.findFilesToUpload(configuration.getUploadPath());
-    } catch (IOException e)
-    {
-      log.error(" 😝 Matching files could not be found", e);
-      System.exit(1);
+      uploadPath = WindowsUtils.convertToWindowsPath(uploadPath);
     }
 
-    log.info(" 📄  Found {} files to upload", filesToUpload.size());
+    List<FileToUpload> filesToUpload;
+    try
+    {
+      filesToUpload = fileListReader.findFilesToUpload(uploadPath);
+    } catch (IOException e)
+    {
+      log.error("Matching files could not be found at {}", uploadPath, e);
+      throw new IllegalArgumentException("Matching files could not be found", e);
+    }
+
+    log.info("Found {} files to upload", filesToUpload.size());
     for (FileToUpload fileToUpload : filesToUpload)
     {
       try
@@ -55,7 +61,7 @@ public class UploadCommand implements CliCommand
         long length = fileToUpload.getPath().toFile().length();
         if (length == 0)
         {
-          log.warn(" 🤔 Skipping empty file: {}", fileToUpload.getPath());
+          log.warn("Skipping empty file: {}", fileToUpload.getPath());
           continue;
         }
 
@@ -68,7 +74,7 @@ public class UploadCommand implements CliCommand
         boolean isLanguageMatching = fileLanguageKey.equals(configurationLanguageKey);
         if (hasFileLanguageKey && hasConfigurationLanguageKey && !isLanguageMatching)
         {
-          log.info(" 🤔 Skipping '{}' language, file: {}", fileToUpload.getLanguage(), fileToUpload.getPath());
+          log.info("Skipping '{}' language, file: {}", fileToUpload.getLanguage(), fileToUpload.getPath());
           continue;
         }
 
@@ -81,7 +87,7 @@ public class UploadCommand implements CliCommand
         boolean isMultiLanguageFormat = isMultiLanguageFormat(configuration.getUploadFormat());
         if (!hasFileLanguageKey && !hasConfigurationLanguageKey && !isMultiLanguageFormat)
         {
-          log.info(" 🤔 Language key not present in '--uploadPath' nor '--languageKey' parameter, file: {}", fileToUpload.getPath());
+          log.info("Language key not present in '--uploadPath' nor '--languageKey' parameter, file: {}", fileToUpload.getPath());
         }
 
         String uploadFormat = configuration.getUploadFormat();
@@ -99,10 +105,10 @@ public class UploadCommand implements CliCommand
         client.uploadFile(uploadRequest);
       } catch (IOException e)
       {
-        log.warn(" 😝 Upload failed: {}", fileToUpload.getPath(), e);
+        log.warn("Upload failed: {}", fileToUpload.getPath(), e);
       } catch (InterruptedException e)
       {
-        log.error(" 😝 Upload interrupted: {}", fileToUpload.getPath(), e);
+        log.error("Upload interrupted: {}", fileToUpload.getPath(), e);
         Thread.currentThread().interrupt();
       }
     }

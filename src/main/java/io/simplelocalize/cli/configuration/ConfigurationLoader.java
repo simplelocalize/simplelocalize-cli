@@ -39,19 +39,20 @@ public final class ConfigurationLoader
     Constructor yamlTargetClass = new Constructor(Configuration.class);
     Yaml yaml = new Yaml(yamlTargetClass);
 
+    log.info("Loading configuration file from: {}", configurationFilePath);
     Configuration configuration;
     try
     {
       InputStream inputStream = new FileInputStream(file);
       configuration = yaml.load(inputStream);
-      log.info(" 🗄  Loaded configuration file from: {}", configurationFilePath);
+      log.info("Configuration file loaded successfully");
     } catch (FileNotFoundException e)
     {
-      log.info(" 🗄  No default configuration file at ./simplelocalize.yml");
+      log.info("Configuration file not found");
       return new Configuration();
     } catch (Exception e)
     {
-      log.error(" 😝 Unable to load configuration: {}", e.getMessage());
+      log.error("Unable to load configuration: {}", e.getMessage());
       throw new ConfigurationException();
     }
     return configuration;

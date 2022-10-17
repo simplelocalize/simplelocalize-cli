@@ -9,6 +9,12 @@ public final class ConfigurationValidator
 {
   private static final Logger log = LoggerFactory.getLogger(ConfigurationValidator.class);
 
+  public void validateExtractConfiguration(Configuration configuration)
+  {
+    validateIsNotEmptyOrNull(configuration.getApiKey(), "apiKey");
+    validateIsNotEmptyOrNull(configuration.getProjectType(), "projectType");
+  }
+
   public void validateUploadConfiguration(Configuration configuration)
   {
     validateIsNotEmptyOrNull(configuration.getApiKey(), "apiKey");
@@ -32,5 +38,4 @@ public final class ConfigurationValidator
       throw new ConfigurationException();
     }
   }
-
 }

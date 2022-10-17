@@ -64,13 +64,13 @@ public class SimpleLocalizeClient
     HttpResponse<String> httpResponse = httpClient.send(httpRequest, HttpResponse.BodyHandlers.ofString());
     throwOnError(httpResponse);
     int keysProcessed = JsonPath.read(httpResponse.body(), "$.data.uniqueKeysProcessed");
-    log.info(" 🎉 Successfully uploaded {} keys", keysProcessed);
+    log.info("Successfully uploaded {} keys", keysProcessed);
   }
 
   public void uploadFile(UploadRequest uploadRequest) throws IOException, InterruptedException
   {
     Path uploadPath = uploadRequest.getPath();
-    log.info(" 🌍 Uploading {}", uploadPath);
+    log.info("Uploading {}", uploadPath);
     URI uri = uriFactory.buildUploadUri(uploadRequest);
     HttpRequest httpRequest = httpRequestFactory.createUploadFileRequest(uri, uploadRequest);
     HttpResponse<String> httpResponse = httpClient.send(httpRequest, HttpResponse.BodyHandlers.ofString());
@@ -79,7 +79,7 @@ public class SimpleLocalizeClient
 
   public List<DownloadableFile> fetchDownloadableFiles(DownloadRequest downloadRequest) throws IOException, InterruptedException
   {
-    log.info(" 🌍 Preparing translation files");
+    log.info("Preparing files to download");
     URI downloadUri = uriFactory.buildDownloadUri(downloadRequest);
     HttpRequest httpRequest = httpRequestFactory.createGetRequest(downloadUri).build();
     HttpResponse<String> httpResponse = httpClient.send(httpRequest, HttpResponse.BodyHandlers.ofString());
@@ -105,14 +105,14 @@ public class SimpleLocalizeClient
       {
         Files.createDirectories(parentDirectory);
       }
-      log.info(" 🌍 Downloading {}", savePath);
+      log.info("Downloading {}", savePath);
       httpClient.send(httpRequest, HttpResponse.BodyHandlers.ofFile(savePath, StandardOpenOption.CREATE, StandardOpenOption.WRITE, StandardOpenOption.TRUNCATE_EXISTING));
     } catch (IOException e)
     {
-      log.error(" 😝 Download failed: {}", savePath, e);
+      log.error("Download failed: {}", savePath, e);
     } catch (InterruptedException e)
     {
-      log.error(" 😝 Download interrupted: {}", savePath, e);
+      log.error("Download interrupted: {}", savePath, e);
       Thread.currentThread().interrupt();
     }
   }
@@ -127,7 +127,7 @@ public class SimpleLocalizeClient
     Boolean passed = JsonPath.read(json, "$.data.passed");
     String message = JsonPath.read(json, "$.data.message");
     int status = JsonPath.read(json, "$.data.status");
-    log.info(" 🌍 Gate result: {} (status: {}, message: {})", passed, status, message);
+    log.info("Gate result: {} (status: {}, message: {})", passed, status, message);
     return status;
   }
 
@@ -146,7 +146,7 @@ public class SimpleLocalizeClient
       {
         message = "Unknown error, HTTP Status: " + httpResponse.statusCode();
       }
-      log.error(" 😝 Request failed: {}", message);
+      log.error("Request failed: {}", message);
       throw new ApiRequestException(message, httpResponse);
     }
   }

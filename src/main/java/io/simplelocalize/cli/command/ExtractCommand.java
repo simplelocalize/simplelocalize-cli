@@ -32,14 +32,14 @@ public class ExtractCommand implements CliCommand
     String searchDir = configuration.getSearchDir();
     String projectType = configuration.getProjectType();
 
-    log.info(" 🕵️‍♂️ Running keys extraction");
+    log.info("Running keys extraction");
     ProjectProcessorFactory processorFactory = new ProjectProcessorFactory();
     ExtractionProcessor extractionProcessor = processorFactory.createForType(projectType);
     ExtractionResult result = extractionProcessor.process(Paths.get(searchDir));
 
     Set<String> keys = result.getKeys();
     List<Path> processedFiles = result.getProcessedFiles();
-    log.info(" 📦 Found {} unique keys in {} components", keys.size(), processedFiles.size());
+    log.info("Found {} unique keys in {} components", keys.size(), processedFiles.size());
 
     Set<String> ignoredKeys = new HashSet<>(configuration.getIgnoreKeys());
     keys.removeAll(ignoredKeys);
@@ -49,7 +49,7 @@ public class ExtractCommand implements CliCommand
       client.uploadKeys(keys);
     } catch (Exception e)
     {
-      log.error(" 😝 Keys upload failed. Contact support: contact@simplelocalize.io", e);
+      log.error("Keys upload failed. Contact support: contact@simplelocalize.io", e);
       Thread.currentThread().interrupt();
     }
   }
