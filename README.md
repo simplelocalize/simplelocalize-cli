@@ -14,14 +14,17 @@ SimpleLocalize CLI to simplifies the process of translation in web apps, mobile 
 
 ## Installation
 
-### Version 2.0.X
+Installation process is automated by command-line scripts. Both scripts for Windows (PowerShell) and macOS/Linux/Windows downloads a binary file with CLI, copies it to user files and makes it available to run anywhere in the system from a command-line.
+
 ```shell
-# macOs / Linux
+# macOs / Linux / Windows (Shell)
 curl -s https://get.simplelocalize.io/2.0/install | bash
 
 # Windows (PowerShell)
 . { iwr -useb https://get.simplelocalize.io/2.0/install-windows } | iex;
 ```
+
+Use the same command to update SimpleLocalize CLI to the newest available version.
 
 ## Usage
 
@@ -41,7 +44,7 @@ Filename: `simplelocalize.yml`
 # Get started with CLI: https://simplelocalize.io/docs/cli/get-started/
 # Available formats: https://simplelocalize.io/docs/general/file-formats/
 # Available import/export options: https://simplelocalize.io/docs/general/options/
-# Remember to use bashslashes '\'in upload and download paths on Windows machines.
+# Remember to use bashslashes '\' in upload and download paths on Windows machines.
 # Support: contact@simplelocalize.io
 
 # Project API Key
@@ -51,8 +54,8 @@ apiKey: API_KEY
 uploadPath: ./src/{lang}/{ns}.json
 uploadFormat: single-language-json
 uploadOptions:
-  # by default 'upload' command only adds new keys and fills empty translations, 
-  # add this option to overwrite existing translations with values from uploaded file
+  # by default, the 'upload' command only adds new keys and fills empty translations, 
+  # add this option to overwrite existing translations with values from the uploaded file
   - REPLACE_TRANSLATION_IF_FOUND 
 
 # Properties used by 'download' command
@@ -210,7 +213,7 @@ Please remember to [get API Key for your SimpleLocalize project](https://simplel
 
 ## Documentation 
 
-Head to [docs.simplelocalize.io](https://simplelocalize.io/docs/cli/get-started/) to learn the SimpleLocalize basics
+Head to [simplelocalize.io/docs](https://simplelocalize.io/docs/cli/get-started/) to learn the SimpleLocalize basics
 
 ## How to build project, contribute or add features?
 
