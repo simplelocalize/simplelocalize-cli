@@ -28,9 +28,7 @@ import java.util.List;
                         "Visit https://simplelocalize.io/docs/ to learn more."
                 },
         mixinStandardHelpOptions = true,
-        version = {
-                "SimpleLocalize CLI: " + Version.NUMBER,
-                "Operating system: ${os.name} ${os.version} ${os.arch}"}
+        version = {"SimpleLocalize CLI: " + Version.NUMBER + " (${os.name} ${os.version} ${os.arch})"}
 )
 public class SimplelocalizeCliCommand implements Runnable
 {
