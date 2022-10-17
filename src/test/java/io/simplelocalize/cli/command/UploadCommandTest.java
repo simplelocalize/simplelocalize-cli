@@ -4,6 +4,8 @@ import io.simplelocalize.cli.client.SimpleLocalizeClient;
 import io.simplelocalize.cli.client.dto.UploadRequest;
 import io.simplelocalize.cli.configuration.Configuration;
 import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
@@ -19,6 +21,20 @@ class UploadCommandTest
 
   @Mock
   private SimpleLocalizeClient client = new SimpleLocalizeClient("https://simplelocalize.io", "my-api-key");
+
+  private static String originalOsName;
+
+  @BeforeAll
+  static void beforeAll()
+  {
+    originalOsName = System.getProperty("os.name");
+  }
+
+  @AfterAll
+  static void tearDown()
+  {
+    System.setProperty("os.name", originalOsName);
+  }
 
 
   @Test
