@@ -14,14 +14,13 @@ SimpleLocalize CLI to simplifies the process of translation in web apps, mobile 
 
 ## Installation
 
-### Version 2.0.X (recommended)
+### Version 2.0.X
 ```shell
+# macOs / Linux
 curl -s https://get.simplelocalize.io/2.0/install | bash
-```
 
-### Version 1.1.2
-```shell
-curl -s https://get.simplelocalize.io/install | bash
+# Windows (PowerShell)
+. { iwr -useb https://get.simplelocalize.io/2.0/install-windows } | iex;
 ```
 
 ## Usage
