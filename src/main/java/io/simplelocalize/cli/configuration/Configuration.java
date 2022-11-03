@@ -28,6 +28,10 @@ public class Configuration
 
   private String languageKey;
 
+  private String environment;
+
+  private String pullPath;
+
   public String getSearchDir()
   {
     return searchDir;
@@ -156,5 +160,25 @@ public class Configuration
   public void setBaseUrl(String baseUrl)
   {
     this.baseUrl = baseUrl;
+  }
+
+  public String getEnvironment()
+  {
+    return environment;
+  }
+
+  public void setEnvironment(String environment)
+  {
+    this.environment = environment;
+  }
+
+  public String getPullPath()
+  {
+    return pullPath;
+  }
+
+  public void setPullPath(String pullPath)
+  {
+    this.pullPath = pullPath;
   }
 }

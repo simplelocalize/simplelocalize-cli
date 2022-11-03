@@ -2,9 +2,7 @@ package io.simplelocalize.cli;
 
 import io.micronaut.configuration.picocli.PicocliRunner;
 import io.simplelocalize.cli.client.SimpleLocalizeClient;
-import io.simplelocalize.cli.command.DownloadCommand;
-import io.simplelocalize.cli.command.ExtractCommand;
-import io.simplelocalize.cli.command.UploadCommand;
+import io.simplelocalize.cli.command.*;
 import io.simplelocalize.cli.configuration.Configuration;
 import io.simplelocalize.cli.configuration.ConfigurationLoader;
 import io.simplelocalize.cli.configuration.ConfigurationValidator;
@@ -45,7 +43,7 @@ public class SimplelocalizeCliCommand implements Runnable
 
   @Command(
           name = "extract",
-          description = "Extract translation keys from project files. Use 'simplelocalize-cli extract --help' to learn more about the parameters.")
+          description = "Extract translation keys from project files. Use 'simplelocalize extract --help' to learn more about the parameters.")
   public void extract(
           @Option(names = {"--apiKey"}, description = "Project API Key") String apiKey,
           @Option(names = {"--projectType"}, description = "Project type tells CLI how to find i18n keys in your project files") String projectType,
@@ -84,7 +82,7 @@ public class SimplelocalizeCliCommand implements Runnable
 
   @Command(
           name = "sync",
-          description = "Synchronize (Upload & Download) translations with SimpleLocalize editor. Use 'simplelocalize-cli sync --help' to learn more about the parameters.")
+          description = "Synchronize (Upload & Download) translations with SimpleLocalize editor. Use 'simplelocalize sync --help' to learn more about the parameters.")
   public void sync(
           @Option(names = {"--apiKey"}, description = "Project API Key") String apiKey,
           @Option(names = {"--uploadPath"}, description = "Path to file with translation or translation keys to upload. Use '{lang}' to define language key if you are uploading more than one file with translations.") String uploadPath,
@@ -105,7 +103,7 @@ public class SimplelocalizeCliCommand implements Runnable
 
   @Command(
           name = "upload",
-          description = "Upload translations or translation keys to SimpleLocalize editor. Use 'simplelocalize-cli upload --help' to learn more about the parameters.")
+          description = "Upload translations or translation keys to SimpleLocalize editor. Use 'simplelocalize upload --help' to learn more about the parameters.")
   public void upload(
           @Option(names = {"--apiKey"}, description = "Project API Key") String apiKey,
           @Option(names = {"--uploadPath"}, description = "Path to file with translation or translation keys to upload. Use '{lang}' to define language key if you are uploading more than one file with translations.") String uploadPath,
@@ -163,7 +161,7 @@ public class SimplelocalizeCliCommand implements Runnable
 
   @Command(
           name = "download",
-          description = "Download translations in ready to use format for your i18n library. Use 'simplelocalize-cli download --help' to learn more about the parameters.")
+          description = "Download translations in ready to use format for your i18n library. Use 'simplelocalize download --help' to learn more about the parameters.")
   public void download(
           @Option(names = {"--apiKey"}, description = "Project API Key") String apiKey,
           @Option(names = {"--downloadPath"}, description = "Directory where translations should be downloaded") String downloadPath,
@@ -211,6 +209,105 @@ public class SimplelocalizeCliCommand implements Runnable
     DownloadCommand downloadCommand = new DownloadCommand(client, configuration);
     downloadCommand.invoke();
   }
+
+  @Command(
+          name = "pull",
+          description = "Pull translations from Translation Hosting Use 'simplelocalize pull --help' to learn more about the parameters.")
+  public void pull(
+          @Option(names = {"--apiKey"}, description = "Project API Key") String apiKey,
+          @Option(names = {"--pullPath"}, description = "Directory where translations should be saved") String pullPath,
+          @Option(names = {"--environment"}, description = "Translation Hosting environment ('latest' or 'production)") String environment,
+          @Option(names = {"--baseUrl"}, description = "(Optional) Set custom server URL") String baseUrl
+  )
+  {
+    ConfigurationLoader configurationLoader = new ConfigurationLoader();
+    Configuration configuration = configurationLoader.loadOrGetDefault(configurationFilePath);
+    if (StringUtils.isNotEmpty(baseUrl))
+    {
+      configuration.setBaseUrl(baseUrl);
+    }
+
+    if (StringUtils.isNotEmpty(apiKey))
+    {
+      configuration.setApiKey(apiKey);
+    }
+
+    if (StringUtils.isNotEmpty(environment))
+    {
+      configuration.setEnvironment(environment);
+    }
+
+    if (StringUtils.isNotEmpty(pullPath))
+    {
+      configuration.setPullPath(pullPath);
+    }
+
+    ConfigurationValidator configurationValidator = new ConfigurationValidator();
+    configurationValidator.validateHostingPullConfiguration(configuration);
+    SimpleLocalizeClient client = SimpleLocalizeClient.create(configuration.getBaseUrl(), configuration.getApiKey());
+    PullHostingCommand command = new PullHostingCommand(client, configuration);
+    command.invoke();
+  }
+
+  @Command(
+          name = "status",
+          description = "Get project status. Use 'simplelocalize status --help' to learn more about the parameters.")
+  public void status(
+          @Option(names = {"--apiKey"}, description = "Project API Key") String apiKey,
+          @Option(names = {"--baseUrl"}, description = "(Optional) Set custom server URL") String baseUrl
+  )
+  {
+    ConfigurationLoader configurationLoader = new ConfigurationLoader();
+    Configuration configuration = configurationLoader.loadOrGetDefault(configurationFilePath);
+    if (StringUtils.isNotEmpty(baseUrl))
+    {
+      configuration.setBaseUrl(baseUrl);
+    }
+
+    if (StringUtils.isNotEmpty(apiKey))
+    {
+      configuration.setApiKey(apiKey);
+    }
+
+    ConfigurationValidator configurationValidator = new ConfigurationValidator();
+    configurationValidator.validateGetStatusConfiguration(configuration);
+    SimpleLocalizeClient client = SimpleLocalizeClient.create(configuration.getBaseUrl(), configuration.getApiKey());
+    StatusCommand command = new StatusCommand(client);
+    command.invoke();
+  }
+
+  @Command(
+          name = "publish",
+          description = "Publish translations to Translation Hosting. Use 'simplelocalize publish --help' to learn more about the parameters.")
+  public void publish(
+          @Option(names = {"--apiKey"}, description = "Project API Key") String apiKey,
+          @Option(names = {"--environment"}, description = "Translation Hosting environment to which you want to publish changes. Publishing changes to 'production' environment is always preceded by publishing to 'latest' environment.") String environment,
+          @Option(names = {"--baseUrl"}, description = "(Optional) Set custom server URL") String baseUrl
+  )
+  {
+    ConfigurationLoader configurationLoader = new ConfigurationLoader();
+    Configuration configuration = configurationLoader.loadOrGetDefault(configurationFilePath);
+    if (StringUtils.isNotEmpty(baseUrl))
+    {
+      configuration.setBaseUrl(baseUrl);
+    }
+
+    if (StringUtils.isNotEmpty(apiKey))
+    {
+      configuration.setApiKey(apiKey);
+    }
+    if (StringUtils.isNotEmpty(environment))
+    {
+      configuration.setEnvironment(environment);
+    }
+
+    ConfigurationValidator configurationValidator = new ConfigurationValidator();
+    configurationValidator.validateHostingPublishConfiguration(configuration);
+    SimpleLocalizeClient client = SimpleLocalizeClient.create(configuration.getBaseUrl(), configuration.getApiKey());
+    PublishHostingCommand command = new PublishHostingCommand(client, configuration);
+    command.invoke();
+  }
+
 
   public void run()
   {

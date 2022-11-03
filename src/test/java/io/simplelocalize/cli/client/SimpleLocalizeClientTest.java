@@ -289,28 +289,4 @@ public class SimpleLocalizeClientTest
     //then
     assertThat(Path.of(downloadPath)).hasContent("sample").isRegularFile();
   }
-
-  @Test
-  void shouldValidateQuality() throws Exception
-  {
-    //given
-    SimpleLocalizeClient client = new SimpleLocalizeClient(MOCK_SERVER_BASE_URL, "96a7b6ca75c79d4af4dfd5db2946fdd4");
-    mockServer.when(request()
-                            .withMethod("GET")
-                            .withPath("/cli/v1/validate/gate")
-                            .withHeader("X-SimpleLocalize-Token", "96a7b6ca75c79d4af4dfd5db2946fdd4"),
-                    Times.exactly(1))
-            .respond(
-                    response()
-                            .withStatusCode(200)
-                            .withBody("{'data':{'passed': true, 'message': 'ok', 'status': 200}}")
-                            .withDelay(TimeUnit.MILLISECONDS, 200)
-            );
-
-    //when
-    int validateGate = client.validateGate();
-
-    //then
-    assertThat(validateGate).isEqualTo(200);
-  }
 }

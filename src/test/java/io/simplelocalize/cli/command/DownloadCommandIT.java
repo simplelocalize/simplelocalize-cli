@@ -16,7 +16,7 @@ public class DownloadCommandIT
 {
 
   private final String API_KEY = "my-api-key";
-  private static final String PRODUCTION_BASE_URL = "https://api.simplelocalize.io";
+  private static final String BASE_URL = "http://localhost:8080";
 
 
   @Test
@@ -28,7 +28,7 @@ public class DownloadCommandIT
     configuration.setDownloadPath("./junit/download-test/values-{lang}/strings.xml");
     configuration.setDownloadFormat("android");
 
-    SimpleLocalizeClient client = SimpleLocalizeClient.create(PRODUCTION_BASE_URL, API_KEY);
+    SimpleLocalizeClient client = SimpleLocalizeClient.create(BASE_URL, API_KEY);
 
     //when
     DownloadCommand downloadCommand = new DownloadCommand(client, configuration);
@@ -49,7 +49,7 @@ public class DownloadCommandIT
     configuration.setDownloadPath("./junit/download-test/values-{lang}-test/strings.xml");
     configuration.setDownloadFormat("android");
 
-    SimpleLocalizeClient client = SimpleLocalizeClient.create(PRODUCTION_BASE_URL, API_KEY);
+    SimpleLocalizeClient client = SimpleLocalizeClient.create(BASE_URL, API_KEY);
 
     //when
     DownloadCommand downloadCommand = new DownloadCommand(client, configuration);
@@ -70,7 +70,7 @@ public class DownloadCommandIT
     configuration.setDownloadPath("./junit/download-test/jsons/{lang}.json");
     configuration.setDownloadFormat("single-language-json");
 
-    SimpleLocalizeClient client = SimpleLocalizeClient.create(PRODUCTION_BASE_URL, API_KEY);
+    SimpleLocalizeClient client = SimpleLocalizeClient.create(BASE_URL, API_KEY);
 
     //when
     DownloadCommand downloadCommand = new DownloadCommand(client, configuration);
@@ -90,7 +90,7 @@ public class DownloadCommandIT
     configuration.setApiKey(API_KEY);
     configuration.setDownloadPath("./junit/download-test/multi-language-file/multi-language-file.json");
     configuration.setDownloadFormat("multi-language-json");
-    SimpleLocalizeClient client = SimpleLocalizeClient.create(PRODUCTION_BASE_URL, API_KEY);
+    SimpleLocalizeClient client = SimpleLocalizeClient.create(BASE_URL, API_KEY);
 
     //when
     DownloadCommand downloadCommand = new DownloadCommand(client, configuration);
