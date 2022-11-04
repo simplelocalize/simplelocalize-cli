@@ -1,0 +1,44 @@
+{
+  "msg": "OK",
+  "status": 200,
+  "data": {
+    "name": "My project",
+    "projectToken": "dev-e7c0b7686c7b45fea4450a4c4a83c7ff",
+    "languages": [
+      {
+        "key": "de_DE",
+        "name": "",
+        "isDefault": false
+      },
+      {
+        "key": "en",
+        "name": "English",
+        "isDefault": false
+      },
+      {
+        "key": "fr_FR",
+        "name": "",
+        "isDefault": false
+      },
+      {
+        "key": "pl_PL",
+        "name": "",
+        "isDefault": false
+      }
+    ],
+    "customers": [],
+    "namespaces": [],
+    "keys": 92,
+    "unpublishedChanges": 0,
+    "translatedPercentage": 0.96,
+    "lastActivityAt": "2022-11-03T20:32:34",
+    "lastEditedAt": "2022-10-26T12:27:20",
+    "translatedKeysByLanguage": {
+      "de_DE": 90,
+      "en": 82,
+      "fr_FR": 89,
+      "pl_PL": 91
+    },
+    "hostingResources": []
+  }
+}
