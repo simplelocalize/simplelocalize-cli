@@ -6,35 +6,46 @@
 
 ## What it does?
 
-SimpleLocalize CLI to simplifies the process of translation in web apps, mobile apps, and games. It can:
-- find translation keys in your local files
-- upload existing translation files or translation keys
-- download translation file in ready to use format for already used i18n library like: i18next, Android, iOS, and many others
-
+SimpleLocalize CLI offers:
+- finding and extracting translation keys in your project files
+- uploading translation files or translation keys
+- downloading translation files
+- getting translation project status
+- publishing translations to the CDN.
 
 ## Installation
 
-Installation process is automated by command-line scripts. Both scripts for Windows (PowerShell) and macOS/Linux/Windows downloads a binary file with CLI, copies it to user files and makes it available to run anywhere in the system from a command-line.
+The installation process is automated by command-line scripts. Both scripts for Windows (PowerShell) and macOS/Linux/Windows downloads a binary file with CLI, copies it to user files and makes it available to run anywhere in the system from a command-line.
 
 ```shell
 # macOs / Linux / Windows (WSL)
-curl -s https://get.simplelocalize.io/2.0/install | bash
+curl -s https://get.simplelocalize.io/2.1/install | bash
 
 # Windows (PowerShell)
-. { iwr -useb https://get.simplelocalize.io/2.0/install-windows } | iex;
+. { iwr -useb https://get.simplelocalize.io/2.1/install-windows } | iex;
 ```
 
-Use the same command to update SimpleLocalize CLI to the newest available version. 
+To change or update the CLI version, run the installation script with the desired version number in the URL. You can also put the exact CLI version in URL to 
+explicitly point the version you want to use, e.g.: `https://get.simplelocalize.io/2.0.6/install` or `https://get.simplelocalize.io/2.0.6/install-windows`. See [releases](https://github.com/simplelocalize/simplelocalize-cli/releases) for the list of available versions.
 
-You can also put the exact CLI version in URL to make sure the CLI won't change overtime, eg.: `https://get.simplelocalize.io/2.0.6/install` or `https://get.simplelocalize.io/2.0.6/install-windows`.
+
 
 ## Usage
 
-SimpleLocalize CLI offers a serveral commands to invoke, `upload`, `download`, `sync` and `extract`. All of them requrires `--apiKey=KEY` parameter. You can also create a `simplelocalize.yml` file with configuration.
+SimpleLocalize CLI offers a several commands to invoke, All of them requires `--apiKey=KEY` parameter that is unique for each project. 
 
 ```shell
 simplelocalize [command] ...parameters
 ```
+
+Commands:
+- `status` - gets translation project details
+- `upload` - uploads translation files or translation keys 
+- `download` - downloads translation files
+- `sync` - uploads translation files and downloads translation files
+- `pull` - downloads translation files from [Translation Hosting](https://simplelocalize.io/translation-hosting)
+- `publish` - publishes translations to [Translation Hosting](https://simplelocalize.io/translation-hosting)
+- `extract` - finds and extracts translation keys in your project files
 
 ### Upload translations
 
@@ -85,7 +96,7 @@ simplelocalize sync
 
 `--downloadOptions` and `--uploadOptions` parameters are optional.
 
-## Extract translation keys
+### Extract translation keys
 
 Extract command finds and upload translation keys from project source code at `<SEARCH_DIRECTORY>` to SimpleLocalize.
 
@@ -97,6 +108,104 @@ simplelocalize extract
 ```
 
 See [available project types](https://simplelocalize.io/docs/cli/i18n-keys-extraction/).
+
+
+## Usage examples
+
+Below you can find some examples of using SimpleLocalize CLI.
+
+### Example: One file with translations
+
+```bash
+.
+└── locales
+    └── messages.json
+```
+
+Command:
+```
+simplelocalize upload 
+  --apiKey <PROJECT_API_KEY>
+  --uploadPath /locales/messages.json
+  --uploadFormat multi-language-json
+```
+
+
+### Example: Single file in language directories
+
+```bash
+.
+├── ca
+│   └── index.json
+├── en
+│   └── index.json
+└── es
+    └── index.json
+```
+
+Command:
+```
+simplelocalize upload 
+  --apiKey <PROJECT_API_KEY>
+  --uploadPath /{lang}/index.json
+  --uploadFormat single-language-json
+```
+
+### Example: Multiple files in language directories
+
+```bash
+.
+├── ca
+│   ├── common.json
+│   └── home.json
+├── en
+│   ├── common.json
+│   └── home.json
+└── es
+    ├── common.json
+    └── home.json
+```
+
+Command:
+```
+simplelocalize upload 
+  --apiKey <PROJECT_API_KEY>
+  --uploadPath /{lang}/{ns}.json
+  --uploadFormat single-language-json
+```
+
+### Pull resources from Translation Hosting
+
+Downloads all translation hosting files to given directory in `--pullPath` parameter. It overwrites existing files and creates subdirectories if necessary. Available environment variables: `latest`, `production`.
+
+```
+simplelocalize pull 
+  --apiKey <PROJECT_API_KEY>
+  --pullPath ./hosting/
+  --environment latest
+```
+
+### Publish resources to Translation Hosting
+
+It publishes translation to Translation Hosting. It behaves exactly the same as publish buttons in the SimpleLocalize (Hosting tab).
+
+- `--environment latest` gets translations from Translation Editor and publishes them to Translation Hosting to `latest` environment.
+- `--environment production` gets translations from Translation Hosting (`latest`) and publishes them to Translation Hosting (`production`).
+
+```
+simplelocalize publish 
+  --apiKey <PROJECT_API_KEY>
+  --environment latest
+```
+
+### Getting project details
+
+Command gets project details and prints them to the console.
+
+```
+simplelocalize publish 
+  --apiKey <PROJECT_API_KEY>
+```
 
 
 ## Configuration file
@@ -143,93 +252,16 @@ projectType: yahoo/react-intl
 ignoreKeys:
   - 'WELCOME'
   - 'ABOUT-US'
+
+# Properties used by 'pull' and 'publish' command    
+pullPath: ./src/hosting/ 
+environment: 'production' # or 'latest' 
+
 ```
-
-### Example: One file with translations
-
-```bash
-.
-└── locales
-    └── messages.json
-```
-
-CLI command:
-```
-simplelocalize upload 
-  --apiKey <PROJECT_API_KEY>
-  --uploadPath /locales/messages.json
-  --uploadFormat multi-language-json
-```
-
-
-### Example: Single file with multiple language directories
-
-```bash
-.
-├── ca
-│   └── index.json
-├── en
-│   └── index.json
-└── es
-    └── index.json
-```
-
-CLI command:
-```
-simplelocalize upload 
-  --apiKey <PROJECT_API_KEY>
-  --uploadPath /{lang}/index.json
-  --uploadFormat single-language-json
-```
-
-### Example: Multiple files with multiple language directories
-
-```bash
-.
-├── ca
-│   ├── common.json
-│   └── home.json
-├── en
-│   ├── common.json
-│   └── home.json
-└── es
-    ├── common.json
-    └── home.json
-```
-
-CLI command:
-```
-simplelocalize upload 
-  --apiKey <PROJECT_API_KEY>
-  --uploadPath /{lang}/{ns}.json
-  --uploadFormat single-language-json
-```
-
-## Commands documentation
-
-Please remember to [get API Key for your SimpleLocalize project](https://simplelocalize.io/docs/cli/get-started/) before your start.
-
-- `simplelocalize extract` - learn more [how to extract translation keys from local files](https://simplelocalize.io/docs/cli/i18n-keys-extraction/)
-- `simplelocalize upload` - learn more [how to upload translations or translation keys](https://simplelocalize.io/docs/cli/upload-translations/)
-- `simplelocalize download` - learn more [how to download ready to use translation file](https://simplelocalize.io/docs/cli/download-translations/)
-
-## Integrations 
-
-- [Android localization guide](https://simplelocalize.io/docs/integrations/android/)
-- [iOS localization guide](https://simplelocalize.io/docs/integrations/ios-macos/)
-- [macOS localization guide](https://simplelocalize.io/docs/integrations/ios-macos/)
-- [JVM apps integration guide](https://simplelocalize.io/docs/file-formats/java-properties/)
-- [FormatJS integration guide](https://simplelocalize.io/docs/integrations/format-js/)
-- [FormatJS CLI messsages import guide](https://simplelocalize.io/docs/integrations/format-js-cli/)
-- [i18next HTTP backend integration guide](https://simplelocalize.io/docs/integrations/i18next/)
 
 ## Documentation 
 
-Head to [simplelocalize.io/docs](https://simplelocalize.io/docs/cli/get-started/) to learn the SimpleLocalize basics
-
-## How to build project, contribute or add features?
-
-[Please see CONTRIBUTING.md file](https://github.com/simplelocalize/simplelocalize-cli/blob/bd71926809085048bbe76ec1fea205c70f885acb/CONTRIBUTING.md)
+Visit [simplelocalize.io/docs/cli/get-started/](https://simplelocalize.io/docs/cli/get-started/) to get more information about SimpleLocalize CLI.
 
 ## License
 
