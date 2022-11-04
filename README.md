@@ -131,7 +131,7 @@ simplelocalize upload
 ```
 
 
-### Example: Single file in language directories
+### Example: Single file in multiple language directories
 
 ```bash
 .
@@ -151,7 +151,7 @@ simplelocalize upload
   --uploadFormat single-language-json
 ```
 
-### Example: Multiple files in language directories
+### Example: Multiple files in multiple language directories
 
 ```bash
 .
