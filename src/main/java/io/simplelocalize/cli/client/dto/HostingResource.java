@@ -1,9 +1,11 @@
 package io.simplelocalize.cli.client.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import io.micronaut.core.annotation.Introspected;
 
 import java.util.Objects;
 
+@Introspected
 public final class HostingResource
 {
   private final String path;
