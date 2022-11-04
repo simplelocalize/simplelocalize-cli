@@ -11,6 +11,7 @@ public class SimpleLocalizeUriFactory
 {
   private static final String CLI_VERSION_1_API = "/cli/v1";
   private static final String CLI_VERSION_2_API = "/cli/v2";
+  private static final String VERSION_1_API = "/api/v1";
   private final String baseUrl;
 
   public SimpleLocalizeUriFactory(String baseUrl)
@@ -79,9 +80,22 @@ public class SimpleLocalizeUriFactory
     return URI.create(endpointUrl);
   }
 
-  URI buildValidateGateUri()
+  URI buildGetProjectUri()
   {
-    return URI.create(baseUrl + CLI_VERSION_1_API + "/validate/gate");
+    return URI.create(baseUrl + VERSION_1_API + "/project");
   }
 
+  public URI buildPublishUri(String environment)
+  {
+    if (environment.equals("latest"))
+    {
+      return URI.create(baseUrl + "/api/v1/translations/publish");
+    }
+
+    if (environment.equals("production"))
+    {
+      return URI.create(baseUrl + "/api/v1/translations/deploy?sourceEnvironment=_latest&targetEnvironment=_production");
+    }
+    throw new IllegalArgumentException("Unknown environment: " + environment);
+  }
 }

@@ -96,10 +96,15 @@ public class SimpleLocalizeClient
             .replace(NAMESPACE_TEMPLATE_KEY, optionalDownloadableFile.map(DownloadableFile::getNamespace).orElse(""))
             .replace(LANGUAGE_TEMPLATE_KEY, optionalDownloadableFile.map(DownloadableFile::getLanguage).orElse(""));
     String url = downloadableFile.getUrl();
-    HttpRequest httpRequest = httpRequestFactory.createGetRequest(URI.create(url)).build();
     Path savePath = Path.of(downloadPath);
+    downloadFile(url, savePath);
+  }
+
+  public void downloadFile(String url, Path savePath)
+  {
     try
     {
+      HttpRequest httpRequest = httpRequestFactory.createGetRequest(URI.create(url)).build();
       Path parentDirectory = savePath.getParent();
       if (parentDirectory != null)
       {
@@ -117,19 +122,23 @@ public class SimpleLocalizeClient
     }
   }
 
-  public int validateGate() throws IOException, InterruptedException
+  public String fetchProject() throws IOException, InterruptedException
   {
-    URI validateUri = uriFactory.buildValidateGateUri();
-    HttpRequest httpRequest = httpRequestFactory.createGetRequest(validateUri).build();
+    URI getProjectUri = uriFactory.buildGetProjectUri();
+    HttpRequest httpRequest = httpRequestFactory.createGetRequest(getProjectUri).build();
     HttpResponse<String> httpResponse = httpClient.send(httpRequest, HttpResponse.BodyHandlers.ofString());
     throwOnError(httpResponse);
-    String json = httpResponse.body();
-    Boolean passed = JsonPath.read(json, "$.data.passed");
-    String message = JsonPath.read(json, "$.data.message");
-    int status = JsonPath.read(json, "$.data.status");
-    log.info("Gate result: {} (status: {}, message: {})", passed, status, message);
-    return status;
+    return httpResponse.body();
   }
+
+  public void publish(String environment) throws IOException, InterruptedException
+  {
+    URI publishUri = uriFactory.buildPublishUri(environment);
+    HttpRequest httpRequest = httpRequestFactory.createBaseRequest(publishUri).POST(HttpRequest.BodyPublishers.noBody()).build();
+    HttpResponse<String> httpResponse = httpClient.send(httpRequest, HttpResponse.BodyHandlers.ofString());
+    throwOnError(httpResponse);
+  }
+
 
   private void throwOnError(HttpResponse<?> httpResponse)
   {
@@ -162,6 +171,4 @@ public class SimpleLocalizeClient
     }
     return "";
   }
-
-
 }

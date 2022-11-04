@@ -12,7 +12,8 @@ import java.io.PrintStream;
 @Disabled
 public class SimplelocalizeCliCommandIT // NOSONAR
 {
-  private final static String API_KEY = "8fFC852d966FDBe2543428504ADe2Ca1c9039Ea02721CE28d9a62BEC2e5490e8";
+  private final static String API_KEY = "my-test-key";
+  private final static String BASE_URL = "http://localhost:8080";
 
   @Test
   public void shouldUpload() throws Exception
@@ -22,6 +23,7 @@ public class SimplelocalizeCliCommandIT // NOSONAR
     {
       String[] args = new String[]{
               "upload",
+              "--baseUrl", BASE_URL,
               "--apiKey", API_KEY,
               "--uploadFormat", "java-properties",
               "--uploadPath", "./junit/lang-in-filename-suffix/messages_{lang}.properties"
@@ -38,6 +40,7 @@ public class SimplelocalizeCliCommandIT // NOSONAR
     {
       String[] args = new String[]{
               "download",
+              "--baseUrl", BASE_URL,
               "--apiKey", API_KEY,
               "--downloadFormat", "java-properties",
               "--downloadPath", "./junit/lang-in-filename-suffix/messages_{lang}.properties"
@@ -54,6 +57,7 @@ public class SimplelocalizeCliCommandIT // NOSONAR
     {
       String[] args = new String[]{
               "upload",
+              "--baseUrl", BASE_URL,
               "--apiKey", API_KEY,
               "--uploadFormat", "multi-language-json",
               "--uploadPath", "/Users/jpomykala/Workspace/simplelocalize.io/application/cli/junit/multi-file",
@@ -72,6 +76,7 @@ public class SimplelocalizeCliCommandIT // NOSONAR
     {
       String[] args = new String[]{
               "download",
+              "--baseUrl", BASE_URL,
               "--apiKey", API_KEY,
               "--downloadFormat", "multi-language-json",
               "--downloadPath", "/Users/jpomykala/Workspace/simplelocalize.io/application/cli/junit/multi-file/",
