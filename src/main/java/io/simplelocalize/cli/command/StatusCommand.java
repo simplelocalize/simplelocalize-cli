@@ -30,9 +30,9 @@ public class StatusCommand implements CliCommand
       log.info("Project token: {}", json.read("$.data.projectToken", String.class));
       log.info("Translated: {}", json.read("$.data.translatedPercentage", String.class));
       log.info("Keys: {}", json.read("$.data.keys", String.class));
-      log.info("Languages ({}): {}", json.read("$.data.languages.length()", Integer.class), json.read("$.data.languages[*].key").toString());
-      log.info("Namespaces ({}): {}", json.read("$.data.namespaces.length()", Integer.class), json.read("$.data.namespaces[*].name").toString());
-      log.info("Customers ({}): {}", json.read("$.data.customers.length()", Integer.class), json.read("$.data.customers[*].key").toString());
+      log.info("Languages: {}", json.read("$.data.languages[*].key").toString());
+      log.info("Namespaces: {}", json.read("$.data.namespaces[*].name").toString());
+      log.info("Customers: {}", json.read("$.data.customers[*].key").toString());
       log.info("Last activity: {}", json.read("$.data.lastActivityAt", String.class));
       log.info("Last edit: {}", json.read("$.data.lastEditedAt", String.class));
     } catch (InterruptedException e)
