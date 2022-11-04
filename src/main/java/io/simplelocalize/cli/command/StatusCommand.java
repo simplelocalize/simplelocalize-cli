@@ -35,8 +35,6 @@ public class StatusCommand implements CliCommand
       log.info("Customers ({}): {}", json.read("$.data.customers.length()", Integer.class), json.read("$.data.customers[*].key").toString());
       log.info("Last activity: {}", json.read("$.data.lastActivityAt", String.class));
       log.info("Last edit: {}", json.read("$.data.lastEditedAt", String.class));
-//      String prettyJson = JsonFormatter.prettyPrint(responseData);
-//      log.info(prettyJson);
     } catch (InterruptedException e)
     {
       log.error("Project status could not be fetched", e);

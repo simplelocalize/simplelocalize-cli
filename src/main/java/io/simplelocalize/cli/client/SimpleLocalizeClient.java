@@ -100,7 +100,8 @@ public class SimpleLocalizeClient
     downloadFile(url, savePath);
   }
 
-  public void downloadFile(String url, Path savePath){
+  public void downloadFile(String url, Path savePath)
+  {
     try
     {
       HttpRequest httpRequest = httpRequestFactory.createGetRequest(URI.create(url)).build();
@@ -130,22 +131,12 @@ public class SimpleLocalizeClient
     return httpResponse.body();
   }
 
-  public void publish(String environment)
+  public void publish(String environment) throws IOException, InterruptedException
   {
     URI publishUri = uriFactory.buildPublishUri(environment);
     HttpRequest httpRequest = httpRequestFactory.createBaseRequest(publishUri).POST(HttpRequest.BodyPublishers.noBody()).build();
-    try
-    {
-      HttpResponse<String> httpResponse = httpClient.send(httpRequest, HttpResponse.BodyHandlers.ofString());
-      throwOnError(httpResponse);
-    } catch (IOException e)
-    {
-      log.error("Publication failed", e);
-    } catch (InterruptedException e)
-    {
-      log.error("Publication interrupted", e);
-      Thread.currentThread().interrupt();
-    }
+    HttpResponse<String> httpResponse = httpClient.send(httpRequest, HttpResponse.BodyHandlers.ofString());
+    throwOnError(httpResponse);
   }
 
 
