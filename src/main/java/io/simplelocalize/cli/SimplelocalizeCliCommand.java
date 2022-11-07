@@ -40,7 +40,13 @@ public class SimplelocalizeCliCommand implements Runnable
 
   public static void main(String[] args)
   {
-    PicocliRunner.run(SimplelocalizeCliCommand.class, args);
+    try
+    {
+      PicocliRunner.run(SimplelocalizeCliCommand.class, args);
+    } catch (Exception e)
+    {
+      System.exit(1);
+    }
   }
 
   @Command(
