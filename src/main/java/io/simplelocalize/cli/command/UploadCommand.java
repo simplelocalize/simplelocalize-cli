@@ -34,7 +34,7 @@ public class UploadCommand implements CliCommand
     this.configurationValidator = new ConfigurationValidator();
   }
 
-  public void invoke()
+  public void invoke() throws IOException, InterruptedException
   {
     configurationValidator.validateUploadConfiguration(configuration);
     String uploadPath = configuration.getUploadPath();
@@ -56,62 +56,53 @@ public class UploadCommand implements CliCommand
     log.info("Found {} files to upload", filesToUpload.size());
     for (FileToUpload fileToUpload : filesToUpload)
     {
-      try
+      long length = fileToUpload.getPath().toFile().length();
+      if (length == 0)
       {
-        long length = fileToUpload.getPath().toFile().length();
-        if (length == 0)
-        {
-          log.warn("Skipping empty file: {}", fileToUpload.getPath());
-          continue;
-        }
-
-        String fileLanguageKey = Optional.of(fileToUpload).map(FileToUpload::getLanguage).orElse("");
-        boolean hasFileLanguageKey = StringUtils.isNotBlank(fileLanguageKey);
-
-        String configurationLanguageKey = configuration.getLanguageKey();
-        boolean hasConfigurationLanguageKey = StringUtils.isNotBlank(configurationLanguageKey);
-
-        boolean isLanguageMatching = fileLanguageKey.equals(configurationLanguageKey);
-        if (hasFileLanguageKey && hasConfigurationLanguageKey && !isLanguageMatching)
-        {
-          log.info("Skipping '{}' language, file: {}", fileToUpload.getLanguage(), fileToUpload.getPath());
-          continue;
-        }
-
-        String requestLanguageKey = fileLanguageKey;
-        if (hasConfigurationLanguageKey && !hasFileLanguageKey)
-        {
-          requestLanguageKey = configurationLanguageKey;
-        }
-
-        boolean isMultiLanguageFormat = isMultiLanguageFormat(configuration.getUploadFormat());
-        if (!hasFileLanguageKey && !hasConfigurationLanguageKey && !isMultiLanguageFormat)
-        {
-          log.info("Language key not present in '--uploadPath' nor '--languageKey' parameter, file: {}", fileToUpload.getPath());
-        }
-
-        String uploadFormat = configuration.getUploadFormat();
-        String customerId = configuration.getCustomerId();
-        List<String> uploadOptions = configuration.getUploadOptions();
-        UploadRequest uploadRequest = anUploadFileRequest()
-                .withPath(fileToUpload.getPath())
-                .withLanguageKey(requestLanguageKey)
-                .withNamespace(fileToUpload.getNamespace())
-                .withFormat(uploadFormat)
-                .withCustomerId(customerId)
-                .withOptions(uploadOptions)
-                .build();
-
-        client.uploadFile(uploadRequest);
-      } catch (IOException e)
-      {
-        log.warn("Upload failed: {}", fileToUpload.getPath(), e);
-      } catch (InterruptedException e)
-      {
-        log.error("Upload interrupted: {}", fileToUpload.getPath(), e);
-        Thread.currentThread().interrupt();
+        log.warn("Skipping empty file: {}", fileToUpload.getPath());
+        continue;
       }
+
+      String fileLanguageKey = Optional.of(fileToUpload).map(FileToUpload::getLanguage).orElse("");
+      boolean hasFileLanguageKey = StringUtils.isNotBlank(fileLanguageKey);
+
+      String configurationLanguageKey = configuration.getLanguageKey();
+      boolean hasConfigurationLanguageKey = StringUtils.isNotBlank(configurationLanguageKey);
+
+      boolean isLanguageMatching = fileLanguageKey.equals(configurationLanguageKey);
+      if (hasFileLanguageKey && hasConfigurationLanguageKey && !isLanguageMatching)
+      {
+        log.info("Skipping '{}' language, file: {}", fileToUpload.getLanguage(), fileToUpload.getPath());
+        continue;
+      }
+
+      String requestLanguageKey = fileLanguageKey;
+      if (hasConfigurationLanguageKey && !hasFileLanguageKey)
+      {
+        requestLanguageKey = configurationLanguageKey;
+      }
+
+      boolean isMultiLanguageFormat = isMultiLanguageFormat(configuration.getUploadFormat());
+      if (!hasFileLanguageKey && !hasConfigurationLanguageKey && !isMultiLanguageFormat)
+      {
+        log.info("Language key not present in '--uploadPath' nor '--languageKey' parameter, file: {}", fileToUpload.getPath());
+      }
+
+      String uploadFormat = configuration.getUploadFormat();
+      String customerId = configuration.getCustomerId();
+      List<String> uploadOptions = configuration.getUploadOptions();
+      UploadRequest uploadRequest = anUploadFileRequest()
+              .withPath(fileToUpload.getPath())
+              .withLanguageKey(requestLanguageKey)
+              .withNamespace(fileToUpload.getNamespace())
+              .withFormat(uploadFormat)
+              .withCustomerId(customerId)
+              .withOptions(uploadOptions)
+              .build();
+
+      client.uploadFile(uploadRequest);
     }
+    log.info("Uploaded {} files to SimpleLocalize", filesToUpload.size());
   }
 
   private boolean isMultiLanguageFormat(String inputUploadFormat)

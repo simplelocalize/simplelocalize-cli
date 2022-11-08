@@ -26,7 +26,7 @@ public class DownloadCommand implements CliCommand
     this.client = client;
   }
 
-  public void invoke()
+  public void invoke() throws IOException, InterruptedException
   {
     String downloadPath = configuration.getDownloadPath();
     String downloadFormat = configuration.getDownloadFormat();
@@ -51,23 +51,11 @@ public class DownloadCommand implements CliCommand
             .withCustomerId(customerId)
             .withLanguageKey(languageKey)
             .build();
-
-    try
-    {
-      List<DownloadableFile> downloadableFiles = client.fetchDownloadableFiles(downloadRequest);
-      downloadableFiles
-              .parallelStream()
-              .forEach(downloadableFile -> client.downloadFile(downloadableFile, downloadPath));
-      log.info("Download success!");
-    } catch (InterruptedException e)
-    {
-      log.error("Translations could not be downloaded", e);
-      Thread.currentThread().interrupt();
-    } catch (IOException e)
-    {
-      log.error("Translations could not be downloaded", e);
-      System.exit(1);
-    }
+    List<DownloadableFile> downloadableFiles = client.fetchDownloadableFiles(downloadRequest);
+    downloadableFiles
+            .parallelStream()
+            .forEach(downloadableFile -> client.downloadFile(downloadableFile, downloadPath));
+    log.info("Downloaded {} files from SimpleLocalize", downloadableFiles.size());
   }
 
 }

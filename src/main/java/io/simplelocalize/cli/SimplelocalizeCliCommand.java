@@ -9,10 +9,10 @@ import io.simplelocalize.cli.configuration.ConfigurationValidator;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import picocli.CommandLine;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
 
-import java.io.IOException;
 import java.nio.file.Path;
 import java.util.List;
 
@@ -37,6 +37,9 @@ public class SimplelocalizeCliCommand implements Runnable
 
   @Option(names = {"-c", "--config"}, description = "Configuration file (default: ./simplelocalize.yml)")
   Path configurationFilePath;
+
+  @Option(names = {"--debug"}, description = "Debug mode", defaultValue = "false")
+  boolean debug;
 
   public static void main(String[] args)
   {
@@ -84,7 +87,8 @@ public class SimplelocalizeCliCommand implements Runnable
       extractCommand.invoke();
     } catch (Exception e)
     {
-      System.exit(1);
+      printDebug(e);
+      System.exit(CommandLine.ExitCode.USAGE);
     }
   }
 
@@ -103,7 +107,7 @@ public class SimplelocalizeCliCommand implements Runnable
           @Option(names = {"--customerId"}, description = "(Optional) Download translations for given customerId") String customerId,
           @Option(names = {"--baseUrl"}, description = "(Optional) Set custom server URL") String baseUrl
 
-  ) throws IOException
+  )
   {
     upload(apiKey, uploadPath, uploadFormat, uploadOptions, languageKey, customerId, baseUrl);
     download(apiKey, downloadPath, downloadFormat, downloadOptions, languageKey, customerId, baseUrl);
@@ -120,7 +124,7 @@ public class SimplelocalizeCliCommand implements Runnable
           @Option(names = {"--languageKey"}, description = "(Optional) Specify language key for single file upload") String languageKey,
           @Option(names = {"--customerId"}, description = "(Optional) Upload translations for given customerId") String customerId,
           @Option(names = {"--baseUrl"}, description = "(Optional) Set custom server URL") String baseUrl
-  ) throws IOException
+  )
   {
     try
     {
@@ -169,7 +173,8 @@ public class SimplelocalizeCliCommand implements Runnable
       uploadCommand.invoke();
     } catch (Exception e)
     {
-      System.exit(1);
+      printDebug(e);
+      System.exit(CommandLine.ExitCode.USAGE);
     }
   }
 
@@ -226,7 +231,8 @@ public class SimplelocalizeCliCommand implements Runnable
       downloadCommand.invoke();
     } catch (Exception e)
     {
-      System.exit(1);
+      printDebug(e);
+      System.exit(CommandLine.ExitCode.USAGE);
     }
   }
 
@@ -271,7 +277,8 @@ public class SimplelocalizeCliCommand implements Runnable
       command.invoke();
     } catch (Exception e)
     {
-      System.exit(1);
+      printDebug(e);
+      System.exit(CommandLine.ExitCode.USAGE);
     }
   }
 
@@ -304,7 +311,8 @@ public class SimplelocalizeCliCommand implements Runnable
       command.invoke();
     } catch (Exception e)
     {
-      System.exit(1);
+      printDebug(e);
+      System.exit(CommandLine.ExitCode.USAGE);
     }
   }
 
@@ -342,7 +350,19 @@ public class SimplelocalizeCliCommand implements Runnable
       command.invoke();
     } catch (Exception e)
     {
-      System.exit(1);
+      printDebug(e);
+      System.exit(CommandLine.ExitCode.USAGE);
+    }
+  }
+
+  private void printDebug(Exception e)
+  {
+    if (debug)
+    {
+      log.error("Error occurred", e);
+    } else
+    {
+      log.error("Error occurred. Use '--debug' before command name to see more details");
     }
   }
 
@@ -350,6 +370,6 @@ public class SimplelocalizeCliCommand implements Runnable
   public void run()
   {
     log.warn("Please specify a command. Visit https://simplelocalize.io/docs/cli/get-started/ to learn more.");
-    System.exit(1);
+    System.exit(CommandLine.ExitCode.USAGE);
   }
 }

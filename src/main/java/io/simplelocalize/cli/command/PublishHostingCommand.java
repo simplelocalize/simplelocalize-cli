@@ -1,5 +1,7 @@
 package io.simplelocalize.cli.command;
 
+import com.jayway.jsonpath.DocumentContext;
+import com.jayway.jsonpath.JsonPath;
 import io.simplelocalize.cli.client.SimpleLocalizeClient;
 import io.simplelocalize.cli.configuration.Configuration;
 import org.slf4j.Logger;
@@ -21,23 +23,23 @@ public class PublishHostingCommand implements CliCommand
     this.client = client;
   }
 
-  public void invoke()
+  public void invoke() throws IOException, InterruptedException
   {
+    String responseData = client.fetchProject();
+    DocumentContext json = JsonPath.parse(responseData);
+
+    String projectName = json.read("$.data.name", String.class);
+    log.info("Project name: {}", projectName);
+
+    String projectToken = json.read("$.data.projectToken", String.class);
+    log.info("Project token: {}", projectToken);
+
     String environment = configuration.getEnvironment();
-    try
-    {
-      log.info("Publishing translations to '{}' environment...", environment);
-      client.publish(environment);
-      log.info("Translations published");
-    } catch (InterruptedException e)
-    {
-      log.error("Publication interrupted", e);
-      Thread.currentThread().interrupt();
-    } catch (IOException e)
-    {
-      log.error("Publication failed", e);
-      System.exit(1);
-    }
+    log.info("Environment: {}", environment);
+
+    log.info("Publishing translations...");
+    client.publish(environment);
+    log.info("Translations published");
   }
 
 }

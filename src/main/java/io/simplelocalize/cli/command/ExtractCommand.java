@@ -8,6 +8,7 @@ import io.simplelocalize.cli.extraction.processor.ExtractionProcessor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.HashSet;
@@ -27,12 +28,11 @@ public class ExtractCommand implements CliCommand
     this.client = client;
   }
 
-  public void invoke()
+  public void invoke() throws IOException, InterruptedException
   {
     String searchDir = configuration.getSearchDir();
     String projectType = configuration.getProjectType();
 
-    log.info("Running keys extraction");
     ProjectProcessorFactory processorFactory = new ProjectProcessorFactory();
     ExtractionProcessor extractionProcessor = processorFactory.createForType(projectType);
     ExtractionResult result = extractionProcessor.process(Paths.get(searchDir));
@@ -44,13 +44,7 @@ public class ExtractCommand implements CliCommand
     Set<String> ignoredKeys = new HashSet<>(configuration.getIgnoreKeys());
     keys.removeAll(ignoredKeys);
 
-    try
-    {
-      client.uploadKeys(keys);
-    } catch (Exception e)
-    {
-      log.error("Keys upload failed. Contact support: contact@simplelocalize.io", e);
-      Thread.currentThread().interrupt();
-    }
+    client.uploadKeys(keys);
+    log.info("Uploaded {} keys to SimpleLocalize", keys.size());
   }
 }
