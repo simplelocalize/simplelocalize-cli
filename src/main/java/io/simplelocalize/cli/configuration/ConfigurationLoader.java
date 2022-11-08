@@ -48,7 +48,7 @@ public final class ConfigurationLoader
       log.info("Configuration file loaded successfully");
     } catch (FileNotFoundException e)
     {
-      log.info("Configuration file not found");
+      log.info("Configuration file not present");
       return new Configuration();
     } catch (Exception e)
     {

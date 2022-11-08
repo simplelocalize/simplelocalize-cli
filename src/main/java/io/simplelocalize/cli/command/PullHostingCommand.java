@@ -34,48 +34,43 @@ public class PullHostingCommand implements CliCommand
     this.objectMapper = new ObjectMapper();
   }
 
-  public void invoke()
+  public void invoke() throws IOException, InterruptedException
   {
-    try
-    {
-      String responseData = client.fetchProject();
-      com.jayway.jsonpath.Configuration mappingConfiguration = com.jayway.jsonpath.Configuration.defaultConfiguration()
-              .jsonProvider(new JacksonJsonProvider())
-              .mappingProvider(new JacksonMappingProvider(objectMapper));
-      DocumentContext json = JsonPath.parse(responseData, mappingConfiguration);
+    String responseData = client.fetchProject();
+    com.jayway.jsonpath.Configuration mappingConfiguration = com.jayway.jsonpath.Configuration.defaultConfiguration()
+            .jsonProvider(new JacksonJsonProvider())
+            .mappingProvider(new JacksonMappingProvider(objectMapper));
+    DocumentContext json = JsonPath.parse(responseData, mappingConfiguration);
 
-      // @formatter:off
-      String projectToken = json.read("$.data.projectToken", String.class);
-      List<HostingResource> hostingResources = json.read("$.data.hostingResources", new TypeRef<>() {});
-      // @formatter:on
+    String projectName = json.read("$.data.name", String.class);
+    log.info("Project name: {}", projectName);
 
-      String environment = configuration.getEnvironment();
-      List<String> resourcePaths = hostingResources.stream()
-              .filter(hostingResource -> hostingResource.getEnvironment().equals(environment))
-              .map(HostingResource::getPath)
-              .sorted()
-              .collect(Collectors.toList());
-      log.info("Found {} hosting resources for '{}' environment", resourcePaths.size(), environment);
-      String pullDirectory = configuration.getPullPath();
+    String projectToken = json.read("$.data.projectToken", String.class);
+    log.info("Project token: {}", projectToken);
 
-      for (String resourcePath : resourcePaths)
-      {
-        String downloadUrl = BASE_URI_CDN + "/" + resourcePath;
-        String resourcePrefix = projectToken + "/_" + environment + "/";
-        String plainResource = resourcePath.replace(resourcePrefix, ""); // e.g.: _customer, _index, pl_PL, pl_PL_ikea, pl_PL/common, pl_PL_ikea/common
-        Path savePath = Path.of(pullDirectory, plainResource + ".json");
-        client.downloadFile(downloadUrl, savePath);
-      }
-      log.info("Downloaded {} hosting resources to {}", resourcePaths.size(), pullDirectory);
-    } catch (InterruptedException e)
+    String environment = configuration.getEnvironment();
+    log.info("Environment: {}", environment);
+
+    // @formatter:off
+    List<HostingResource> hostingResources = json.read("$.data.hostingResources", new TypeRef<>() {});
+    // @formatter:on
+    List<String> resourcePaths = hostingResources.stream()
+            .filter(hostingResource -> hostingResource.getEnvironment().equals(environment))
+            .map(HostingResource::getPath)
+            .sorted()
+            .collect(Collectors.toList());
+    log.info("Found {} Translation Hosting resources", resourcePaths.size());
+    String pullDirectory = configuration.getPullPath();
+
+    for (String resourcePath : resourcePaths)
     {
-      log.error("Translation Hosting files could not be downloaded", e);
-      Thread.currentThread().interrupt();
-    } catch (IOException e)
-    {
-      log.error("Translation Hosting files could not be downloaded", e);
-      System.exit(1);
+      String downloadUrl = BASE_URI_CDN + "/" + resourcePath;
+      String resourcePrefix = projectToken + "/_" + environment + "/";
+      String plainResource = resourcePath.replace(resourcePrefix, "");
+      Path savePath = Path.of(pullDirectory, plainResource + ".json");
+      client.downloadFile(downloadUrl, savePath);
     }
+    log.info("Downloaded {} Translation Hosting resources", resourcePaths.size());
 
   }
 

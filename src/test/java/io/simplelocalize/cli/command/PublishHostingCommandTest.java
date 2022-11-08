@@ -11,6 +11,9 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -35,6 +38,10 @@ class PublishHostingCommandTest
     //given
     List<ILoggingEvent> logEventList = TestLogEventFactory.createAndGetLogEventList(sut.getClass());
 
+    String path = StatusCommandTest.class.getClassLoader().getResource("mock-api-responses/fetch-project.json").getPath();
+    String content = Files.readString(Path.of(path), StandardCharsets.UTF_8);
+    Mockito.when(client.fetchProject()).thenReturn(content);
+
     Mockito.when(configuration.getEnvironment()).thenReturn("latest");
 
     //when
@@ -43,7 +50,10 @@ class PublishHostingCommandTest
     //then
     Mockito.verify(client).publish("latest");
 
-    assertThat(logEventList.get(0).getFormattedMessage()).isEqualTo("Publishing translations to 'latest' environment...");
-    assertThat(logEventList.get(1).getFormattedMessage()).isEqualTo("Translations published");
+    assertThat(logEventList.get(0).getFormattedMessage()).isEqualTo("Project name: My project");
+    assertThat(logEventList.get(1).getFormattedMessage()).isEqualTo("Project token: dev-e7c0b7686c7b45fea4450a4c4a83c7ff");
+    assertThat(logEventList.get(2).getFormattedMessage()).isEqualTo("Environment: latest");
+    assertThat(logEventList.get(3).getFormattedMessage()).isEqualTo("Publishing translations...");
+    assertThat(logEventList.get(4).getFormattedMessage()).isEqualTo("Translations published");
   }
 }

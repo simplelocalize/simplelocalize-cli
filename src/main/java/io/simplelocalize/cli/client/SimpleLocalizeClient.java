@@ -57,20 +57,17 @@ public class SimpleLocalizeClient
     return new SimpleLocalizeClient(baseUrl, apiKey);
   }
 
-  public void uploadKeys(Collection<String> keys) throws IOException, InterruptedException
+  public Integer uploadKeys(Collection<String> keys) throws IOException, InterruptedException
   {
     URI uri = uriFactory.buildSendKeysURI();
     HttpRequest httpRequest = httpRequestFactory.createSendKeysRequest(uri, keys);
     HttpResponse<String> httpResponse = httpClient.send(httpRequest, HttpResponse.BodyHandlers.ofString());
     throwOnError(httpResponse);
-    int keysProcessed = JsonPath.read(httpResponse.body(), "$.data.uniqueKeysProcessed");
-    log.info("Successfully uploaded {} keys", keysProcessed);
+    return JsonPath.read(httpResponse.body(), "$.data.uniqueKeysProcessed");
   }
 
   public void uploadFile(UploadRequest uploadRequest) throws IOException, InterruptedException
   {
-    Path uploadPath = uploadRequest.getPath();
-    log.info("Uploading {}", uploadPath);
     URI uri = uriFactory.buildUploadUri(uploadRequest);
     HttpRequest httpRequest = httpRequestFactory.createUploadFileRequest(uri, uploadRequest);
     HttpResponse<String> httpResponse = httpClient.send(httpRequest, HttpResponse.BodyHandlers.ofString());
@@ -79,7 +76,6 @@ public class SimpleLocalizeClient
 
   public List<DownloadableFile> fetchDownloadableFiles(DownloadRequest downloadRequest) throws IOException, InterruptedException
   {
-    log.info("Preparing files to download");
     URI downloadUri = uriFactory.buildDownloadUri(downloadRequest);
     HttpRequest httpRequest = httpRequestFactory.createGetRequest(downloadUri).build();
     HttpResponse<String> httpResponse = httpClient.send(httpRequest, HttpResponse.BodyHandlers.ofString());
@@ -89,7 +85,7 @@ public class SimpleLocalizeClient
     return exportResponse.getFiles();
   }
 
-  public void downloadFile(DownloadableFile downloadableFile, String downloadPathTemplate)
+  public void downloadFile(DownloadableFile downloadableFile, String downloadPathTemplate) throws IOException, InterruptedException
   {
     Optional<DownloadableFile> optionalDownloadableFile = Optional.of(downloadableFile);
     String downloadPath = downloadPathTemplate
@@ -100,26 +96,17 @@ public class SimpleLocalizeClient
     downloadFile(url, savePath);
   }
 
-  public void downloadFile(String url, Path savePath)
+  public void downloadFile(String url, Path savePath) throws IOException, InterruptedException
   {
-    try
+    HttpRequest httpRequest = httpRequestFactory.createGetRequest(URI.create(url)).build();
+    Path parentDirectory = savePath.getParent();
+    if (parentDirectory != null)
     {
-      HttpRequest httpRequest = httpRequestFactory.createGetRequest(URI.create(url)).build();
-      Path parentDirectory = savePath.getParent();
-      if (parentDirectory != null)
-      {
-        Files.createDirectories(parentDirectory);
-      }
-      log.info("Downloading {}", savePath);
-      httpClient.send(httpRequest, HttpResponse.BodyHandlers.ofFile(savePath, StandardOpenOption.CREATE, StandardOpenOption.WRITE, StandardOpenOption.TRUNCATE_EXISTING));
-    } catch (IOException e)
-    {
-      log.error("Download failed: {}", savePath, e);
-    } catch (InterruptedException e)
-    {
-      log.error("Download interrupted: {}", savePath, e);
-      Thread.currentThread().interrupt();
+      Files.createDirectories(parentDirectory);
     }
+    log.info("Downloading {}", savePath);
+    HttpResponse<Path> response = httpClient.send(httpRequest, HttpResponse.BodyHandlers.ofFile(savePath, StandardOpenOption.CREATE, StandardOpenOption.WRITE, StandardOpenOption.TRUNCATE_EXISTING));
+    throwOnError(response);
   }
 
   public String fetchProject() throws IOException, InterruptedException

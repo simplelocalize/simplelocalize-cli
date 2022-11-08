@@ -9,10 +9,10 @@ import io.simplelocalize.cli.configuration.ConfigurationValidator;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import picocli.CommandLine;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
 
-import java.io.IOException;
 import java.nio.file.Path;
 import java.util.List;
 
@@ -35,8 +35,11 @@ public class SimplelocalizeCliCommand implements Runnable
 
   private static final Logger log = LoggerFactory.getLogger(SimplelocalizeCliCommand.class);
 
-  @Option(names = {"-c", "--config"}, description = "Configuration file (default: ./simplelocalize.yml)")
+  @Option(names = {"-c", "--config"}, description = "Configuration file (default: simplelocalize.yml)")
   Path configurationFilePath;
+
+  @Option(names = {"--debug"}, description = "Debug mode", defaultValue = "false")
+  boolean debug;
 
   public static void main(String[] args)
   {
@@ -53,33 +56,40 @@ public class SimplelocalizeCliCommand implements Runnable
           @Option(names = {"--baseUrl"}, description = "(Optional) Set custom server URL") String baseUrl
   )
   {
-    ConfigurationLoader configurationLoader = new ConfigurationLoader();
-    Configuration configuration = configurationLoader.loadOrGetDefault(configurationFilePath);
-    if (StringUtils.isNotEmpty(baseUrl))
+    try
     {
-      configuration.setBaseUrl(baseUrl);
-    }
-    if (StringUtils.isNotEmpty(apiKey))
+      ConfigurationLoader configurationLoader = new ConfigurationLoader();
+      Configuration configuration = configurationLoader.loadOrGetDefault(configurationFilePath);
+      if (StringUtils.isNotEmpty(baseUrl))
+      {
+        configuration.setBaseUrl(baseUrl);
+      }
+      if (StringUtils.isNotEmpty(apiKey))
+      {
+        configuration.setApiKey(apiKey);
+      }
+      if (StringUtils.isNotEmpty(projectType))
+      {
+        configuration.setProjectType(projectType);
+      }
+      if (StringUtils.isNotEmpty(searchDirectory))
+      {
+        configuration.setSearchDir(searchDirectory);
+      }
+      if (StringUtils.isNotEmpty(searchDirectory))
+      {
+        configuration.setSearchDir(searchDirectory);
+      }
+      ConfigurationValidator configurationValidator = new ConfigurationValidator();
+      configurationValidator.validateExtractConfiguration(configuration);
+      SimpleLocalizeClient client = SimpleLocalizeClient.create(configuration.getBaseUrl(), configuration.getApiKey());
+      ExtractCommand extractCommand = new ExtractCommand(client, configuration);
+      extractCommand.invoke();
+    } catch (Exception e)
     {
-      configuration.setApiKey(apiKey);
+      printDebug(e);
+      System.exit(CommandLine.ExitCode.USAGE);
     }
-    if (StringUtils.isNotEmpty(projectType))
-    {
-      configuration.setProjectType(projectType);
-    }
-    if (StringUtils.isNotEmpty(searchDirectory))
-    {
-      configuration.setSearchDir(searchDirectory);
-    }
-    if (StringUtils.isNotEmpty(searchDirectory))
-    {
-      configuration.setSearchDir(searchDirectory);
-    }
-    ConfigurationValidator configurationValidator = new ConfigurationValidator();
-    configurationValidator.validateExtractConfiguration(configuration);
-    SimpleLocalizeClient client = SimpleLocalizeClient.create(configuration.getBaseUrl(), configuration.getApiKey());
-    ExtractCommand extractCommand = new ExtractCommand(client, configuration);
-    extractCommand.invoke();
   }
 
   @Command(
@@ -97,7 +107,7 @@ public class SimplelocalizeCliCommand implements Runnable
           @Option(names = {"--customerId"}, description = "(Optional) Download translations for given customerId") String customerId,
           @Option(names = {"--baseUrl"}, description = "(Optional) Set custom server URL") String baseUrl
 
-  ) throws IOException
+  )
   {
     upload(apiKey, uploadPath, uploadFormat, uploadOptions, languageKey, customerId, baseUrl);
     download(apiKey, downloadPath, downloadFormat, downloadOptions, languageKey, customerId, baseUrl);
@@ -114,51 +124,58 @@ public class SimplelocalizeCliCommand implements Runnable
           @Option(names = {"--languageKey"}, description = "(Optional) Specify language key for single file upload") String languageKey,
           @Option(names = {"--customerId"}, description = "(Optional) Upload translations for given customerId") String customerId,
           @Option(names = {"--baseUrl"}, description = "(Optional) Set custom server URL") String baseUrl
-  ) throws IOException
+  )
   {
-    ConfigurationLoader configurationLoader = new ConfigurationLoader();
-    Configuration configuration = configurationLoader.loadOrGetDefault(configurationFilePath);
-    if (StringUtils.isNotEmpty(baseUrl))
+    try
     {
-      configuration.setBaseUrl(baseUrl);
-    }
+      ConfigurationLoader configurationLoader = new ConfigurationLoader();
+      Configuration configuration = configurationLoader.loadOrGetDefault(configurationFilePath);
+      if (StringUtils.isNotEmpty(baseUrl))
+      {
+        configuration.setBaseUrl(baseUrl);
+      }
 
-    if (StringUtils.isNotEmpty(apiKey))
+      if (StringUtils.isNotEmpty(apiKey))
+      {
+        configuration.setApiKey(apiKey);
+      }
+
+      if (StringUtils.isNotEmpty(uploadPath))
+      {
+        configuration.setUploadPath(uploadPath);
+      }
+
+      if (StringUtils.isNotEmpty(uploadFormat))
+      {
+        configuration.setUploadFormat(uploadFormat);
+      }
+
+      if (StringUtils.isNotEmpty(languageKey))
+      {
+        configuration.setLanguageKey(languageKey);
+      }
+
+      if (StringUtils.isNotEmpty(customerId))
+      {
+        configuration.setCustomerId(customerId);
+      }
+
+      if (uploadOptions != null)
+      {
+        configuration.setUploadOptions(uploadOptions);
+      }
+
+      ConfigurationValidator configurationValidator = new ConfigurationValidator();
+      configurationValidator.validateUploadConfiguration(configuration);
+
+      SimpleLocalizeClient client = SimpleLocalizeClient.create(configuration.getBaseUrl(), configuration.getApiKey());
+      UploadCommand uploadCommand = new UploadCommand(client, configuration);
+      uploadCommand.invoke();
+    } catch (Exception e)
     {
-      configuration.setApiKey(apiKey);
+      printDebug(e);
+      System.exit(CommandLine.ExitCode.USAGE);
     }
-
-    if (StringUtils.isNotEmpty(uploadPath))
-    {
-      configuration.setUploadPath(uploadPath);
-    }
-
-    if (StringUtils.isNotEmpty(uploadFormat))
-    {
-      configuration.setUploadFormat(uploadFormat);
-    }
-
-    if (StringUtils.isNotEmpty(languageKey))
-    {
-      configuration.setLanguageKey(languageKey);
-    }
-
-    if (StringUtils.isNotEmpty(customerId))
-    {
-      configuration.setCustomerId(customerId);
-    }
-
-    if (uploadOptions != null)
-    {
-      configuration.setUploadOptions(uploadOptions);
-    }
-
-    ConfigurationValidator configurationValidator = new ConfigurationValidator();
-    configurationValidator.validateUploadConfiguration(configuration);
-
-    SimpleLocalizeClient client = SimpleLocalizeClient.create(configuration.getBaseUrl(), configuration.getApiKey());
-    UploadCommand uploadCommand = new UploadCommand(client, configuration);
-    uploadCommand.invoke();
   }
 
   @Command(
@@ -174,42 +191,49 @@ public class SimplelocalizeCliCommand implements Runnable
           @Option(names = {"--baseUrl"}, description = "(Optional) Set custom server URL") String baseUrl
   )
   {
-    ConfigurationLoader configurationLoader = new ConfigurationLoader();
-    Configuration configuration = configurationLoader.loadOrGetDefault(configurationFilePath);
-    if (StringUtils.isNotEmpty(baseUrl))
+    try
     {
-      configuration.setBaseUrl(baseUrl);
-    }
+      ConfigurationLoader configurationLoader = new ConfigurationLoader();
+      Configuration configuration = configurationLoader.loadOrGetDefault(configurationFilePath);
+      if (StringUtils.isNotEmpty(baseUrl))
+      {
+        configuration.setBaseUrl(baseUrl);
+      }
 
-    if (StringUtils.isNotEmpty(apiKey))
+      if (StringUtils.isNotEmpty(apiKey))
+      {
+        configuration.setApiKey(apiKey);
+      }
+      if (StringUtils.isNotEmpty(downloadPath))
+      {
+        configuration.setDownloadPath(downloadPath);
+      }
+      if (StringUtils.isNotEmpty(downloadFormat))
+      {
+        configuration.setDownloadFormat(downloadFormat);
+      }
+      if (StringUtils.isNotEmpty(languageKey))
+      {
+        configuration.setLanguageKey(languageKey);
+      }
+      if (StringUtils.isNotEmpty(customerId))
+      {
+        configuration.setCustomerId(customerId);
+      }
+      if (downloadOptions != null)
+      {
+        configuration.setDownloadOptions(downloadOptions);
+      }
+      ConfigurationValidator configurationValidator = new ConfigurationValidator();
+      configurationValidator.validateDownloadConfiguration(configuration);
+      SimpleLocalizeClient client = SimpleLocalizeClient.create(configuration.getBaseUrl(), configuration.getApiKey());
+      DownloadCommand downloadCommand = new DownloadCommand(client, configuration);
+      downloadCommand.invoke();
+    } catch (Exception e)
     {
-      configuration.setApiKey(apiKey);
+      printDebug(e);
+      System.exit(CommandLine.ExitCode.USAGE);
     }
-    if (StringUtils.isNotEmpty(downloadPath))
-    {
-      configuration.setDownloadPath(downloadPath);
-    }
-    if (StringUtils.isNotEmpty(downloadFormat))
-    {
-      configuration.setDownloadFormat(downloadFormat);
-    }
-    if (StringUtils.isNotEmpty(languageKey))
-    {
-      configuration.setLanguageKey(languageKey);
-    }
-    if (StringUtils.isNotEmpty(customerId))
-    {
-      configuration.setCustomerId(customerId);
-    }
-    if (downloadOptions != null)
-    {
-      configuration.setDownloadOptions(downloadOptions);
-    }
-    ConfigurationValidator configurationValidator = new ConfigurationValidator();
-    configurationValidator.validateDownloadConfiguration(configuration);
-    SimpleLocalizeClient client = SimpleLocalizeClient.create(configuration.getBaseUrl(), configuration.getApiKey());
-    DownloadCommand downloadCommand = new DownloadCommand(client, configuration);
-    downloadCommand.invoke();
   }
 
   @Command(
@@ -222,33 +246,40 @@ public class SimplelocalizeCliCommand implements Runnable
           @Option(names = {"--baseUrl"}, description = "(Optional) Set custom server URL") String baseUrl
   )
   {
-    ConfigurationLoader configurationLoader = new ConfigurationLoader();
-    Configuration configuration = configurationLoader.loadOrGetDefault(configurationFilePath);
-    if (StringUtils.isNotEmpty(baseUrl))
+    try
     {
-      configuration.setBaseUrl(baseUrl);
-    }
+      ConfigurationLoader configurationLoader = new ConfigurationLoader();
+      Configuration configuration = configurationLoader.loadOrGetDefault(configurationFilePath);
+      if (StringUtils.isNotEmpty(baseUrl))
+      {
+        configuration.setBaseUrl(baseUrl);
+      }
 
-    if (StringUtils.isNotEmpty(apiKey))
+      if (StringUtils.isNotEmpty(apiKey))
+      {
+        configuration.setApiKey(apiKey);
+      }
+
+      if (StringUtils.isNotEmpty(environment))
+      {
+        configuration.setEnvironment(environment);
+      }
+
+      if (StringUtils.isNotEmpty(pullPath))
+      {
+        configuration.setPullPath(pullPath);
+      }
+
+      ConfigurationValidator configurationValidator = new ConfigurationValidator();
+      configurationValidator.validateHostingPullConfiguration(configuration);
+      SimpleLocalizeClient client = SimpleLocalizeClient.create(configuration.getBaseUrl(), configuration.getApiKey());
+      PullHostingCommand command = new PullHostingCommand(client, configuration);
+      command.invoke();
+    } catch (Exception e)
     {
-      configuration.setApiKey(apiKey);
+      printDebug(e);
+      System.exit(CommandLine.ExitCode.USAGE);
     }
-
-    if (StringUtils.isNotEmpty(environment))
-    {
-      configuration.setEnvironment(environment);
-    }
-
-    if (StringUtils.isNotEmpty(pullPath))
-    {
-      configuration.setPullPath(pullPath);
-    }
-
-    ConfigurationValidator configurationValidator = new ConfigurationValidator();
-    configurationValidator.validateHostingPullConfiguration(configuration);
-    SimpleLocalizeClient client = SimpleLocalizeClient.create(configuration.getBaseUrl(), configuration.getApiKey());
-    PullHostingCommand command = new PullHostingCommand(client, configuration);
-    command.invoke();
   }
 
   @Command(
@@ -259,23 +290,30 @@ public class SimplelocalizeCliCommand implements Runnable
           @Option(names = {"--baseUrl"}, description = "(Optional) Set custom server URL") String baseUrl
   )
   {
-    ConfigurationLoader configurationLoader = new ConfigurationLoader();
-    Configuration configuration = configurationLoader.loadOrGetDefault(configurationFilePath);
-    if (StringUtils.isNotEmpty(baseUrl))
+    try
     {
-      configuration.setBaseUrl(baseUrl);
-    }
+      ConfigurationLoader configurationLoader = new ConfigurationLoader();
+      Configuration configuration = configurationLoader.loadOrGetDefault(configurationFilePath);
+      if (StringUtils.isNotEmpty(baseUrl))
+      {
+        configuration.setBaseUrl(baseUrl);
+      }
 
-    if (StringUtils.isNotEmpty(apiKey))
+      if (StringUtils.isNotEmpty(apiKey))
+      {
+        configuration.setApiKey(apiKey);
+      }
+
+      ConfigurationValidator configurationValidator = new ConfigurationValidator();
+      configurationValidator.validateGetStatusConfiguration(configuration);
+      SimpleLocalizeClient client = SimpleLocalizeClient.create(configuration.getBaseUrl(), configuration.getApiKey());
+      StatusCommand command = new StatusCommand(client);
+      command.invoke();
+    } catch (Exception e)
     {
-      configuration.setApiKey(apiKey);
+      printDebug(e);
+      System.exit(CommandLine.ExitCode.USAGE);
     }
-
-    ConfigurationValidator configurationValidator = new ConfigurationValidator();
-    configurationValidator.validateGetStatusConfiguration(configuration);
-    SimpleLocalizeClient client = SimpleLocalizeClient.create(configuration.getBaseUrl(), configuration.getApiKey());
-    StatusCommand command = new StatusCommand(client);
-    command.invoke();
   }
 
   @Command(
@@ -287,32 +325,51 @@ public class SimplelocalizeCliCommand implements Runnable
           @Option(names = {"--baseUrl"}, description = "(Optional) Set custom server URL") String baseUrl
   )
   {
-    ConfigurationLoader configurationLoader = new ConfigurationLoader();
-    Configuration configuration = configurationLoader.loadOrGetDefault(configurationFilePath);
-    if (StringUtils.isNotEmpty(baseUrl))
+    try
     {
-      configuration.setBaseUrl(baseUrl);
-    }
+      ConfigurationLoader configurationLoader = new ConfigurationLoader();
+      Configuration configuration = configurationLoader.loadOrGetDefault(configurationFilePath);
+      if (StringUtils.isNotEmpty(baseUrl))
+      {
+        configuration.setBaseUrl(baseUrl);
+      }
 
-    if (StringUtils.isNotEmpty(apiKey))
-    {
-      configuration.setApiKey(apiKey);
-    }
-    if (StringUtils.isNotEmpty(environment))
-    {
-      configuration.setEnvironment(environment);
-    }
+      if (StringUtils.isNotEmpty(apiKey))
+      {
+        configuration.setApiKey(apiKey);
+      }
+      if (StringUtils.isNotEmpty(environment))
+      {
+        configuration.setEnvironment(environment);
+      }
 
-    ConfigurationValidator configurationValidator = new ConfigurationValidator();
-    configurationValidator.validateHostingPublishConfiguration(configuration);
-    SimpleLocalizeClient client = SimpleLocalizeClient.create(configuration.getBaseUrl(), configuration.getApiKey());
-    PublishHostingCommand command = new PublishHostingCommand(client, configuration);
-    command.invoke();
+      ConfigurationValidator configurationValidator = new ConfigurationValidator();
+      configurationValidator.validateHostingPublishConfiguration(configuration);
+      SimpleLocalizeClient client = SimpleLocalizeClient.create(configuration.getBaseUrl(), configuration.getApiKey());
+      PublishHostingCommand command = new PublishHostingCommand(client, configuration);
+      command.invoke();
+    } catch (Exception e)
+    {
+      printDebug(e);
+      System.exit(CommandLine.ExitCode.USAGE);
+    }
+  }
+
+  private void printDebug(Exception e)
+  {
+    if (debug)
+    {
+      log.error("Command failed.", e);
+    } else
+    {
+      log.error("Command failed. Use '--debug' parameter before the command name to see stacktrace.");
+    }
   }
 
 
   public void run()
   {
     log.warn("Please specify a command. Visit https://simplelocalize.io/docs/cli/get-started/ to learn more.");
+    System.exit(CommandLine.ExitCode.USAGE);
   }
 }
