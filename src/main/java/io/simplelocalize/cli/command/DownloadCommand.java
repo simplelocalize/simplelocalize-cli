@@ -51,10 +51,12 @@ public class DownloadCommand implements CliCommand
             .withCustomerId(customerId)
             .withLanguageKey(languageKey)
             .build();
+    log.info("Preparing files to download");
     List<DownloadableFile> downloadableFiles = client.fetchDownloadableFiles(downloadRequest);
-    downloadableFiles
-            .parallelStream()
-            .forEach(downloadableFile -> client.downloadFile(downloadableFile, downloadPath));
+    for (DownloadableFile downloadableFile : downloadableFiles)
+    {
+      client.downloadFile(downloadableFile, downloadPath);
+    }
     log.info("Downloaded {} files from SimpleLocalize", downloadableFiles.size());
   }
 

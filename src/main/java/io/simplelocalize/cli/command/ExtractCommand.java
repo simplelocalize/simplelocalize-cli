@@ -44,7 +44,7 @@ public class ExtractCommand implements CliCommand
     Set<String> ignoredKeys = new HashSet<>(configuration.getIgnoreKeys());
     keys.removeAll(ignoredKeys);
 
-    client.uploadKeys(keys);
-    log.info("Uploaded {} keys to SimpleLocalize", keys.size());
+    Integer processedKeys = client.uploadKeys(keys);
+    log.info("Uploaded {} keys to SimpleLocalize", processedKeys);
   }
 }

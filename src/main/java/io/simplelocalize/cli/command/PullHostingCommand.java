@@ -66,7 +66,7 @@ public class PullHostingCommand implements CliCommand
     {
       String downloadUrl = BASE_URI_CDN + "/" + resourcePath;
       String resourcePrefix = projectToken + "/_" + environment + "/";
-      String plainResource = resourcePath.replace(resourcePrefix, ""); // e.g.: _customer, _index, pl_PL, pl_PL_ikea, pl_PL/common, pl_PL_ikea/common
+      String plainResource = resourcePath.replace(resourcePrefix, "");
       Path savePath = Path.of(pullDirectory, plainResource + ".json");
       client.downloadFile(downloadUrl, savePath);
     }

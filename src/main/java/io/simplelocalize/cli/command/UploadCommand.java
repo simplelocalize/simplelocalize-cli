@@ -100,6 +100,7 @@ public class UploadCommand implements CliCommand
               .withOptions(uploadOptions)
               .build();
 
+      log.info("Uploading {}", uploadPath);
       client.uploadFile(uploadRequest);
     }
     log.info("Uploaded {} files to SimpleLocalize", filesToUpload.size());
