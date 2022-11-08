@@ -70,7 +70,7 @@ public class PullHostingCommand implements CliCommand
       Path savePath = Path.of(pullDirectory, plainResource + ".json");
       client.downloadFile(downloadUrl, savePath);
     }
-    log.info("Downloaded {} resources from Translation Hosting", resourcePaths.size());
+    log.info("Downloaded {} Translation Hosting resources", resourcePaths.size());
 
   }
 

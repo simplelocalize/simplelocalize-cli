@@ -35,7 +35,7 @@ public class SimplelocalizeCliCommand implements Runnable
 
   private static final Logger log = LoggerFactory.getLogger(SimplelocalizeCliCommand.class);
 
-  @Option(names = {"-c", "--config"}, description = "Configuration file (default: ./simplelocalize.yml)")
+  @Option(names = {"-c", "--config"}, description = "Configuration file (default: simplelocalize.yml)")
   Path configurationFilePath;
 
   @Option(names = {"--debug"}, description = "Debug mode", defaultValue = "false")
@@ -359,10 +359,10 @@ public class SimplelocalizeCliCommand implements Runnable
   {
     if (debug)
     {
-      log.error("Error occurred", e);
+      log.error("Command failed.", e);
     } else
     {
-      log.error("Error occurred. Use '--debug' before command name to see more details");
+      log.error("Command failed. Use '--debug' parameter before the command name to see stacktrace.");
     }
   }
 
