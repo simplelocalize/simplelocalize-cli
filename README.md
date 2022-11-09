@@ -203,7 +203,7 @@ simplelocalize publish
 Command gets project details and prints them to the console.
 
 ```
-simplelocalize publish 
+simplelocalize status 
   --apiKey <PROJECT_API_KEY>
 ```
 
