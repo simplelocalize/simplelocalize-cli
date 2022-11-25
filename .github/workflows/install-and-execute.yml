@@ -1,7 +1,6 @@
 name: Install and execute
 
 on:
-  push:
   release:
     types: [published]
   schedule:
