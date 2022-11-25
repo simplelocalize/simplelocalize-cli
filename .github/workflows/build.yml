@@ -120,10 +120,11 @@ jobs:
           path: simplelocalize-cli-${{ matrix.label }}
   build-mac:
     needs: [ build-jar ]
-    name: "Build ${{ matrix.os }} (${{matrix.arch}}) executable"
+    name: "Build ${{ matrix.os }} (${{ matrix.arch }}) executable"
     strategy:
       matrix:
         os: [ macos-latest ]
+        arch: [ aarch64, amd64 ]
         include:
           - os: 'macos-latest'
             label: 'mac-m1'
