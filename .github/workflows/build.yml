@@ -9,7 +9,7 @@ on:
 
 env:
   ACTIONS_ALLOW_UNSECURE_COMMANDS: true
-  GVM_VERSION: 22.3.0
+  GVM_VERSION: "22.3.0"
 
 jobs:
   build-jar:
@@ -105,7 +105,7 @@ jobs:
         uses: DeLaGuardo/setup-graalvm@5.0
         with:
           graalvm: ${{env.GVM_VERSION}}
-          java: 11
+          java: 'java11'
       - name: "Install Native Image"
         run: gu install native-image
       - name: "Build Native Image"
