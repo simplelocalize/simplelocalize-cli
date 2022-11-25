@@ -101,9 +101,49 @@ jobs:
         with:
           name: 'simplelocalize-cli-${{env.VERSION}}.jar'
       - name: "Setup GraalVM"
-        uses: DeLaGuardo/setup-graalvm@master
+        uses: DeLaGuardo/setup-graalvm@5.0
         with:
-          graalvm-version: '20.1.0.java11'
+          graalvm: '21.0.0.2'
+          java: 'java11'
+      - name: "Install Native Image"
+        run: gu install native-image
+      - name: "Build Native Image"
+        run: native-image --no-server -cp simplelocalize-cli-*.jar -H:Name="simplelocalize-cli-${{matrix.label}}" io.simplelocalize.cli.SimplelocalizeCliCommand
+      - name: "Optimize executable"
+        uses: svenstaro/upx-action@v2
+        with:
+          file: simplelocalize-cli-${{ matrix.label }}
+          args: --best
+      - name: "Upload artifact"
+        uses: actions/upload-artifact@v3
+        with:
+          name: simplelocalize-cli-${{ matrix.label }}
+          path: simplelocalize-cli-${{ matrix.label }}
+  build-mac-m1:
+    needs: [ build-jar ]
+    name: "Build M1 executable"
+    strategy:
+      matrix:
+        os: [ macos-latest ]
+        include:
+          - os: 'macos-latest'
+            label: 'mac-m1'
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v3
+      - name: 'Get Version Number'
+        run: |
+          echo "::set-env name=VERSION::$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)"
+      - name: 'Get JAR Artifact'
+        uses: actions/download-artifact@v3
+        with:
+          name: 'simplelocalize-cli-${{env.VERSION}}.jar'
+      - name: "Setup GraalVM"
+        uses: DeLaGuardo/setup-graalvm@5.0
+        with:
+          graalvm: '21.0.0.2'
+          java: 'java11'
+          arch: 'aarch64'
       - name: "Install Native Image"
         run: gu install native-image
       - name: "Build Native Image"
