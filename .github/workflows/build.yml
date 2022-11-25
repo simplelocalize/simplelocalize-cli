@@ -109,7 +109,7 @@ jobs:
       - name: "Install Native Image"
         run: gu install native-image
       - name: "Build Native Image"
-        run: native-image --no-server -cp simplelocalize-cli-*.jar -H:Name="simplelocalize-cli-${{matrix.label}}" io.simplelocalize.cli.SimplelocalizeCliCommand
+        run: native-image --no-server --trace-class-initialization=jdk.xml.internal.SecuritySupport -cp simplelocalize-cli-*.jar -H:Name="simplelocalize-cli-${{matrix.label}}" io.simplelocalize.cli.SimplelocalizeCliCommand
       - name: "Optimize executable"
         uses: svenstaro/upx-action@v2
         with:
