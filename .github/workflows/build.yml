@@ -9,7 +9,7 @@ on:
 
 env:
   ACTIONS_ALLOW_UNSECURE_COMMANDS: true
-  GVM_VERSION: "20.3.6"
+  GVM_VERSION: "20.1.0"
 
 jobs:
   build-jar:
@@ -68,7 +68,7 @@ jobs:
           JAVA_HOME: ./graalvm-ce-java11-${{env.GVM_VERSION}}
         run: |
           call "C:\Program Files (x86)\Microsoft Visual Studio\2017\BuildTools\VC\Auxiliary\Build\vcvars64.bat"
-          ./graalvm-ce-java11-${{env.GVM_VERSION}}/bin/native-image --no-server -cp simplelocalize-cli-${{env.VERSION}}.jar -H:Name="simplelocalize-cli-windows" io.simplelocalize.cli.SimplelocalizeCliCommand
+          ./graalvm-ce-java11-${{env.GVM_VERSION}}/bin/native-image --no-server --report-unsupported-elements-at-runtime -cp simplelocalize-cli-${{env.VERSION}}.jar -H:Name="simplelocalize-cli-windows" io.simplelocalize.cli.SimplelocalizeCliCommand
       - name: "Optimize executable"
         uses: svenstaro/upx-action@v2
         with:
@@ -102,14 +102,13 @@ jobs:
         with:
           name: 'simplelocalize-cli-${{env.VERSION}}.jar'
       - name: "Setup GraalVM"
-        uses: DeLaGuardo/setup-graalvm@5.0
+        uses: DeLaGuardo/setup-graalvm@master
         with:
-          graalvm: ${{env.GVM_VERSION}}
-          java: 'java11'
+          graalvm-version: '${{ env.GVM_VERSION }}.java11'
       - name: "Install Native Image"
         run: gu install native-image
       - name: "Build Native Image"
-        run: native-image --no-server --trace-class-initialization=jdk.xml.internal.SecuritySupport -cp simplelocalize-cli-*.jar -H:Name="simplelocalize-cli-${{matrix.label}}" io.simplelocalize.cli.SimplelocalizeCliCommand
+        run: native-image --no-server -Dmicronaut.env.deduction=false --report-unsupported-elements-at-runtime -cp simplelocalize-cli-*.jar -H:Name="simplelocalize-cli-${{matrix.label}}" io.simplelocalize.cli.SimplelocalizeCliCommand
       - name: "Optimize executable"
         uses: svenstaro/upx-action@v2
         with:
