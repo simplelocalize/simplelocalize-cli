@@ -1,0 +1,36 @@
+name: Install and execute
+
+on:
+  push:
+  release:
+    types: [published]
+  schedule:
+    - cron: '12 * * * *'
+
+jobs:
+  test-unix:
+    name: "Testing ${{ matrix.version }} on ${{ matrix.os }}"
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ macos-10.15, macos-11, macos-12,ubuntu-18.04, ubuntu-20.04, ubuntu-22.04 ]
+        version: [ '2.1', '2.0' ]
+    steps:
+      - uses: actions/checkout@v3
+      - name: Test on ${{ matrix.os }}
+        run: |
+          curl --fail -s https://get.simplelocalize.io/${{ matrix.version }}/install | bash
+          simplelocalize --version
+  test-windows:
+    name: "Testing ${{ matrix.version }} on ${{ matrix.os }}"
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ windows-2019, windows-2022 ]
+        version: [ '2.1', '2.0' ]
+    steps:
+      - uses: actions/checkout@v3
+      - name: Test on ${{ matrix.os }}
+        run: |
+          . { iwr -useb https://get.simplelocalize.io/${{ matrix.version }}/install-windows } | iex;
+          simplelocalize --version
