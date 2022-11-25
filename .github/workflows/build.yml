@@ -9,6 +9,7 @@ on:
 
 env:
   ACTIONS_ALLOW_UNSECURE_COMMANDS: true
+  GVM_VERSION: 22.3.0
 
 jobs:
   build-jar:
@@ -43,13 +44,13 @@ jobs:
       - uses: actions/checkout@v3
       - name: "Download GraalVM"
         run: |
-          Invoke-RestMethod -Uri https://github.com/graalvm/graalvm-ce-builds/releases/download/vm-20.1.0/graalvm-ce-java11-windows-amd64-20.1.0.zip -OutFile 'graal.zip'
+          Invoke-RestMethod -Uri https://github.com/graalvm/graalvm-ce-builds/releases/download/vm-${{env.GVM_VERSION}}/graalvm-ce-java11-windows-amd64-${{env.GVM_VERSION}}.zip -OutFile 'graal.zip'
       - name: "Install GraalVM"
         run: |
           Expand-Archive -path 'graal.zip' -destinationpath '.'
       - name: "Install Native Image"
         run: |
-          graalvm-ce-java11-20.1.0\bin\gu.cmd install native-image
+          graalvm-ce-java11-${{env.GVM_VERSION}}\bin\gu.cmd install native-image
       - name: "Set up Visual C Build Tools Workload for Visual Studio 2017 Build Tools"
         run: |
           choco install visualstudio2017-workload-vctools
@@ -64,10 +65,10 @@ jobs:
       - name: "Build Native Image"
         shell: cmd
         env:
-          JAVA_HOME: ./graalvm-ce-java11-20.1.0
+          JAVA_HOME: ./graalvm-ce-java11-${{env.GVM_VERSION}}
         run: |
           call "C:\Program Files (x86)\Microsoft Visual Studio\2017\BuildTools\VC\Auxiliary\Build\vcvars64.bat"
-          ./graalvm-ce-java11-20.1.0/bin/native-image --no-server -cp simplelocalize-cli-${{env.VERSION}}.jar -H:Name="simplelocalize-cli-windows" io.simplelocalize.cli.SimplelocalizeCliCommand
+          ./graalvm-ce-java11-${{env.GVM_VERSION}}/bin/native-image --no-server -Dmicronaut.env.deduction=false --report-unsupported-elements-at-runtime -cp simplelocalize-cli-${{env.VERSION}}.jar -H:Name="simplelocalize-cli-windows" io.simplelocalize.cli.SimplelocalizeCliCommand
       - name: "Optimize executable"
         uses: svenstaro/upx-action@v2
         with:
@@ -84,54 +85,12 @@ jobs:
     name: "Build ${{ matrix.os }} executable"
     strategy:
       matrix:
-        os: [ubuntu-latest]
+        os: [ubuntu-latest, macos-latest]
         include:
           - os: 'ubuntu-latest'
             label: 'linux'
-    runs-on: ${{ matrix.os }}
-    steps:
-      - uses: actions/checkout@v3
-      - name: 'Get Version Number'
-        run: |
-          echo "::set-env name=VERSION::$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)"
-      - name: 'Get JAR Artifact'
-        uses: actions/download-artifact@v3
-        with:
-          name: 'simplelocalize-cli-${{env.VERSION}}.jar'
-      - name: "Setup GraalVM"
-        uses: DeLaGuardo/setup-graalvm@5.0
-        with:
-          graalvm: '22.1.0'
-          java: 'java11'
-          arch: 'amd64'
-      - name: "Install Native Image"
-        run: gu install native-image
-      - name: "Build Native Image"
-        run: native-image --no-server -cp simplelocalize-cli-*.jar -H:Name="simplelocalize-cli-${{matrix.label}}" io.simplelocalize.cli.SimplelocalizeCliCommand
-      - name: "Optimize executable"
-        uses: svenstaro/upx-action@v2
-        with:
-          file: simplelocalize-cli-${{ matrix.label }}
-          args: --best
-      - name: "Upload artifact"
-        uses: actions/upload-artifact@v3
-        with:
-          name: simplelocalize-cli-${{ matrix.label }}
-          path: simplelocalize-cli-${{ matrix.label }}
-  build-mac:
-    needs: [ build-jar ]
-    name: "Build ${{ matrix.os }} (${{ matrix.arch }}) executable"
-    strategy:
-      matrix:
-        os: [ macos-latest ]
-        arch: [ aarch64, amd64 ]
-        include:
-          - os: 'macos-latest'
-            label: 'mac-m1'
-            arch: 'aarch64'
           - os: 'macos-latest'
             label: 'mac'
-            arch: 'amd64'
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v3
@@ -145,13 +104,12 @@ jobs:
       - name: "Setup GraalVM"
         uses: DeLaGuardo/setup-graalvm@5.0
         with:
-          graalvm: '22.1.0'
-          java: 'java11'
-          arch: '${{ matrix.arch }}'
+          graalvm: ${{env.GVM_VERSION}}
+          java: 11
       - name: "Install Native Image"
         run: gu install native-image
       - name: "Build Native Image"
-        run: native-image --no-server -cp simplelocalize-cli-*.jar -H:Name="simplelocalize-cli-${{matrix.label}}" io.simplelocalize.cli.SimplelocalizeCliCommand
+        run: native-image --no-server -Dmicronaut.env.deduction=false --report-unsupported-elements-at-runtime -cp simplelocalize-cli-*.jar -H:Name="simplelocalize-cli-${{matrix.label}}" io.simplelocalize.cli.SimplelocalizeCliCommand
       - name: "Optimize executable"
         uses: svenstaro/upx-action@v2
         with:
