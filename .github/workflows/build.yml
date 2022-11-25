@@ -84,12 +84,10 @@ jobs:
     name: "Build ${{ matrix.os }} executable"
     strategy:
       matrix:
-        os: [ubuntu-latest, macos-latest]
+        os: [ubuntu-latest]
         include:
           - os: 'ubuntu-latest'
             label: 'linux'
-          - os: 'macos-latest'
-            label: 'mac'
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v3
@@ -103,8 +101,9 @@ jobs:
       - name: "Setup GraalVM"
         uses: DeLaGuardo/setup-graalvm@5.0
         with:
-          graalvm: '21.0.0.2'
+          graalvm: '22.1.0'
           java: 'java11'
+          arch: 'amd64'
       - name: "Install Native Image"
         run: gu install native-image
       - name: "Build Native Image"
@@ -119,15 +118,19 @@ jobs:
         with:
           name: simplelocalize-cli-${{ matrix.label }}
           path: simplelocalize-cli-${{ matrix.label }}
-  build-mac-m1:
+  build-mac:
     needs: [ build-jar ]
-    name: "Build M1 executable"
+    name: "Build ${{ matrix.os }} (${{matrix.arch}}) executable"
     strategy:
       matrix:
         os: [ macos-latest ]
         include:
           - os: 'macos-latest'
             label: 'mac-m1'
+            arch: 'aarch64'
+          - os: 'macos-latest'
+            label: 'mac'
+            arch: 'amd64'
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v3
@@ -141,9 +144,9 @@ jobs:
       - name: "Setup GraalVM"
         uses: DeLaGuardo/setup-graalvm@5.0
         with:
-          graalvm: '21.0.0.2'
+          graalvm: '22.1.0'
           java: 'java11'
-          arch: 'aarch64'
+          arch: '${{ matrix.arch }}'
       - name: "Install Native Image"
         run: gu install native-image
       - name: "Build Native Image"
