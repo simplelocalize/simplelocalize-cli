@@ -9,7 +9,7 @@ on:
 
 env:
   ACTIONS_ALLOW_UNSECURE_COMMANDS: true
-  GVM_VERSION: "22.3.0"
+  GVM_VERSION: "20.3.6"
 
 jobs:
   build-jar:
@@ -68,7 +68,7 @@ jobs:
           JAVA_HOME: ./graalvm-ce-java11-${{env.GVM_VERSION}}
         run: |
           call "C:\Program Files (x86)\Microsoft Visual Studio\2017\BuildTools\VC\Auxiliary\Build\vcvars64.bat"
-          ./graalvm-ce-java11-${{env.GVM_VERSION}}/bin/native-image --no-server --trace-object-instantiation=java.util.Random -cp simplelocalize-cli-${{env.VERSION}}.jar -H:Name="simplelocalize-cli-windows" io.simplelocalize.cli.SimplelocalizeCliCommand
+          ./graalvm-ce-java11-${{env.GVM_VERSION}}/bin/native-image --no-server -cp simplelocalize-cli-${{env.VERSION}}.jar -H:Name="simplelocalize-cli-windows" io.simplelocalize.cli.SimplelocalizeCliCommand
       - name: "Optimize executable"
         uses: svenstaro/upx-action@v2
         with:
@@ -109,7 +109,7 @@ jobs:
       - name: "Install Native Image"
         run: gu install native-image
       - name: "Build Native Image"
-        run: native-image --no-server --trace-object-instantiation=java.util.Random -cp simplelocalize-cli-*.jar -H:Name="simplelocalize-cli-${{matrix.label}}" io.simplelocalize.cli.SimplelocalizeCliCommand
+        run: native-image --no-server -cp simplelocalize-cli-*.jar -H:Name="simplelocalize-cli-${{matrix.label}}" io.simplelocalize.cli.SimplelocalizeCliCommand
       - name: "Optimize executable"
         uses: svenstaro/upx-action@v2
         with:
