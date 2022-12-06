@@ -109,6 +109,7 @@ jobs:
       - name: "Build Native Image"
         run: native-image --no-server -Dmicronaut.env.deduction=false --report-unsupported-elements-at-runtime -cp simplelocalize-cli-*.jar -H:Name="simplelocalize-cli-${{matrix.label}}" io.simplelocalize.cli.SimplelocalizeCliCommand
       - name: "Optimize executable"
+        if: matrix.label != 'mac'
         uses: svenstaro/upx-action@v2
         with:
           file: simplelocalize-cli-${{ matrix.label }}
