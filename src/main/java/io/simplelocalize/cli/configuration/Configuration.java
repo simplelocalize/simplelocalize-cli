@@ -1,11 +1,9 @@
 package io.simplelocalize.cli.configuration;
 
-import io.micronaut.core.annotation.Introspected;
 
 import java.util.ArrayList;
 import java.util.List;
 
-@Introspected
 public class Configuration
 {
 

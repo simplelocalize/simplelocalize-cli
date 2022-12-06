@@ -1,8 +1,6 @@
 package io.simplelocalize.cli.client.dto;
 
-import io.micronaut.core.annotation.Introspected;
 
-@Introspected
 public final class ImportKey
 {
   private final String key;

@@ -1,6 +1,5 @@
 package io.simplelocalize.cli;
 
-import io.micronaut.configuration.picocli.PicocliRunner;
 import io.simplelocalize.cli.client.SimpleLocalizeClient;
 import io.simplelocalize.cli.command.*;
 import io.simplelocalize.cli.configuration.Configuration;
@@ -43,7 +42,8 @@ public class SimplelocalizeCliCommand implements Runnable
 
   public static void main(String[] args)
   {
-    PicocliRunner.run(SimplelocalizeCliCommand.class, args);
+    int exitCode = new CommandLine(new SimplelocalizeCliCommand()).execute(args);
+    System.exit(exitCode);
   }
 
   @Command(
