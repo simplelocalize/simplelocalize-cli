@@ -69,11 +69,11 @@ jobs:
         run: |
           call "C:\Program Files (x86)\Microsoft Visual Studio\2017\BuildTools\VC\Auxiliary\Build\vcvars64.bat"
           ./graalvm-ce-java11-${{env.GVM_VERSION}}/bin/native-image --no-fallback -cp simplelocalize-cli-${{env.VERSION}}.jar -H:Name="simplelocalize-cli-windows" io.simplelocalize.cli.SimplelocalizeCliCommand
-      - name: "Optimize executable"
-        uses: svenstaro/upx-action@v2
-        with:
-          file: simplelocalize-cli-windows.exe
-          args: --best
+#      - name: "Optimize executable"
+#        uses: svenstaro/upx-action@v2
+#        with:
+#          file: simplelocalize-cli-windows.exe
+#          args: --best
       - name: 'Upload artifact'
         uses: actions/upload-artifact@v3
         with:
@@ -108,7 +108,7 @@ jobs:
       - name: "Install Native Image"
         run: gu install native-image
       - name: "Build Native Image"
-        run: native-image --no-fallback -cp simplelocalize-cli-*.jar -H:Name="simplelocalize-cli-${{matrix.label}}" io.simplelocalize.cli.SimplelocalizeCliCommand
+        run: native-image --no-fallback -H:Optimize=0 -cp simplelocalize-cli-*.jar -H:Name="simplelocalize-cli-${{matrix.label}}" io.simplelocalize.cli.SimplelocalizeCliCommand
 #      - name: "Optimize executable"
 #        uses: svenstaro/upx-action@v2
 #        with:
