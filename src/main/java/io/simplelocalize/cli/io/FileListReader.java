@@ -67,6 +67,7 @@ public class FileListReader
   private Matcher getMatcher(String input, String pattern)
   {
     String replace = pattern
+            .replace("\\", "\\\\") // escape backslash
             .replace(NAMESPACE_TEMPLATE_KEY, "(?<ns>.*)")
             .replace(LANGUAGE_TEMPLATE_KEY, "(?<lang>.*)");
     Pattern regex = Pattern.compile(replace);
