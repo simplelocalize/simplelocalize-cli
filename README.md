@@ -238,13 +238,17 @@ Additional parameters:
 
 It publishes translation to [Translation Hosting](https://simplelocalize.io/translation-hosting). It behaves exactly the same as publish buttons in the SimpleLocalize (Hosting tab).
 
-- `--environment latest` gets translations from Translation Editor and publishes them to Translation Hosting to `latest` environment.
-- `--environment production` gets translations from Translation Hosting (`latest`) and publishes them to Translation Hosting (`production`).
-
 ```
 simplelocalize publish 
   --apiKey <PROJECT_API_KEY>
   --environment latest
+```
+
+- `--environment latest` gets translations from Translation Editor and publishes them to Translation Hosting to `latest` environment.
+- `--environment production` gets translations from Translation Hosting (`latest`) and publishes them to Translation Hosting (`production`).
+
+```
+(Translation Editor) --> ('latest' environment) --> ('production' environment)
 ```
 
 ## Getting project details
