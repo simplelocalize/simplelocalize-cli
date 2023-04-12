@@ -39,13 +39,25 @@ simplelocalize [command] ...parameters
 ```
 
 Commands:
+- `init` - creates a sample configuration file
 - `status` - gets translation project details
 - `upload` - uploads translation files or translation keys 
 - `download` - downloads translation files
 - `sync` - uploads translation files and downloads translation files
+- `auto-translate` - starts [auto-translation](https://simplelocalize.io/auto-translation) jobs
 - `pull` - downloads translation files from [Translation Hosting](https://simplelocalize.io/translation-hosting)
 - `publish` - publishes translations to [Translation Hosting](https://simplelocalize.io/translation-hosting)
 - `extract` - finds and extracts translation keys in your project files
+
+### Create configuration file
+
+Command creates a sample configuration file in the current directory.
+The configuration file simplifies the usage of the command-line tool
+by providing a default configuration for the project and allowing to omit some parameters.
+
+```shell
+simplelocalize init
+```
 
 ### Upload translations
 
@@ -56,10 +68,24 @@ simplelocalize upload
   --apiKey <PROJECT_API_KEY>
   --uploadPath <UPLOAD_PATH>
   --uploadFormat <UPLOAD_FORMAT>
-  --uploadOptions <UPLOAD_OPTIONS>
 ```
 
-`--uploadOptions` parameter is optional. Use `REPLACE_TRANSLATION_IF_FOUND` option to update existing translations.
+#### Upload path
+Upload path is a path to a file(s) with translations.
+Use `{lang}` placeholder to specify language or locale and `{ns}` placeholder to specify namespace.
+For example, if you have translations in 2 languages and 2 namespaces,
+you can use the following path: `./src/translations/{lang}/{ns}.json`
+
+> Add `--dryRun` parameter to check what translation files will be uploaded without actually uploading them.
+
+#### Upload format
+Upload format is a format of the file(s) with translations. Supported formats: https://simplelocalize.io/docs/general/file-formats/
+
+#### Additional parameters:
+- `--replace` allows you to **replace** existing translations with new ones.
+- `--delete` allows you to **delete** translations that are not present in uploaded files.
+- `--dryRun` allows you to check what translation files will be uploaded without actually uploading them.
+- `--uploadOptions` allows you to pass [additional options](https://simplelocalize.io/docs/general/options/) to the upload command. Eg.: `--uploadOptions TRIM_LEADING_TRAILING_SPACES`. To pass multiple options, use comma as a separator: `--uploadOptions TRIM_LEADING_TRAILING_SPACES,TRIM_LEADING_TRAILING_SPACES`.
 
 Learn more about [upload translations command](https://simplelocalize.io/docs/cli/upload-translations/).
 
@@ -72,7 +98,6 @@ simplelocalize download
   --apiKey <PROJECT_API_KEY>
   --downloadPath <DOWNLOAD_PATH>
   --downloadFormat <DOWNLOAD_FORMAT>
-  --downloadOptions <DOWNLOAD_OPTIONS>
 ```
 
 `--downloadOptions` parameter is optional.
@@ -95,6 +120,19 @@ simplelocalize sync
 ```
 
 `--downloadOptions` and `--uploadOptions` parameters are optional.
+
+### Auto-translate
+
+Auto-translate command starts [auto-translation](https://simplelocalize.io/auto-translation) jobs.
+
+```properties
+simplelocalize auto-translate 
+  --apiKey <PROJECT_API_KEY>
+```
+
+
+Additional parameters:
+- `--languageKeys` allows you to specify languages to auto-translate. Eg.: `--languageKeys en,de,fr`.
 
 ### Extract translation keys
 
