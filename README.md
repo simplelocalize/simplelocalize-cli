@@ -6,12 +6,15 @@
 
 ## What it does?
 
-SimpleLocalize CLI offers:
-- finding and extracting translation keys in your project files
-- uploading translation files or translation keys
-- downloading translation files
-- getting translation project status
-- publishing translations to the CDN.
+SimpleLocalize command-line tool allows you to: 
+- upload and download translations,
+- extract translation keys from your project files,
+- auto-translate your translations,
+- publish translations to the CDN.
+- pull translations from [Translation Hosting](https://simplelocalize.io/translation-hosting)
+- publish translations to [Translation Hosting](https://simplelocalize.io/translation-hosting)
+- and more...
+It is a great tool for CI/CD pipelines and automation. 
 
 ## Installation
 
@@ -19,26 +22,29 @@ The installation process is automated by command-line scripts. Both scripts for 
 
 ```shell
 # macOs / Linux / Windows (WSL)
-curl -s https://get.simplelocalize.io/2.1/install | bash
+curl -s https://get.simplelocalize.io/2.2/install | bash
 
 # Windows (PowerShell)
-. { iwr -useb https://get.simplelocalize.io/2.1/install-windows } | iex;
+. { iwr -useb https://get.simplelocalize.io/2.2/install-windows } | iex;
 ```
 
 To change or update the CLI version, run the installation script with the desired version number in the URL. You can also put the exact CLI version in URL to 
-explicitly point the version you want to use, e.g.: `https://get.simplelocalize.io/2.0.6/install` or `https://get.simplelocalize.io/2.0.6/install-windows`. See [releases](https://github.com/simplelocalize/simplelocalize-cli/releases) for the list of available versions.
+explicitly point the version you want to use, e.g.: `https://get.simplelocalize.io/2.0.6/install` or `https://get.simplelocalize.io/2.0.6/install-windows`. 
+
+See [releases](https://github.com/simplelocalize/simplelocalize-cli/releases) for the list of available versions.
 
 
 
 ## Usage
 
-SimpleLocalize CLI offers a several commands to invoke, All of them requires `--apiKey=KEY` parameter that is unique for each project. 
+The command-line tool offers a several commands to execute.
+All of them requires `--apiKey YOUR_API_KEY` parameter that is unique for each project.
 
 ```shell
 simplelocalize [command] ...parameters
 ```
 
-Commands:
+Available commands:
 - `init` - creates a sample configuration file
 - `status` - gets translation project details
 - `upload` - uploads translation files or translation keys 
@@ -48,6 +54,10 @@ Commands:
 - `pull` - downloads translation files from [Translation Hosting](https://simplelocalize.io/translation-hosting)
 - `publish` - publishes translations to [Translation Hosting](https://simplelocalize.io/translation-hosting)
 - `extract` - finds and extracts translation keys in your project files
+
+
+Use `--help` parameter to get more information about the command and its parameters
+or [check documentation](https://simplelocalize.io/docs/cli/get-started/).
 
 ### Create configuration file
 
@@ -61,22 +71,16 @@ simplelocalize init
 
 ### Upload translations
 
-Command uploads translation files from given `<UPLOAD_PATH>` to SimpleLocalize.
+Command uploads translation files from given `<UPLOAD_PATH_PATTERN>` to SimpleLocalize, eg.: `./src/translations/messages.json` 
+Use `{lang}` placeholder to specify language or locale and `{ns}` placeholder to specify namespace,
+eg.: `./src/translations/{lang}/{ns}.json`
 
 ```shell
 simplelocalize upload 
   --apiKey <PROJECT_API_KEY>
-  --uploadPath <UPLOAD_PATH>
+  --uploadPath <UPLOAD_PATH_PATTERN>
   --uploadFormat <UPLOAD_FORMAT>
 ```
-
-#### Upload path
-Upload path is a path to a file(s) with translations.
-Use `{lang}` placeholder to specify language or locale and `{ns}` placeholder to specify namespace.
-For example, if you have translations in 2 languages and 2 namespaces,
-you can use the following path: `./src/translations/{lang}/{ns}.json`
-
-> Add `--dryRun` parameter to check what translation files will be uploaded without actually uploading them.
 
 #### Upload format
 Upload format is a format of the file(s) with translations. Supported formats: https://simplelocalize.io/docs/general/file-formats/
@@ -91,16 +95,17 @@ Learn more about [upload translations command](https://simplelocalize.io/docs/cl
 
 ### Download translations
 
-Command downloads translation files from SimpleLocalize to given `<DOWNLOAD_PATH>`.
+Command downloads translation files from SimpleLocalize to given `<DOWNLOAD_PATH_PATTERN>`.
 
 ```shell
 simplelocalize download 
   --apiKey <PROJECT_API_KEY>
-  --downloadPath <DOWNLOAD_PATH>
+  --downloadPath <DOWNLOAD_PATH_PATTERN>
   --downloadFormat <DOWNLOAD_FORMAT>
 ```
 
-`--downloadOptions` parameter is optional.
+#### Additional parameters:
+- `--downloadOptions` allows you to pass [additional options](https://simplelocalize.io/docs/general/options/) to the download command. Eg.: `--downloadOptions WRITE_NESTED`.
 
 Learn more about [download translations command](https://simplelocalize.io/docs/cli/download-translations/).
 
@@ -130,7 +135,6 @@ simplelocalize auto-translate
   --apiKey <PROJECT_API_KEY>
 ```
 
-
 Additional parameters:
 - `--languageKeys` allows you to specify languages to auto-translate. Eg.: `--languageKeys en,de,fr`.
 
@@ -150,7 +154,7 @@ See [available project types](https://simplelocalize.io/docs/cli/i18n-keys-extra
 
 ## Usage examples
 
-Below you can find some examples of using SimpleLocalize CLI.
+Below, you can find some examples of using SimpleLocalize CLI.
 
 ### Example: One file with translations
 
@@ -223,6 +227,9 @@ simplelocalize pull
   --environment latest
 ```
 
+Additional parameters:
+`--filterRegex` allows you to filter files by regex, e.g.: `--filterRegex '_index'` will download only `_index` file.
+
 ### Publish resources to Translation Hosting
 
 It publishes translation to Translation Hosting. It behaves exactly the same as publish buttons in the SimpleLocalize (Hosting tab).
@@ -247,7 +254,10 @@ simplelocalize status
 
 
 ## Configuration file
-Use configuration file in order to simplify your bash command. Arguments used in command always overrides properties set in configuration file. By default, SimpleLocalize will load configuration from file named `simplelocalize.yml`. You can load configuration from different location by using a `-c` parameters.
+Use configuration file in order to simplify your bash command.
+Arguments used in command always override properties set in the configuration file.
+By default, SimpleLocalize will load configuration from file named `simplelocalize.yml`.
+You can load configuration from different location by using a `-c` parameters.
 
 ```properties
 # Load default simplelocalize.yml file
