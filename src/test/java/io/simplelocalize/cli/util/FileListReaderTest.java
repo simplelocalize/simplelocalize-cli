@@ -208,10 +208,10 @@ class FileListReaderTest
   }
 
   @Test
-  void shouldFindTranslations() throws IOException
+  void shouldFindTranslationsWhenExtremeEdgeCases() throws IOException
   {
     //given
-    String path = "./junit/translations/meaningless-directory/{ns}_{lang}.properties";
+    String path = "./junit/extreme-edge-cases/meaningless-directory/{ns}_{lang}.properties";
 
     //when
     List<FileToUpload> result = sut.findFilesToUpload(path);
@@ -222,27 +222,32 @@ class FileListReaderTest
             .assertThat(result)
             .containsExactlyInAnyOrder(
                     aFileToUpload()
-                            .withPath(Paths.get("./junit/translations/meaningless-directory/email_messages_de-DE.properties"))
+                            .withPath(Paths.get("./junit/extreme-edge-cases/meaningless-directory/email_messages_de-DE.properties"))
                             .withLanguage("de-DE")
                             .withNamespace("email_messages")
                             .build(),
                     aFileToUpload()
-                            .withPath(Paths.get("./junit/translations/meaningless-directory/email_messages_en%US.properties"))
+                            .withPath(Paths.get("./junit/extreme-edge-cases/meaningless-directory/email_messages_en%US.properties"))
                             .withLanguage("en%US")
                             .withNamespace("email_messages")
                             .build(),
                     aFileToUpload()
-                            .withPath(Paths.get("./junit/translations/meaningless-directory/email_messages_es-ES.properties"))
+                            .withPath(Paths.get("./junit/extreme-edge-cases/meaningless-directory/email_messages_es-ES.properties"))
                             .withLanguage("es-ES")
                             .withNamespace("email_messages")
                             .build(),
                     aFileToUpload()
-                            .withPath(Paths.get("./junit/translations/meaningless-directory/home_en-GB.properties"))
+                            .withPath(Paths.get("./junit/extreme-edge-cases/meaningless-directory/home_en-GB.properties"))
                             .withLanguage("en-GB")
                             .withNamespace("home")
                             .build(),
                     aFileToUpload()
-                            .withPath(Paths.get("./junit/translations/meaningless-directory/home_pl-PL.properties"))
+                            .withPath(Paths.get("./junit/extreme-edge-cases/meaningless-directory/home-en_GB.properties"))
+                            .withLanguage("GB")
+                            .withNamespace("home-en")
+                            .build(),
+                    aFileToUpload()
+                            .withPath(Paths.get("./junit/extreme-edge-cases/meaningless-directory/home_pl-PL.properties"))
                             .withLanguage("pl-PL")
                             .withNamespace("home")
                             .build()
