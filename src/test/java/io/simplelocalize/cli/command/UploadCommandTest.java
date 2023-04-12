@@ -3,7 +3,6 @@ package io.simplelocalize.cli.command;
 import io.simplelocalize.cli.client.SimpleLocalizeClient;
 import io.simplelocalize.cli.client.dto.UploadRequest;
 import io.simplelocalize.cli.configuration.Configuration;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -14,6 +13,9 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.nio.file.Path;
 import java.util.Collections;
+
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.times;
 
 @ExtendWith(MockitoExtension.class)
 class UploadCommandTest
@@ -51,7 +53,7 @@ class UploadCommandTest
     uploadCommand.invoke();
 
     //then
-    Mockito.verify(client, Mockito.times(12)).uploadFile(
+    Mockito.verify(client, times(12)).uploadFile(
             Mockito.refEq(UploadRequest.UploadFileRequestBuilder.anUploadFileRequest()
                             .withPath(Path.of("./junit/download-test/values-{lang}/strings.xml"))
                             .withFormat("android")
@@ -77,7 +79,7 @@ class UploadCommandTest
     uploadCommand.invoke();
 
     //then
-    Mockito.verify(client, Mockito.times(1)).uploadFile(
+    Mockito.verify(client, times(1)).uploadFile(
             Mockito.refEq(UploadRequest.UploadFileRequestBuilder.anUploadFileRequest()
                             .withPath(Path.of("./junit/download-test/values-{lang}/strings.xml"))
                             .withFormat("android")
@@ -103,7 +105,7 @@ class UploadCommandTest
     uploadCommand.invoke();
 
     //then
-    Mockito.verify(client, Mockito.times(1)).uploadFile(
+    Mockito.verify(client, times(1)).uploadFile(
             Mockito.refEq(UploadRequest.UploadFileRequestBuilder.anUploadFileRequest()
                     .withPath(Path.of("./junit/download-test/values-en/strings.xml"))
                     .withFormat("android")
@@ -146,7 +148,7 @@ class UploadCommandTest
     uploadCommand.invoke();
 
     //then
-    Mockito.verify(client, Mockito.times(1)).uploadFile(
+    Mockito.verify(client, times(1)).uploadFile(
             Mockito.refEq(UploadRequest.UploadFileRequestBuilder.anUploadFileRequest()
                             .withPath(Path.of("./junit/download-test/values-{lang}/strings.xml"))
                             .withFormat("android")
@@ -177,7 +179,7 @@ class UploadCommandTest
 
 
   @Test
-  public void shouldThrowMatchingFilesCouldNotBeFoundWhenFakeWindows() throws Exception
+  public void shouldNotFindMatchingFilesWhenFakeWindows() throws Exception
   {
     //given
     System.setProperty("os.name", "Windows 10");
@@ -186,10 +188,11 @@ class UploadCommandTest
     configuration.setUploadPath("./junit/download-test/values-en/strings.xml");
     configuration.setUploadFormat("android");
 
-    //when & then
+    //when
     UploadCommand uploadCommand = new UploadCommand(client, configuration);
-    Assertions
-            .assertThatThrownBy(uploadCommand::invoke)
-            .isInstanceOf(IllegalArgumentException.class);
+    uploadCommand.invoke();
+
+    //then
+    Mockito.verify(client, times(0)).uploadFile(any());
   }
 }
