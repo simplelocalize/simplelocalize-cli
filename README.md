@@ -135,8 +135,7 @@ simplelocalize sync
 Auto-translate command starts [auto-translation](https://simplelocalize.io/auto-translation) jobs.
 
 ```properties
-simplelocalize auto-translate 
-  --apiKey <PROJECT_API_KEY>
+simplelocalize auto-translate --apiKey <PROJECT_API_KEY>
 ```
 
 Additional parameters:
@@ -220,44 +219,46 @@ simplelocalize upload
   --uploadFormat single-language-json
 ```
 
-## Pull resources from Translation Hosting
 
-Downloads all translation hosting files to given directory in `--pullPath` parameter. It overwrites existing files and creates subdirectories if necessary. Available environment variables: `latest`, `production`.
-
-```
-simplelocalize pull 
-  --apiKey <PROJECT_API_KEY>
-  --pullPath ./hosting/
-  --environment latest
-```
-
-Additional parameters:
-`--filterRegex` allows you to filter files by regex, e.g.: `--filterRegex '__index.json'` will download only `__index.json` file.
-
-## Publish resources to Translation Hosting
+## Translation Hosting: Publish translations
 
 It publishes translation to [Translation Hosting](https://simplelocalize.io/translation-hosting). It behaves exactly the same as publish buttons in the SimpleLocalize (Hosting tab).
 
-```
-simplelocalize publish 
-  --apiKey <PROJECT_API_KEY>
-  --environment latest
+Publishes translations from Translation Editor to the `latest` environment.
+```properties
+simplelocalize publish --apiKey <PROJECT_API_KEY> --environment latest
 ```
 
-- `--environment latest` gets translations from Translation Editor and publishes them to Translation Hosting to `latest` environment.
-- `--environment production` gets translations from Translation Hosting (`latest`) and publishes them to Translation Hosting (`production`).
+Publishes translations from the `latest` environment to `production` environment.
+```properties
+simplelocalize publish --apiKey <PROJECT_API_KEY> --environment production
+```
 
+## Translation Hosting: Pull resources
+
+Downloads all translation hosting files to given directory in `--pullPath` parameter. It overwrites existing files and creates subdirectories if necessary.
+
+Pulls translations from the `latest` environment.
+```properties
+simplelocalize pull --apiKey <PROJECT_API_KEY> --pullPath ./hosting/ --environment latest
 ```
-(Translation Editor) --> ('latest' environment) --> ('production' environment)
+
+Pulls translations from the `production` environment.
+```properties
+simplelocalize pull --apiKey <PROJECT_API_KEY> --pullPath ./hosting/ --environment production
 ```
+
+If you would like to filter files which should be downloaded you can use `--filterRegex` param,
+e.g.: `--filterRegex '__index.json'` will download only `__index.json` file.
+
+
 
 ## Getting project details
 
 Command gets project details and prints them to the console.
 
-```
-simplelocalize status 
-  --apiKey <PROJECT_API_KEY>
+```properties
+simplelocalize status --apiKey <PROJECT_API_KEY>
 ```
 
 
