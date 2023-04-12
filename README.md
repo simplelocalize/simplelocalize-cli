@@ -12,6 +12,7 @@ SimpleLocalize command-line tool allows you to:
 - publish and push [Translation Hosting](https://simplelocalize.io/translation-hosting) translations,
 - extract translation keys from your project files,
 - and more...
+- 
 It is a great tool for CI/CD pipelines and localization automation.
 
 ## Installation
@@ -26,7 +27,7 @@ curl -s https://get.simplelocalize.io/2.2/install | bash
 . { iwr -useb https://get.simplelocalize.io/2.2/install-windows } | iex;
 ```
 
-To change or update the CLI version, run the installation script with the desired version number in the URL. You can also put the exact CLI version in URL to 
+To change or update the CLI version, run the installation script with the desired version number in the URL. You can also put the exact CLI version in the URL to 
 explicitly point the version you want to use, e.g.: 
 - `https://get.simplelocalize.io/2.0.6/install` installs version 2.0.6 on macOS/Linux/Windows (WSL)
 - `https://get.simplelocalize.io/2.0.6/install-windows` installs version 2.0.6 on Windows (PowerShell)
