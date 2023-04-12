@@ -217,31 +217,33 @@ class FileListReaderTest
     List<FileToUpload> result = sut.findFilesToUpload(path);
 
     //then
-    Assertions.assertThat(result).hasSize(5)
+
+    Assertions
+            .assertThat(result)
             .containsExactlyInAnyOrder(
                     aFileToUpload()
-                            .withPath(Paths.get("./junit/translations/meaningless-directory/common_de.properties"))
-                            .withLanguage("de")
-                            .withNamespace("common")
+                            .withPath(Paths.get("./junit/translations/meaningless-directory/email_messages_de-DE.properties"))
+                            .withLanguage("de-DE")
+                            .withNamespace("email_messages")
                             .build(),
                     aFileToUpload()
-                            .withPath(Paths.get("./junit/translations/meaningless-directory/common_en.properties"))
-                            .withLanguage("en")
-                            .withNamespace("common")
+                            .withPath(Paths.get("./junit/translations/meaningless-directory/email_messages_en%US.properties"))
+                            .withLanguage("en%US")
+                            .withNamespace("email_messages")
                             .build(),
                     aFileToUpload()
-                            .withPath(Paths.get("./junit/translations/meaningless-directory/common_es.properties"))
-                            .withLanguage("es")
-                            .withNamespace("common")
+                            .withPath(Paths.get("./junit/translations/meaningless-directory/email_messages_es-ES.properties"))
+                            .withLanguage("es-ES")
+                            .withNamespace("email_messages")
                             .build(),
                     aFileToUpload()
-                            .withPath(Paths.get("./junit/translations/meaningless-directory/home_en.properties"))
-                            .withLanguage("en")
+                            .withPath(Paths.get("./junit/translations/meaningless-directory/home_en-GB.properties"))
+                            .withLanguage("en-GB")
                             .withNamespace("home")
                             .build(),
                     aFileToUpload()
-                            .withPath(Paths.get("./junit/translations/meaningless-directory/home_pl.properties"))
-                            .withLanguage("pl")
+                            .withPath(Paths.get("./junit/translations/meaningless-directory/home_pl-PL.properties"))
+                            .withLanguage("pl-PL")
                             .withNamespace("home")
                             .build()
             );
