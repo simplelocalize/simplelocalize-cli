@@ -12,7 +12,7 @@ SimpleLocalize command-line tool allows you to:
 - publish and push [Translation Hosting](https://simplelocalize.io/translation-hosting) translations,
 - extract translation keys from your project files,
 - and more...
-- 
+
 It is a great tool for CI/CD pipelines and localization automation.
 
 ## Installation
@@ -27,8 +27,7 @@ curl -s https://get.simplelocalize.io/2.2/install | bash
 . { iwr -useb https://get.simplelocalize.io/2.2/install-windows } | iex;
 ```
 
-To change or update the CLI version, run the installation script with the desired version number in the URL. You can also put the exact CLI version in the URL to 
-explicitly point the version you want to use, e.g.: 
+To change or update the CLI version, run the installation script with the desired version number in the URL, e.g.: 
 - `https://get.simplelocalize.io/2.0.6/install` installs version 2.0.6 on macOS/Linux/Windows (WSL)
 - `https://get.simplelocalize.io/2.0.6/install-windows` installs version 2.0.6 on Windows (PowerShell)
 
@@ -36,7 +35,7 @@ See [releases](https://github.com/simplelocalize/simplelocalize-cli/releases) fo
 
 ## Usage
 
-The command-line tool offers a several commands to execute.
+The command-line tool offers several commands to execute.
 All of them requires `--apiKey YOUR_API_KEY` parameter that is unique for each project.
 
 ```shell
@@ -70,9 +69,7 @@ simplelocalize init
 
 ### Upload translations
 
-Command uploads translation files from given `<UPLOAD_PATH_PATTERN>` to SimpleLocalize, eg.: `./src/translations/messages.json` 
-Use `{lang}` placeholder to specify language or locale and `{ns}` placeholder to specify namespace,
-eg.: `./src/translations/{lang}/{ns}.json`
+Command uploads translation files from given `<UPLOAD_PATH_PATTERN>` to [Translation Editor](https://simplelocalize.io/translation-editor/), e.g.: `./src/translations/messages.json`.
 
 ```shell
 simplelocalize upload 
@@ -81,7 +78,9 @@ simplelocalize upload
   --uploadFormat <UPLOAD_FORMAT>
 ```
 
-#### Upload format
+You can use `{lang}` placeholder to specify language or locale and `{ns}` placeholder to specify namespace,
+e.g.: `./src/translations/{lang}/{ns}.json`.
+
 Upload format is a format of the file(s) with translations. Supported formats: https://simplelocalize.io/docs/general/file-formats/
 
 #### Additional parameters:
@@ -94,7 +93,7 @@ Learn more about [upload translations command](https://simplelocalize.io/docs/cl
 
 ### Download translations
 
-Command downloads translation files from SimpleLocalize to given `<DOWNLOAD_PATH_PATTERN>`.
+Command downloads translation files from [Translation Editor](https://simplelocalize.io/translation-editor/) to given `<DOWNLOAD_PATH_PATTERN>`, e.g.: `./src/translations/messages.json`.
 
 ```shell
 simplelocalize download 
@@ -102,6 +101,11 @@ simplelocalize download
   --downloadPath <DOWNLOAD_PATH_PATTERN>
   --downloadFormat <DOWNLOAD_FORMAT>
 ```
+
+You can use `{lang}` placeholder to specify language or locale and `{ns}` placeholder to specify namespace,
+e.g.: `./src/translations/{lang}/{ns}.json`.
+
+Download format is a format of the file(s) with translations. Supported formats: https://simplelocalize.io/docs/general/file-formats/
 
 #### Additional parameters:
 - `--downloadOptions` allows you to pass [additional options](https://simplelocalize.io/docs/general/options/) to the download command. Eg.: `--downloadOptions WRITE_NESTED`.
