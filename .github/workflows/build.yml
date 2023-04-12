@@ -68,11 +68,11 @@ jobs:
         run: |
           call "C:\Program Files (x86)\Microsoft Visual Studio\2017\BuildTools\VC\Auxiliary\Build\vcvars64.bat"
           ./graalvm-ce-java11-20.1.0/bin/native-image --no-server -Dmicronaut.env.deduction=false --report-unsupported-elements-at-runtime -cp simplelocalize-cli-${{env.VERSION}}.jar -H:Name="simplelocalize-cli-windows" io.simplelocalize.cli.SimplelocalizeCliCommand
-      - name: "Optimize executable"
-        uses: svenstaro/upx-action@v2
-        with:
-          file: simplelocalize-cli-windows.exe
-          args: --best
+#      - name: "Optimize executable"
+#        uses: svenstaro/upx-action@v2
+#        with:
+#          file: simplelocalize-cli-windows.exe
+#          args: --best
       - name: 'Upload artifact'
         uses: actions/upload-artifact@v3
         with:
@@ -108,12 +108,12 @@ jobs:
         run: gu install native-image
       - name: "Build Native Image"
         run: native-image --no-server -Dmicronaut.env.deduction=false --report-unsupported-elements-at-runtime -cp simplelocalize-cli-*.jar -H:Name="simplelocalize-cli-${{matrix.label}}" io.simplelocalize.cli.SimplelocalizeCliCommand
-      - name: "Optimize executable"
-        if: matrix.label != 'mac'
-        uses: svenstaro/upx-action@v2
-        with:
-          file: simplelocalize-cli-${{ matrix.label }}
-          args: --best
+#      - name: "Optimize executable"
+#        if: matrix.label != 'mac'
+#        uses: svenstaro/upx-action@v2
+#        with:
+#          file: simplelocalize-cli-${{ matrix.label }}
+#          args: --best
       - name: "Upload artifact"
         uses: actions/upload-artifact@v3
         with:
