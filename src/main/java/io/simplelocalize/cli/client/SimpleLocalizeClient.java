@@ -130,7 +130,7 @@ public class SimpleLocalizeClient
   public void startAutoTranslation(List<String> languageKeys) throws IOException, InterruptedException
   {
     URI startAutoTranslationUri = uriFactory.buildStartAutoTranslationUri(languageKeys);
-    HttpRequest httpRequest = httpRequestFactory.createBaseRequest(startAutoTranslationUri).POST(HttpRequest.BodyPublishers.noBody()).build();
+    HttpRequest httpRequest = httpRequestFactory.createBaseRequest(startAutoTranslationUri).POST(ClientBodyBuilders.ofStartAutoTranslation(languageKeys)).build();
     HttpResponse<String> httpResponse = httpClient.send(httpRequest, HttpResponse.BodyHandlers.ofString());
     throwOnError(httpResponse);
   }
