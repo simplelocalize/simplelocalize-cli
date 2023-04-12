@@ -338,7 +338,7 @@ public class SimplelocalizeCliCommand implements Runnable
       }
 
       ConfigurationValidator configurationValidator = new ConfigurationValidator();
-      configurationValidator.validateHostingPullConfiguration(configuration);
+      configurationValidator.validateHostingAutoTranslationConfiguration(configuration);
       SimpleLocalizeClient client = SimpleLocalizeClient.create(configuration.getBaseUrl(), configuration.getApiKey());
       AutoTranslationCommand command = new AutoTranslationCommand(client, configuration);
       command.invoke();
