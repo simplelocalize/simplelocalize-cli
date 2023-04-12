@@ -206,4 +206,79 @@ class FileListReaderTest
                     .build()
     );
   }
+
+  @Test
+  void shouldFindTranslations() throws IOException
+  {
+    //given
+    String path = "./junit/translations/meaningless-directory/{ns}_{lang}.properties";
+
+    //when
+    List<FileToUpload> result = sut.findFilesToUpload(path);
+
+    //then
+    Assertions.assertThat(result).hasSize(5)
+            .containsExactlyInAnyOrder(
+                    aFileToUpload()
+                            .withPath(Paths.get("./junit/translations/meaningless-directory/common_de.properties"))
+                            .withLanguage("de")
+                            .withNamespace("common")
+                            .build(),
+                    aFileToUpload()
+                            .withPath(Paths.get("./junit/translations/meaningless-directory/common_en.properties"))
+                            .withLanguage("en")
+                            .withNamespace("common")
+                            .build(),
+                    aFileToUpload()
+                            .withPath(Paths.get("./junit/translations/meaningless-directory/common_es.properties"))
+                            .withLanguage("es")
+                            .withNamespace("common")
+                            .build(),
+                    aFileToUpload()
+                            .withPath(Paths.get("./junit/translations/meaningless-directory/home_en.properties"))
+                            .withLanguage("en")
+                            .withNamespace("home")
+                            .build(),
+                    aFileToUpload()
+                            .withPath(Paths.get("./junit/translations/meaningless-directory/home_pl.properties"))
+                            .withLanguage("pl")
+                            .withNamespace("home")
+                            .build()
+            );
+  }
+
+  @Test
+  void langAsDirectoriesNsAsFilename() throws IOException
+  {
+    //given
+    String path = "./junit/lang-as-directories-ns-as-filename/meaningless-directory/{lang}/{ns}.json";
+
+    //when
+    List<FileToUpload> result = sut.findFilesToUpload(path);
+
+    //then
+    Assertions.assertThat(result).hasSize(4)
+            .containsExactlyInAnyOrder(
+                    aFileToUpload()
+                            .withPath(Paths.get("./junit/lang-as-directories-ns-as-filename/meaningless-directory/en/common.json"))
+                            .withLanguage("en")
+                            .withNamespace("common")
+                            .build(),
+                    aFileToUpload()
+                            .withPath(Paths.get("./junit/lang-as-directories-ns-as-filename/meaningless-directory/en/home.json"))
+                            .withLanguage("en")
+                            .withNamespace("home")
+                            .build(),
+                    aFileToUpload()
+                            .withPath(Paths.get("./junit/lang-as-directories-ns-as-filename/meaningless-directory/es/home.json"))
+                            .withLanguage("es")
+                            .withNamespace("home")
+                            .build(),
+                    aFileToUpload()
+                            .withPath(Paths.get("./junit/lang-as-directories-ns-as-filename/meaningless-directory/pl/common.json"))
+                            .withLanguage("pl")
+                            .withNamespace("common")
+                            .build()
+            );
+  }
 }

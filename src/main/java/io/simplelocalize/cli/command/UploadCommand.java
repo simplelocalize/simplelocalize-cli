@@ -38,6 +38,8 @@ public class UploadCommand implements CliCommand
   {
     configurationValidator.validateUploadConfiguration(configuration);
     String uploadPath = configuration.getUploadPath();
+    boolean isDryRun = Boolean.TRUE.equals(configuration.getDryRun());
+
     if (WindowsUtils.isWindows())
     {
       uploadPath = WindowsUtils.convertToWindowsPath(uploadPath);
@@ -100,10 +102,20 @@ public class UploadCommand implements CliCommand
               .withOptions(uploadOptions)
               .build();
 
-      log.info("Uploading {}", fileToUpload.getPath());
-      client.uploadFile(uploadRequest);
+      if (isDryRun)
+      {
+        log.info("[Dry run] Found file to upload, language=[{}], namespace=[{}], file: {}", fileToUpload.getLanguage(), fileToUpload.getNamespace(), fileToUpload.getPath());
+      } else
+      {
+        log.info("Uploading {}", fileToUpload.getPath());
+        client.uploadFile(uploadRequest);
+      }
     }
-    log.info("Uploaded {} files to SimpleLocalize", filesToUpload.size());
+
+    if (!isDryRun)
+    {
+      log.info("Uploaded {} files to SimpleLocalize", filesToUpload.size());
+    }
   }
 
   private boolean isMultiLanguageFormat(String inputUploadFormat)

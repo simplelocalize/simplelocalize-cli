@@ -135,6 +135,9 @@ class SimplelocalizeCliCommandTest
             "my-api-key",
             "./junit/mock-server/test.json",
             "multi-language-json",
+            false,
+            false,
+            false,
             List.of("SPLIT_BY_NAMESPACES"),
             null,
             null,
@@ -190,7 +193,7 @@ class SimplelocalizeCliCommandTest
             );
 
 
-    sut.pull("my-api-key", "./my-path", "latest", MOCK_SERVER_BASE_URL);
+    sut.pull("my-api-key", "./my-path", "latest",null, MOCK_SERVER_BASE_URL);
 
   }
 
