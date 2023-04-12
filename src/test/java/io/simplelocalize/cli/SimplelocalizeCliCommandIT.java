@@ -33,6 +33,34 @@ public class SimplelocalizeCliCommandIT // NOSONAR
   }
 
   @Test
+  public void shouldStartAutoTranslation() throws Exception
+  {
+    System.setOut(new PrintStream(new ByteArrayOutputStream()));
+    try (ApplicationContext ctx = ApplicationContext.run(Environment.CLI))
+    {
+      String[] args = new String[]{
+              "auto-translate",
+              "--baseUrl", BASE_URL,
+              "--apiKey", API_KEY
+      };
+      PicocliRunner.run(SimplelocalizeCliCommand.class, ctx, args);
+    }
+  }
+
+  @Test
+  public void shouldInitFile() throws Exception
+  {
+    System.setOut(new PrintStream(new ByteArrayOutputStream()));
+    try (ApplicationContext ctx = ApplicationContext.run(Environment.CLI))
+    {
+      String[] args = new String[]{
+              "init"
+      };
+      PicocliRunner.run(SimplelocalizeCliCommand.class, ctx, args);
+    }
+  }
+
+  @Test
   public void shouldDownload() throws Exception
   {
     System.setOut(new PrintStream(new ByteArrayOutputStream()));

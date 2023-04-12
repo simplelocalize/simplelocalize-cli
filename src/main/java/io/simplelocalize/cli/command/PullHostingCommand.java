@@ -1,20 +1,18 @@
 package io.simplelocalize.cli.command;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jayway.jsonpath.DocumentContext;
-import com.jayway.jsonpath.JsonPath;
 import com.jayway.jsonpath.TypeRef;
-import com.jayway.jsonpath.spi.json.JacksonJsonProvider;
-import com.jayway.jsonpath.spi.mapper.JacksonMappingProvider;
 import io.simplelocalize.cli.client.SimpleLocalizeClient;
 import io.simplelocalize.cli.client.dto.HostingResource;
 import io.simplelocalize.cli.configuration.Configuration;
+import io.simplelocalize.cli.io.JsonReader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.List;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 public class PullHostingCommand implements CliCommand
@@ -24,23 +22,20 @@ public class PullHostingCommand implements CliCommand
 
   private final SimpleLocalizeClient client;
   private final Configuration configuration;
+  private final JsonReader jsonReader;
 
-  private final ObjectMapper objectMapper;
 
   public PullHostingCommand(SimpleLocalizeClient client, Configuration configuration)
   {
     this.configuration = configuration;
     this.client = client;
-    this.objectMapper = new ObjectMapper();
+    this.jsonReader = new JsonReader();
   }
 
   public void invoke() throws IOException, InterruptedException
   {
     String responseData = client.fetchProject();
-    com.jayway.jsonpath.Configuration mappingConfiguration = com.jayway.jsonpath.Configuration.defaultConfiguration()
-            .jsonProvider(new JacksonJsonProvider())
-            .mappingProvider(new JacksonMappingProvider(objectMapper));
-    DocumentContext json = JsonPath.parse(responseData, mappingConfiguration);
+    DocumentContext json = jsonReader.read(responseData);
 
     String projectName = json.read("$.data.name", String.class);
     log.info("Project name: {}", projectName);
@@ -50,6 +45,14 @@ public class PullHostingCommand implements CliCommand
 
     String environment = configuration.getEnvironment();
     log.info("Environment: {}", environment);
+
+    String filterRegex = configuration.getFilterRegex();
+    log.info("Filter regex: {}", filterRegex);
+    Pattern filterPattern = null;
+    if (filterRegex != null)
+    {
+      filterPattern = Pattern.compile(filterRegex);
+    }
 
     // @formatter:off
     List<HostingResource> hostingResources = json.read("$.data.hostingResources", new TypeRef<>() {});
@@ -62,15 +65,28 @@ public class PullHostingCommand implements CliCommand
     log.info("Found {} Translation Hosting resources", resourcePaths.size());
     String pullDirectory = configuration.getPullPath();
 
+    int numberOfDownloadedResources = 0;
     for (String resourcePath : resourcePaths)
     {
       String downloadUrl = BASE_URI_CDN + "/" + resourcePath;
       String resourcePrefix = projectToken + "/_" + environment + "/";
       String plainResource = resourcePath.replace(resourcePrefix, "");
-      Path savePath = Path.of(pullDirectory, plainResource + ".json");
+      String filePath = plainResource + ".json";
+      if (filterPattern != null)
+      {
+        boolean matches = filterPattern.matcher(filePath).matches();
+        if (!matches)
+        {
+          log.info("Skipping resource '{}' because it does not match the '{}' filter regex", plainResource, filterRegex);
+          continue;
+        }
+      }
+
+      Path savePath = Path.of(pullDirectory, filePath);
       client.downloadFile(downloadUrl, savePath);
+      numberOfDownloadedResources++;
     }
-    log.info("Downloaded {} Translation Hosting resources", resourcePaths.size());
+    log.info("Downloaded {} Translation Hosting resources", numberOfDownloadedResources);
 
   }
 

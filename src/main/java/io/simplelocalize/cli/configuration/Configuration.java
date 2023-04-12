@@ -19,6 +19,7 @@ public class Configuration
   private String uploadPath;
   private String uploadFormat;
   private List<String> uploadOptions = new ArrayList<>();
+  private Boolean dryRun = false;
 
   private String downloadPath;
   private String downloadFormat;
@@ -28,9 +29,14 @@ public class Configuration
 
   private String languageKey;
 
+  private AutoTranslationConfiguration autoTranslation = new AutoTranslationConfiguration();
+
   private String environment;
 
   private String pullPath;
+
+  private String filterRegex;
+
 
   public String getSearchDir()
   {
@@ -180,5 +186,35 @@ public class Configuration
   public void setPullPath(String pullPath)
   {
     this.pullPath = pullPath;
+  }
+
+  public Boolean getDryRun()
+  {
+    return dryRun;
+  }
+
+  public void setDryRun(Boolean dryRun)
+  {
+    this.dryRun = dryRun;
+  }
+
+  public AutoTranslationConfiguration getAutoTranslation()
+  {
+    return autoTranslation;
+  }
+
+  public void setAutoTranslation(AutoTranslationConfiguration autoTranslation)
+  {
+    this.autoTranslation = autoTranslation;
+  }
+
+  public String getFilterRegex()
+  {
+    return filterRegex;
+  }
+
+  public void setFilterRegex(String filterRegex)
+  {
+    this.filterRegex = filterRegex;
   }
 }

@@ -6,12 +6,14 @@
 
 ## What it does?
 
-SimpleLocalize CLI offers:
-- finding and extracting translation keys in your project files
-- uploading translation files or translation keys
-- downloading translation files
-- getting translation project status
-- publishing translations to the CDN.
+SimpleLocalize command-line tool allows you to: 
+- upload and download translations,
+- [auto-translate](https://simplelocalize.io/auto-translate) translations,
+- publish and push [Translation Hosting](https://simplelocalize.io/translation-hosting) translations,
+- extract translation keys from your project files,
+- and more...
+
+It is a great tool for CI/CD pipelines and localization automation.
 
 ## Installation
 
@@ -19,67 +21,99 @@ The installation process is automated by command-line scripts. Both scripts for 
 
 ```shell
 # macOs / Linux / Windows (WSL)
-curl -s https://get.simplelocalize.io/2.1/install | bash
+curl -s https://get.simplelocalize.io/2.2/install | bash
 
 # Windows (PowerShell)
-. { iwr -useb https://get.simplelocalize.io/2.1/install-windows } | iex;
+. { iwr -useb https://get.simplelocalize.io/2.2/install-windows } | iex;
 ```
 
-To change or update the CLI version, run the installation script with the desired version number in the URL. You can also put the exact CLI version in URL to 
-explicitly point the version you want to use, e.g.: `https://get.simplelocalize.io/2.0.6/install` or `https://get.simplelocalize.io/2.0.6/install-windows`. See [releases](https://github.com/simplelocalize/simplelocalize-cli/releases) for the list of available versions.
+To change or update the CLI version, run the installation script with the desired version number in the URL, e.g.: 
+- `https://get.simplelocalize.io/2.0.6/install` installs version 2.0.6 on macOS/Linux/Windows (WSL)
+- `https://get.simplelocalize.io/2.0.6/install-windows` installs version 2.0.6 on Windows (PowerShell)
 
-
+See [releases](https://github.com/simplelocalize/simplelocalize-cli/releases) for the list of available versions.
 
 ## Usage
 
-SimpleLocalize CLI offers a several commands to invoke, All of them requires `--apiKey=KEY` parameter that is unique for each project. 
+The command-line tool offers several commands to execute.
+All of them requires `--apiKey YOUR_API_KEY` parameter that is unique for each project.
 
 ```shell
 simplelocalize [command] ...parameters
 ```
 
-Commands:
+Available commands:
+- `init` - creates a sample configuration file
 - `status` - gets translation project details
 - `upload` - uploads translation files or translation keys 
 - `download` - downloads translation files
 - `sync` - uploads translation files and downloads translation files
+- `auto-translate` - starts [auto-translation](https://simplelocalize.io/auto-translation) jobs
 - `pull` - downloads translation files from [Translation Hosting](https://simplelocalize.io/translation-hosting)
 - `publish` - publishes translations to [Translation Hosting](https://simplelocalize.io/translation-hosting)
 - `extract` - finds and extracts translation keys in your project files
 
-### Upload translations
 
-Command uploads translation files from given `<UPLOAD_PATH>` to SimpleLocalize.
+Use `--help` parameter to get more information about the command and its parameters
+or [check documentation](https://simplelocalize.io/docs/cli/get-started/).
+
+## Create configuration file
+
+Command creates a sample configuration file in the current directory.
+The configuration file simplifies the usage of the command-line tool
+by providing a default configuration for the project and allowing to omit some parameters.
+
+```shell
+simplelocalize init
+```
+
+## Upload translations
+
+Command uploads translation files from given `<UPLOAD_PATH_PATTERN>` to [Translation Editor](https://simplelocalize.io/translation-editor/), e.g.: `./src/translations/messages.json`.
 
 ```shell
 simplelocalize upload 
   --apiKey <PROJECT_API_KEY>
-  --uploadPath <UPLOAD_PATH>
+  --uploadPath <UPLOAD_PATH_PATTERN>
   --uploadFormat <UPLOAD_FORMAT>
-  --uploadOptions <UPLOAD_OPTIONS>
 ```
 
-`--uploadOptions` parameter is optional. Use `REPLACE_TRANSLATION_IF_FOUND` option to update existing translations.
+You can use `{lang}` placeholder to specify language or locale and `{ns}` placeholder to specify namespace,
+e.g.: `./src/translations/{lang}/{ns}.json`.
+
+Upload format is a format of the file(s) with translations. [See available upload formats](https://simplelocalize.io/docs/general/file-formats/)
+
+#### Additional parameters:
+- `--replace` allows you to **replace** existing translations with new ones.
+- `--delete` allows you to **delete** translations that are not present in uploaded files.
+- `--dryRun` allows you to **check** what translation files will be uploaded without actually uploading them.
+- `--uploadOptions` allows you to pass [additional options](https://simplelocalize.io/docs/general/options/) to the upload command. 
+Eg.: `--uploadOptions TRIM_LEADING_TRAILING_SPACES`. To pass multiple options, use comma as a separator.
 
 Learn more about [upload translations command](https://simplelocalize.io/docs/cli/upload-translations/).
 
-### Download translations
+## Download translations
 
-Command downloads translation files from SimpleLocalize to given `<DOWNLOAD_PATH>`.
+Command downloads translation files from [Translation Editor](https://simplelocalize.io/translation-editor/) to given `<DOWNLOAD_PATH_PATTERN>`, e.g.: `./src/translations/messages.json`.
 
 ```shell
 simplelocalize download 
   --apiKey <PROJECT_API_KEY>
-  --downloadPath <DOWNLOAD_PATH>
+  --downloadPath <DOWNLOAD_PATH_PATTERN>
   --downloadFormat <DOWNLOAD_FORMAT>
-  --downloadOptions <DOWNLOAD_OPTIONS>
 ```
 
-`--downloadOptions` parameter is optional.
+You can use `{lang}` placeholder to specify language or locale and `{ns}` placeholder to specify namespace,
+e.g.: `./src/translations/{lang}/{ns}.json`.
+
+Download format is a format of the file(s) with translations. [See available download formats](https://simplelocalize.io/docs/general/file-formats/)
+
+#### Additional parameters:
+- `--downloadOptions` allows you to pass [additional options](https://simplelocalize.io/docs/general/options/) to the download command. Eg.: `--downloadOptions WRITE_NESTED`.
 
 Learn more about [download translations command](https://simplelocalize.io/docs/cli/download-translations/).
 
-### Sync translations
+## Sync translations
 
 Sync command combines upload and download command executions.
 
@@ -96,7 +130,19 @@ simplelocalize sync
 
 `--downloadOptions` and `--uploadOptions` parameters are optional.
 
-### Extract translation keys
+## Auto-translate translations
+
+Auto-translate command starts [auto-translation](https://simplelocalize.io/auto-translation) jobs.
+
+```properties
+simplelocalize auto-translate 
+  --apiKey <PROJECT_API_KEY>
+```
+
+Additional parameters:
+- `--languageKeys` allows you to specify languages to auto-translate. Eg.: `--languageKeys en,de,fr`.
+
+## Extract translation keys
 
 Extract command finds and upload translation keys from project source code at `<SEARCH_DIRECTORY>` to SimpleLocalize.
 
@@ -112,7 +158,7 @@ See [available project types](https://simplelocalize.io/docs/cli/i18n-keys-extra
 
 ## Usage examples
 
-Below you can find some examples of using SimpleLocalize CLI.
+Below, you can find some examples of using SimpleLocalize CLI.
 
 ### Example: One file with translations
 
@@ -174,7 +220,7 @@ simplelocalize upload
   --uploadFormat single-language-json
 ```
 
-### Pull resources from Translation Hosting
+## Pull resources from Translation Hosting
 
 Downloads all translation hosting files to given directory in `--pullPath` parameter. It overwrites existing files and creates subdirectories if necessary. Available environment variables: `latest`, `production`.
 
@@ -185,12 +231,12 @@ simplelocalize pull
   --environment latest
 ```
 
-### Publish resources to Translation Hosting
+Additional parameters:
+`--filterRegex` allows you to filter files by regex, e.g.: `--filterRegex '__index.json'` will download only `__index.json` file.
 
-It publishes translation to Translation Hosting. It behaves exactly the same as publish buttons in the SimpleLocalize (Hosting tab).
+## Publish resources to Translation Hosting
 
-- `--environment latest` gets translations from Translation Editor and publishes them to Translation Hosting to `latest` environment.
-- `--environment production` gets translations from Translation Hosting (`latest`) and publishes them to Translation Hosting (`production`).
+It publishes translation to [Translation Hosting](https://simplelocalize.io/translation-hosting). It behaves exactly the same as publish buttons in the SimpleLocalize (Hosting tab).
 
 ```
 simplelocalize publish 
@@ -198,7 +244,14 @@ simplelocalize publish
   --environment latest
 ```
 
-### Getting project details
+- `--environment latest` gets translations from Translation Editor and publishes them to Translation Hosting to `latest` environment.
+- `--environment production` gets translations from Translation Hosting (`latest`) and publishes them to Translation Hosting (`production`).
+
+```
+(Translation Editor) --> ('latest' environment) --> ('production' environment)
+```
+
+## Getting project details
 
 Command gets project details and prints them to the console.
 
@@ -209,7 +262,10 @@ simplelocalize status
 
 
 ## Configuration file
-Use configuration file in order to simplify your bash command. Arguments used in command always overrides properties set in configuration file. By default, SimpleLocalize will load configuration from file named `simplelocalize.yml`. You can load configuration from different location by using a `-c` parameters.
+Use configuration file in order to simplify your bash command.
+Arguments used in command always override properties set in the configuration file.
+By default, SimpleLocalize will load configuration from file named `simplelocalize.yml`.
+You can load configuration from different location by using a `-c` parameters.
 
 ```properties
 # Load default simplelocalize.yml file
@@ -219,7 +275,7 @@ simplelocalize upload
 simplelocalize -c my-configuration.yml upload
 ```
 
-### Sample configuration file
+## Sample configuration file
 
 Filename: `simplelocalize.yml`
 

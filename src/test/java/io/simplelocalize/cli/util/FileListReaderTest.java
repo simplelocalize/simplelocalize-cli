@@ -206,4 +206,86 @@ class FileListReaderTest
                     .build()
     );
   }
+
+  @Test
+  void shouldFindTranslationsWhenExtremeEdgeCases() throws IOException
+  {
+    //given
+    String path = "./junit/extreme-edge-cases/meaningless-directory/{ns}_{lang}.properties";
+
+    //when
+    List<FileToUpload> result = sut.findFilesToUpload(path);
+
+    //then
+
+    Assertions
+            .assertThat(result)
+            .containsExactlyInAnyOrder(
+                    aFileToUpload()
+                            .withPath(Paths.get("./junit/extreme-edge-cases/meaningless-directory/email_messages_de-DE.properties"))
+                            .withLanguage("de-DE")
+                            .withNamespace("email_messages")
+                            .build(),
+                    aFileToUpload()
+                            .withPath(Paths.get("./junit/extreme-edge-cases/meaningless-directory/email_messages_en%US.properties"))
+                            .withLanguage("en%US")
+                            .withNamespace("email_messages")
+                            .build(),
+                    aFileToUpload()
+                            .withPath(Paths.get("./junit/extreme-edge-cases/meaningless-directory/email_messages_es-ES.properties"))
+                            .withLanguage("es-ES")
+                            .withNamespace("email_messages")
+                            .build(),
+                    aFileToUpload()
+                            .withPath(Paths.get("./junit/extreme-edge-cases/meaningless-directory/home_en-GB.properties"))
+                            .withLanguage("en-GB")
+                            .withNamespace("home")
+                            .build(),
+                    aFileToUpload()
+                            .withPath(Paths.get("./junit/extreme-edge-cases/meaningless-directory/home-en_GB.properties"))
+                            .withLanguage("GB")
+                            .withNamespace("home-en")
+                            .build(),
+                    aFileToUpload()
+                            .withPath(Paths.get("./junit/extreme-edge-cases/meaningless-directory/home_pl-PL.properties"))
+                            .withLanguage("pl-PL")
+                            .withNamespace("home")
+                            .build()
+            );
+  }
+
+  @Test
+  void langAsDirectoriesNsAsFilename() throws IOException
+  {
+    //given
+    String path = "./junit/lang-as-directories-ns-as-filename/meaningless-directory/{lang}/{ns}.json";
+
+    //when
+    List<FileToUpload> result = sut.findFilesToUpload(path);
+
+    //then
+    Assertions.assertThat(result).hasSize(4)
+            .containsExactlyInAnyOrder(
+                    aFileToUpload()
+                            .withPath(Paths.get("./junit/lang-as-directories-ns-as-filename/meaningless-directory/en/common.json"))
+                            .withLanguage("en")
+                            .withNamespace("common")
+                            .build(),
+                    aFileToUpload()
+                            .withPath(Paths.get("./junit/lang-as-directories-ns-as-filename/meaningless-directory/en/home.json"))
+                            .withLanguage("en")
+                            .withNamespace("home")
+                            .build(),
+                    aFileToUpload()
+                            .withPath(Paths.get("./junit/lang-as-directories-ns-as-filename/meaningless-directory/es/home.json"))
+                            .withLanguage("es")
+                            .withNamespace("home")
+                            .build(),
+                    aFileToUpload()
+                            .withPath(Paths.get("./junit/lang-as-directories-ns-as-filename/meaningless-directory/pl/common.json"))
+                            .withLanguage("pl")
+                            .withNamespace("common")
+                            .build()
+            );
+  }
 }

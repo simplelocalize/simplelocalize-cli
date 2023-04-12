@@ -98,4 +98,14 @@ public class SimpleLocalizeUriFactory
     }
     throw new IllegalArgumentException("Unknown environment: " + environment);
   }
+
+  URI buildGetRunningAutoTranslationJobsUri()
+  {
+    return URI.create(baseUrl + "/api/v2/jobs?status=RUNNING&type=AUTO_TRANSLATION");
+  }
+
+  public URI buildStartAutoTranslationUri()
+  {
+    return URI.create(baseUrl + "/api/v2/jobs/auto-translate");
+  }
 }

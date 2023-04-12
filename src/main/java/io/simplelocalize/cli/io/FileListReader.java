@@ -1,15 +1,14 @@
 package io.simplelocalize.cli.io;
 
-import io.micronaut.core.util.AntPathMatcher;
 import io.simplelocalize.cli.client.dto.FileToUpload;
-import org.apache.commons.lang3.StringUtils;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -21,87 +20,74 @@ public class FileListReader
 
   public List<FileToUpload> findFilesToUpload(String uploadPath) throws IOException
   {
-    List<FileToUpload> output = new ArrayList<>();
+    Path parentDirectory = getParentDirectory(uploadPath);
+    return findMatchingFiles(parentDirectory, uploadPath);
+  }
 
-    String beforeTemplatePart = getParentDirectory(uploadPath);
-    Path parentDir = Path.of(beforeTemplatePart);
 
-    boolean exists = Files.exists(parentDir);
-    if (!exists)
+  private List<FileToUpload> findMatchingFiles(Path parentDirectory, String pattern) throws IOException
+  {
+    try (Stream<Path> walk = Files.walk(parentDirectory))
     {
-      String parentDirectory = StringUtils.substringBeforeLast(beforeTemplatePart, File.separator);
-      parentDir = Path.of(parentDirectory);
-    }
-
-    try (Stream<Path> foundFilesStream = Files.walk(parentDir, 6))
-    {
-      AntPathMatcher antPathMatcher = new AntPathMatcher();
-      String uploadPathPattern = uploadPath
-              .replace(LANGUAGE_TEMPLATE_KEY, "**")
-              .replace(NAMESPACE_TEMPLATE_KEY, "**");
-      var foundFiles = foundFilesStream
-              .filter(Files::isRegularFile)
-              .filter(path -> antPathMatcher.matches(uploadPathPattern, path.toString()))
+      return walk
+              .map(file -> {
+                String fileName = file.toFile().getPath();
+                if (!Files.isRegularFile(Path.of(fileName)))
+                {
+                  return null;
+                }
+                Matcher matcher = getMatcher(fileName, pattern);
+                if (matcher.matches())
+                {
+                  String lang = getGroupOrNull("lang", matcher);
+                  String ns = getGroupOrNull("ns", matcher);
+                  return FileToUpload.FileToUploadBuilder.aFileToUpload()
+                          .withLanguage(lang)
+                          .withNamespace(ns)
+                          .withPath(file).build();
+                }
+                return null;
+              })
+              .filter(Objects::nonNull)
               .collect(Collectors.toList());
-      for (Path foundFile : foundFiles)
-      {
-        String languageKey = extractTemplateValue(uploadPath, foundFile, LANGUAGE_TEMPLATE_KEY);
-        String pathWithLanguage = uploadPath.replace(LANGUAGE_TEMPLATE_KEY, languageKey);
-        String namespace = extractTemplateValue(pathWithLanguage, foundFile, NAMESPACE_TEMPLATE_KEY);
-        if (StringUtils.isNotBlank(namespace))
-        {
-          String pathWithNamespace = uploadPath.replace(NAMESPACE_TEMPLATE_KEY, namespace);
-          languageKey = extractTemplateValue(pathWithNamespace, foundFile, LANGUAGE_TEMPLATE_KEY);
-        }
-        FileToUpload fileToUpload = FileToUpload.FileToUploadBuilder.aFileToUpload()
-                .withLanguage(StringUtils.trimToNull(languageKey))
-                .withNamespace(StringUtils.trimToNull(namespace))
-                .withPath(foundFile).build();
-        output.add(fileToUpload);
-      }
-      return output;
     }
   }
 
-  private String getParentDirectory(String uploadPath)
+  private String getGroupOrNull(String group, Matcher matcher)
   {
-    int languageTemplateKeyPosition = uploadPath.indexOf(LANGUAGE_TEMPLATE_KEY);
-    int namespaceTemplateKeyPosition = uploadPath.indexOf(NAMESPACE_TEMPLATE_KEY);
-    String[] splitUploadPath = StringUtils.splitByWholeSeparator(uploadPath, LANGUAGE_TEMPLATE_KEY);
-    if (namespaceTemplateKeyPosition > 0 && languageTemplateKeyPosition > 0)
+    try
     {
-      if (languageTemplateKeyPosition < namespaceTemplateKeyPosition)
-      {
-        splitUploadPath = StringUtils.splitByWholeSeparator(uploadPath, LANGUAGE_TEMPLATE_KEY);
-      } else
-      {
-        splitUploadPath = StringUtils.splitByWholeSeparator(uploadPath, NAMESPACE_TEMPLATE_KEY);
-      }
-    }
-
-    if (splitUploadPath.length == 0)
+      return matcher.group(group);
+    } catch (IllegalArgumentException e)
     {
-      throw new IllegalStateException("Unable to find parent directory for upload path");
+      return null;
     }
-
-    return splitUploadPath[0];
   }
 
-  private String extractTemplateValue(String uploadPath, Path file, String templateKey)
+  private Matcher getMatcher(String input, String pattern)
   {
-    if (!uploadPath.contains(templateKey))
-    {
-      return "";
-    }
-    String[] splitUploadPath = StringUtils.splitByWholeSeparator(uploadPath, templateKey);
-    String beforeTemplatePart = splitUploadPath[0];
-    String afterTemplatePart = splitUploadPath[1];
-    String fileName = file.getFileName().toString();
-    String output = StringUtils.remove(file.toString(), beforeTemplatePart);
-    output = StringUtils.remove(output, afterTemplatePart);
-    output = StringUtils.remove(output, fileName);
-    output = output.replace(File.separator, "");
-    output = StringUtils.remove(output, File.separator);
-    return output.trim();
+    String replace = pattern
+            .replace(NAMESPACE_TEMPLATE_KEY, "(?<ns>.*)")
+            .replace(LANGUAGE_TEMPLATE_KEY, "(?<lang>.*)");
+    Pattern regex = Pattern.compile(replace);
+    return regex.matcher(input);
   }
+
+
+
+  private Path getParentDirectory(String uploadPathPattern)
+  {
+    int length = uploadPathPattern.length();
+    for (int i = 0; i < length; i++)
+    {
+      Path outputPath = Path.of(uploadPathPattern);
+      if (Files.exists(outputPath))
+      {
+        return outputPath;
+      }
+      uploadPathPattern = uploadPathPattern.substring(0, uploadPathPattern.length() - 1);
+    }
+    throw new IllegalStateException("Unable to find parent directory for upload path");
+  }
+
 }

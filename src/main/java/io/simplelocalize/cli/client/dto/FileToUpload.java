@@ -82,5 +82,15 @@ public class FileToUpload
       fileToUpload.language = this.language;
       return fileToUpload;
     }
+
+    @Override
+    public String toString()
+    {
+      return "FileToUploadBuilder{" +
+             "path=" + path +
+             ", language='" + language + '\'' +
+             ", namespace='" + namespace + '\'' +
+             '}';
+    }
   }
 }

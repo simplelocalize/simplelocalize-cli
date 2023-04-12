@@ -37,6 +37,11 @@ public final class ConfigurationValidator
     validateEnvironmentValue(configuration);
   }
 
+  public void validateAutoTranslationConfiguration(Configuration configuration)
+  {
+    validateIsNotEmptyOrNull(configuration.getApiKey(), "apiKey");
+  }
+
   public void validateHostingPublishConfiguration(Configuration configuration)
   {
     validateIsNotEmptyOrNull(configuration.getApiKey(), "apiKey");

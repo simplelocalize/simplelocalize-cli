@@ -118,6 +118,25 @@ public class SimpleLocalizeClient
     return httpResponse.body();
   }
 
+  public String getAutoTranslationJobs() throws IOException, InterruptedException
+  {
+    URI getProjectUri = uriFactory.buildGetRunningAutoTranslationJobsUri();
+    HttpRequest httpRequest = httpRequestFactory.createGetRequest(getProjectUri).build();
+    HttpResponse<String> httpResponse = httpClient.send(httpRequest, HttpResponse.BodyHandlers.ofString());
+    throwOnError(httpResponse);
+    return httpResponse.body();
+  }
+
+  public void startAutoTranslation(List<String> languageKeys) throws IOException, InterruptedException
+  {
+    URI startAutoTranslationUri = uriFactory.buildStartAutoTranslationUri();
+    HttpRequest httpRequest = httpRequestFactory.createBaseRequest(startAutoTranslationUri)
+            .header("Content-Type", "application/json; charset=utf-8")
+            .POST(ClientBodyBuilders.ofStartAutoTranslation(languageKeys)).build();
+    HttpResponse<String> httpResponse = httpClient.send(httpRequest, HttpResponse.BodyHandlers.ofString());
+    throwOnError(httpResponse);
+  }
+
   public void publish(String environment) throws IOException, InterruptedException
   {
     URI publishUri = uriFactory.buildPublishUri(environment);

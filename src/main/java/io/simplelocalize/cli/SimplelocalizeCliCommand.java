@@ -3,6 +3,7 @@ package io.simplelocalize.cli;
 import io.micronaut.configuration.picocli.PicocliRunner;
 import io.simplelocalize.cli.client.SimpleLocalizeClient;
 import io.simplelocalize.cli.command.*;
+import io.simplelocalize.cli.configuration.AutoTranslationConfiguration;
 import io.simplelocalize.cli.configuration.Configuration;
 import io.simplelocalize.cli.configuration.ConfigurationLoader;
 import io.simplelocalize.cli.configuration.ConfigurationValidator;
@@ -109,7 +110,7 @@ public class SimplelocalizeCliCommand implements Runnable
 
   )
   {
-    upload(apiKey, uploadPath, uploadFormat, uploadOptions, languageKey, customerId, baseUrl);
+    upload(apiKey, uploadPath, uploadFormat, false, false, false, uploadOptions, languageKey, customerId, baseUrl);
     download(apiKey, downloadPath, downloadFormat, downloadOptions, languageKey, customerId, baseUrl);
   }
 
@@ -120,6 +121,9 @@ public class SimplelocalizeCliCommand implements Runnable
           @Option(names = {"--apiKey"}, description = "Project API Key") String apiKey,
           @Option(names = {"--uploadPath"}, description = "Path to file with translation or translation keys to upload. Use '{lang}' to define language key if you are uploading more than one file with translations.") String uploadPath,
           @Option(names = {"--uploadFormat"}, description = "Translations file format") String uploadFormat,
+          @Option(names = {"--overwrite"}, description = "(Optional) Overwrite existing translations", defaultValue = "false") Boolean overwrite,
+          @Option(names = {"--delete"}, description = "(Optional) Delete translations which are not present in uploaded file", defaultValue = "false") Boolean delete,
+          @Option(names = {"--dryRun"}, description = "(Optional) Dry run mode. Do not upload anything to SimpleLocalize", defaultValue = "false") Boolean dryRun,
           @Option(names = {"--uploadOptions"}, split = ",", description = "(Optional) Upload options") List<String> uploadOptions,
           @Option(names = {"--languageKey"}, description = "(Optional) Specify language key for single file upload") String languageKey,
           @Option(names = {"--customerId"}, description = "(Optional) Upload translations for given customerId") String customerId,
@@ -160,9 +164,24 @@ public class SimplelocalizeCliCommand implements Runnable
         configuration.setCustomerId(customerId);
       }
 
+      if (Boolean.TRUE.equals(overwrite))
+      {
+        uploadOptions.add("REPLACE_TRANSLATION_IF_FOUND");
+      }
+
+      if (Boolean.TRUE.equals(delete))
+      {
+        uploadOptions.add("DELETE_NOT_PRESENT_KEYS");
+      }
+
       if (uploadOptions != null)
       {
         configuration.setUploadOptions(uploadOptions);
+      }
+
+      if (Boolean.TRUE.equals(dryRun))
+      {
+        configuration.setDryRun(true);
       }
 
       ConfigurationValidator configurationValidator = new ConfigurationValidator();
@@ -242,7 +261,8 @@ public class SimplelocalizeCliCommand implements Runnable
   public void pull(
           @Option(names = {"--apiKey"}, description = "Project API Key") String apiKey,
           @Option(names = {"--pullPath"}, description = "Directory where translations should be saved") String pullPath,
-          @Option(names = {"--environment"}, description = "Translation Hosting environment ('latest' or 'production)") String environment,
+          @Option(names = {"--environment"}, description = "Translation Hosting environment ('latest' or 'production')") String environment,
+          @Option(names = {"--filterRegex"}, description = "(Optional) Filter which resources should be downloaded") String filterRegex,
           @Option(names = {"--baseUrl"}, description = "(Optional) Set custom server URL") String baseUrl
   )
   {
@@ -270,11 +290,74 @@ public class SimplelocalizeCliCommand implements Runnable
         configuration.setPullPath(pullPath);
       }
 
+      if(StringUtils.isNotEmpty(filterRegex))
+      {
+        configuration.setFilterRegex(filterRegex);
+      }
+
       ConfigurationValidator configurationValidator = new ConfigurationValidator();
       configurationValidator.validateHostingPullConfiguration(configuration);
       SimpleLocalizeClient client = SimpleLocalizeClient.create(configuration.getBaseUrl(), configuration.getApiKey());
       PullHostingCommand command = new PullHostingCommand(client, configuration);
       command.invoke();
+    } catch (Exception e)
+    {
+      printDebug(e);
+      System.exit(CommandLine.ExitCode.USAGE);
+    }
+  }
+
+  @Command(
+          name = "auto-translate",
+          description = "Start auto-translation. 'simplelocalize auto-translate --help' to learn more about the parameters.")
+  public void startAutoTranslation(
+          @Option(names = {"--apiKey"}, description = "Project API Key") String apiKey,
+          @Option(names = {"--languageKeys"}, description = "(Optional) Project language keys to auto-translate", split = ",") List<String> languageKeys,
+          @Option(names = {"--baseUrl"}, description = "(Optional) Set custom server URL") String baseUrl
+  )
+  {
+    try
+    {
+      ConfigurationLoader configurationLoader = new ConfigurationLoader();
+      Configuration configuration = configurationLoader.loadOrGetDefault(configurationFilePath);
+      if (StringUtils.isNotEmpty(baseUrl))
+      {
+        configuration.setBaseUrl(baseUrl);
+      }
+
+      if (StringUtils.isNotEmpty(apiKey))
+      {
+        configuration.setApiKey(apiKey);
+      }
+
+      if (languageKeys != null)
+      {
+        AutoTranslationConfiguration autoTranslationConfiguration = new AutoTranslationConfiguration();
+        autoTranslationConfiguration.setLanguageKeys(languageKeys);
+        configuration.setAutoTranslation(autoTranslationConfiguration);
+      }
+
+      ConfigurationValidator configurationValidator = new ConfigurationValidator();
+      configurationValidator.validateAutoTranslationConfiguration(configuration);
+      SimpleLocalizeClient client = SimpleLocalizeClient.create(configuration.getBaseUrl(), configuration.getApiKey());
+      AutoTranslationCommand command = new AutoTranslationCommand(client, configuration);
+      command.invoke();
+    } catch (Exception e)
+    {
+      printDebug(e);
+      System.exit(CommandLine.ExitCode.USAGE);
+    }
+  }
+
+  @Command(
+          name = "init",
+          description = "Initialize simplelocalize configuration file. 'simplelocalize init --help' to learn more about the parameters.")
+  public void init()
+  {
+    try
+    {
+      InitCommand initCommand = new InitCommand();
+      initCommand.invoke();
     } catch (Exception e)
     {
       printDebug(e);

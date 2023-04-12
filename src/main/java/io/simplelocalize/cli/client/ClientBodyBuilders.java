@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.simplelocalize.cli.client.dto.ImportForm;
 import io.simplelocalize.cli.client.dto.ImportKey;
+import io.simplelocalize.cli.client.dto.StartAutoTranslationRequest;
 
 import java.io.IOException;
 import java.net.http.HttpRequest;
@@ -35,6 +36,13 @@ final class ClientBodyBuilders
     ImportForm importForm = new ImportForm(importContent);
 
     String jsonString = objectMapper.writeValueAsString(importForm);
+    return HttpRequest.BodyPublishers.ofString(jsonString);
+  }
+
+  static HttpRequest.BodyPublisher ofStartAutoTranslation(Collection<String> languageKeys) throws JsonProcessingException
+  {
+    StartAutoTranslationRequest request = new StartAutoTranslationRequest(languageKeys, "CLI");
+    String jsonString = objectMapper.writeValueAsString(request);
     return HttpRequest.BodyPublishers.ofString(jsonString);
   }
 
