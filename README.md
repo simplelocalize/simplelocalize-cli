@@ -232,7 +232,7 @@ simplelocalize pull
 ```
 
 Additional parameters:
-`--filterRegex` allows you to filter files by regex, e.g.: `--filterRegex '_index'` will download only `_index` file.
+`--filterRegex` allows you to filter files by regex, e.g.: `--filterRegex '__index.json'` will download only `__index.json` file.
 
 ## Publish resources to Translation Hosting
 
