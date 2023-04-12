@@ -338,10 +338,26 @@ public class SimplelocalizeCliCommand implements Runnable
       }
 
       ConfigurationValidator configurationValidator = new ConfigurationValidator();
-      configurationValidator.validateHostingAutoTranslationConfiguration(configuration);
+      configurationValidator.validateAutoTranslationConfiguration(configuration);
       SimpleLocalizeClient client = SimpleLocalizeClient.create(configuration.getBaseUrl(), configuration.getApiKey());
       AutoTranslationCommand command = new AutoTranslationCommand(client, configuration);
       command.invoke();
+    } catch (Exception e)
+    {
+      printDebug(e);
+      System.exit(CommandLine.ExitCode.USAGE);
+    }
+  }
+
+  @Command(
+          name = "init",
+          description = "Initialize simplelocalize configuration file. 'simplelocalize init --help' to learn more about the parameters.")
+  public void init()
+  {
+    try
+    {
+      InitCommand initCommand = new InitCommand();
+      initCommand.invoke();
     } catch (Exception e)
     {
       printDebug(e);

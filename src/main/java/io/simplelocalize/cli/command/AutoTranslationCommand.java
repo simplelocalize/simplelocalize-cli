@@ -5,11 +5,11 @@ import io.simplelocalize.cli.client.SimpleLocalizeClient;
 import io.simplelocalize.cli.configuration.AutoTranslationConfiguration;
 import io.simplelocalize.cli.configuration.Configuration;
 import io.simplelocalize.cli.io.JsonReader;
-import net.minidev.json.JSONArray;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 
@@ -67,7 +67,7 @@ public class AutoTranslationCommand implements CliCommand
   {
     String responseData = client.getAutoTranslationJobs();
     DocumentContext json = jsonReader.read(responseData);
-    JSONArray runningJobs = json.read("$.data[*]");
+    LinkedList<?> runningJobs = json.read("$.data[*]", LinkedList.class);
     return runningJobs.size();
   }
 
