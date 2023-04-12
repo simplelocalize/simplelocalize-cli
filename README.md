@@ -83,7 +83,7 @@ e.g.: `./src/translations/{lang}/{ns}.json`.
 
 Upload format is a format of the file(s) with translations. [See available upload formats](https://simplelocalize.io/docs/general/file-formats/)
 
-### Additional parameters:
+#### Additional parameters:
 - `--replace` allows you to **replace** existing translations with new ones.
 - `--delete` allows you to **delete** translations that are not present in uploaded files.
 - `--dryRun` allows you to **check** what translation files will be uploaded without actually uploading them.
@@ -108,7 +108,7 @@ e.g.: `./src/translations/{lang}/{ns}.json`.
 
 Download format is a format of the file(s) with translations. [See available download formats](https://simplelocalize.io/docs/general/file-formats/)
 
-### Additional parameters:
+#### Additional parameters:
 - `--downloadOptions` allows you to pass [additional options](https://simplelocalize.io/docs/general/options/) to the download command. Eg.: `--downloadOptions WRITE_NESTED`.
 
 Learn more about [download translations command](https://simplelocalize.io/docs/cli/download-translations/).
@@ -130,7 +130,7 @@ simplelocalize sync
 
 `--downloadOptions` and `--uploadOptions` parameters are optional.
 
-## Auto-translate
+## Auto-translate translations
 
 Auto-translate command starts [auto-translation](https://simplelocalize.io/auto-translation) jobs.
 
@@ -236,7 +236,7 @@ Additional parameters:
 
 ## Publish resources to Translation Hosting
 
-It publishes translation to Translation Hosting. It behaves exactly the same as publish buttons in the SimpleLocalize (Hosting tab).
+It publishes translation to [Translation Hosting](https://simplelocalize.io/translation-hosting). It behaves exactly the same as publish buttons in the SimpleLocalize (Hosting tab).
 
 - `--environment latest` gets translations from Translation Editor and publishes them to Translation Hosting to `latest` environment.
 - `--environment production` gets translations from Translation Hosting (`latest`) and publishes them to Translation Hosting (`production`).
