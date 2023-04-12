@@ -57,7 +57,7 @@ Available commands:
 Use `--help` parameter to get more information about the command and its parameters
 or [check documentation](https://simplelocalize.io/docs/cli/get-started/).
 
-### Create configuration file
+## Create configuration file
 
 Command creates a sample configuration file in the current directory.
 The configuration file simplifies the usage of the command-line tool
@@ -67,7 +67,7 @@ by providing a default configuration for the project and allowing to omit some p
 simplelocalize init
 ```
 
-### Upload translations
+## Upload translations
 
 Command uploads translation files from given `<UPLOAD_PATH_PATTERN>` to [Translation Editor](https://simplelocalize.io/translation-editor/), e.g.: `./src/translations/messages.json`.
 
@@ -83,7 +83,7 @@ e.g.: `./src/translations/{lang}/{ns}.json`.
 
 Upload format is a format of the file(s) with translations. [See available upload formats](https://simplelocalize.io/docs/general/file-formats/)
 
-#### Additional parameters:
+### Additional parameters:
 - `--replace` allows you to **replace** existing translations with new ones.
 - `--delete` allows you to **delete** translations that are not present in uploaded files.
 - `--dryRun` allows you to **check** what translation files will be uploaded without actually uploading them.
@@ -92,7 +92,7 @@ Eg.: `--uploadOptions TRIM_LEADING_TRAILING_SPACES`. To pass multiple options, u
 
 Learn more about [upload translations command](https://simplelocalize.io/docs/cli/upload-translations/).
 
-### Download translations
+## Download translations
 
 Command downloads translation files from [Translation Editor](https://simplelocalize.io/translation-editor/) to given `<DOWNLOAD_PATH_PATTERN>`, e.g.: `./src/translations/messages.json`.
 
@@ -108,12 +108,12 @@ e.g.: `./src/translations/{lang}/{ns}.json`.
 
 Download format is a format of the file(s) with translations. [See available download formats](https://simplelocalize.io/docs/general/file-formats/)
 
-#### Additional parameters:
+### Additional parameters:
 - `--downloadOptions` allows you to pass [additional options](https://simplelocalize.io/docs/general/options/) to the download command. Eg.: `--downloadOptions WRITE_NESTED`.
 
 Learn more about [download translations command](https://simplelocalize.io/docs/cli/download-translations/).
 
-### Sync translations
+## Sync translations
 
 Sync command combines upload and download command executions.
 
@@ -130,7 +130,7 @@ simplelocalize sync
 
 `--downloadOptions` and `--uploadOptions` parameters are optional.
 
-### Auto-translate
+## Auto-translate
 
 Auto-translate command starts [auto-translation](https://simplelocalize.io/auto-translation) jobs.
 
@@ -142,7 +142,7 @@ simplelocalize auto-translate
 Additional parameters:
 - `--languageKeys` allows you to specify languages to auto-translate. Eg.: `--languageKeys en,de,fr`.
 
-### Extract translation keys
+## Extract translation keys
 
 Extract command finds and upload translation keys from project source code at `<SEARCH_DIRECTORY>` to SimpleLocalize.
 
@@ -220,7 +220,7 @@ simplelocalize upload
   --uploadFormat single-language-json
 ```
 
-### Pull resources from Translation Hosting
+## Pull resources from Translation Hosting
 
 Downloads all translation hosting files to given directory in `--pullPath` parameter. It overwrites existing files and creates subdirectories if necessary. Available environment variables: `latest`, `production`.
 
@@ -234,7 +234,7 @@ simplelocalize pull
 Additional parameters:
 `--filterRegex` allows you to filter files by regex, e.g.: `--filterRegex '_index'` will download only `_index` file.
 
-### Publish resources to Translation Hosting
+## Publish resources to Translation Hosting
 
 It publishes translation to Translation Hosting. It behaves exactly the same as publish buttons in the SimpleLocalize (Hosting tab).
 
@@ -247,7 +247,7 @@ simplelocalize publish
   --environment latest
 ```
 
-### Getting project details
+## Getting project details
 
 Command gets project details and prints them to the console.
 
@@ -271,7 +271,7 @@ simplelocalize upload
 simplelocalize -c my-configuration.yml upload
 ```
 
-### Sample configuration file
+## Sample configuration file
 
 Filename: `simplelocalize.yml`
 
