@@ -86,8 +86,10 @@ Upload format is a format of the file(s) with translations. Supported formats: h
 #### Additional parameters:
 - `--replace` allows you to **replace** existing translations with new ones.
 - `--delete` allows you to **delete** translations that are not present in uploaded files.
-- `--dryRun` allows you to check what translation files will be uploaded without actually uploading them.
-- `--uploadOptions` allows you to pass [additional options](https://simplelocalize.io/docs/general/options/) to the upload command. Eg.: `--uploadOptions TRIM_LEADING_TRAILING_SPACES`. To pass multiple options, use comma as a separator: `--uploadOptions TRIM_LEADING_TRAILING_SPACES,TRIM_LEADING_TRAILING_SPACES`.
+- `--dryRun` allows you to **check** what translation files will be uploaded without actually uploading them.
+- `--uploadOptions` allows you to pass [additional options](https://simplelocalize.io/docs/general/options/) to the upload command. 
+Eg.: `--uploadOptions TRIM_LEADING_TRAILING_SPACES`. 
+To pass multiple options, use comma as a separator: `--uploadOptions TRIM_LEADING_TRAILING_SPACES,TRIM_LEADING_TRAILING_SPACES`.
 
 Learn more about [upload translations command](https://simplelocalize.io/docs/cli/upload-translations/).
 
