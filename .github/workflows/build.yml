@@ -57,7 +57,7 @@ jobs:
       - uses: graalvm/setup-graalvm@v1
         name: "Install GraalVM"
         with:
-          version: '22.3.0'
+          version: '22.3.1'
           java-version: '17'
           components: 'native-image'
           github-token: ${{ secrets.GITHUB_TOKEN }}
@@ -68,4 +68,4 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: simplelocalize-cli-${{ matrix.label }}
-          path: ./target/simplelocalize-cli-${{ matrix.label }}
+          path: ./target/simplelocalize-cli
