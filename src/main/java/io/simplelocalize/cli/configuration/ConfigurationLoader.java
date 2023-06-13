@@ -13,6 +13,7 @@ import java.io.InputStream;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
+import java.util.Objects;
 
 public final class ConfigurationLoader
 {
@@ -30,7 +31,7 @@ public final class ConfigurationLoader
       configurationFilePath = DEFAULT_CONFIG_FILE_NAME;
     }
 
-    return configurationLoader.load(configurationFilePath);
+    return Objects.requireNonNullElse(configurationLoader.load(configurationFilePath), new Configuration());
   }
 
   private Configuration load(Path configurationFilePath)
