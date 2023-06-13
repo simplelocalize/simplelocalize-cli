@@ -40,10 +40,13 @@ jobs:
         include:
           - os: 'ubuntu-latest'
             label: 'linux'
+            filename: 'simplelocalize-cli'
           - os: 'macos-latest'
             label: 'mac'
+            filename: 'simplelocalize-cli'
           - os: 'windows-latest'
             label: 'windows'
+            filename: 'simplelocalize-cli.exe'
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v3
@@ -68,4 +71,4 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: simplelocalize-cli-${{ matrix.label }}
-          path: ./target/simplelocalize-cli
+          path: ./target/${{ matrix.filename }}
