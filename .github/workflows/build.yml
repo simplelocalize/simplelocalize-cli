@@ -34,10 +34,10 @@ jobs:
           name: 'simplelocalize-cli-${{env.VERSION}}.jar'
           path: 'target/simplelocalize-cli-${{env.VERSION}}.jar'
   build-unix:
-    name: "Build ${{ matrix.os }} executable"
+    name: "Build ${{ matrix.label }} executable"
     strategy:
       matrix:
-        os: [macos-latest, windows-latest, ubuntu-latest]
+        os: [ubuntu-latest]
         include:
           - os: 'ubuntu-latest'
             label: 'linux'
@@ -63,9 +63,6 @@ jobs:
           components: 'native-image'
           github-token: ${{ secrets.GITHUB_TOKEN }}
           native-image-job-reports: 'true'
-      - name: 'Get version'
-        run: |
-          echo "::set-env name=VERSION::$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)"
       - name: "Build"
         run: mvn -DskipTests -Pnative clean package
       - name: "Upload"
