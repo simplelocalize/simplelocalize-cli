@@ -2,8 +2,8 @@ package io.simplelocalize.cli.client;
 
 import com.google.common.net.HttpHeaders;
 import io.simplelocalize.cli.client.dto.DownloadRequest;
-import io.simplelocalize.cli.client.dto.DownloadableFile;
 import io.simplelocalize.cli.client.dto.UploadRequest;
+import io.simplelocalize.cli.client.dto.proxy.DownloadableFile;
 import io.simplelocalize.cli.exception.ApiRequestException;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.AfterAll;

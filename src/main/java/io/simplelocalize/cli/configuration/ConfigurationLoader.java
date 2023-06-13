@@ -1,5 +1,6 @@
 package io.simplelocalize.cli.configuration;
 
+import io.simplelocalize.cli.client.dto.proxy.Configuration;
 import io.simplelocalize.cli.exception.ConfigurationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

@@ -1,11 +1,14 @@
-package io.simplelocalize.cli.client.dto;
+package io.simplelocalize.cli.client.dto.proxy;
 
 
-import io.micronaut.core.annotation.Introspected;
+
+import io.simplelocalize.cli.NativeProxy;
+import picocli.CommandLine;
 
 import java.util.Objects;
 
-@Introspected
+@CommandLine.Command(name = "config-df", mixinStandardHelpOptions = true)
+@NativeProxy
 public class DownloadableFile
 {
   private String url;

@@ -1,11 +1,13 @@
-package io.simplelocalize.cli.client.dto;
+package io.simplelocalize.cli.client.dto.proxy;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import io.micronaut.core.annotation.Introspected;
+import io.simplelocalize.cli.NativeProxy;
+import picocli.CommandLine;
 
 import java.util.Objects;
 
-@Introspected
+@CommandLine.Command(name = "config-hr", mixinStandardHelpOptions = true)
+@NativeProxy
 public final class HostingResource
 {
   private final String path;

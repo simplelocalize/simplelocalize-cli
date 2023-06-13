@@ -1,17 +1,19 @@
-package io.simplelocalize.cli.client.dto;
+package io.simplelocalize.cli.client.dto.proxy;
 
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonAnySetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import io.micronaut.core.annotation.Introspected;
+import io.simplelocalize.cli.NativeProxy;
+import picocli.CommandLine;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
-@Introspected
+@CommandLine.Command(name = "config-er", mixinStandardHelpOptions = true)
+@NativeProxy
 public class ExportResponse
 {
   @JsonProperty("files")

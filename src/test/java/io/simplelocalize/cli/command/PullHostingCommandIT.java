@@ -1,7 +1,7 @@
 package io.simplelocalize.cli.command;
 
 import io.simplelocalize.cli.client.SimpleLocalizeClient;
-import io.simplelocalize.cli.configuration.Configuration;
+import io.simplelocalize.cli.client.dto.proxy.Configuration;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 

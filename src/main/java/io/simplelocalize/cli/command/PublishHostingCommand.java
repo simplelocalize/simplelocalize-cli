@@ -3,7 +3,7 @@ package io.simplelocalize.cli.command;
 import com.jayway.jsonpath.DocumentContext;
 import com.jayway.jsonpath.JsonPath;
 import io.simplelocalize.cli.client.SimpleLocalizeClient;
-import io.simplelocalize.cli.configuration.Configuration;
+import io.simplelocalize.cli.client.dto.proxy.Configuration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

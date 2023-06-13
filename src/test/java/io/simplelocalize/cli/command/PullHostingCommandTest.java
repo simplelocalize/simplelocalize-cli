@@ -2,7 +2,7 @@ package io.simplelocalize.cli.command;
 
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import io.simplelocalize.cli.client.SimpleLocalizeClient;
-import io.simplelocalize.cli.configuration.Configuration;
+import io.simplelocalize.cli.client.dto.proxy.Configuration;
 import io.simplelocalize.cli.util.TestLogEventFactory;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

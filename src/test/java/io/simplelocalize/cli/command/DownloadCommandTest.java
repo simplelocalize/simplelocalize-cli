@@ -1,7 +1,7 @@
 package io.simplelocalize.cli.command;
 
 import io.simplelocalize.cli.client.SimpleLocalizeClient;
-import io.simplelocalize.cli.configuration.Configuration;
+import io.simplelocalize.cli.client.dto.proxy.Configuration;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
@@ -11,7 +11,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.List;
 
 import static io.simplelocalize.cli.client.dto.DownloadRequest.DownloadRequestBuilder.aDownloadRequest;
-import static io.simplelocalize.cli.client.dto.DownloadableFile.DownloadableFileBuilder.aDownloadableFile;
+import static io.simplelocalize.cli.client.dto.proxy.DownloadableFile.DownloadableFileBuilder.aDownloadableFile;
 
 @ExtendWith(MockitoExtension.class)
 public class DownloadCommandTest

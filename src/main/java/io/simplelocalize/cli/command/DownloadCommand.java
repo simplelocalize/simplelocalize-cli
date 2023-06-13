@@ -3,8 +3,8 @@ package io.simplelocalize.cli.command;
 import io.simplelocalize.cli.TemplateKeys;
 import io.simplelocalize.cli.client.SimpleLocalizeClient;
 import io.simplelocalize.cli.client.dto.DownloadRequest;
-import io.simplelocalize.cli.client.dto.DownloadableFile;
-import io.simplelocalize.cli.configuration.Configuration;
+import io.simplelocalize.cli.client.dto.proxy.Configuration;
+import io.simplelocalize.cli.client.dto.proxy.DownloadableFile;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

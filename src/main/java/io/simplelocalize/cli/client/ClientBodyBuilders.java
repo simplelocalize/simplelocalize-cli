@@ -2,9 +2,9 @@ package io.simplelocalize.cli.client;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import io.simplelocalize.cli.client.dto.ImportForm;
-import io.simplelocalize.cli.client.dto.ImportKey;
-import io.simplelocalize.cli.client.dto.StartAutoTranslationRequest;
+import io.simplelocalize.cli.client.dto.proxy.ImportForm;
+import io.simplelocalize.cli.client.dto.proxy.ImportKey;
+import io.simplelocalize.cli.client.dto.proxy.StartAutoTranslationRequest;
 
 import java.io.IOException;
 import java.net.http.HttpRequest;

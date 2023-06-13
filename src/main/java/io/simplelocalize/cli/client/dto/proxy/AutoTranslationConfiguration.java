@@ -1,11 +1,14 @@
-package io.simplelocalize.cli.configuration;
+package io.simplelocalize.cli.client.dto.proxy;
 
-import io.micronaut.core.annotation.Introspected;
+
+import io.simplelocalize.cli.NativeProxy;
+import picocli.CommandLine;
 
 import java.util.ArrayList;
 import java.util.List;
 
-@Introspected
+@CommandLine.Command(name = "config-at", mixinStandardHelpOptions = true)
+@NativeProxy
 public class AutoTranslationConfiguration
 {
   private List<String> languageKeys = new ArrayList<>();

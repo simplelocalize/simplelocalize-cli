@@ -1,12 +1,14 @@
-package io.simplelocalize.cli.client.dto;
+package io.simplelocalize.cli.client.dto.proxy;
 
-import io.micronaut.core.annotation.Introspected;
+import io.simplelocalize.cli.NativeProxy;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
+import picocli.CommandLine;
 
 import java.util.Set;
 
-@Introspected
+@CommandLine.Command(name = "config-if", mixinStandardHelpOptions = true)
+@NativeProxy
 public final class ImportForm
 {
     private final Set<ImportKey> content;

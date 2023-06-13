@@ -1,11 +1,14 @@
-package io.simplelocalize.cli.configuration;
+package io.simplelocalize.cli.client.dto.proxy;
 
-import io.micronaut.core.annotation.Introspected;
+
+import io.simplelocalize.cli.NativeProxy;
+import picocli.CommandLine;
 
 import java.util.ArrayList;
 import java.util.List;
 
-@Introspected
+@NativeProxy
+@CommandLine.Command(name = "config-c", mixinStandardHelpOptions = true)
 public class Configuration
 {
 

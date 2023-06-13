@@ -1,11 +1,14 @@
-package io.simplelocalize.cli.client.dto;
+package io.simplelocalize.cli.client.dto.proxy;
 
-import io.micronaut.core.annotation.Introspected;
+
+import io.simplelocalize.cli.NativeProxy;
+import picocli.CommandLine;
 
 import java.util.Collection;
 import java.util.Objects;
 
-@Introspected
+@NativeProxy
+@CommandLine.Command(name = "config-satr", mixinStandardHelpOptions = true)
 public final class StartAutoTranslationRequest
 {
   private final Collection<String> languageKeys;

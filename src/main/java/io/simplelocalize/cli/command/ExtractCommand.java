@@ -1,7 +1,7 @@
 package io.simplelocalize.cli.command;
 
 import io.simplelocalize.cli.client.SimpleLocalizeClient;
-import io.simplelocalize.cli.configuration.Configuration;
+import io.simplelocalize.cli.client.dto.proxy.Configuration;
 import io.simplelocalize.cli.extraction.ExtractionResult;
 import io.simplelocalize.cli.extraction.ProjectProcessorFactory;
 import io.simplelocalize.cli.extraction.processor.ExtractionProcessor;

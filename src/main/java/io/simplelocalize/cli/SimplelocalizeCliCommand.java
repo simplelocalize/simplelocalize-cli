@@ -1,10 +1,9 @@
 package io.simplelocalize.cli;
 
-import io.micronaut.configuration.picocli.PicocliRunner;
 import io.simplelocalize.cli.client.SimpleLocalizeClient;
+import io.simplelocalize.cli.client.dto.proxy.AutoTranslationConfiguration;
+import io.simplelocalize.cli.client.dto.proxy.Configuration;
 import io.simplelocalize.cli.command.*;
-import io.simplelocalize.cli.configuration.AutoTranslationConfiguration;
-import io.simplelocalize.cli.configuration.Configuration;
 import io.simplelocalize.cli.configuration.ConfigurationLoader;
 import io.simplelocalize.cli.configuration.ConfigurationValidator;
 import org.apache.commons.lang3.StringUtils;
@@ -46,7 +45,9 @@ public class SimplelocalizeCliCommand implements Runnable
 
   public static void main(String[] args)
   {
-    PicocliRunner.run(SimplelocalizeCliCommand.class, args);
+    CommandLine commandLine = new CommandLine(new SimplelocalizeCliCommand());
+    int exitCode = commandLine.execute(args);
+    System.exit(exitCode);
   }
 
   @Command(
@@ -379,6 +380,8 @@ public class SimplelocalizeCliCommand implements Runnable
           @Option(names = {"--baseUrl"}, description = "(Optional) Set custom server URL") String baseUrl
   )
   {
+
+    log.info("Starting status command");
     try
     {
       ConfigurationLoader configurationLoader = new ConfigurationLoader();
