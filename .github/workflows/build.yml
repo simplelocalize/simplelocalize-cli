@@ -17,16 +17,18 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
+        name: "Checkout"
       - uses: actions/setup-java@v3
+        name: "Install Java"
         with:
           java-version: '17'
           distribution: 'temurin'
           cache: 'maven'
-      - name: "Build with Maven"
+      - name: "Build"
         run: mvn -DskipTests -Pfatjar clean package
-      - name: 'Get Version Number'
+      - name: 'Get version'
         run: echo "::set-env name=VERSION::$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)"
-      - name: 'Upload artifact'
+      - name: 'Upload'
         uses: actions/upload-artifact@v3
         with:
           name: 'simplelocalize-cli-${{env.VERSION}}.jar'
@@ -46,26 +48,27 @@ jobs:
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v3
-      - name: 'Get Version Number'
-        run: |
-          echo "::set-env name=VERSION::$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)"
+        name: "Checkout"
       - uses: actions/setup-java@v3
+        name: "Install Java"
         with:
           java-version: '17'
           distribution: 'temurin'
           cache: 'maven'
       - uses: graalvm/setup-graalvm@v1
+        name: "Install GraalVM"
         with:
           version: '22.3.0'
           java-version: '17'
           components: 'native-image'
           github-token: ${{ secrets.GITHUB_TOKEN }}
           native-image-job-reports: 'true'
-#      - name: "Install Native Image"
-#        run: gu install native-image
-      - name: "Build with Maven"
+      - name: 'Get version'
+        run: |
+          echo "::set-env name=VERSION::$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)"
+      - name: "Build"
         run: mvn -DskipTests -Pnative clean package
-      - name: "Upload artifact"
+      - name: "Upload"
         uses: actions/upload-artifact@v3
         with:
           name: simplelocalize-cli-${{ matrix.label }}
