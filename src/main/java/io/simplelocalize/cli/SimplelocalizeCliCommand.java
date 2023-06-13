@@ -15,7 +15,9 @@ import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
 
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 
 @Command(
@@ -164,20 +166,27 @@ public class SimplelocalizeCliCommand implements Runnable
         configuration.setCustomerId(customerId);
       }
 
+      List<String> effectiveUploadOptions = new ArrayList<>();
+      List<String> configurationUploadOptions = configuration.getUploadOptions();
+      if (configurationUploadOptions != null)
+      {
+        effectiveUploadOptions = new ArrayList<>(configurationUploadOptions);
+      }
+      if (uploadOptions != null)
+      {
+        effectiveUploadOptions = new ArrayList<>(uploadOptions);
+      }
+
       if (Boolean.TRUE.equals(overwrite))
       {
-        uploadOptions.add("REPLACE_TRANSLATION_IF_FOUND");
+        effectiveUploadOptions.add("REPLACE_TRANSLATION_IF_FOUND");
       }
 
       if (Boolean.TRUE.equals(delete))
       {
-        uploadOptions.add("DELETE_NOT_PRESENT_KEYS");
+        effectiveUploadOptions.add("DELETE_NOT_PRESENT_KEYS");
       }
-
-      if (uploadOptions != null)
-      {
-        configuration.setUploadOptions(uploadOptions);
-      }
+      configuration.setUploadOptions(effectiveUploadOptions);
 
       if (Boolean.TRUE.equals(dryRun))
       {
@@ -239,10 +248,7 @@ public class SimplelocalizeCliCommand implements Runnable
       {
         configuration.setCustomerId(customerId);
       }
-      if (downloadOptions != null)
-      {
-        configuration.setDownloadOptions(downloadOptions);
-      }
+      configuration.setDownloadOptions(Objects.requireNonNullElseGet(downloadOptions, ArrayList::new));
       ConfigurationValidator configurationValidator = new ConfigurationValidator();
       configurationValidator.validateDownloadConfiguration(configuration);
       SimpleLocalizeClient client = SimpleLocalizeClient.create(configuration.getBaseUrl(), configuration.getApiKey());
@@ -290,7 +296,7 @@ public class SimplelocalizeCliCommand implements Runnable
         configuration.setPullPath(pullPath);
       }
 
-      if(StringUtils.isNotEmpty(filterRegex))
+      if (StringUtils.isNotEmpty(filterRegex))
       {
         configuration.setFilterRegex(filterRegex);
       }
