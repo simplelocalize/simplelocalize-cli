@@ -37,7 +37,6 @@ jobs:
     name: "Build ${{ matrix.label }} executable"
     strategy:
       matrix:
-        os: [ubuntu-latest]
         include:
           - os: 'ubuntu-latest'
             label: 'linux'
@@ -69,4 +68,4 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: simplelocalize-cli-${{ matrix.label }}
-          path: simplelocalize-cli-${{ matrix.label }}
+          path: ./target/simplelocalize-cli-${{ matrix.label }}
