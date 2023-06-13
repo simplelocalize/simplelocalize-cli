@@ -167,7 +167,6 @@ public class SimplelocalizeCliCommand implements Runnable
       }
 
       List<String> effectiveUploadOptions = new ArrayList<>();
-
       List<String> configurationUploadOptions = configuration.getUploadOptions();
       if (configurationUploadOptions != null)
       {
@@ -249,7 +248,7 @@ public class SimplelocalizeCliCommand implements Runnable
       {
         configuration.setCustomerId(customerId);
       }
-      configuration.setDownloadOptions(Objects.requireNonNullElseGet(downloadOptions, List::of));
+      configuration.setDownloadOptions(Objects.requireNonNullElseGet(downloadOptions, ArrayList::new));
       ConfigurationValidator configurationValidator = new ConfigurationValidator();
       configurationValidator.validateDownloadConfiguration(configuration);
       SimpleLocalizeClient client = SimpleLocalizeClient.create(configuration.getBaseUrl(), configuration.getApiKey());
