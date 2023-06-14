@@ -193,7 +193,7 @@ class SimplelocalizeCliCommandTest
             );
 
 
-    sut.pull("my-api-key", "./my-path", "latest",null, MOCK_SERVER_BASE_URL);
+    sut.pull("my-api-key", "./my-path", "latest", null, MOCK_SERVER_BASE_URL);
 
   }
 
@@ -251,7 +251,7 @@ class SimplelocalizeCliCommandTest
             );
 
 
-    sut.publish("my-api-key","latest", MOCK_SERVER_BASE_URL);
+    sut.publish("my-api-key", "latest", MOCK_SERVER_BASE_URL);
   }
 
   @Test
@@ -287,7 +287,72 @@ class SimplelocalizeCliCommandTest
             );
 
 
-    sut.publish("my-api-key","production", MOCK_SERVER_BASE_URL);
+    sut.publish("my-api-key", "production", MOCK_SERVER_BASE_URL);
+  }
+
+  @Test
+  void startAutoTranslation()
+  {
+    // given & when & then
+    mockServer.when(request()
+                            .withMethod("GET")
+                            .withPath("/api/v2/jobs")
+                            .withQueryStringParameter("status", "RUNNING")
+                            .withQueryStringParameter("type", "AUTO_TRANSLATION")
+                            .withHeader("X-SimpleLocalize-Token", "my-api-key"),
+                    Times.exactly(2))
+            .respond(
+                    response()
+                            .withStatusCode(200)
+                            .withBody("""
+                                    {
+                                      "msg": "OK",
+                                      "status": 200,
+                                      "data": []
+                                    }
+                                    """)
+                            .withDelay(TimeUnit.MILLISECONDS, 200)
+            );
+    mockServer.when(request()
+                            .withMethod("POST")
+                            .withPath("/api/v2/jobs/auto-translate")
+                            .withHeader("X-SimpleLocalize-Token", "my-api-key")
+                    ,
+                    Times.exactly(1))
+            .respond(
+                    response()
+                            .withStatusCode(200)
+                            .withBody("""
+                                    {
+                                      "languageKeys:" ["pl", "en"],
+                                      "source": "CLI"
+                                    }
+                                    """)
+                            .withDelay(TimeUnit.MILLISECONDS, 200)
+            );
+
+    sut.startAutoTranslation("my-api-key", List.of("pl", "en"), MOCK_SERVER_BASE_URL);
+  }
+
+  @Test
+  void init()
+  {
+    // given & when & then
+    mockServer.when(request()
+                            .withMethod("GET")
+                            .withPath("sample.yml"),
+                    Times.exactly(1))
+            .respond(
+                    response()
+                            .withStatusCode(200)
+                            .withBody("""
+                                    # SimpleLocalize configuration file
+                                    # More info: https://simplelocalize.io/docs/cli/configuration
+                                    """)
+                            .withDelay(TimeUnit.MILLISECONDS, 200)
+            );
+
+    sut.init();
   }
 
 }

@@ -45,8 +45,7 @@ public class SimplelocalizeCliCommand implements Runnable
 
   public static void main(String[] args)
   {
-    CommandLine commandLine = new CommandLine(new SimplelocalizeCliCommand());
-    int exitCode = commandLine.execute(args);
+    int exitCode = new CommandLine(new SimplelocalizeCliCommand()).execute(args);
     System.exit(exitCode);
   }
 
@@ -363,7 +362,7 @@ public class SimplelocalizeCliCommand implements Runnable
   {
     try
     {
-      InitCommand initCommand = new InitCommand();
+      InitCommand initCommand = new InitCommand("simplelocalize.yml");
       initCommand.invoke();
     } catch (Exception e)
     {
@@ -455,7 +454,6 @@ public class SimplelocalizeCliCommand implements Runnable
       log.error("Command failed. Use '--debug' parameter before the command name to see stacktrace.");
     }
   }
-
 
   public void run()
   {

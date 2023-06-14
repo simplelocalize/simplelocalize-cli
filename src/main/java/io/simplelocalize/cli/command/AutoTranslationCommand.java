@@ -33,7 +33,7 @@ public class AutoTranslationCommand implements CliCommand
     int runningJobsCount = getRunningJobsCount();
     while (runningJobsCount > 0)
     {
-      log.info("There is at least one running auto-translation job. Waiting 5 seconds before checking again");
+      log.info("Waiting for auto-translation to finish");
       Thread.sleep(5_000);
       runningJobsCount = getRunningJobsCount();
     }
