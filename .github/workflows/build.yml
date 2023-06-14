@@ -1,6 +1,5 @@
 name: Build executables
 
-
 on:
   push:
     branches:
@@ -24,11 +23,11 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
           cache: 'maven'
-      - name: "Build"
+      - name: "Build JAR"
         run: mvn -DskipTests -Pfatjar clean package
       - name: 'Get version'
         run: echo "::set-env name=VERSION::$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)"
-      - name: 'Upload'
+      - name: 'Upload artifact'
         uses: actions/upload-artifact@v3
         with:
           name: 'simplelocalize-cli-${{env.VERSION}}.jar'
@@ -65,9 +64,11 @@ jobs:
           components: 'native-image'
           github-token: ${{ secrets.GITHUB_TOKEN }}
           native-image-job-reports: 'true'
-      - name: "Build"
+      - name: "Build executable"
         run: mvn -DskipTests -Pnative clean package
-      - name: "Upload"
+      - name: "Test executable"
+        run: ./target/${{ matrix.filename }} --version
+      - name: "Upload artifact"
         uses: actions/upload-artifact@v3
         with:
           name: simplelocalize-cli-${{ matrix.label }}

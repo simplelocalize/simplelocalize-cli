@@ -63,3 +63,5 @@ $RECYCLE.BIN/
 /dependency-reduced-pom.xml
 /build-j17.sh
 /build-far-jar.sh
+/build-m1.sh
+/install.sh

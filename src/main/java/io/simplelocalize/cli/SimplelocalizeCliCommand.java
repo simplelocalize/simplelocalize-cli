@@ -380,8 +380,6 @@ public class SimplelocalizeCliCommand implements Runnable
           @Option(names = {"--baseUrl"}, description = "(Optional) Set custom server URL") String baseUrl
   )
   {
-
-    log.info("Starting status command");
     try
     {
       ConfigurationLoader configurationLoader = new ConfigurationLoader();
