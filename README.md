@@ -21,10 +21,10 @@ The installation process is automated by command-line scripts. Both scripts for 
 
 ```shell
 # macOs / Linux / Windows (WSL)
-curl -s https://get.simplelocalize.io/2.2/install | bash
+curl -s https://get.simplelocalize.io/2.3/install | bash
 
 # Windows (PowerShell)
-. { iwr -useb https://get.simplelocalize.io/2.2/install-windows } | iex;
+. { iwr -useb https://get.simplelocalize.io/2.3/install-windows } | iex;
 ```
 
 To change or update the CLI version, run the installation script with the desired version number in the URL, e.g.: 
