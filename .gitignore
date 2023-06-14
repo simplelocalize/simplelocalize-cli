@@ -65,3 +65,4 @@ $RECYCLE.BIN/
 /build-far-jar.sh
 /build-m1.sh
 /install.sh
+/simplelocalize-init-command.yml

@@ -82,16 +82,16 @@ public class SimpleLocalizeClient
     throwOnError(httpResponse);
     String body = httpResponse.body();
     ExportResponse exportResponse = objectMapper.readValue(body, ExportResponse.class);
-    return exportResponse.getFiles();
+    return exportResponse.files();
   }
 
   public void downloadFile(DownloadableFile downloadableFile, String downloadPathTemplate) throws IOException, InterruptedException
   {
     Optional<DownloadableFile> optionalDownloadableFile = Optional.of(downloadableFile);
     String downloadPath = downloadPathTemplate
-            .replace(NAMESPACE_TEMPLATE_KEY, optionalDownloadableFile.map(DownloadableFile::getNamespace).orElse(""))
-            .replace(LANGUAGE_TEMPLATE_KEY, optionalDownloadableFile.map(DownloadableFile::getLanguage).orElse(""));
-    String url = downloadableFile.getUrl();
+            .replace(NAMESPACE_TEMPLATE_KEY, optionalDownloadableFile.map(DownloadableFile::namespace).orElse(""))
+            .replace(LANGUAGE_TEMPLATE_KEY, optionalDownloadableFile.map(DownloadableFile::language).orElse(""));
+    String url = downloadableFile.url();
     Path savePath = Path.of(downloadPath);
     downloadFile(url, savePath);
   }

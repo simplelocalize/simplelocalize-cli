@@ -1,65 +1,10 @@
 package io.simplelocalize.cli.client.dto.proxy;
 
-
-
 import io.simplelocalize.cli.NativeProxy;
-import picocli.CommandLine;
 
-import java.util.Objects;
-
-@CommandLine.Command(name = "config-df", mixinStandardHelpOptions = true)
 @NativeProxy
-public class DownloadableFile
+public record DownloadableFile(String url, String namespace, String language)
 {
-  private String url;
-  private String namespace;
-  private String language;
-
-  public void setUrl(String url)
-  {
-    this.url = url;
-  }
-
-  public String getNamespace()
-  {
-    return namespace;
-  }
-
-  public void setNamespace(String namespace)
-  {
-    this.namespace = namespace;
-  }
-
-  public String getUrl()
-  {
-    return url;
-  }
-
-  public String getLanguage()
-  {
-    return language;
-  }
-
-  public void setLanguage(String language)
-  {
-    this.language = language;
-  }
-
-  @Override
-  public boolean equals(Object o)
-  {
-    if (this == o) return true;
-    if (o == null || getClass() != o.getClass()) return false;
-    DownloadableFile that = (DownloadableFile) o;
-    return Objects.equals(url, that.url) && Objects.equals(namespace, that.namespace) && Objects.equals(language, that.language);
-  }
-
-  @Override
-  public int hashCode()
-  {
-    return Objects.hash(url, namespace, language);
-  }
-
 
   public static final class DownloadableFileBuilder
   {
@@ -71,7 +16,7 @@ public class DownloadableFile
     {
     }
 
-    public static DownloadableFileBuilder aDownloadableFile()
+    public static DownloadableFileBuilder Builder()
     {
       return new DownloadableFileBuilder();
     }
@@ -96,11 +41,11 @@ public class DownloadableFile
 
     public DownloadableFile build()
     {
-      DownloadableFile downloadableFile = new DownloadableFile();
-      downloadableFile.url = this.url;
-      downloadableFile.language = this.language;
-      downloadableFile.namespace = this.namespace;
-      return downloadableFile;
+      return new DownloadableFile(
+              this.url,
+              this.namespace,
+              this.language
+      );
     }
   }
 }

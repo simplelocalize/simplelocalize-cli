@@ -11,8 +11,6 @@ import org.slf4j.LoggerFactory;
 import java.io.IOException;
 import java.util.List;
 
-import static io.simplelocalize.cli.client.dto.DownloadRequest.DownloadRequestBuilder.aDownloadRequest;
-
 public class DownloadCommand implements CliCommand
 {
   private static final Logger log = LoggerFactory.getLogger(DownloadCommand.class);
@@ -39,13 +37,12 @@ public class DownloadCommand implements CliCommand
       downloadOptions.add("SPLIT_BY_NAMESPACES");
     }
 
-
     if (downloadPath.contains(TemplateKeys.LANGUAGE_TEMPLATE_KEY))
     {
       downloadOptions.add("SPLIT_BY_LANGUAGES");
     }
 
-    DownloadRequest downloadRequest = aDownloadRequest()
+    DownloadRequest downloadRequest = DownloadRequest.DownloadRequestBuilder.Builder()
             .withFormat(downloadFormat)
             .withOptions(downloadOptions)
             .withCustomerId(customerId)

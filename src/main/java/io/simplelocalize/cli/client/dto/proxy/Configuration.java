@@ -2,13 +2,11 @@ package io.simplelocalize.cli.client.dto.proxy;
 
 
 import io.simplelocalize.cli.NativeProxy;
-import picocli.CommandLine;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @NativeProxy
-@CommandLine.Command(name = "config-c", mixinStandardHelpOptions = true)
 public class Configuration
 {
 
@@ -22,11 +20,16 @@ public class Configuration
   private String uploadPath;
   private String uploadFormat;
   private List<String> uploadOptions = new ArrayList<>();
+  private List<String> uploadFilesExclude = new ArrayList<>();
+  private List<String> uploadFilesInclude = new ArrayList<>();
+
   private Boolean dryRun = false;
 
   private String downloadPath;
   private String downloadFormat;
   private List<String> downloadOptions = new ArrayList<>();
+  private List<String> downloadFilesExclude = new ArrayList<>();
+  private List<String> downloadFilesInclude = new ArrayList<>();
 
   private String customerId;
 
@@ -220,4 +223,45 @@ public class Configuration
   {
     this.filterRegex = filterRegex;
   }
+
+  public List<String> getUploadFilesInclude()
+  {
+    return uploadFilesInclude;
+  }
+
+  public void setUploadFilesInclude(List<String> uploadFilesInclude)
+  {
+    this.uploadFilesInclude = uploadFilesInclude;
+  }
+
+  public List<String> getUploadFilesExclude()
+  {
+    return uploadFilesExclude;
+  }
+
+  public void setUploadFilesExclude(List<String> uploadFilesExclude)
+  {
+    this.uploadFilesExclude = uploadFilesExclude;
+  }
+
+  public List<String> getDownloadFilesExclude()
+  {
+    return downloadFilesExclude;
+  }
+
+  public void setDownloadFilesExclude(List<String> downloadFilesExclude)
+  {
+    this.downloadFilesExclude = downloadFilesExclude;
+  }
+
+  public List<String> getDownloadFilesInclude()
+  {
+    return downloadFilesInclude;
+  }
+
+  public void setDownloadFilesInclude(List<String> downloadFilesInclude)
+  {
+    this.downloadFilesInclude = downloadFilesInclude;
+  }
+
 }

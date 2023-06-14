@@ -13,7 +13,6 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 
 public class PullHostingCommand implements CliCommand
 {
@@ -58,10 +57,10 @@ public class PullHostingCommand implements CliCommand
     List<HostingResource> hostingResources = json.read("$.data.hostingResources", new TypeRef<>() {});
     // @formatter:on
     List<String> resourcePaths = hostingResources.stream()
-            .filter(hostingResource -> hostingResource.getEnvironment().equals(environment))
-            .map(HostingResource::getPath)
+            .filter(hostingResource -> hostingResource.environment().equals(environment))
+            .map(HostingResource::path)
             .sorted()
-            .collect(Collectors.toList());
+            .toList();
     log.info("Found {} Translation Hosting resources", resourcePaths.size());
     String pullDirectory = configuration.getPullPath();
 
