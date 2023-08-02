@@ -48,6 +48,8 @@ public class SimpleLocalizeClient
     this.uriFactory = new SimpleLocalizeUriFactory(baseUrl);
     this.httpRequestFactory = new SimpleLocalizeHttpRequestFactory(apiKey);
     this.objectMapper = new ObjectMapper();
+    String httpProxy = System.getenv("http_proxy");
+    log.info("http_proxy: {}", httpProxy);
     this.httpClient = HttpClient.newBuilder()
             .connectTimeout(Duration.ofMinutes(5))
             .proxy(ProxySelector.getDefault())
