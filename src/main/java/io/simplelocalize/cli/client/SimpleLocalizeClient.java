@@ -48,22 +48,22 @@ public class SimpleLocalizeClient
             .newBuilder()
             .connectTimeout(Duration.ofMinutes(5));
 
-    ProxyConfiguration proxyConfigOptional = SystemProxySelector.getSystemEnvironmentProxy();
+    String httpProxyValue = System.getenv("http_proxy");
+    ProxyConfiguration proxyConfigOptional = SystemProxySelector.getHttpProxyValueOrNull(httpProxyValue);
     if (proxyConfigOptional != null)
     {
       log.info("Using proxy: {}", proxyConfigOptional);
       String host = proxyConfigOptional.getHost();
       Integer port = proxyConfigOptional.getPort();
       InetSocketAddress proxyAddress = new InetSocketAddress(host, port);
-      ProxySelector proxySelector = ProxySelector.of(proxyAddress);
-      builder.proxy(proxySelector);
+      builder.proxy(ProxySelector.of(proxyAddress));
 
-      Authenticator authenticator = Authenticator.getDefault();
       String proxyUsername = proxyConfigOptional.getUsername();
       String proxyPassword = proxyConfigOptional.getPassword();
-      if (proxyUsername != null && proxyPassword != null)
+      boolean hasAuthentication = proxyUsername != null && proxyPassword != null;
+      if (hasAuthentication)
       {
-        authenticator = new Authenticator()
+        Authenticator authenticator = new Authenticator()
         {
           @Override
           protected PasswordAuthentication getPasswordAuthentication()
@@ -71,8 +71,8 @@ public class SimpleLocalizeClient
             return new PasswordAuthentication(proxyUsername, proxyPassword.toCharArray());
           }
         };
+        builder.authenticator(authenticator);
       }
-      builder.authenticator(authenticator);
     }
 
     this.httpClient = builder.build();

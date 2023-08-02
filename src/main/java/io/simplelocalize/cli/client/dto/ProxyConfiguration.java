@@ -1,5 +1,7 @@
 package io.simplelocalize.cli.client.dto;
 
+import java.util.Objects;
+
 public class ProxyConfiguration
 {
   private String host;
@@ -52,13 +54,28 @@ public class ProxyConfiguration
   }
 
   @Override
+  public boolean equals(Object o)
+  {
+    if (this == o) return true;
+    if (o == null || getClass() != o.getClass()) return false;
+    ProxyConfiguration that = (ProxyConfiguration) o;
+    return Objects.equals(host, that.host) && Objects.equals(port, that.port) && Objects.equals(username, that.username) && Objects.equals(password, that.password);
+  }
+
+  @Override
+  public int hashCode()
+  {
+    return Objects.hash(host, port, username, password);
+  }
+
+  @Override
   public String toString()
   {
-    if (username != null && password != null)
-    {
-      return "http://" + username + ":" + "<REDACTED>" + "@" + host + ":" + port;
-    }
-    return "http://" + host + ":" + port;
-
+    String redactedPassword = password == null ? null : "*****";
+    return
+            "host='" + host + '\'' +
+            ", port=" + port +
+            ", username='" + username + '\'' +
+            ", password='" + redactedPassword + '\'';
   }
 }
