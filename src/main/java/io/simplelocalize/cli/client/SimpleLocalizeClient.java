@@ -3,17 +3,13 @@ package io.simplelocalize.cli.client;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jayway.jsonpath.JsonPath;
 import com.jayway.jsonpath.Option;
-import io.simplelocalize.cli.client.dto.DownloadRequest;
-import io.simplelocalize.cli.client.dto.DownloadableFile;
-import io.simplelocalize.cli.client.dto.ExportResponse;
-import io.simplelocalize.cli.client.dto.UploadRequest;
+import io.simplelocalize.cli.client.dto.*;
 import io.simplelocalize.cli.exception.ApiRequestException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
-import java.net.ProxySelector;
-import java.net.URI;
+import java.net.*;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
@@ -48,12 +44,38 @@ public class SimpleLocalizeClient
     this.uriFactory = new SimpleLocalizeUriFactory(baseUrl);
     this.httpRequestFactory = new SimpleLocalizeHttpRequestFactory(apiKey);
     this.objectMapper = new ObjectMapper();
-    String httpProxy = System.getenv("http_proxy");
-    log.info("http_proxy: {}", httpProxy);
-    this.httpClient = HttpClient.newBuilder()
-            .connectTimeout(Duration.ofMinutes(5))
-            .proxy(ProxySelector.getDefault())
-            .build();
+    HttpClient.Builder builder = HttpClient
+            .newBuilder()
+            .connectTimeout(Duration.ofMinutes(5));
+
+    ProxyConfiguration proxyConfigOptional = SystemProxySelector.getSystemEnvironmentProxy();
+    if (proxyConfigOptional != null)
+    {
+      log.info("Using proxy: {}", proxyConfigOptional);
+      String host = proxyConfigOptional.getHost();
+      Integer port = proxyConfigOptional.getPort();
+      InetSocketAddress proxyAddress = new InetSocketAddress(host, port);
+      ProxySelector proxySelector = ProxySelector.of(proxyAddress);
+      builder.proxy(proxySelector);
+
+      Authenticator authenticator = Authenticator.getDefault();
+      String proxyUsername = proxyConfigOptional.getUsername();
+      String proxyPassword = proxyConfigOptional.getPassword();
+      if (proxyUsername != null && proxyPassword != null)
+      {
+        authenticator = new Authenticator()
+        {
+          @Override
+          protected PasswordAuthentication getPasswordAuthentication()
+          {
+            return new PasswordAuthentication(proxyUsername, proxyPassword.toCharArray());
+          }
+        };
+      }
+      builder.authenticator(authenticator);
+    }
+
+    this.httpClient = builder.build();
   }
 
   public static SimpleLocalizeClient create(String baseUrl, String apiKey)
