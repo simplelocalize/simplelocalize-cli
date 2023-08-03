@@ -21,10 +21,10 @@ The installation process is automated by command-line scripts. Both scripts for 
 
 ```shell
 # macOs / Linux / Windows (WSL)
-curl -s https://get.simplelocalize.io/2.3/install | bash
+curl -s https://get.simplelocalize.io/2.4/install | bash
 
 # Windows (PowerShell)
-. { iwr -useb https://get.simplelocalize.io/2.3/install-windows } | iex;
+. { iwr -useb https://get.simplelocalize.io/2.4/install-windows } | iex;
 ```
 
 To change or update the CLI version, run the installation script with the desired version number in the URL, e.g.: 
@@ -314,6 +314,19 @@ ignoreKeys:
 pullPath: ./src/hosting/ 
 environment: 'production' # or 'latest' 
 
+```
+
+## Proxy support
+
+SimpleLocalize CLI supports HTTP and HTTPS proxies, and it respects the `http_proxy`, `https_proxy` environment
+variables.
+
+Here are some examples of how to set proxy environment variables in Linux and macOS:
+
+```shell
+export http_proxy=http://someproxy.com
+export http_proxy=http://someproxy.com:8080
+export http_proxy=http://user:password@someproxy.com:8080
 ```
 
 ## Documentation 
