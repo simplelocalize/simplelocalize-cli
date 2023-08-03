@@ -15,7 +15,9 @@ public class SystemProxySelector
       return null;
     }
 
-    boolean isHttpOrHttps = httpProxyValue.startsWith("http://") || httpProxyValue.startsWith("https://");
+    final boolean isHttp = httpProxyValue.startsWith("http://");
+    final boolean isHttps = httpProxyValue.startsWith("https://");
+    final boolean isHttpOrHttps = isHttp || isHttps;
     if (isHttpOrHttps)
     {
       httpProxyValue = httpProxyValue
@@ -28,7 +30,7 @@ public class SystemProxySelector
 
     String addressUrl;
     String authenticationString = "";
-    boolean hasAuthentication = httpProxyValue.contains("@");
+    final boolean hasAuthentication = httpProxyValue.contains("@");
     if (hasAuthentication)
     {
       String[] authenticationAndAddress = httpProxyValue.split("@");
@@ -40,8 +42,8 @@ public class SystemProxySelector
     }
 
     String host;
-    int port = 80;
-    boolean hasHostnameAndPort = addressUrl.contains(":");
+    int port = isHttp ? 80 : 443;
+    final boolean hasHostnameAndPort = addressUrl.contains(":");
     if (hasHostnameAndPort)
     {
       String[] hostAndPortParts = addressUrl.split(":");
@@ -54,7 +56,7 @@ public class SystemProxySelector
 
     String username = null;
     String password = null;
-    boolean hasUsernameAndPassword = authenticationString.contains(":");
+    final boolean hasUsernameAndPassword = authenticationString.contains(":");
     if (hasUsernameAndPassword)
     {
       String[] usernameAndPassword = authenticationString.split(":");

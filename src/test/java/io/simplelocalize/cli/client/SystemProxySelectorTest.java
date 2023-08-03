@@ -19,9 +19,13 @@ class SystemProxySelectorTest
   {
     return Stream.of(
             of("http://123.456.789.000", new ProxyConfiguration().setHost("123.456.789.000").setPort(80).setUsername(null).setPassword(null)),
+            of("https://123.456.789.000", new ProxyConfiguration().setHost("123.456.789.000").setPort(443).setUsername(null).setPassword(null)),
             of("http://123.456.789.000:8080", new ProxyConfiguration().setHost("123.456.789.000").setPort(8080).setUsername(null).setPassword(null)),
+            of("https://123.456.789.000:8080", new ProxyConfiguration().setHost("123.456.789.000").setPort(8080).setUsername(null).setPassword(null)),
             of("http://foo:bar@123.456.789.000", new ProxyConfiguration().setHost("123.456.789.000").setPort(80).setUsername("foo").setPassword("bar")),
-            of("http://foo:bar@123.456.789.000:8080", new ProxyConfiguration().setHost("123.456.789.000").setPort(8080).setUsername("foo").setPassword("bar"))
+            of("https://foo:bar@123.456.789.000", new ProxyConfiguration().setHost("123.456.789.000").setPort(443).setUsername("foo").setPassword("bar")),
+            of("http://foo:bar@123.456.789.000:8080", new ProxyConfiguration().setHost("123.456.789.000").setPort(8080).setUsername("foo").setPassword("bar")),
+            of("https://foo:bar@123.456.789.000:8080", new ProxyConfiguration().setHost("123.456.789.000").setPort(8080).setUsername("foo").setPassword("bar"))
     );
   }
 
