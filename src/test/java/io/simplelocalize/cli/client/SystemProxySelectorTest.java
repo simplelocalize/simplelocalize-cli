@@ -48,7 +48,7 @@ class SystemProxySelectorTest
     ProxyConfiguration result = SystemProxySelector.getHttpProxyValueOrNull(given);
 
     //then
-    assertEquals(result, expected);
+    assertEquals(expected, result);
   }
 
   @Test
@@ -61,7 +61,7 @@ class SystemProxySelectorTest
     String result = given.toString();
 
     //then
-    assertEquals(result, "host='123.456.789.000', port=8080, username='foo', password='*****'");
+    assertEquals("host='123.456.789.000', port=8080, username='foo', password='*****'", result);
   }
 
   @Test
@@ -74,7 +74,7 @@ class SystemProxySelectorTest
     String result = given.toString();
 
     //then
-    assertEquals(result, "host='123.456.789.000', port=8080, username='null', password='null'");
+    assertEquals("host='123.456.789.000', port=8080, username='null', password='null'", result);
   }
 
 }
