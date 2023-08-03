@@ -19,7 +19,6 @@ import java.net.http.HttpResponse;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
-import java.time.Duration;
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
@@ -47,9 +46,7 @@ public class SimpleLocalizeClient
     this.uriFactory = new SimpleLocalizeUriFactory(baseUrl);
     this.httpRequestFactory = new SimpleLocalizeHttpRequestFactory(apiKey);
     this.objectMapper = new ObjectMapper();
-    this.httpClient = HttpClient.newBuilder()
-            .connectTimeout(Duration.ofMinutes(5))
-            .build();
+    this.httpClient = HttpClientFactory.createHttpClient();
   }
 
   public static SimpleLocalizeClient create(String baseUrl, String apiKey)
