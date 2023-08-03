@@ -21,10 +21,10 @@ The installation process is automated by command-line scripts. Both scripts for 
 
 ```shell
 # macOs / Linux / Windows (WSL)
-curl -s https://get.simplelocalize.io/2.2/install | bash
+curl -s https://get.simplelocalize.io/2.4/install | bash
 
 # Windows (PowerShell)
-. { iwr -useb https://get.simplelocalize.io/2.2/install-windows } | iex;
+. { iwr -useb https://get.simplelocalize.io/2.4/install-windows } | iex;
 ```
 
 To change or update the CLI version, run the installation script with the desired version number in the URL, e.g.: 
@@ -311,14 +311,28 @@ ignoreKeys:
   - 'ABOUT-US'
 
 # Properties used by 'pull' and 'publish' command    
-pullPath: ./src/hosting/ 
+pullPath: ./src/hosting/
 environment: 'production' # or 'latest' 
 
 ```
 
-## Documentation 
+## Proxy support
 
-Visit [simplelocalize.io/docs/cli/get-started/](https://simplelocalize.io/docs/cli/get-started/) to get more information about SimpleLocalize CLI.
+SimpleLocalize CLI supports HTTP and HTTPS proxies, and it respects the `http_proxy`, `https_proxy` environment
+variables.
+
+Here are some examples of how to set proxy environment variables in Linux and macOS:
+
+```shell
+export http_proxy=http://someproxy.com
+export http_proxy=http://someproxy.com:8080
+export http_proxy=http://user:password@someproxy.com:8080
+```
+
+## Documentation
+
+Visit [simplelocalize.io/docs/cli/get-started/](https://simplelocalize.io/docs/cli/get-started/) to get more information
+about SimpleLocalize CLI.
 
 ## License
 
