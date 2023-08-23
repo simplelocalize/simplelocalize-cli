@@ -311,7 +311,7 @@ ignoreKeys:
   - 'ABOUT-US'
 
 # Properties used by 'pull' and 'publish' command    
-pullPath: ./src/hosting/ 
+pullPath: ./src/hosting/
 environment: 'production' # or 'latest' 
 
 ```
@@ -329,9 +329,10 @@ export http_proxy=http://someproxy.com:8080
 export http_proxy=http://user:password@someproxy.com:8080
 ```
 
-## Documentation 
+## Documentation
 
-Visit [simplelocalize.io/docs/cli/get-started/](https://simplelocalize.io/docs/cli/get-started/) to get more information about SimpleLocalize CLI.
+Visit [simplelocalize.io/docs/cli/get-started/](https://simplelocalize.io/docs/cli/get-started/) to get more information
+about SimpleLocalize CLI.
 
 ## License
 
