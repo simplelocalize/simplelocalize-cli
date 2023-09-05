@@ -114,7 +114,7 @@ public class SimplelocalizeCliCommand implements Runnable
   )
   {
     upload(apiKey, uploadPath, uploadFormat, false, false, false, uploadOptions, languageKey, customerId, baseUrl);
-    download(apiKey, downloadPath, downloadFormat, downloadOptions, languageKey, customerId, baseUrl, downloadSort);
+    download(apiKey, downloadPath, downloadFormat, downloadOptions, downloadSort, languageKey, customerId, baseUrl);
   }
 
   @Command(

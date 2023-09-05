@@ -103,8 +103,8 @@ class SimplelocalizeCliCommandTest
             List.of("SPLIT_BY_NAMESPACES"),
             null,
             null,
-            MOCK_SERVER_BASE_URL,
-            null
+            null,
+            MOCK_SERVER_BASE_URL
     );
   }
 
@@ -165,8 +165,8 @@ class SimplelocalizeCliCommandTest
             List.of("SPLIT_BY_NAMESPACES"),
             null,
             null,
-            MOCK_SERVER_BASE_URL,
-            null
+            null,
+            MOCK_SERVER_BASE_URL
     );
   }
 
