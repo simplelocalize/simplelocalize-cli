@@ -50,17 +50,12 @@ jobs:
     steps:
       - uses: actions/checkout@v3
         name: "Checkout"
-      - uses: actions/setup-java@v3
-        name: "Install Java"
-        with:
-          java-version: '17'
-          distribution: 'temurin'
-          cache: 'maven'
       - uses: graalvm/setup-graalvm@v1
         name: "Install GraalVM"
         with:
           version: '22.3.2'
           java-version: '17.0.7'
+          distribution: 'graalvm'
           components: 'native-image'
           github-token: ${{ secrets.GITHUB_TOKEN }}
           native-image-job-reports: 'true'
