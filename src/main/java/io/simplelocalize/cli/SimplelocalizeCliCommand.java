@@ -248,7 +248,15 @@ public class SimplelocalizeCliCommand implements Runnable
       {
         configuration.setCustomerId(customerId);
       }
-      configuration.setDownloadOptions(Objects.requireNonNullElseGet(downloadOptions, ArrayList::new));
+
+      List<String> nonNullConfigurationFileDownloadOptions = Objects.requireNonNullElse(configuration.getDownloadOptions(), List.of());
+      configuration.setDownloadOptions(nonNullConfigurationFileDownloadOptions);
+      boolean hasArgumentDownloadOptions = downloadOptions != null && !downloadOptions.isEmpty();
+      if(hasArgumentDownloadOptions)
+      {
+        configuration.setDownloadOptions(downloadOptions);
+      }
+
       ConfigurationValidator configurationValidator = new ConfigurationValidator();
       configurationValidator.validateDownloadConfiguration(configuration);
       SimpleLocalizeClient client = SimpleLocalizeClient.create(configuration.getBaseUrl(), configuration.getApiKey());
