@@ -30,6 +30,7 @@ public class DownloadCommand implements CliCommand
     String downloadFormat = configuration.getDownloadFormat();
     String languageKey = configuration.getLanguageKey();
     String customerId = configuration.getCustomerId();
+    String sort = configuration.getDownloadSort();
     List<String> downloadOptions = configuration.getDownloadOptions();
 
     if (downloadPath.contains(TemplateKeys.NAMESPACE_TEMPLATE_KEY))
@@ -47,6 +48,7 @@ public class DownloadCommand implements CliCommand
             .withOptions(downloadOptions)
             .withCustomerId(customerId)
             .withLanguageKey(languageKey)
+            .withSort(sort)
             .build();
     log.info("Preparing files to download");
     List<DownloadableFile> downloadableFiles = client.fetchDownloadableFiles(downloadRequest);

@@ -106,6 +106,7 @@ public class SimplelocalizeCliCommand implements Runnable
           @Option(names = {"--downloadPath"}, description = "Directory where translations should be downloaded") String downloadPath,
           @Option(names = {"--downloadFormat"}, description = "Download format for translation file") String downloadFormat,
           @Option(names = {"--downloadOptions"}, split = ",", description = "(Optional) Download options") List<String> downloadOptions,
+          @Option(names = {"--downloadSort"}, description = "(Optional) Download sorting") String downloadSort,
           @Option(names = {"--languageKey"}, description = "(Optional) Specify language key for single file upload") String languageKey,
           @Option(names = {"--customerId"}, description = "(Optional) Download translations for given customerId") String customerId,
           @Option(names = {"--baseUrl"}, description = "(Optional) Set custom server URL") String baseUrl
@@ -113,7 +114,7 @@ public class SimplelocalizeCliCommand implements Runnable
   )
   {
     upload(apiKey, uploadPath, uploadFormat, false, false, false, uploadOptions, languageKey, customerId, baseUrl);
-    download(apiKey, downloadPath, downloadFormat, downloadOptions, languageKey, customerId, baseUrl);
+    download(apiKey, downloadPath, downloadFormat, downloadOptions, languageKey, customerId, baseUrl, downloadSort);
   }
 
   @Command(
@@ -214,6 +215,7 @@ public class SimplelocalizeCliCommand implements Runnable
           @Option(names = {"--downloadPath"}, description = "Directory where translations should be downloaded") String downloadPath,
           @Option(names = {"--downloadFormat"}, description = "Translations file format") String downloadFormat,
           @Option(names = {"--downloadOptions"}, split = ",", description = "(Optional) Download options") List<String> downloadOptions,
+          @Option(names = {"--downloadSort"}, description = "(Optional) Download sorting") String downloadSort,
           @Option(names = {"--languageKey"}, description = "(Optional) Setup languageKey parameter to download file with only one language translations") String languageKey,
           @Option(names = {"--customerId"}, description = "(Optional) Download translations for given customerId") String customerId,
           @Option(names = {"--baseUrl"}, description = "(Optional) Set custom server URL") String baseUrl
@@ -227,7 +229,6 @@ public class SimplelocalizeCliCommand implements Runnable
       {
         configuration.setBaseUrl(baseUrl);
       }
-
       if (StringUtils.isNotEmpty(apiKey))
       {
         configuration.setApiKey(apiKey);
@@ -247,6 +248,10 @@ public class SimplelocalizeCliCommand implements Runnable
       if (StringUtils.isNotEmpty(customerId))
       {
         configuration.setCustomerId(customerId);
+      }
+      if (StringUtils.isNotEmpty(downloadSort))
+      {
+        configuration.setDownloadSort(downloadSort);
       }
 
       List<String> nonNullConfigurationFileDownloadOptions = Objects.requireNonNullElse(configuration.getDownloadOptions(), List.of());

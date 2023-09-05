@@ -2,7 +2,7 @@ package io.simplelocalize.cli.client.dto;
 
 import java.util.List;
 
-public record DownloadRequest(String format, String languageKey, String customerId, List<String> options)
+public record DownloadRequest(String format, String languageKey, String customerId, List<String> options, String sort)
 {
   public static final class DownloadRequestBuilder
   {
@@ -10,6 +10,7 @@ public record DownloadRequest(String format, String languageKey, String customer
     private String languageKey;
     private String customerId;
     private List<String> options;
+    private String sort;
 
     private DownloadRequestBuilder()
     {
@@ -44,13 +45,20 @@ public record DownloadRequest(String format, String languageKey, String customer
       return this;
     }
 
+    public DownloadRequestBuilder withSort(String sort)
+    {
+      this.sort = sort;
+      return this;
+    }
+
     public DownloadRequest build()
     {
       return new DownloadRequest(
               this.format,
               this.languageKey,
               this.customerId,
-              this.options
+              this.options,
+              this.sort
       );
     }
   }

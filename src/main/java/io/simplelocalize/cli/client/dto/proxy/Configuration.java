@@ -27,6 +27,7 @@ public class Configuration
 
   private String downloadPath;
   private String downloadFormat;
+  private String downloadSort;
   private List<String> downloadOptions = new ArrayList<>();
   private List<String> downloadFilesExclude = new ArrayList<>();
   private List<String> downloadFilesInclude = new ArrayList<>();
@@ -264,4 +265,14 @@ public class Configuration
     this.downloadFilesInclude = downloadFilesInclude;
   }
 
+  public String getDownloadSort()
+  {
+    return downloadSort;
+  }
+
+  public Configuration setDownloadSort(String downloadSort)
+  {
+    this.downloadSort = downloadSort;
+    return this;
+  }
 }

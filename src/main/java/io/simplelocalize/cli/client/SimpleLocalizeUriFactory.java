@@ -46,6 +46,12 @@ public class SimpleLocalizeUriFactory
       endpointUrl += "&customerId=" + customerId;
     }
 
+    String sort = downloadRequest.sort();
+    if (StringUtils.isNotEmpty(sort))
+    {
+      endpointUrl += "&sort=" + sort;
+    }
+
     return URI.create(endpointUrl);
   }
 
