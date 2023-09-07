@@ -35,7 +35,6 @@ public final class ConfigurationValidator
     validateIsNotEmptyOrNull(configuration.getApiKey(), "apiKey");
     validateIsNotEmptyOrNull(configuration.getEnvironment(), "environment");
     validateIsNotEmptyOrNull(configuration.getPullPath(), "pullPath");
-    validateEnvironmentValue(configuration);
   }
 
   public void validateAutoTranslationConfiguration(Configuration configuration)
@@ -47,22 +46,11 @@ public final class ConfigurationValidator
   {
     validateIsNotEmptyOrNull(configuration.getApiKey(), "apiKey");
     validateIsNotEmptyOrNull(configuration.getEnvironment(), "environment");
-    validateEnvironmentValue(configuration);
   }
 
   public void validateGetStatusConfiguration(Configuration configuration)
   {
     validateIsNotEmptyOrNull(configuration.getApiKey(), "apiKey");
-  }
-
-  private void validateEnvironmentValue(Configuration configuration)
-  {
-    String environment = configuration.getEnvironment();
-    if (!environment.equals("production") && !environment.equals("latest"))
-    {
-      log.error("Environment must be either 'production' or 'latest'");
-      throw new ConfigurationException("Environment must be either 'production' or 'latest'");
-    }
   }
 
   private void validateIsNotEmptyOrNull(String format, String argumentName)

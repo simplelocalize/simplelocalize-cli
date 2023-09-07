@@ -236,7 +236,7 @@ class SimplelocalizeCliCommandTest
 
     mockServer.when(request()
                             .withMethod("POST")
-                            .withPath("/api/v1/translations/publish")
+                            .withPath("/api/v2/environments/_latest/publish")
                             .withHeader("X-SimpleLocalize-Token", "my-api-key"),
                     Times.exactly(1))
             .respond(
@@ -247,7 +247,7 @@ class SimplelocalizeCliCommandTest
             );
 
 
-    sut.publish("my-api-key", "latest", MOCK_SERVER_BASE_URL);
+    sut.publish("my-api-key", "_latest", MOCK_SERVER_BASE_URL);
   }
 
   @Test
