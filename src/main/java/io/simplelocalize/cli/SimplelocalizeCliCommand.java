@@ -6,7 +6,7 @@ import io.simplelocalize.cli.client.dto.proxy.Configuration;
 import io.simplelocalize.cli.command.*;
 import io.simplelocalize.cli.configuration.ConfigurationLoader;
 import io.simplelocalize.cli.configuration.ConfigurationValidator;
-import org.apache.commons.lang3.StringUtils;
+import io.simplelocalize.cli.util.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import picocli.CommandLine;

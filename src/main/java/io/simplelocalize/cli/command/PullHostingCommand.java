@@ -57,7 +57,7 @@ public class PullHostingCommand implements CliCommand
     List<HostingResource> hostingResources = json.read("$.data.hostingResources", new TypeRef<>() {});
     // @formatter:on
     List<String> resourcePaths = hostingResources.stream()
-            .filter(hostingResource -> hostingResource.environment().equals(environment))
+            .filter(hostingResource -> hostingResource.key().equals(environment))
             .map(HostingResource::path)
             .sorted()
             .toList();
@@ -68,7 +68,7 @@ public class PullHostingCommand implements CliCommand
     for (String resourcePath : resourcePaths)
     {
       String downloadUrl = BASE_URI_CDN + "/" + resourcePath;
-      String resourcePrefix = projectToken + "/_" + environment + "/";
+      String resourcePrefix = projectToken + "/" + environment + "/";
       String plainResource = resourcePath.replace(resourcePrefix, "");
       String filePath = plainResource + ".json";
       if (filterPattern != null)

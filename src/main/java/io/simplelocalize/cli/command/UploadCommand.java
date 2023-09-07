@@ -6,8 +6,8 @@ import io.simplelocalize.cli.client.dto.UploadRequest;
 import io.simplelocalize.cli.client.dto.proxy.Configuration;
 import io.simplelocalize.cli.configuration.ConfigurationValidator;
 import io.simplelocalize.cli.io.FileListReader;
+import io.simplelocalize.cli.util.StringUtils;
 import io.simplelocalize.cli.util.WindowsUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
