@@ -60,7 +60,7 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           native-image-job-reports: 'true'
       - name: "Build executable"
-        run: mvn -DskipTests -Pnative,production clean package
+        run: mvn -DskipTests -Pnative clean package
       - name: "Test executable"
         run: ./target/${{ matrix.filename }} --version
       - name: "Upload artifact"
