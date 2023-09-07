@@ -269,11 +269,8 @@ class SimplelocalizeCliCommandTest
             );
     mockServer.when(request()
                             .withMethod("POST")
-                            .withPath("/api/v1/translations/deploy")
-                            .withHeader("X-SimpleLocalize-Token", "my-api-key")
-                            .withQueryStringParameter("sourceEnvironment", "_latest")
-                            .withQueryStringParameter("targetEnvironment", "_production")
-                    ,
+                            .withPath("/api/v2/environments/_production/publish")
+                            .withHeader("X-SimpleLocalize-Token", "my-api-key"),
                     Times.exactly(1))
             .respond(
                     response()
@@ -283,7 +280,7 @@ class SimplelocalizeCliCommandTest
             );
 
 
-    sut.publish("my-api-key", "production", MOCK_SERVER_BASE_URL);
+    sut.publish("my-api-key", "_production", MOCK_SERVER_BASE_URL);
   }
 
   @Test
