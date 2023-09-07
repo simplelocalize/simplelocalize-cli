@@ -40,7 +40,7 @@ class PullHostingCommandTest
     String content = Files.readString(Path.of(path), StandardCharsets.UTF_8);
     Mockito.when(client.fetchProject()).thenReturn(content);
 
-    Mockito.when(configuration.getEnvironment()).thenReturn("latest");
+    Mockito.when(configuration.getEnvironment()).thenReturn("_latest");
     Mockito.when(configuration.getPullPath()).thenReturn("/home/wojtek/simplelocalize");
 
     List<ILoggingEvent> logEventList = TestLogEventFactory.createAndGetLogEventList(sut.getClass());
@@ -52,7 +52,7 @@ class PullHostingCommandTest
     Mockito.verify(client, times(6)).downloadFile(Mockito.anyString(), Mockito.any(Path.class));
     assertThat(logEventList.get(0).getFormattedMessage()).isEqualTo("Project name: My project");
     assertThat(logEventList.get(1).getFormattedMessage()).isEqualTo("Project token: dev-e7c0b7686c7b45fea4450a4c4a83c7ff");
-    assertThat(logEventList.get(2).getFormattedMessage()).isEqualTo("Environment: latest");
+    assertThat(logEventList.get(2).getFormattedMessage()).isEqualTo("Environment: _latest");
     assertThat(logEventList.get(3).getFormattedMessage()).isEqualTo("Filter regex: null");
     assertThat(logEventList.get(4).getFormattedMessage()).isEqualTo("Found 6 Translation Hosting resources");
     assertThat(logEventList.get(5).getFormattedMessage()).isEqualTo("Downloaded 6 Translation Hosting resources");

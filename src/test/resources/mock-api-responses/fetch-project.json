@@ -28,9 +28,10 @@
     ],
     "customers": [],
     "namespaces": [],
+    "environments": [],
     "keys": 92,
     "unpublishedChanges": 0,
-    "translatedPercentage": 0.96,
+    "translatedPercentage": 0.963,
     "lastActivityAt": "2022-11-03T20:32:34",
     "lastEditedAt": "2022-10-26T12:27:20",
     "translatedKeysByLanguage": {
@@ -42,26 +43,36 @@
     "hostingResources": [
       {
         "path": "dev-e7c0b7686c7b45fea4450a4c4a83c7ff/_latest/en",
+        "key": "_latest",
+        "language": "en",
         "environment": "latest"
       },
       {
         "path": "dev-e7c0b7686c7b45fea4450a4c4a83c7ff/_latest/fr_FR",
+        "key": "_latest",
+        "language": "fr_FR",
         "environment": "latest"
       },
       {
         "path": "dev-e7c0b7686c7b45fea4450a4c4a83c7ff/_latest/_languages",
+        "key": "_latest",
         "environment": "latest"
       },
       {
         "path": "dev-e7c0b7686c7b45fea4450a4c4a83c7ff/_latest/pl_PL",
+        "key": "_latest",
+        "language": "pl_PL",
         "environment": "latest"
       },
       {
         "path": "dev-e7c0b7686c7b45fea4450a4c4a83c7ff/_latest/de_DE",
+        "key": "_latest",
+        "language": "de_DE",
         "environment": "latest"
       },
       {
         "path": "dev-e7c0b7686c7b45fea4450a4c4a83c7ff/_latest/_index",
+        "key": "_latest",
         "environment": "latest"
       }
     ]
