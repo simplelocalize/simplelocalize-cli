@@ -1,5 +1,6 @@
 package io.simplelocalize.cli.command;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jayway.jsonpath.DocumentContext;
 import com.jayway.jsonpath.JsonPath;
 import io.simplelocalize.cli.client.SimpleLocalizeClient;
@@ -22,17 +23,20 @@ public class StatusCommand implements CliCommand
 
   public void invoke() throws IOException, InterruptedException
   {
-    String responseData = client.fetchProject();
-    DocumentContext json = JsonPath.parse(responseData);
-    log.info("Project name: {}", json.read("$.data.name", String.class));
-    log.info("Project token: {}", json.read("$.data.projectToken", String.class));
-    log.info("Translated: {}", json.read("$.data.translatedPercentage", String.class));
-    log.info("Keys: {}", json.read("$.data.keys", String.class));
-    log.info("Languages: {}", json.read("$.data.languages[*].key").toString());
-    log.info("Namespaces: {}", json.read("$.data.namespaces[*].name").toString());
-    log.info("Customers: {}", json.read("$.data.customers[*].key").toString());
-    log.info("Last activity: {}", json.read("$.data.lastActivityAt", String.class));
-    log.info("Last edit: {}", json.read("$.data.lastEditedAt", String.class));
+    String response = client.fetchProject();
+      DocumentContext json = JsonPath.parse(response);
+      log.info("Project name: {}", json.read("$.data.name", String.class));
+      log.info("Project token: {}", json.read("$.data.projectToken", String.class));
+      log.info("Translation keys: {}", json.read("$.data.keys", String.class));
+      Float translated = json.read("$.data.translatedPercentage", Float.class);
+      String translatedPercentage = translated == null ? "0" : String.format("%.2f", translated);
+      log.info("Translated: {}", translatedPercentage);
+      log.info("Languages: {}", json.read("$.data.languages[*].key").toString());
+      log.info("Environments: {}", json.read("$.data.environments[*].key").toString());
+      log.info("Namespaces: {}", json.read("$.data.namespaces[*].name").toString());
+      log.info("Customers: {}", json.read("$.data.customers[*].key").toString());
+      log.info("Last activity: {}", json.read("$.data.lastActivityAt", String.class));
+      log.info("Last edit: {}", json.read("$.data.lastEditedAt", String.class));
   }
 
 }

@@ -46,9 +46,10 @@ class StatusCommandTest
 
     assertThat(logsList.get(0).getFormattedMessage()).isEqualTo("Project name: My project");
     assertThat(logsList.get(1).getFormattedMessage()).isEqualTo("Project token: dev-e7c0b7686c7b45fea4450a4c4a83c7ff");
-    assertThat(logsList.get(2).getFormattedMessage()).isEqualTo("Translated: 0.96");
-    assertThat(logsList.get(3).getFormattedMessage()).isEqualTo("Keys: 92");
+    assertThat(logsList.get(3).getFormattedMessage()).isEqualTo("Translation keys: 92");
+    assertThat(logsList.get(2).getFormattedMessage()).isEqualTo("Translated: 96%");
     assertThat(logsList.get(4).getFormattedMessage()).isEqualTo("Languages: [\"de_DE\",\"en\",\"fr_FR\",\"pl_PL\"]");
+    assertThat(logsList.get(6).getFormattedMessage()).isEqualTo("Environments: []");
     assertThat(logsList.get(5).getFormattedMessage()).isEqualTo("Namespaces: []");
     assertThat(logsList.get(6).getFormattedMessage()).isEqualTo("Customers: []");
     assertThat(logsList.get(7).getFormattedMessage()).isEqualTo("Last activity: 2022-11-03T20:32:34");
