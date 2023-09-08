@@ -45,13 +45,13 @@
         </sonar.coverage.jacoco.xmlReportPaths>
         <sonar.language>java</sonar.language>
         <sonar.coverage.exclusions>
-            **/generated/**,
-            **/config/**,
-            **/exception/**,
-            **/dto/**
-            **/form/**
-            **/response/**
-            **/request/**
+            **/generated/**/*,
+            **/config/**/*,
+            **/exception/**/*,
+            **/dto/**/*
+            **/form/**/*
+            **/response/**/*
+            **/request/**/*
         </sonar.coverage.exclusions>
     </properties>
 
@@ -363,13 +363,13 @@
                         <version>${jacoco.version}</version>
                         <configuration>
                             <excludes>
-                                <exclude>**/generated/**</exclude>
-                                <exclude>**/config/**</exclude>
-                                <exclude>**/exception/**</exclude>
-                                <exclude>**/dto/**</exclude>
-                                <exclude>**/response/**</exclude>
-                                <exclude>**/request/**</exclude>
-                                <exclude>**/form/**</exclude>
+                                <exclude>**/generated/**/*</exclude>
+                                <exclude>**/config/**/*</exclude>
+                                <exclude>**/exception/**/*</exclude>
+                                <exclude>**/dto/**/*</exclude>
+                                <exclude>**/response/**/*</exclude>
+                                <exclude>**/request/**/*</exclude>
+                                <exclude>**/form/**/*</exclude>
                             </excludes>
                         </configuration>
                         <executions>
