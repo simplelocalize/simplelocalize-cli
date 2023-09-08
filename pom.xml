@@ -44,24 +44,8 @@
         <sonar.coverage.jacoco.xmlReportPaths>${project.basedir}/target/site/jacoco/jacoco.xml
         </sonar.coverage.jacoco.xmlReportPaths>
         <sonar.language>java</sonar.language>
-        <sonar.coverage.exclusions>
-            **/generated/**/*,
-            **/config/**/*,
-            **/exception/**/*,
-            **/dto/**/*
-            **/form/**/*
-            **/response/**/*
-            **/request/**/*
-        </sonar.coverage.exclusions>
-        <sonar.exclusions>
-            **/generated/**/*,
-            **/config/**/*,
-            **/exception/**/*,
-            **/dto/**/*
-            **/form/**/*
-            **/response/**/*
-            **/request/**/*
-        </sonar.exclusions>
+        <sonar.coverage.exclusions>io.simplelocalize.cli.client.dto/**/*,io.simplelocalize.cli.exception/**/*</sonar.coverage.exclusions>
+        <sonar.exclusions>io.simplelocalize.cli.client.dto/**/*,io.simplelocalize.cli.exception/**/*</sonar.exclusions>
     </properties>
 
     <dependencies>
@@ -372,13 +356,8 @@
                         <version>${jacoco.version}</version>
                         <configuration>
                             <excludes>
-                                <exclude>**/generated/**/*</exclude>
-                                <exclude>**/config/**/*</exclude>
-                                <exclude>**/exception/**/*</exclude>
-                                <exclude>**/dto/**/*</exclude>
-                                <exclude>**/response/**/*</exclude>
-                                <exclude>**/request/**/*</exclude>
-                                <exclude>**/form/**/*</exclude>
+                                <exclude>io.simplelocalize.cli.client.dto/**/*</exclude>
+                                <exclude>io.simplelocalize.cli.exception/**/*</exclude>
                             </excludes>
                         </configuration>
                         <executions>
