@@ -1,8 +1,10 @@
 package io.simplelocalize.cli.configuration;
 
+import io.simplelocalize.cli.client.dto.proxy.Configuration;
 import io.simplelocalize.cli.exception.ConfigurationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.yaml.snakeyaml.LoaderOptions;
 import org.yaml.snakeyaml.Yaml;
 import org.yaml.snakeyaml.constructor.Constructor;
 
@@ -37,9 +39,11 @@ public final class ConfigurationLoader
   private Configuration load(Path configurationFilePath)
   {
     File file = new File(URLDecoder.decode(String.valueOf(configurationFilePath.toFile()), StandardCharsets.UTF_8));
-    Constructor yamlTargetClass = new Constructor(Configuration.class);
-    Yaml yaml = new Yaml(yamlTargetClass);
 
+    LoaderOptions loadingConfig = new LoaderOptions();
+    Constructor constructor = new Constructor(Configuration.class, loadingConfig);
+
+    Yaml yaml = new Yaml(constructor);
     log.info("Loading configuration file from: {}", configurationFilePath);
     Configuration configuration;
     try
@@ -49,7 +53,7 @@ public final class ConfigurationLoader
       log.info("Configuration file loaded successfully");
     } catch (FileNotFoundException e)
     {
-      log.info("Configuration file not present");
+      log.info("Configuration file not found.");
       return new Configuration();
     } catch (Exception e)
     {

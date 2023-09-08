@@ -3,9 +3,10 @@ package io.simplelocalize.cli.command;
 import com.jayway.jsonpath.DocumentContext;
 import com.jayway.jsonpath.TypeRef;
 import io.simplelocalize.cli.client.SimpleLocalizeClient;
-import io.simplelocalize.cli.client.dto.HostingResource;
-import io.simplelocalize.cli.configuration.Configuration;
+import io.simplelocalize.cli.client.dto.proxy.Configuration;
+import io.simplelocalize.cli.client.dto.proxy.HostingResource;
 import io.simplelocalize.cli.io.JsonReader;
+import io.simplelocalize.cli.util.EnvironmentUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -13,7 +14,6 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 
 public class PullHostingCommand implements CliCommand
 {
@@ -43,7 +43,7 @@ public class PullHostingCommand implements CliCommand
     String projectToken = json.read("$.data.projectToken", String.class);
     log.info("Project token: {}", projectToken);
 
-    String environment = configuration.getEnvironment();
+    String environment = EnvironmentUtils.convertDefaultEnvironmentKeyFromPreviousCliVersionsToV3IfNeeded(configuration.getEnvironment());
     log.info("Environment: {}", environment);
 
     String filterRegex = configuration.getFilterRegex();
@@ -58,10 +58,10 @@ public class PullHostingCommand implements CliCommand
     List<HostingResource> hostingResources = json.read("$.data.hostingResources", new TypeRef<>() {});
     // @formatter:on
     List<String> resourcePaths = hostingResources.stream()
-            .filter(hostingResource -> hostingResource.getEnvironment().equals(environment))
-            .map(HostingResource::getPath)
+            .filter(hostingResource -> hostingResource.key().equals(environment))
+            .map(HostingResource::path)
             .sorted()
-            .collect(Collectors.toList());
+            .toList();
     log.info("Found {} Translation Hosting resources", resourcePaths.size());
     String pullDirectory = configuration.getPullPath();
 
@@ -69,7 +69,7 @@ public class PullHostingCommand implements CliCommand
     for (String resourcePath : resourcePaths)
     {
       String downloadUrl = BASE_URI_CDN + "/" + resourcePath;
-      String resourcePrefix = projectToken + "/_" + environment + "/";
+      String resourcePrefix = projectToken + "/" + environment + "/";
       String plainResource = resourcePath.replace(resourcePrefix, "");
       String filePath = plainResource + ".json";
       if (filterPattern != null)

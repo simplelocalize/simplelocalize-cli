@@ -3,7 +3,8 @@ package io.simplelocalize.cli.command;
 import com.jayway.jsonpath.DocumentContext;
 import com.jayway.jsonpath.JsonPath;
 import io.simplelocalize.cli.client.SimpleLocalizeClient;
-import io.simplelocalize.cli.configuration.Configuration;
+import io.simplelocalize.cli.client.dto.proxy.Configuration;
+import io.simplelocalize.cli.util.EnvironmentUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -34,7 +35,7 @@ public class PublishHostingCommand implements CliCommand
     String projectToken = json.read("$.data.projectToken", String.class);
     log.info("Project token: {}", projectToken);
 
-    String environment = configuration.getEnvironment();
+    String environment = EnvironmentUtils.convertDefaultEnvironmentKeyFromPreviousCliVersionsToV3IfNeeded(configuration.getEnvironment());
     log.info("Environment: {}", environment);
 
     log.info("Publishing translations...");

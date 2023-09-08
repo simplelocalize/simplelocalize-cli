@@ -1,13 +1,12 @@
 package io.simplelocalize.cli;
 
-import io.micronaut.configuration.picocli.PicocliRunner;
 import io.simplelocalize.cli.client.SimpleLocalizeClient;
+import io.simplelocalize.cli.client.dto.proxy.AutoTranslationConfiguration;
+import io.simplelocalize.cli.client.dto.proxy.Configuration;
 import io.simplelocalize.cli.command.*;
-import io.simplelocalize.cli.configuration.AutoTranslationConfiguration;
-import io.simplelocalize.cli.configuration.Configuration;
 import io.simplelocalize.cli.configuration.ConfigurationLoader;
 import io.simplelocalize.cli.configuration.ConfigurationValidator;
-import org.apache.commons.lang3.StringUtils;
+import io.simplelocalize.cli.util.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import picocli.CommandLine;
@@ -44,9 +43,12 @@ public class SimplelocalizeCliCommand implements Runnable
   @Option(names = {"--debug"}, description = "Debug mode", defaultValue = "false")
   boolean debug;
 
+  private Configuration effectiveCommandConfiguration;
+
   public static void main(String[] args)
   {
-    PicocliRunner.run(SimplelocalizeCliCommand.class, args);
+    int exitCode = new CommandLine(new SimplelocalizeCliCommand()).execute(args);
+    System.exit(exitCode);
   }
 
   @Command(
@@ -85,13 +87,13 @@ public class SimplelocalizeCliCommand implements Runnable
       }
       ConfigurationValidator configurationValidator = new ConfigurationValidator();
       configurationValidator.validateExtractConfiguration(configuration);
+      this.effectiveCommandConfiguration = configuration;
       SimpleLocalizeClient client = SimpleLocalizeClient.create(configuration.getBaseUrl(), configuration.getApiKey());
       ExtractCommand extractCommand = new ExtractCommand(client, configuration);
       extractCommand.invoke();
     } catch (Exception e)
     {
-      printDebug(e);
-      System.exit(CommandLine.ExitCode.USAGE);
+      handleException(e);
     }
   }
 
@@ -106,6 +108,7 @@ public class SimplelocalizeCliCommand implements Runnable
           @Option(names = {"--downloadPath"}, description = "Directory where translations should be downloaded") String downloadPath,
           @Option(names = {"--downloadFormat"}, description = "Download format for translation file") String downloadFormat,
           @Option(names = {"--downloadOptions"}, split = ",", description = "(Optional) Download options") List<String> downloadOptions,
+          @Option(names = {"--downloadSort"}, description = "(Optional) Download sorting") String downloadSort,
           @Option(names = {"--languageKey"}, description = "(Optional) Specify language key for single file upload") String languageKey,
           @Option(names = {"--customerId"}, description = "(Optional) Download translations for given customerId") String customerId,
           @Option(names = {"--baseUrl"}, description = "(Optional) Set custom server URL") String baseUrl
@@ -113,7 +116,7 @@ public class SimplelocalizeCliCommand implements Runnable
   )
   {
     upload(apiKey, uploadPath, uploadFormat, false, false, false, uploadOptions, languageKey, customerId, baseUrl);
-    download(apiKey, downloadPath, downloadFormat, downloadOptions, languageKey, customerId, baseUrl);
+    download(apiKey, downloadPath, downloadFormat, downloadOptions, downloadSort, languageKey, customerId, baseUrl);
   }
 
   @Command(
@@ -195,14 +198,13 @@ public class SimplelocalizeCliCommand implements Runnable
 
       ConfigurationValidator configurationValidator = new ConfigurationValidator();
       configurationValidator.validateUploadConfiguration(configuration);
-
+      this.effectiveCommandConfiguration = configuration;
       SimpleLocalizeClient client = SimpleLocalizeClient.create(configuration.getBaseUrl(), configuration.getApiKey());
       UploadCommand uploadCommand = new UploadCommand(client, configuration);
       uploadCommand.invoke();
     } catch (Exception e)
     {
-      printDebug(e);
-      System.exit(CommandLine.ExitCode.USAGE);
+      handleException(e);
     }
   }
 
@@ -214,6 +216,7 @@ public class SimplelocalizeCliCommand implements Runnable
           @Option(names = {"--downloadPath"}, description = "Directory where translations should be downloaded") String downloadPath,
           @Option(names = {"--downloadFormat"}, description = "Translations file format") String downloadFormat,
           @Option(names = {"--downloadOptions"}, split = ",", description = "(Optional) Download options") List<String> downloadOptions,
+          @Option(names = {"--downloadSort"}, description = "(Optional) Download sorting") String downloadSort,
           @Option(names = {"--languageKey"}, description = "(Optional) Setup languageKey parameter to download file with only one language translations") String languageKey,
           @Option(names = {"--customerId"}, description = "(Optional) Download translations for given customerId") String customerId,
           @Option(names = {"--baseUrl"}, description = "(Optional) Set custom server URL") String baseUrl
@@ -227,7 +230,6 @@ public class SimplelocalizeCliCommand implements Runnable
       {
         configuration.setBaseUrl(baseUrl);
       }
-
       if (StringUtils.isNotEmpty(apiKey))
       {
         configuration.setApiKey(apiKey);
@@ -248,24 +250,28 @@ public class SimplelocalizeCliCommand implements Runnable
       {
         configuration.setCustomerId(customerId);
       }
+      if (StringUtils.isNotEmpty(downloadSort))
+      {
+        configuration.setDownloadSort(downloadSort);
+      }
 
       List<String> nonNullConfigurationFileDownloadOptions = Objects.requireNonNullElse(configuration.getDownloadOptions(), List.of());
       configuration.setDownloadOptions(nonNullConfigurationFileDownloadOptions);
       boolean hasArgumentDownloadOptions = downloadOptions != null && !downloadOptions.isEmpty();
-      if(hasArgumentDownloadOptions)
+      if (hasArgumentDownloadOptions)
       {
         configuration.setDownloadOptions(downloadOptions);
       }
 
       ConfigurationValidator configurationValidator = new ConfigurationValidator();
       configurationValidator.validateDownloadConfiguration(configuration);
+      this.effectiveCommandConfiguration = configuration;
       SimpleLocalizeClient client = SimpleLocalizeClient.create(configuration.getBaseUrl(), configuration.getApiKey());
       DownloadCommand downloadCommand = new DownloadCommand(client, configuration);
       downloadCommand.invoke();
     } catch (Exception e)
     {
-      printDebug(e);
-      System.exit(CommandLine.ExitCode.USAGE);
+      handleException(e);
     }
   }
 
@@ -311,13 +317,13 @@ public class SimplelocalizeCliCommand implements Runnable
 
       ConfigurationValidator configurationValidator = new ConfigurationValidator();
       configurationValidator.validateHostingPullConfiguration(configuration);
+      this.effectiveCommandConfiguration = configuration;
       SimpleLocalizeClient client = SimpleLocalizeClient.create(configuration.getBaseUrl(), configuration.getApiKey());
       PullHostingCommand command = new PullHostingCommand(client, configuration);
       command.invoke();
     } catch (Exception e)
     {
-      printDebug(e);
-      System.exit(CommandLine.ExitCode.USAGE);
+      handleException(e);
     }
   }
 
@@ -353,13 +359,13 @@ public class SimplelocalizeCliCommand implements Runnable
 
       ConfigurationValidator configurationValidator = new ConfigurationValidator();
       configurationValidator.validateAutoTranslationConfiguration(configuration);
+      this.effectiveCommandConfiguration = configuration;
       SimpleLocalizeClient client = SimpleLocalizeClient.create(configuration.getBaseUrl(), configuration.getApiKey());
       AutoTranslationCommand command = new AutoTranslationCommand(client, configuration);
       command.invoke();
     } catch (Exception e)
     {
-      printDebug(e);
-      System.exit(CommandLine.ExitCode.USAGE);
+      handleException(e);
     }
   }
 
@@ -370,12 +376,11 @@ public class SimplelocalizeCliCommand implements Runnable
   {
     try
     {
-      InitCommand initCommand = new InitCommand();
+      InitCommand initCommand = new InitCommand("simplelocalize.yml");
       initCommand.invoke();
     } catch (Exception e)
     {
-      printDebug(e);
-      System.exit(CommandLine.ExitCode.USAGE);
+      handleException(e);
     }
   }
 
@@ -403,13 +408,13 @@ public class SimplelocalizeCliCommand implements Runnable
 
       ConfigurationValidator configurationValidator = new ConfigurationValidator();
       configurationValidator.validateGetStatusConfiguration(configuration);
+      this.effectiveCommandConfiguration = configuration;
       SimpleLocalizeClient client = SimpleLocalizeClient.create(configuration.getBaseUrl(), configuration.getApiKey());
       StatusCommand command = new StatusCommand(client);
       command.invoke();
     } catch (Exception e)
     {
-      printDebug(e);
-      System.exit(CommandLine.ExitCode.USAGE);
+      handleException(e);
     }
   }
 
@@ -442,27 +447,78 @@ public class SimplelocalizeCliCommand implements Runnable
 
       ConfigurationValidator configurationValidator = new ConfigurationValidator();
       configurationValidator.validateHostingPublishConfiguration(configuration);
+      this.effectiveCommandConfiguration = configuration;
       SimpleLocalizeClient client = SimpleLocalizeClient.create(configuration.getBaseUrl(), configuration.getApiKey());
       PublishHostingCommand command = new PublishHostingCommand(client, configuration);
       command.invoke();
     } catch (Exception e)
     {
-      printDebug(e);
-      System.exit(CommandLine.ExitCode.USAGE);
+      handleException(e);
     }
   }
 
-  private void printDebug(Exception e)
+  @Command(
+          name = "purge",
+          description = "Purge translations from Translation Hosting. Use 'simplelocalize purge --help' to learn more about the parameters.")
+  public void purge(
+          @Option(names = {"--apiKey"}, description = "Project API Key") String apiKey,
+          @Option(names = {"--baseUrl"}, description = "(Optional) Set custom server URL") String baseUrl,
+          @Option(names = {"--force"}, description = "(Optional) No confirmation needed") Boolean force
+  )
   {
-    if (debug)
+    try
     {
-      log.error("Command failed.", e);
-    } else
+      ConfigurationLoader configurationLoader = new ConfigurationLoader();
+      Configuration configuration = configurationLoader.loadOrGetDefault(configurationFilePath);
+      if (StringUtils.isNotEmpty(baseUrl))
+      {
+        configuration.setBaseUrl(baseUrl);
+      }
+
+      if (StringUtils.isNotEmpty(apiKey))
+      {
+        configuration.setApiKey(apiKey);
+      }
+
+      ConfigurationValidator configurationValidator = new ConfigurationValidator();
+      configurationValidator.validateGetPurgeConfiguration(configuration);
+      this.effectiveCommandConfiguration = configuration;
+      SimpleLocalizeClient client = SimpleLocalizeClient.create(configuration.getBaseUrl(), configuration.getApiKey());
+      PurgeCommand command = new PurgeCommand(client, force);
+      command.invoke();
+    } catch (Exception e)
     {
-      log.error("Command failed. Use '--debug' parameter before the command name to see stacktrace.");
+      handleException(e);
     }
   }
 
+  private void handleException(Exception e)
+  {
+    log.error("Command failed.", e);
+    if (e instanceof InterruptedException)
+    {
+      Thread.currentThread().interrupt();
+    }
+    trySendException(e);
+    System.exit(CommandLine.ExitCode.USAGE);
+
+  }
+
+  private void trySendException(Exception exception)
+  {
+    try
+    {
+      SimpleLocalizeClient client = SimpleLocalizeClient.create(effectiveCommandConfiguration.getBaseUrl(), effectiveCommandConfiguration.getApiKey());
+      client.sendException(effectiveCommandConfiguration, exception);
+    } catch (Exception ex)
+    {
+      log.error("Unable to send exception to SimpleLocalize, please contact us at contact@simplelocalize.io");
+      if (ex instanceof InterruptedException)
+      {
+        Thread.currentThread().interrupt();
+      }
+    }
+  }
 
   public void run()
   {

@@ -4,9 +4,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jayway.jsonpath.JsonPath;
 import com.jayway.jsonpath.Option;
 import io.simplelocalize.cli.client.dto.DownloadRequest;
-import io.simplelocalize.cli.client.dto.DownloadableFile;
-import io.simplelocalize.cli.client.dto.ExportResponse;
 import io.simplelocalize.cli.client.dto.UploadRequest;
+import io.simplelocalize.cli.client.dto.proxy.Configuration;
+import io.simplelocalize.cli.client.dto.proxy.DownloadableFile;
+import io.simplelocalize.cli.client.dto.proxy.ExportResponse;
 import io.simplelocalize.cli.exception.ApiRequestException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -45,7 +46,7 @@ public class SimpleLocalizeClient
     Objects.requireNonNull(apiKey);
     this.uriFactory = new SimpleLocalizeUriFactory(baseUrl);
     this.httpRequestFactory = new SimpleLocalizeHttpRequestFactory(apiKey);
-    this.objectMapper = new ObjectMapper();
+    this.objectMapper = ObjectMapperSingleton.getInstance();
     this.httpClient = HttpClientFactory.createHttpClient();
   }
 
@@ -79,16 +80,16 @@ public class SimpleLocalizeClient
     throwOnError(httpResponse);
     String body = httpResponse.body();
     ExportResponse exportResponse = objectMapper.readValue(body, ExportResponse.class);
-    return exportResponse.getFiles();
+    return exportResponse.files();
   }
 
   public void downloadFile(DownloadableFile downloadableFile, String downloadPathTemplate) throws IOException, InterruptedException
   {
     Optional<DownloadableFile> optionalDownloadableFile = Optional.of(downloadableFile);
     String downloadPath = downloadPathTemplate
-            .replace(NAMESPACE_TEMPLATE_KEY, optionalDownloadableFile.map(DownloadableFile::getNamespace).orElse(""))
-            .replace(LANGUAGE_TEMPLATE_KEY, optionalDownloadableFile.map(DownloadableFile::getLanguage).orElse(""));
-    String url = downloadableFile.getUrl();
+            .replace(NAMESPACE_TEMPLATE_KEY, optionalDownloadableFile.map(DownloadableFile::namespace).orElse(""))
+            .replace(LANGUAGE_TEMPLATE_KEY, optionalDownloadableFile.map(DownloadableFile::language).orElse(""));
+    String url = downloadableFile.url();
     Path savePath = Path.of(downloadPath);
     downloadFile(url, savePath);
   }
@@ -142,6 +143,22 @@ public class SimpleLocalizeClient
     throwOnError(httpResponse);
   }
 
+  public void purgeTranslations() throws IOException, InterruptedException
+  {
+    URI uri = uriFactory.buildPurgeTranslations();
+    HttpRequest httpRequest = httpRequestFactory.createDeleteRequest(uri).build();
+    HttpResponse<String> httpResponse = httpClient.send(httpRequest, HttpResponse.BodyHandlers.ofString());
+    throwOnError(httpResponse);
+  }
+
+
+  public void sendException(Configuration configuration, Exception exception) throws IOException, InterruptedException
+  {
+    URI uri = uriFactory.buildStacktraceUri();
+    HttpRequest httpRequest = httpRequestFactory.createBaseRequest(uri).POST(ClientBodyBuilders.ofException(configuration, exception)).build();
+    HttpResponse<String> httpResponse = httpClient.send(httpRequest, HttpResponse.BodyHandlers.ofString());
+    throwOnError(httpResponse);
+  }
 
   private void throwOnError(HttpResponse<?> httpResponse)
   {
@@ -165,12 +182,12 @@ public class SimpleLocalizeClient
 
   private String safeCastHttpBodyToString(Object responseBody)
   {
-    if (responseBody instanceof byte[])
+    if (responseBody instanceof byte[] responseBodyBytes)
     {
-      return new String((byte[]) responseBody);
-    } else if (responseBody instanceof String)
+      return new String(responseBodyBytes);
+    } else if (responseBody instanceof String responseBodyString)
     {
-      return (String) responseBody;
+      return responseBodyString;
     }
     return "";
   }

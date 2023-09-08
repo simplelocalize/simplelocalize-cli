@@ -1,10 +1,10 @@
 name: Build executables
 
-
 on:
   push:
     branches:
       - 'master'
+      - '*-snapshot'
   pull_request:
 
 env:
@@ -16,106 +16,55 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
+        name: "Checkout"
       - uses: actions/setup-java@v3
+        name: "Install Java"
         with:
-          java-version: '11'
-          distribution: 'adopt'
-      - name: "Cache Maven packages"
-        uses: actions/cache@v3
-        with:
-          path: ~/.m2
-          key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
-          restore-keys: ${{ runner.os }}-m2
-      - name: "Build with Maven"
-        run: mvn -B clean install --file pom.xml
-      - name: 'Get Version Number'
+          java-version: '17'
+          distribution: 'temurin'
+          cache: 'maven'
+      - name: "Build JAR"
+        run: mvn -DskipTests -Pfatjar clean package
+      - name: 'Get version'
         run: echo "::set-env name=VERSION::$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)"
       - name: 'Upload artifact'
         uses: actions/upload-artifact@v3
         with:
           name: 'simplelocalize-cli-${{env.VERSION}}.jar'
           path: 'target/simplelocalize-cli-${{env.VERSION}}.jar'
-  build-windows:
-    needs: [ build-jar ]
-    name: "Build Windows executable"
-    runs-on: windows-latest
-    steps:
-      - uses: actions/checkout@v3
-      - name: "Download GraalVM"
-        run: |
-          Invoke-RestMethod -Uri https://github.com/graalvm/graalvm-ce-builds/releases/download/vm-20.1.0/graalvm-ce-java11-windows-amd64-20.1.0.zip -OutFile 'graal.zip'
-      - name: "Install GraalVM"
-        run: |
-          Expand-Archive -path 'graal.zip' -destinationpath '.'
-      - name: "Install Native Image"
-        run: |
-          graalvm-ce-java11-20.1.0\bin\gu.cmd install native-image
-      - name: "Set up Visual C Build Tools Workload for Visual Studio 2017 Build Tools"
-        run: |
-          choco install visualstudio2017-workload-vctools
-      - name: 'Get Version Number'
-        run: |
-          echo "::set-env name=VERSION::$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)"
-        shell: bash
-      - name: 'Get JAR Artifact'
-        uses: actions/download-artifact@v3
-        with:
-          name: 'simplelocalize-cli-${{env.VERSION}}.jar'
-      - name: "Build Native Image"
-        shell: cmd
-        env:
-          JAVA_HOME: ./graalvm-ce-java11-20.1.0
-        run: |
-          call "C:\Program Files (x86)\Microsoft Visual Studio\2017\BuildTools\VC\Auxiliary\Build\vcvars64.bat"
-          ./graalvm-ce-java11-20.1.0/bin/native-image --no-server -Dmicronaut.env.deduction=false --report-unsupported-elements-at-runtime -cp simplelocalize-cli-${{env.VERSION}}.jar -H:Name="simplelocalize-cli-windows" io.simplelocalize.cli.SimplelocalizeCliCommand
-      #      - name: "Optimize executable"
-      #        uses: svenstaro/upx-action@v2
-      #        with:
-      #          file: simplelocalize-cli-windows.exe
-      #          args: --best
-      - name: 'Upload artifact'
-        uses: actions/upload-artifact@v3
-        with:
-          name: simplelocalize-cli-windows
-          path: 'simplelocalize-cli-windows.exe'
-
   build-unix:
-    needs: [ build-jar ]
-    name: "Build ${{ matrix.os }} executable"
+    name: "Build ${{ matrix.label }} executable"
     strategy:
       matrix:
-        os: [ ubuntu-latest, macos-latest ]
         include:
           - os: 'ubuntu-latest'
             label: 'linux'
+            filename: 'simplelocalize-cli'
           - os: 'macos-latest'
             label: 'mac'
+            filename: 'simplelocalize-cli'
+          - os: 'windows-latest'
+            label: 'windows'
+            filename: 'simplelocalize-cli.exe'
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v3
-      - name: 'Get Version Number'
-        run: |
-          echo "::set-env name=VERSION::$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)"
-      - name: 'Get JAR Artifact'
-        uses: actions/download-artifact@v3
+        name: "Checkout"
+      - uses: graalvm/setup-graalvm@v1
+        name: "Install GraalVM"
         with:
-          name: 'simplelocalize-cli-${{env.VERSION}}.jar'
-      - name: "Setup GraalVM"
-        uses: DeLaGuardo/setup-graalvm@master
-        with:
-          graalvm-version: '20.1.0.java11'
-      - name: "Install Native Image"
-        run: gu install native-image
-      - name: "Build Native Image"
-        run: native-image --no-server -Dmicronaut.env.deduction=false --report-unsupported-elements-at-runtime -cp simplelocalize-cli-*.jar -H:Name="simplelocalize-cli-${{matrix.label}}" io.simplelocalize.cli.SimplelocalizeCliCommand
-#      - name: "Optimize executable"
-#        if: matrix.label != 'mac'
-#        uses: svenstaro/upx-action@v2
-#        with:
-#          file: simplelocalize-cli-${{ matrix.label }}
-#          args: --best
+          version: '22.3.2'
+          java-version: '17.0.7'
+          distribution: 'graalvm'
+          components: 'native-image'
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          native-image-job-reports: 'true'
+      - name: "Build executable"
+        run: mvn -DskipTests -Pnative clean package
+      - name: "Test executable"
+        run: ./target/${{ matrix.filename }} --version
       - name: "Upload artifact"
         uses: actions/upload-artifact@v3
         with:
           name: simplelocalize-cli-${{ matrix.label }}
-          path: simplelocalize-cli-${{ matrix.label }}
+          path: ./target/${{ matrix.filename }}

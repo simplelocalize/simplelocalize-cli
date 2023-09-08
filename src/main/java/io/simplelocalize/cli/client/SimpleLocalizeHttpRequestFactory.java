@@ -41,7 +41,7 @@ public class SimpleLocalizeHttpRequestFactory
     int pseudoRandomNumber = (int) (random.nextDouble() * 1_000_000_000);
     String boundary = "simplelocalize-" + pseudoRandomNumber;
     Map<Object, Object> formData = new HashMap<>();
-    Path uploadPath = uploadRequest.getPath();
+    Path uploadPath = uploadRequest.path();
     formData.put("file", uploadPath);
     return createBaseRequest(uri)
             .POST(ClientBodyBuilders.ofMimeMultipartData(formData, boundary))
@@ -53,6 +53,11 @@ public class SimpleLocalizeHttpRequestFactory
   HttpRequest.Builder createGetRequest(URI uri)
   {
     return createBaseRequest(uri).GET();
+  }
+
+  HttpRequest.Builder createDeleteRequest(URI uri)
+  {
+    return createBaseRequest(uri).DELETE();
   }
 
   HttpRequest.Builder createBaseRequest(URI uri)

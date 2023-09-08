@@ -1,10 +1,12 @@
 package io.simplelocalize.cli.client;
 
+import ch.qos.logback.classic.spi.ILoggingEvent;
 import com.google.common.net.HttpHeaders;
 import io.simplelocalize.cli.client.dto.DownloadRequest;
-import io.simplelocalize.cli.client.dto.DownloadableFile;
 import io.simplelocalize.cli.client.dto.UploadRequest;
+import io.simplelocalize.cli.client.dto.proxy.DownloadableFile;
 import io.simplelocalize.cli.exception.ApiRequestException;
+import io.simplelocalize.cli.util.TestLogEventFactory;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
@@ -19,8 +21,6 @@ import java.nio.file.Path;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-import static io.simplelocalize.cli.client.dto.DownloadRequest.DownloadRequestBuilder.aDownloadRequest;
-import static io.simplelocalize.cli.client.dto.UploadRequest.UploadFileRequestBuilder.anUploadFileRequest;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockserver.integration.ClientAndServer.startClientAndServer;
 import static org.mockserver.model.HttpRequest.request;
@@ -66,11 +66,13 @@ public class SimpleLocalizeClientTest
             );
 
     SimpleLocalizeClient client = new SimpleLocalizeClient(MOCK_SERVER_BASE_URL, "237b305f6b2273e92ac857eb44d7f33b");
+    List<ILoggingEvent> logEventList = TestLogEventFactory.createAndGetLogEventList(client.getClass());
 
     //when
     client.uploadKeys(givenKeys);
 
     //then
+    logEventList.forEach(logEvent -> assertThat(logEvent.getFormattedMessage()).isEqualTo("1 unique keys processed"));
   }
 
   @Test
@@ -92,17 +94,20 @@ public class SimpleLocalizeClientTest
                             .withDelay(TimeUnit.MILLISECONDS, 200)
             );
 
-    UploadRequest uploadRequest = anUploadFileRequest()
+    UploadRequest uploadRequest = UploadRequest.UploadFileRequestBuilder.builder()
             .withPath(Path.of("./junit/mock-server/test.json"))
             .withLanguageKey(null)
             .withFormat("multi-language-json")
             .withOptions(List.of("SPLIT_BY_NAMESPACES"))
             .build();
 
+    List<ILoggingEvent> logEventList = TestLogEventFactory.createAndGetLogEventList(client.getClass());
+
     //when
     client.uploadFile(uploadRequest);
 
     //then
+    logEventList.forEach(logEvent -> assertThat(logEvent.getFormattedMessage()).isEqualTo("File uploaded: test.json"));
   }
 
   @Test
@@ -124,17 +129,21 @@ public class SimpleLocalizeClientTest
                             .withDelay(TimeUnit.MILLISECONDS, 200)
             );
 
-    UploadRequest uploadRequest = anUploadFileRequest()
+    UploadRequest uploadRequest = UploadRequest.UploadFileRequestBuilder.builder()
             .withPath(Path.of("./junit/mock-server/test.json"))
             .withLanguageKey("en")
             .withFormat("multi-language-json")
             .withOptions(List.of())
             .build();
 
+    List<ILoggingEvent> logEventList = TestLogEventFactory.createAndGetLogEventList(client.getClass());
+
+
     //when
     client.uploadFile(uploadRequest);
 
     //then
+    logEventList.forEach(logEvent -> assertThat(logEvent.getFormattedMessage()).isEqualTo("File uploaded: test.json"));
   }
 
   @Test
@@ -156,18 +165,22 @@ public class SimpleLocalizeClientTest
                             .withDelay(TimeUnit.MILLISECONDS, 200)
             );
 
-    UploadRequest uploadRequest = anUploadFileRequest()
+    UploadRequest uploadRequest = UploadRequest.UploadFileRequestBuilder.builder()
             .withPath(Path.of("./junit/mock-server/test.json"))
             .withLanguageKey("en")
             .withFormat("multi-language-json")
             .withOptions(List.of())
             .build();
 
+    List<ILoggingEvent> logEventList = TestLogEventFactory.createAndGetLogEventList(client.getClass());
+
     //when & then
     Assertions
             .assertThatThrownBy(() -> client.uploadFile(uploadRequest))
             .isInstanceOf(ApiRequestException.class)
             .hasMessage("failure message");
+
+    logEventList.forEach(logEvent -> assertThat(logEvent.getFormattedMessage()).isEqualTo("Request failed: failure message"));
   }
 
   @Test
@@ -189,15 +202,18 @@ public class SimpleLocalizeClientTest
                             .withDelay(TimeUnit.MILLISECONDS, 200)
             );
 
-    DownloadRequest downloadRequest = aDownloadRequest()
+    DownloadRequest downloadRequest = DownloadRequest.DownloadRequestBuilder.builder()
             .withFormat("java-properties")
             .withOptions(List.of("SPLIT_BY_NAMESPACES"))
             .build();
+
+    List<ILoggingEvent> logEventList = TestLogEventFactory.createAndGetLogEventList(client.getClass());
 
     //when
     client.fetchDownloadableFiles(downloadRequest);
 
     //then
+    logEventList.forEach(logEvent -> assertThat(logEvent.getFormattedMessage()).isEqualTo("Downloadable files fetched: 1"));
   }
 
   @Test
@@ -219,16 +235,18 @@ public class SimpleLocalizeClientTest
                             .withDelay(TimeUnit.MILLISECONDS, 200)
             );
 
-    DownloadRequest downloadRequest = aDownloadRequest()
+    DownloadRequest downloadRequest = DownloadRequest.DownloadRequestBuilder.builder()
             .withFormat("java-properties")
             .withOptions(List.of("SPLIT_BY_NAMESPACES", "USE_NESTED_JSON"))
             .build();
 
+    List<ILoggingEvent> logEventList = TestLogEventFactory.createAndGetLogEventList(client.getClass());
 
     //when
     client.fetchDownloadableFiles(downloadRequest);
 
     //then
+    logEventList.forEach(logEvent -> assertThat(logEvent.getFormattedMessage()).isEqualTo("Downloadable files fetched: 1"));
   }
 
 
@@ -249,9 +267,7 @@ public class SimpleLocalizeClientTest
                             .withDelay(TimeUnit.MILLISECONDS, 200)
             );
 
-    DownloadableFile downloadableFile = new DownloadableFile();
-    downloadableFile.setUrl(MOCK_SERVER_BASE_URL + "/s3/file");
-    downloadableFile.setNamespace("common");
+    DownloadableFile downloadableFile = new DownloadableFile(MOCK_SERVER_BASE_URL + "/s3/file", "common", null);
     String downloadPath = "./junit/download-test/file.json";
 
     //when
@@ -278,9 +294,7 @@ public class SimpleLocalizeClientTest
                             .withDelay(TimeUnit.MILLISECONDS, 200)
             );
 
-    DownloadableFile downloadableFile = new DownloadableFile();
-    downloadableFile.setUrl(MOCK_SERVER_BASE_URL + "/s3/file");
-    downloadableFile.setNamespace("common");
+    DownloadableFile downloadableFile = new DownloadableFile(MOCK_SERVER_BASE_URL + "/s3/file", "common", null);
     String downloadPath = "./junit/truncate/file.json";
 
     //when

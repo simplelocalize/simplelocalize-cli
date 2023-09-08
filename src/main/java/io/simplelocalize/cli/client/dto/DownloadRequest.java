@@ -1,62 +1,22 @@
 package io.simplelocalize.cli.client.dto;
 
 import java.util.List;
-import java.util.Objects;
 
-public class DownloadRequest
+public record DownloadRequest(String format, String languageKey, String customerId, List<String> options, String sort)
 {
-  private String format;
-  private String languageKey;
-  private String customerId;
-  private List<String> options;
-
-  public String getFormat()
-  {
-    return format;
-  }
-
-  public String getLanguageKey()
-  {
-    return languageKey;
-  }
-
-  public List<String> getOptions()
-  {
-    return options;
-  }
-
-  public String getCustomerId()
-  {
-    return customerId;
-  }
-
-  @Override
-  public boolean equals(Object o)
-  {
-    if (this == o) return true;
-    if (o == null || getClass() != o.getClass()) return false;
-    DownloadRequest that = (DownloadRequest) o;
-    return Objects.equals(format, that.format) && Objects.equals(languageKey, that.languageKey) && Objects.equals(customerId, that.customerId) && Objects.equals(options, that.options);
-  }
-
-  @Override
-  public int hashCode()
-  {
-    return Objects.hash(format, languageKey, customerId, options);
-  }
-
   public static final class DownloadRequestBuilder
   {
     private String format;
     private String languageKey;
     private String customerId;
     private List<String> options;
+    private String sort;
 
     private DownloadRequestBuilder()
     {
     }
 
-    public static DownloadRequestBuilder aDownloadRequest()
+    public static DownloadRequestBuilder builder()
     {
       return new DownloadRequestBuilder();
     }
@@ -85,14 +45,21 @@ public class DownloadRequest
       return this;
     }
 
+    public DownloadRequestBuilder withSort(String sort)
+    {
+      this.sort = sort;
+      return this;
+    }
+
     public DownloadRequest build()
     {
-      DownloadRequest downloadRequest = new DownloadRequest();
-      downloadRequest.options = this.options;
-      downloadRequest.format = this.format;
-      downloadRequest.languageKey = this.languageKey;
-      downloadRequest.customerId = this.customerId;
-      return downloadRequest;
+      return new DownloadRequest(
+              this.format,
+              this.languageKey,
+              this.customerId,
+              this.options,
+              this.sort
+      );
     }
   }
 }

@@ -2,8 +2,8 @@ package io.simplelocalize.cli.command;
 
 import com.jayway.jsonpath.DocumentContext;
 import io.simplelocalize.cli.client.SimpleLocalizeClient;
-import io.simplelocalize.cli.configuration.AutoTranslationConfiguration;
-import io.simplelocalize.cli.configuration.Configuration;
+import io.simplelocalize.cli.client.dto.proxy.AutoTranslationConfiguration;
+import io.simplelocalize.cli.client.dto.proxy.Configuration;
 import io.simplelocalize.cli.io.JsonReader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,7 +33,7 @@ public class AutoTranslationCommand implements CliCommand
     int runningJobsCount = getRunningJobsCount();
     while (runningJobsCount > 0)
     {
-      log.info("There is at least one running auto-translation job. Waiting 5 seconds before checking again");
+      log.info("Waiting for auto-translation to finish");
       Thread.sleep(5_000);
       runningJobsCount = getRunningJobsCount();
     }

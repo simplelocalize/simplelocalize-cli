@@ -17,6 +17,7 @@ import java.nio.file.Path;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.mockserver.integration.ClientAndServer.startClientAndServer;
 import static org.mockserver.model.HttpRequest.request;
 import static org.mockserver.model.HttpResponse.response;
@@ -42,16 +43,10 @@ class SimplelocalizeCliCommandTest
     mockServer.stop();
   }
 
-
-  @Test
-  void main()
-  {
-  }
-
   @Test
   void extract()
   {
-    // given & when & then
+    // given
     mockServer.when(request()
                             .withMethod("POST")
                             .withPath("/cli/v1/keys")
@@ -64,14 +59,17 @@ class SimplelocalizeCliCommandTest
                             .withBody("{ 'msg': 'OK', data: { uniqueKeysProcessed: 1, processedWithWarnings: false } }")
                             .withDelay(TimeUnit.MILLISECONDS, 200));
 
-    sut.extract("my-api-key", "yahoo/react-intl", "./", MOCK_SERVER_BASE_URL);
+    //when
+    assertDoesNotThrow(() -> {
+      sut.extract("my-api-key", "yahoo/react-intl", "./", MOCK_SERVER_BASE_URL);
+    });
   }
 
   @Test
-  void sync() throws IOException
+  void sync()
   {
 
-    // given & when & then
+    // given
     mockServer.when(request()
                             .withMethod("POST")
                             .withPath("/cli/v2/upload")
@@ -99,24 +97,29 @@ class SimplelocalizeCliCommandTest
                             .withDelay(TimeUnit.MILLISECONDS, 200)
             );
 
-    sut.sync(
-            "my-api-key",
-            "./junit/mock-server/test.json",
-            "multi-language-json",
-            List.of(),
-            "./junit/mock-server/test.json",
-            "java-properties",
-            List.of("SPLIT_BY_NAMESPACES"),
-            null,
-            null,
-            MOCK_SERVER_BASE_URL
-    );
+
+    //when
+    assertDoesNotThrow(() -> {
+      sut.sync(
+              "my-api-key",
+              "./junit/mock-server/test.json",
+              "multi-language-json",
+              List.of(),
+              "./junit/mock-server/test.json",
+              "java-properties",
+              List.of("SPLIT_BY_NAMESPACES"),
+              null,
+              null,
+              null,
+              MOCK_SERVER_BASE_URL
+      );
+    });
   }
 
   @Test
-  void upload() throws IOException
+  void upload()
   {
-    // given & when & then
+    // given
     mockServer.when(request()
                             .withMethod("POST")
                             .withPath("/cli/v2/upload")
@@ -131,24 +134,27 @@ class SimplelocalizeCliCommandTest
                             .withDelay(TimeUnit.MILLISECONDS, 200)
             );
 
-    sut.upload(
-            "my-api-key",
-            "./junit/mock-server/test.json",
-            "multi-language-json",
-            false,
-            false,
-            false,
-            List.of("SPLIT_BY_NAMESPACES"),
-            null,
-            null,
-            MOCK_SERVER_BASE_URL
-    );
+    //when
+    assertDoesNotThrow(() -> {
+      sut.upload(
+              "my-api-key",
+              "./junit/mock-server/test.json",
+              "multi-language-json",
+              false,
+              false,
+              false,
+              List.of("SPLIT_BY_NAMESPACES"),
+              null,
+              null,
+              MOCK_SERVER_BASE_URL
+      );
+    });
   }
 
   @Test
   void download()
   {
-    // given & when & then
+    // given
     mockServer.when(request()
                             .withMethod("GET")
                             .withPath("/cli/v2/download")
@@ -163,26 +169,30 @@ class SimplelocalizeCliCommandTest
                             .withDelay(TimeUnit.MILLISECONDS, 200)
             );
 
-    sut.download(
-            "my-api-key",
-            "./junit/mock-server/test.json",
-            "java-properties",
-            List.of("SPLIT_BY_NAMESPACES"),
-            null,
-            null,
-            MOCK_SERVER_BASE_URL
-    );
+    //when
+    assertDoesNotThrow(() -> {
+      sut.download(
+              "my-api-key",
+              "./junit/mock-server/test.json",
+              "java-properties",
+              List.of("SPLIT_BY_NAMESPACES"),
+              null,
+              null,
+              null,
+              MOCK_SERVER_BASE_URL
+      );
+    });
   }
 
   @Test
   void pull() throws IOException
   {
-    // given & when & then
+    // given
     String path = SimplelocalizeCliCommandTest.class.getClassLoader().getResource("mock-api-responses/fetch-project-empty-hosting-resources.json").getPath();
     String content = Files.readString(Path.of(path), StandardCharsets.UTF_8);
     mockServer.when(request()
                             .withMethod("GET")
-                            .withPath("/api/v1/project")
+                            .withPath("/api/v2/project")
                             .withHeader("X-SimpleLocalize-Token", "my-api-key"),
                     Times.exactly(1))
             .respond(
@@ -192,20 +202,21 @@ class SimplelocalizeCliCommandTest
                             .withDelay(TimeUnit.MILLISECONDS, 200)
             );
 
-
-    sut.pull("my-api-key", "./my-path", "latest",null, MOCK_SERVER_BASE_URL);
-
+    //when
+    assertDoesNotThrow(() -> {
+      sut.pull("my-api-key", "./my-path", "latest", null, MOCK_SERVER_BASE_URL);
+    });
   }
 
   @Test
   void status() throws IOException
   {
-    // given & when & then
+    // given
     String path = SimplelocalizeCliCommandTest.class.getClassLoader().getResource("mock-api-responses/fetch-project-empty-hosting-resources.json").getPath();
     String content = Files.readString(Path.of(path), StandardCharsets.UTF_8);
     mockServer.when(request()
                             .withMethod("GET")
-                            .withPath("/api/v1/project")
+                            .withPath("/api/v2/project")
                             .withHeader("X-SimpleLocalize-Token", "my-api-key"),
                     Times.exactly(1))
             .respond(
@@ -215,20 +226,67 @@ class SimplelocalizeCliCommandTest
                             .withDelay(TimeUnit.MILLISECONDS, 200)
             );
 
+    //when
+    assertDoesNotThrow(() -> {
+      sut.status("my-api-key", MOCK_SERVER_BASE_URL);
 
-    sut.status("my-api-key", MOCK_SERVER_BASE_URL);
+    });
+
+  }
+
+  @Test
+  void purge() throws IOException
+  {
+    // given
+    String path = SimplelocalizeCliCommandTest.class.getClassLoader().getResource("mock-api-responses/fetch-project-empty-hosting-resources.json").getPath();
+    String content = Files.readString(Path.of(path), StandardCharsets.UTF_8);
+    mockServer.when(request()
+                            .withMethod("GET")
+                            .withPath("/api/v2/project")
+                            .withHeader("X-SimpleLocalize-Token", "my-api-key"),
+                    Times.exactly(1))
+            .respond(
+                    response()
+                            .withStatusCode(200)
+                            .withBody(content)
+                            .withDelay(TimeUnit.MILLISECONDS, 200)
+            );
+
+    mockServer.when(request()
+                            .withMethod("DELETE")
+                            .withPath("/api/v1/translations/purge")
+                            .withHeader("X-SimpleLocalize-Token", "my-api-key"),
+                    Times.exactly(1))
+            .respond(
+                    response()
+                            .withStatusCode(200)
+                            .withBody("""
+                                    {
+                                      "msg": "OK",
+                                      "status": 200,
+                                      "data": []
+                                    }
+                                    """)
+                            .withDelay(TimeUnit.MILLISECONDS, 200)
+            );
+
+
+    //when
+    assertDoesNotThrow(() -> {
+      sut.purge("my-api-key", MOCK_SERVER_BASE_URL, true);
+    });
 
   }
 
   @Test
   void publishLatest() throws IOException
   {
-    // given & when & then
+    // given
     String path = SimplelocalizeCliCommandTest.class.getClassLoader().getResource("mock-api-responses/fetch-project-empty-hosting-resources.json").getPath();
     String content = Files.readString(Path.of(path), StandardCharsets.UTF_8);
     mockServer.when(request()
                             .withMethod("GET")
-                            .withPath("/api/v1/project")
+                            .withPath("/api/v2/project")
                             .withHeader("X-SimpleLocalize-Token", "my-api-key"),
                     Times.exactly(1))
             .respond(
@@ -240,7 +298,7 @@ class SimplelocalizeCliCommandTest
 
     mockServer.when(request()
                             .withMethod("POST")
-                            .withPath("/api/v1/translations/publish")
+                            .withPath("/api/v2/environments/_latest/publish")
                             .withHeader("X-SimpleLocalize-Token", "my-api-key"),
                     Times.exactly(1))
             .respond(
@@ -250,19 +308,21 @@ class SimplelocalizeCliCommandTest
                             .withDelay(TimeUnit.MILLISECONDS, 200)
             );
 
-
-    sut.publish("my-api-key","latest", MOCK_SERVER_BASE_URL);
+    //when
+    assertDoesNotThrow(() -> {
+      sut.publish("my-api-key", "_latest", MOCK_SERVER_BASE_URL);
+    });
   }
 
   @Test
   void publishProduction() throws IOException
   {
-    // given & when & then
+    // given
     String path = SimplelocalizeCliCommandTest.class.getClassLoader().getResource("mock-api-responses/fetch-project-empty-hosting-resources.json").getPath();
     String content = Files.readString(Path.of(path), StandardCharsets.UTF_8);
     mockServer.when(request()
                             .withMethod("GET")
-                            .withPath("/api/v1/project")
+                            .withPath("/api/v2/project")
                             .withHeader("X-SimpleLocalize-Token", "my-api-key"),
                     Times.exactly(1))
             .respond(
@@ -273,11 +333,8 @@ class SimplelocalizeCliCommandTest
             );
     mockServer.when(request()
                             .withMethod("POST")
-                            .withPath("/api/v1/translations/deploy")
-                            .withHeader("X-SimpleLocalize-Token", "my-api-key")
-                            .withQueryStringParameter("sourceEnvironment", "_latest")
-                            .withQueryStringParameter("targetEnvironment", "_production")
-                    ,
+                            .withPath("/api/v2/environments/_production/publish")
+                            .withHeader("X-SimpleLocalize-Token", "my-api-key"),
                     Times.exactly(1))
             .respond(
                     response()
@@ -286,8 +343,80 @@ class SimplelocalizeCliCommandTest
                             .withDelay(TimeUnit.MILLISECONDS, 200)
             );
 
+    //when
+    assertDoesNotThrow(() -> {
+      sut.publish("my-api-key", "_production", MOCK_SERVER_BASE_URL);
+    });
+  }
 
-    sut.publish("my-api-key","production", MOCK_SERVER_BASE_URL);
+  @Test
+  void startAutoTranslation()
+  {
+    // given
+    mockServer.when(request()
+                            .withMethod("GET")
+                            .withPath("/api/v2/jobs")
+                            .withQueryStringParameter("status", "RUNNING")
+                            .withQueryStringParameter("type", "AUTO_TRANSLATION")
+                            .withHeader("X-SimpleLocalize-Token", "my-api-key"),
+                    Times.exactly(2))
+            .respond(
+                    response()
+                            .withStatusCode(200)
+                            .withBody("""
+                                    {
+                                      "msg": "OK",
+                                      "status": 200,
+                                      "data": []
+                                    }
+                                    """)
+                            .withDelay(TimeUnit.MILLISECONDS, 200)
+            );
+    mockServer.when(request()
+                            .withMethod("POST")
+                            .withPath("/api/v2/jobs/auto-translate")
+                            .withHeader("X-SimpleLocalize-Token", "my-api-key")
+                    ,
+                    Times.exactly(1))
+            .respond(
+                    response()
+                            .withStatusCode(200)
+                            .withBody("""
+                                    {
+                                      "languageKeys:" ["pl", "en"],
+                                      "source": "CLI"
+                                    }
+                                    """)
+                            .withDelay(TimeUnit.MILLISECONDS, 200)
+            );
+
+    //when
+    assertDoesNotThrow(() -> {
+      sut.startAutoTranslation("my-api-key", List.of("pl", "en"), MOCK_SERVER_BASE_URL);
+    });
+  }
+
+  @Test
+  void init()
+  {
+    // given
+    mockServer.when(request()
+                            .withMethod("GET")
+                            .withPath("sample.yml"),
+                    Times.exactly(1))
+            .respond(
+                    response()
+                            .withStatusCode(200)
+                            .withBody("""
+                                    # SimpleLocalize configuration file
+                                    # More info: https://simplelocalize.io/docs/cli/configuration
+                                    """)
+                            .withDelay(TimeUnit.MILLISECONDS, 200)
+            );
+    //then
+    assertDoesNotThrow(() -> {
+      sut.init();
+    });
   }
 
 }

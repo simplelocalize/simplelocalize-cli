@@ -2,16 +2,13 @@ package io.simplelocalize.cli.client;
 
 import io.simplelocalize.cli.client.dto.DownloadRequest;
 import io.simplelocalize.cli.client.dto.UploadRequest;
-import org.apache.commons.lang3.StringUtils;
+import io.simplelocalize.cli.util.StringUtils;
 
 import java.net.URI;
 import java.util.List;
 
 public class SimpleLocalizeUriFactory
 {
-  private static final String CLI_VERSION_1_API = "/cli/v1";
-  private static final String CLI_VERSION_2_API = "/cli/v2";
-  private static final String VERSION_1_API = "/api/v1";
   private final String baseUrl;
 
   public SimpleLocalizeUriFactory(String baseUrl)
@@ -21,29 +18,35 @@ public class SimpleLocalizeUriFactory
 
   URI buildSendKeysURI()
   {
-    return URI.create(baseUrl + CLI_VERSION_1_API + "/keys");
+    return URI.create(baseUrl + "/cli/v1/keys");
   }
 
   URI buildDownloadUri(DownloadRequest downloadRequest)
   {
-    String endpointUrl = baseUrl + CLI_VERSION_2_API + "/download?downloadFormat=" + downloadRequest.getFormat();
-    String languageKey = downloadRequest.getLanguageKey();
+    String endpointUrl = baseUrl + "/cli/v2/download?downloadFormat=" + downloadRequest.format();
+    String languageKey = downloadRequest.languageKey();
     boolean isRequestedTranslationsForSpecificLanguage = StringUtils.isNotEmpty(languageKey);
     if (isRequestedTranslationsForSpecificLanguage)
     {
       endpointUrl += "&languageKey=" + languageKey;
     }
 
-    List<String> downloadOptions = downloadRequest.getOptions();
+    List<String> downloadOptions = downloadRequest.options();
     if (!downloadOptions.isEmpty())
     {
       endpointUrl += "&downloadOptions=" + String.join(",", downloadOptions);
     }
 
-    String customerId = downloadRequest.getCustomerId();
+    String customerId = downloadRequest.customerId();
     if (StringUtils.isNotEmpty(customerId))
     {
       endpointUrl += "&customerId=" + customerId;
+    }
+
+    String sort = downloadRequest.sort();
+    if (StringUtils.isNotEmpty(sort))
+    {
+      endpointUrl += "&sort=" + sort;
     }
 
     return URI.create(endpointUrl);
@@ -52,26 +55,26 @@ public class SimpleLocalizeUriFactory
 
   URI buildUploadUri(UploadRequest uploadRequest)
   {
-    String endpointUrl = baseUrl + CLI_VERSION_2_API + "/upload?uploadFormat=" + uploadRequest.getFormat();
-    String languageKey = uploadRequest.getLanguageKey();
+    String endpointUrl = baseUrl + "/cli/v2/upload?uploadFormat=" + uploadRequest.format();
+    String languageKey = uploadRequest.languageKey();
     if (StringUtils.isNotEmpty(languageKey))
     {
       endpointUrl += "&languageKey=" + languageKey;
     }
 
-    List<String> uploadOptions = uploadRequest.getOptions();
+    List<String> uploadOptions = uploadRequest.options();
     if (!uploadOptions.isEmpty())
     {
       endpointUrl += "&uploadOptions=" + String.join(",", uploadOptions);
     }
 
-    String namespace = uploadRequest.getNamespace();
+    String namespace = uploadRequest.namespace();
     if (StringUtils.isNotEmpty(namespace))
     {
       endpointUrl += "&namespace=" + namespace;
     }
 
-    String customerId = uploadRequest.getCustomerId();
+    String customerId = uploadRequest.customerId();
     if (StringUtils.isNotEmpty(customerId))
     {
       endpointUrl += "&customerId=" + customerId;
@@ -82,21 +85,22 @@ public class SimpleLocalizeUriFactory
 
   URI buildGetProjectUri()
   {
-    return URI.create(baseUrl + VERSION_1_API + "/project");
+    return URI.create(baseUrl + "/api/v2/project");
   }
 
   public URI buildPublishUri(String environment)
   {
-    if (environment.equals("latest"))
-    {
-      return URI.create(baseUrl + "/api/v1/translations/publish");
-    }
+    return URI.create(baseUrl + "/api/v2/environments/" + environment + "/publish?source=CLI");
+  }
 
-    if (environment.equals("production"))
-    {
-      return URI.create(baseUrl + "/api/v1/translations/deploy?sourceEnvironment=_latest&targetEnvironment=_production");
-    }
-    throw new IllegalArgumentException("Unknown environment: " + environment);
+  public URI buildPurgeTranslations()
+  {
+    return URI.create(baseUrl + "/api/v1/translations/purge?source=CLI");
+  }
+
+  public URI buildStacktraceUri()
+  {
+    return URI.create(baseUrl + "/cli/v1/stacktrace");
   }
 
   URI buildGetRunningAutoTranslationJobsUri()

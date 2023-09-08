@@ -9,7 +9,6 @@ import java.util.List;
 import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static io.simplelocalize.cli.TemplateKeys.LANGUAGE_TEMPLATE_KEY;
@@ -41,7 +40,7 @@ public class FileListReader
                 {
                   String lang = getGroupOrNull("lang", matcher);
                   String ns = getGroupOrNull("ns", matcher);
-                  return FileToUpload.FileToUploadBuilder.aFileToUpload()
+                  return FileToUpload.FileToUploadBuilder.builder()
                           .withLanguage(lang)
                           .withNamespace(ns)
                           .withPath(file).build();
@@ -49,7 +48,7 @@ public class FileListReader
                 return null;
               })
               .filter(Objects::nonNull)
-              .collect(Collectors.toList());
+              .toList();
     }
   }
 

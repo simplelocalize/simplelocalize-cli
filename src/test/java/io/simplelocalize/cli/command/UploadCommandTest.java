@@ -2,7 +2,7 @@ package io.simplelocalize.cli.command;
 
 import io.simplelocalize.cli.client.SimpleLocalizeClient;
 import io.simplelocalize.cli.client.dto.UploadRequest;
-import io.simplelocalize.cli.configuration.Configuration;
+import io.simplelocalize.cli.client.dto.proxy.Configuration;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -54,7 +54,7 @@ class UploadCommandTest
 
     //then
     Mockito.verify(client, times(12)).uploadFile(
-            Mockito.refEq(UploadRequest.UploadFileRequestBuilder.anUploadFileRequest()
+            Mockito.refEq(UploadRequest.UploadFileRequestBuilder.builder()
                             .withPath(Path.of("./junit/download-test/values-{lang}/strings.xml"))
                             .withFormat("android")
                             .withOptions(Collections.emptyList())
@@ -80,7 +80,7 @@ class UploadCommandTest
 
     //then
     Mockito.verify(client, times(1)).uploadFile(
-            Mockito.refEq(UploadRequest.UploadFileRequestBuilder.anUploadFileRequest()
+            Mockito.refEq(UploadRequest.UploadFileRequestBuilder.builder()
                             .withPath(Path.of("./junit/download-test/values-{lang}/strings.xml"))
                             .withFormat("android")
                             .withLanguageKey("en")
@@ -106,7 +106,7 @@ class UploadCommandTest
 
     //then
     Mockito.verify(client, times(1)).uploadFile(
-            Mockito.refEq(UploadRequest.UploadFileRequestBuilder.anUploadFileRequest()
+            Mockito.refEq(UploadRequest.UploadFileRequestBuilder.builder()
                     .withPath(Path.of("./junit/download-test/values-en/strings.xml"))
                     .withFormat("android")
                     .withLanguageKey("")
@@ -149,7 +149,7 @@ class UploadCommandTest
 
     //then
     Mockito.verify(client, times(1)).uploadFile(
-            Mockito.refEq(UploadRequest.UploadFileRequestBuilder.anUploadFileRequest()
+            Mockito.refEq(UploadRequest.UploadFileRequestBuilder.builder()
                             .withPath(Path.of("./junit/download-test/values-{lang}/strings.xml"))
                             .withFormat("android")
                             .withLanguageKey("en")

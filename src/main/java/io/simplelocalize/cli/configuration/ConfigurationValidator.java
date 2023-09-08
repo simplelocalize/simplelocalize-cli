@@ -1,7 +1,8 @@
 package io.simplelocalize.cli.configuration;
 
+import io.simplelocalize.cli.client.dto.proxy.Configuration;
 import io.simplelocalize.cli.exception.ConfigurationException;
-import org.apache.commons.lang3.StringUtils;
+import io.simplelocalize.cli.util.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -34,7 +35,6 @@ public final class ConfigurationValidator
     validateIsNotEmptyOrNull(configuration.getApiKey(), "apiKey");
     validateIsNotEmptyOrNull(configuration.getEnvironment(), "environment");
     validateIsNotEmptyOrNull(configuration.getPullPath(), "pullPath");
-    validateEnvironmentValue(configuration);
   }
 
   public void validateAutoTranslationConfiguration(Configuration configuration)
@@ -46,7 +46,6 @@ public final class ConfigurationValidator
   {
     validateIsNotEmptyOrNull(configuration.getApiKey(), "apiKey");
     validateIsNotEmptyOrNull(configuration.getEnvironment(), "environment");
-    validateEnvironmentValue(configuration);
   }
 
   public void validateGetStatusConfiguration(Configuration configuration)
@@ -54,14 +53,9 @@ public final class ConfigurationValidator
     validateIsNotEmptyOrNull(configuration.getApiKey(), "apiKey");
   }
 
-  private void validateEnvironmentValue(Configuration configuration)
+  public void validateGetPurgeConfiguration(Configuration configuration)
   {
-    String environment = configuration.getEnvironment();
-    if (!environment.equals("production") && !environment.equals("latest"))
-    {
-      log.error("Environment must be either 'production' or 'latest'");
-      throw new ConfigurationException("Environment must be either 'production' or 'latest'");
-    }
+    validateIsNotEmptyOrNull(configuration.getApiKey(), "apiKey");
   }
 
   private void validateIsNotEmptyOrNull(String format, String argumentName)

@@ -14,14 +14,14 @@ class UploadRequestTest
   void shouldReturnTrueIfWhenSameObject()
   {
     //given
-    UploadRequest object1 = UploadRequest.UploadFileRequestBuilder.anUploadFileRequest()
+    UploadRequest object1 = UploadRequest.UploadFileRequestBuilder.builder()
             .withFormat("format")
             .withLanguageKey("pl")
             .withOptions(List.of("OPTION"))
             .withPath(Path.of("./"))
             .build();
 
-    UploadRequest object2 = UploadRequest.UploadFileRequestBuilder.anUploadFileRequest()
+    UploadRequest object2 = UploadRequest.UploadFileRequestBuilder.builder()
             .withFormat("format")
             .withLanguageKey("pl")
             .withOptions(List.of("OPTION"))
@@ -40,14 +40,14 @@ class UploadRequestTest
   void shouldReturnFalseIfObjectsAreDifferent()
   {
     //given
-    UploadRequest object1 = UploadRequest.UploadFileRequestBuilder.anUploadFileRequest()
+    UploadRequest object1 = UploadRequest.UploadFileRequestBuilder.builder()
             .withFormat("format")
             .withLanguageKey("de")
             .withOptions(List.of("OPTION"))
             .withPath(Path.of("./"))
             .build();
 
-    UploadRequest object2 = UploadRequest.UploadFileRequestBuilder.anUploadFileRequest()
+    UploadRequest object2 = UploadRequest.UploadFileRequestBuilder.builder()
             .withFormat("format")
             .withLanguageKey("pl")
             .withOptions(List.of("OPTION"))
@@ -66,14 +66,14 @@ class UploadRequestTest
   void testHashCode()
   {
     //given
-    UploadRequest object1 = UploadRequest.UploadFileRequestBuilder.anUploadFileRequest()
+    UploadRequest object1 = UploadRequest.UploadFileRequestBuilder.builder()
             .withFormat("format")
             .withLanguageKey("pl")
             .withOptions(List.of("OPTION"))
             .withPath(Path.of("./"))
             .build();
 
-    UploadRequest object2 = UploadRequest.UploadFileRequestBuilder.anUploadFileRequest()
+    UploadRequest object2 = UploadRequest.UploadFileRequestBuilder.builder()
             .withFormat("format")
             .withLanguageKey("pl")
             .withOptions(List.of("OPTION"))

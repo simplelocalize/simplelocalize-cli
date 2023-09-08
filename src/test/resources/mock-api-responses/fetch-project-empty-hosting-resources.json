@@ -28,6 +28,16 @@
     ],
     "customers": [],
     "namespaces": [],
+    "environments": [
+      {
+        "key": "_latest",
+        "name": "Latest"
+      },
+      {
+        "key": "_production",
+        "name": "Production"
+      }
+    ],
     "keys": 92,
     "unpublishedChanges": 0,
     "translatedPercentage": 0.96,
