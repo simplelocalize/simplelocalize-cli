@@ -258,7 +258,7 @@ public class SimplelocalizeCliCommand implements Runnable
       List<String> nonNullConfigurationFileDownloadOptions = Objects.requireNonNullElse(configuration.getDownloadOptions(), List.of());
       configuration.setDownloadOptions(nonNullConfigurationFileDownloadOptions);
       boolean hasArgumentDownloadOptions = downloadOptions != null && !downloadOptions.isEmpty();
-      if(hasArgumentDownloadOptions)
+      if (hasArgumentDownloadOptions)
       {
         configuration.setDownloadOptions(downloadOptions);
       }
@@ -495,8 +495,13 @@ public class SimplelocalizeCliCommand implements Runnable
   private void handleException(Exception e)
   {
     log.error("Command failed.", e);
+    if (e instanceof InterruptedException)
+    {
+      Thread.currentThread().interrupt();
+    }
     trySendException(e);
     System.exit(CommandLine.ExitCode.USAGE);
+
   }
 
   private void trySendException(Exception exception)
@@ -507,7 +512,7 @@ public class SimplelocalizeCliCommand implements Runnable
       client.sendException(configuration, exception);
     } catch (Exception ex)
     {
-      log.error("Unable to send exception to SimpleLocalize, please contact us at contact@simplelocalize.io", ex);
+      log.error("Unable to send exception to SimpleLocalize, please contact us at contact@simplelocalize.io");
     }
   }
 
