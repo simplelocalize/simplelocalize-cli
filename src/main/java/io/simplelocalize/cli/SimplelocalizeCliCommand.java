@@ -512,7 +512,7 @@ public class SimplelocalizeCliCommand implements Runnable
       client.sendException(effectiveCommandConfiguration, exception);
     } catch (Exception ex)
     {
-      log.error("Unable to send exception to SimpleLocalize, please contact us at contact@simplelocalize.io");
+      log.error("Unable to send exception to SimpleLocalize, please contact us at contact@simplelocalize.io", ex);
       if (ex instanceof InterruptedException)
       {
         Thread.currentThread().interrupt();
