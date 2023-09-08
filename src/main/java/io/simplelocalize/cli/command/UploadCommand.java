@@ -12,6 +12,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
+import java.nio.file.Path;
 import java.util.List;
 import java.util.Optional;
 
@@ -55,13 +56,25 @@ public class UploadCommand implements CliCommand
       throw new IllegalArgumentException("Matching files could not be found", e);
     }
 
+
+    String uploadFormat = configuration.getUploadFormat();
+    String customerId = configuration.getCustomerId();
+    List<String> uploadOptions = configuration.getUploadOptions();
+    log.info("File format: {}", uploadFormat);
+    if (StringUtils.isNotEmpty(customerId))
+    {
+      log.info("Customer ID: {}", customerId);
+    }
+    log.info("Upload options: {}", uploadOptions);
+
     log.info("Found {} files to upload", filesToUpload.size());
     for (FileToUpload fileToUpload : filesToUpload)
     {
-      long length = fileToUpload.path().toFile().length();
+      Path path = fileToUpload.path();
+      long length = path.toFile().length();
       if (length == 0)
       {
-        log.warn("Skipping empty file: {}", fileToUpload.path());
+        log.warn("Skipping empty file: {}", path);
         continue;
       }
 
@@ -72,9 +85,10 @@ public class UploadCommand implements CliCommand
       boolean hasConfigurationLanguageKey = StringUtils.isNotBlank(configurationLanguageKey);
 
       boolean isLanguageMatching = fileLanguageKey.equals(configurationLanguageKey);
+      String language = fileToUpload.language();
       if (hasFileLanguageKey && hasConfigurationLanguageKey && !isLanguageMatching)
       {
-        log.info("Skipping '{}' language, file: {}", fileToUpload.language(), fileToUpload.path());
+        log.info("Skipping '{}' language, file: {}", language, path);
         continue;
       }
 
@@ -87,16 +101,15 @@ public class UploadCommand implements CliCommand
       boolean isMultiLanguageFormat = isMultiLanguageFormat(configuration.getUploadFormat());
       if (!hasFileLanguageKey && !hasConfigurationLanguageKey && !isMultiLanguageFormat)
       {
-        log.info("Language key not present in '--uploadPath' nor '--languageKey' parameter, file: {}", fileToUpload.path());
+        log.info("Language key not present in '--uploadPath' nor '--languageKey' parameter, file: {}", path);
       }
 
-      String uploadFormat = configuration.getUploadFormat();
-      String customerId = configuration.getCustomerId();
-      List<String> uploadOptions = configuration.getUploadOptions();
+
+      String namespace = fileToUpload.namespace();
       UploadRequest uploadRequest = builder()
-              .withPath(fileToUpload.path())
+              .withPath(path)
               .withLanguageKey(requestLanguageKey)
-              .withNamespace(fileToUpload.namespace())
+              .withNamespace(namespace)
               .withFormat(uploadFormat)
               .withCustomerId(customerId)
               .withOptions(uploadOptions)
@@ -104,10 +117,10 @@ public class UploadCommand implements CliCommand
 
       if (isDryRun)
       {
-        log.info("[Dry run] Found file to upload, language=[{}], namespace=[{}], file: {}", fileToUpload.language(), fileToUpload.namespace(), fileToUpload.path());
+        log.info("[Dry run] Found file to upload, language=[{}], namespace=[{}], file: {}", language, namespace, path);
       } else
       {
-        log.info("Uploading {}", fileToUpload.path());
+        log.info("Uploading language=[{}] namespace=[{}] = {}", language, namespace, path);
         client.uploadFile(uploadRequest);
       }
     }
