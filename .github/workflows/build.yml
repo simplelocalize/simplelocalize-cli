@@ -40,12 +40,15 @@ jobs:
           - os: 'ubuntu-latest'
             label: 'linux'
             filename: 'simplelocalize-cli'
+            downloadFilename: 'simplelocalize-cli-linux'
           - os: 'macos-latest'
             label: 'mac'
             filename: 'simplelocalize-cli'
+            downloadFilename: 'simplelocalize-cli-mac'
           - os: 'windows-latest'
             label: 'windows'
             filename: 'simplelocalize-cli.exe'
+            downloadFilename: 'simplelocalize-cli-windows.exe'
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v3
@@ -63,8 +66,10 @@ jobs:
         run: mvn -DskipTests -Pnative clean package
       - name: "Test executable"
         run: ./target/${{ matrix.filename }} --version
+      - name: "Rename executable"
+        run: mv ./target/${{ matrix.filename }} ./target/${{ matrix.downloadFilename }}
       - name: "Upload artifact"
         uses: actions/upload-artifact@v3
         with:
           name: simplelocalize-cli-${{ matrix.label }}
-          path: ./target/${{ matrix.filename }}
+          path: ./target/${{ matrix.downloadFilename }}
