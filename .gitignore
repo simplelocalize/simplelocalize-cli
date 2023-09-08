@@ -61,8 +61,9 @@ $RECYCLE.BIN/
 
 /simplelocalize.yml
 /dependency-reduced-pom.xml
-/build-j17.sh
 /build-far-jar.sh
+/build-quick.sh
+/build-production.sh
 /build-m1.sh
 /install.sh
 /simplelocalize-init-command.yml
