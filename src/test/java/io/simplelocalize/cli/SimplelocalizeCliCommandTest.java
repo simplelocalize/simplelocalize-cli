@@ -178,7 +178,7 @@ class SimplelocalizeCliCommandTest
     String content = Files.readString(Path.of(path), StandardCharsets.UTF_8);
     mockServer.when(request()
                             .withMethod("GET")
-                            .withPath("/api/v1/project")
+                            .withPath("/api/v2/project")
                             .withHeader("X-SimpleLocalize-Token", "my-api-key"),
                     Times.exactly(1))
             .respond(
@@ -201,7 +201,7 @@ class SimplelocalizeCliCommandTest
     String content = Files.readString(Path.of(path), StandardCharsets.UTF_8);
     mockServer.when(request()
                             .withMethod("GET")
-                            .withPath("/api/v1/project")
+                            .withPath("/api/v2/project")
                             .withHeader("X-SimpleLocalize-Token", "my-api-key"),
                     Times.exactly(1))
             .respond(
@@ -224,7 +224,7 @@ class SimplelocalizeCliCommandTest
     String content = Files.readString(Path.of(path), StandardCharsets.UTF_8);
     mockServer.when(request()
                             .withMethod("GET")
-                            .withPath("/api/v1/project")
+                            .withPath("/api/v2/project")
                             .withHeader("X-SimpleLocalize-Token", "my-api-key"),
                     Times.exactly(1))
             .respond(
@@ -247,7 +247,7 @@ class SimplelocalizeCliCommandTest
     String content = Files.readString(Path.of(path), StandardCharsets.UTF_8);
     mockServer.when(request()
                             .withMethod("GET")
-                            .withPath("/api/v1/project")
+                            .withPath("/api/v2/project")
                             .withHeader("X-SimpleLocalize-Token", "my-api-key"),
                     Times.exactly(1))
             .respond(
@@ -281,7 +281,7 @@ class SimplelocalizeCliCommandTest
     String content = Files.readString(Path.of(path), StandardCharsets.UTF_8);
     mockServer.when(request()
                             .withMethod("GET")
-                            .withPath("/api/v1/project")
+                            .withPath("/api/v2/project")
                             .withHeader("X-SimpleLocalize-Token", "my-api-key"),
                     Times.exactly(1))
             .respond(

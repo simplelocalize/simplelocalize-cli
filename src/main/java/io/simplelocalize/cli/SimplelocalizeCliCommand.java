@@ -43,6 +43,8 @@ public class SimplelocalizeCliCommand implements Runnable
   @Option(names = {"--debug"}, description = "Debug mode", defaultValue = "false")
   boolean debug;
 
+  private Configuration configuration;
+
   public static void main(String[] args)
   {
     int exitCode = new CommandLine(new SimplelocalizeCliCommand()).execute(args);
@@ -85,13 +87,13 @@ public class SimplelocalizeCliCommand implements Runnable
       }
       ConfigurationValidator configurationValidator = new ConfigurationValidator();
       configurationValidator.validateExtractConfiguration(configuration);
+      this.configuration = configuration;
       SimpleLocalizeClient client = SimpleLocalizeClient.create(configuration.getBaseUrl(), configuration.getApiKey());
       ExtractCommand extractCommand = new ExtractCommand(client, configuration);
       extractCommand.invoke();
     } catch (Exception e)
     {
-      printDebug(e);
-      System.exit(CommandLine.ExitCode.USAGE);
+      handleException(e);
     }
   }
 
@@ -196,14 +198,13 @@ public class SimplelocalizeCliCommand implements Runnable
 
       ConfigurationValidator configurationValidator = new ConfigurationValidator();
       configurationValidator.validateUploadConfiguration(configuration);
-
+      this.configuration = configuration;
       SimpleLocalizeClient client = SimpleLocalizeClient.create(configuration.getBaseUrl(), configuration.getApiKey());
       UploadCommand uploadCommand = new UploadCommand(client, configuration);
       uploadCommand.invoke();
     } catch (Exception e)
     {
-      printDebug(e);
-      System.exit(CommandLine.ExitCode.USAGE);
+      handleException(e);
     }
   }
 
@@ -264,13 +265,13 @@ public class SimplelocalizeCliCommand implements Runnable
 
       ConfigurationValidator configurationValidator = new ConfigurationValidator();
       configurationValidator.validateDownloadConfiguration(configuration);
+      this.configuration = configuration;
       SimpleLocalizeClient client = SimpleLocalizeClient.create(configuration.getBaseUrl(), configuration.getApiKey());
       DownloadCommand downloadCommand = new DownloadCommand(client, configuration);
       downloadCommand.invoke();
     } catch (Exception e)
     {
-      printDebug(e);
-      System.exit(CommandLine.ExitCode.USAGE);
+      handleException(e);
     }
   }
 
@@ -316,13 +317,13 @@ public class SimplelocalizeCliCommand implements Runnable
 
       ConfigurationValidator configurationValidator = new ConfigurationValidator();
       configurationValidator.validateHostingPullConfiguration(configuration);
+      this.configuration = configuration;
       SimpleLocalizeClient client = SimpleLocalizeClient.create(configuration.getBaseUrl(), configuration.getApiKey());
       PullHostingCommand command = new PullHostingCommand(client, configuration);
       command.invoke();
     } catch (Exception e)
     {
-      printDebug(e);
-      System.exit(CommandLine.ExitCode.USAGE);
+      handleException(e);
     }
   }
 
@@ -358,13 +359,13 @@ public class SimplelocalizeCliCommand implements Runnable
 
       ConfigurationValidator configurationValidator = new ConfigurationValidator();
       configurationValidator.validateAutoTranslationConfiguration(configuration);
+      this.configuration = configuration;
       SimpleLocalizeClient client = SimpleLocalizeClient.create(configuration.getBaseUrl(), configuration.getApiKey());
       AutoTranslationCommand command = new AutoTranslationCommand(client, configuration);
       command.invoke();
     } catch (Exception e)
     {
-      printDebug(e);
-      System.exit(CommandLine.ExitCode.USAGE);
+      handleException(e);
     }
   }
 
@@ -379,8 +380,7 @@ public class SimplelocalizeCliCommand implements Runnable
       initCommand.invoke();
     } catch (Exception e)
     {
-      printDebug(e);
-      System.exit(CommandLine.ExitCode.USAGE);
+      handleException(e);
     }
   }
 
@@ -408,13 +408,13 @@ public class SimplelocalizeCliCommand implements Runnable
 
       ConfigurationValidator configurationValidator = new ConfigurationValidator();
       configurationValidator.validateGetStatusConfiguration(configuration);
+      this.configuration = configuration;
       SimpleLocalizeClient client = SimpleLocalizeClient.create(configuration.getBaseUrl(), configuration.getApiKey());
       StatusCommand command = new StatusCommand(client);
       command.invoke();
     } catch (Exception e)
     {
-      printDebug(e);
-      System.exit(CommandLine.ExitCode.USAGE);
+      handleException(e);
     }
   }
 
@@ -447,13 +447,13 @@ public class SimplelocalizeCliCommand implements Runnable
 
       ConfigurationValidator configurationValidator = new ConfigurationValidator();
       configurationValidator.validateHostingPublishConfiguration(configuration);
+      this.configuration = configuration;
       SimpleLocalizeClient client = SimpleLocalizeClient.create(configuration.getBaseUrl(), configuration.getApiKey());
       PublishHostingCommand command = new PublishHostingCommand(client, configuration);
       command.invoke();
     } catch (Exception e)
     {
-      printDebug(e);
-      System.exit(CommandLine.ExitCode.USAGE);
+      handleException(e);
     }
   }
 
@@ -482,24 +482,32 @@ public class SimplelocalizeCliCommand implements Runnable
 
       ConfigurationValidator configurationValidator = new ConfigurationValidator();
       configurationValidator.validateGetPurgeConfiguration(configuration);
+      this.configuration = configuration;
       SimpleLocalizeClient client = SimpleLocalizeClient.create(configuration.getBaseUrl(), configuration.getApiKey());
       PurgeCommand command = new PurgeCommand(client, force);
       command.invoke();
     } catch (Exception e)
     {
-      printDebug(e);
-      System.exit(CommandLine.ExitCode.USAGE);
+      handleException(e);
     }
   }
 
-  private void printDebug(Exception e)
+  private void handleException(Exception e)
   {
-    if (debug)
+    log.error("Command failed.", e);
+    trySendException(e);
+    System.exit(CommandLine.ExitCode.USAGE);
+  }
+
+  private void trySendException(Exception exception)
+  {
+    try
     {
-      log.error("Command failed.", e);
-    } else
+      SimpleLocalizeClient client = SimpleLocalizeClient.create(configuration.getBaseUrl(), configuration.getApiKey());
+      client.sendException(configuration, exception);
+    } catch (Exception ex)
     {
-      log.error("Command failed. Use '--debug' parameter before the command name to see stacktrace.");
+      log.error("Unable to send exception to SimpleLocalize, please contact us at contact@simplelocalize.io", ex);
     }
   }
 

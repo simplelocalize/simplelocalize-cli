@@ -1,26 +1,20 @@
 package io.simplelocalize.cli.client;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import io.simplelocalize.cli.client.dto.proxy.ImportForm;
-import io.simplelocalize.cli.client.dto.proxy.ImportKey;
-import io.simplelocalize.cli.client.dto.proxy.StartAutoTranslationRequest;
+import io.simplelocalize.cli.client.dto.proxy.*;
+import io.simplelocalize.cli.util.StackTraceUtils;
 
 import java.io.IOException;
 import java.net.http.HttpRequest;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 final class ClientBodyBuilders
 {
 
-  private static final ObjectMapper objectMapper = new ObjectMapper();
 
   private ClientBodyBuilders()
   {
@@ -35,14 +29,24 @@ final class ClientBodyBuilders
 
     ImportForm importForm = new ImportForm(importContent);
 
-    String jsonString = objectMapper.writeValueAsString(importForm);
+    String jsonString = ObjectMapperSingleton.getInstance().writeValueAsString(importForm);
     return HttpRequest.BodyPublishers.ofString(jsonString);
   }
 
   static HttpRequest.BodyPublisher ofStartAutoTranslation(Collection<String> languageKeys) throws JsonProcessingException
   {
     StartAutoTranslationRequest request = new StartAutoTranslationRequest(languageKeys, "CLI");
-    String jsonString = objectMapper.writeValueAsString(request);
+    String jsonString = ObjectMapperSingleton.getInstance().writeValueAsString(request);
+    return HttpRequest.BodyPublishers.ofString(jsonString);
+  }
+
+  static HttpRequest.BodyPublisher ofException(Configuration configuration, Exception exception) throws JsonProcessingException
+  {
+    String configurationString = Optional.ofNullable(configuration).map(Configuration::toString).orElse("");
+    String message = Optional.ofNullable(exception).map(Throwable::getMessage).orElse("");
+    String stackTrace = StackTraceUtils.getStackTrace(exception);
+    ExceptionRequest request = new ExceptionRequest(configurationString, message, stackTrace);
+    String jsonString = ObjectMapperSingleton.getInstance().writeValueAsString(request);
     return HttpRequest.BodyPublishers.ofString(jsonString);
   }
 
@@ -54,9 +58,8 @@ final class ClientBodyBuilders
     {
       byteArrays.add(separator);
 
-      if (entry.getValue() instanceof Path)
+      if (entry.getValue() instanceof Path path)
       {
-        var path = (Path) entry.getValue();
         String mimeType = Files.probeContentType(path);
         byteArrays.add(("\"" + entry.getKey() + "\"; filename=\"" + path.getFileName() + "\"\r\nContent-Type: " + mimeType + "\r\n\r\n").getBytes(StandardCharsets.UTF_8));
         byteArrays.add(Files.readAllBytes(path));

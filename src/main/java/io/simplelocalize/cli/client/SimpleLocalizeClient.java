@@ -5,6 +5,7 @@ import com.jayway.jsonpath.JsonPath;
 import com.jayway.jsonpath.Option;
 import io.simplelocalize.cli.client.dto.DownloadRequest;
 import io.simplelocalize.cli.client.dto.UploadRequest;
+import io.simplelocalize.cli.client.dto.proxy.Configuration;
 import io.simplelocalize.cli.client.dto.proxy.DownloadableFile;
 import io.simplelocalize.cli.client.dto.proxy.ExportResponse;
 import io.simplelocalize.cli.exception.ApiRequestException;
@@ -45,7 +46,7 @@ public class SimpleLocalizeClient
     Objects.requireNonNull(apiKey);
     this.uriFactory = new SimpleLocalizeUriFactory(baseUrl);
     this.httpRequestFactory = new SimpleLocalizeHttpRequestFactory(apiKey);
-    this.objectMapper = new ObjectMapper();
+    this.objectMapper = ObjectMapperSingleton.getInstance();
     this.httpClient = HttpClientFactory.createHttpClient();
   }
 
@@ -150,6 +151,14 @@ public class SimpleLocalizeClient
     throwOnError(httpResponse);
   }
 
+
+  public void sendException(Configuration configuration, Exception exception) throws IOException, InterruptedException
+  {
+    URI uri = uriFactory.buildStacktraceUri();
+    HttpRequest httpRequest = httpRequestFactory.createBaseRequest(uri).POST(ClientBodyBuilders.ofException(configuration, exception)).build();
+    HttpResponse<String> httpResponse = httpClient.send(httpRequest, HttpResponse.BodyHandlers.ofString());
+    throwOnError(httpResponse);
+  }
 
   private void throwOnError(HttpResponse<?> httpResponse)
   {

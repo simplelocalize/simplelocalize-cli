@@ -85,7 +85,7 @@ public class SimpleLocalizeUriFactory
 
   URI buildGetProjectUri()
   {
-    return URI.create(baseUrl + "/api/v1/project");
+    return URI.create(baseUrl + "/api/v2/project");
   }
 
   public URI buildPublishUri(String environment)
@@ -96,6 +96,11 @@ public class SimpleLocalizeUriFactory
   public URI buildPurgeTranslations()
   {
     return URI.create(baseUrl + "/api/v1/translations/purge?source=CLI");
+  }
+
+  public URI buildStacktraceUri()
+  {
+    return URI.create(baseUrl + "/cli/v1/stacktrace");
   }
 
   URI buildGetRunningAutoTranslationJobsUri()

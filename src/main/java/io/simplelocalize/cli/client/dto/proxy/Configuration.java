@@ -5,6 +5,7 @@ import io.simplelocalize.cli.NativeProxy;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.StringJoiner;
 
 @NativeProxy
 public class Configuration
@@ -274,5 +275,35 @@ public class Configuration
   {
     this.downloadSort = downloadSort;
     return this;
+  }
+
+  @Override
+  public String toString()
+  {
+    return new StringJoiner(", ", Configuration.class.getSimpleName() + "[", "]")
+            .add("baseUrl='" + baseUrl + "'")
+            .add("apiKey='***'")
+            .add("projectType='" + projectType + "'")
+            .add("searchDir='" + searchDir + "'")
+            .add("ignoreKeys=" + ignoreKeys)
+            .add("uploadPath='" + uploadPath + "'")
+            .add("uploadFormat='" + uploadFormat + "'")
+            .add("uploadOptions=" + uploadOptions)
+            .add("uploadFilesExclude=" + uploadFilesExclude)
+            .add("uploadFilesInclude=" + uploadFilesInclude)
+            .add("dryRun=" + dryRun)
+            .add("downloadPath='" + downloadPath + "'")
+            .add("downloadFormat='" + downloadFormat + "'")
+            .add("downloadSort='" + downloadSort + "'")
+            .add("downloadOptions=" + downloadOptions)
+            .add("downloadFilesExclude=" + downloadFilesExclude)
+            .add("downloadFilesInclude=" + downloadFilesInclude)
+            .add("customerId='" + customerId + "'")
+            .add("languageKey='" + languageKey + "'")
+            .add("autoTranslation=" + autoTranslation)
+            .add("environment='" + environment + "'")
+            .add("pullPath='" + pullPath + "'")
+            .add("filterRegex='" + filterRegex + "'")
+            .toString();
   }
 }
