@@ -5,10 +5,10 @@ import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockserver.integration.ClientAndServer;
 import org.mockserver.matchers.Times;
+import picocli.CommandLine;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -17,7 +17,7 @@ import java.nio.file.Path;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockserver.integration.ClientAndServer.startClientAndServer;
 import static org.mockserver.model.HttpRequest.request;
 import static org.mockserver.model.HttpResponse.response;
@@ -28,8 +28,6 @@ class SimplelocalizeCliCommandTest
 
   private final static String MOCK_SERVER_BASE_URL = "http://localhost:1080";
   private static ClientAndServer mockServer;
-  @InjectMocks
-  private SimplelocalizeCliCommand sut;
 
   @BeforeAll
   public static void startServer()
@@ -59,10 +57,21 @@ class SimplelocalizeCliCommandTest
                             .withBody("{ 'msg': 'OK', data: { uniqueKeysProcessed: 1, processedWithWarnings: false } }")
                             .withDelay(TimeUnit.MILLISECONDS, 200));
 
+    SimplelocalizeCliCommand app = new SimplelocalizeCliCommand();
+    CommandLine commandLine = new CommandLine(app);
+    String[] args = {"extract",
+            "--apiKey", "my-api-key",
+            "--baseUrl", MOCK_SERVER_BASE_URL,
+            "--projectType", "yahoo/react-intl",
+            "--searchDir", "./",
+    };
+    commandLine.parseArgs(args);
+
     //when
-    assertDoesNotThrow(() -> {
-      sut.extract("my-api-key", "yahoo/react-intl", "./", MOCK_SERVER_BASE_URL);
-    });
+    int execute = commandLine.execute(args);
+
+    //then
+    assertEquals(0, execute);
   }
 
   @Test
@@ -98,22 +107,24 @@ class SimplelocalizeCliCommandTest
             );
 
 
+    SimplelocalizeCliCommand app = new SimplelocalizeCliCommand();
+    CommandLine commandLine = new CommandLine(app);
+    String[] args = {"sync",
+            "--apiKey", "my-api-key",
+            "--baseUrl", MOCK_SERVER_BASE_URL,
+            "--uploadPath", "./junit/mock-server/test.json",
+            "--uploadFormat", "multi-language-json",
+            "--downloadPath", "./junit/mock-server/test.json",
+            "--downloadFormat", "java-properties",
+            "--downloadOptions", "SPLIT_BY_NAMESPACES"
+    };
+    commandLine.parseArgs(args);
+
     //when
-    assertDoesNotThrow(() -> {
-      sut.sync(
-              "my-api-key",
-              "./junit/mock-server/test.json",
-              "multi-language-json",
-              List.of(),
-              "./junit/mock-server/test.json",
-              "java-properties",
-              List.of("SPLIT_BY_NAMESPACES"),
-              null,
-              null,
-              null,
-              MOCK_SERVER_BASE_URL
-      );
-    });
+    int execute = commandLine.execute(args);
+
+    //then
+    assertEquals(0, execute);
   }
 
   @Test
@@ -134,21 +145,22 @@ class SimplelocalizeCliCommandTest
                             .withDelay(TimeUnit.MILLISECONDS, 200)
             );
 
+    SimplelocalizeCliCommand app = new SimplelocalizeCliCommand();
+    CommandLine commandLine = new CommandLine(app);
+    String[] args = {"upload",
+            "--apiKey", "my-api-key",
+            "--baseUrl", MOCK_SERVER_BASE_URL,
+            "--uploadPath", "./junit/mock-server/test.json",
+            "--uploadFormat", "multi-language-json",
+            "--uploadOptions", "SPLIT_BY_NAMESPACES"
+    };
+    commandLine.parseArgs(args);
+
     //when
-    assertDoesNotThrow(() -> {
-      sut.upload(
-              "my-api-key",
-              "./junit/mock-server/test.json",
-              "multi-language-json",
-              false,
-              false,
-              false,
-              List.of("SPLIT_BY_NAMESPACES"),
-              null,
-              null,
-              MOCK_SERVER_BASE_URL
-      );
-    });
+    int execute = commandLine.execute(args);
+
+    //then
+    assertEquals(0, execute);
   }
 
   @Test
@@ -168,20 +180,22 @@ class SimplelocalizeCliCommandTest
                             .withBody("{ \"files\": [{\"namespace\": \"my-file\", \"url\": \"https://simplelocalize.io\"}] }")
                             .withDelay(TimeUnit.MILLISECONDS, 200)
             );
+    SimplelocalizeCliCommand app = new SimplelocalizeCliCommand();
+    CommandLine commandLine = new CommandLine(app);
+    String[] args = {"download",
+            "--apiKey", "my-api-key",
+            "--baseUrl", MOCK_SERVER_BASE_URL,
+            "--downloadPath", "./junit/mock-server/test.json",
+            "--downloadFormat", "java-properties",
+            "--downloadOptions", "SPLIT_BY_NAMESPACES"
+    };
+    commandLine.parseArgs(args);
 
     //when
-    assertDoesNotThrow(() -> {
-      sut.download(
-              "my-api-key",
-              "./junit/mock-server/test.json",
-              "java-properties",
-              List.of("SPLIT_BY_NAMESPACES"),
-              null,
-              null,
-              null,
-              MOCK_SERVER_BASE_URL
-      );
-    });
+    int execute = commandLine.execute(args);
+
+    //then
+    assertEquals(0, execute);
   }
 
   @Test
@@ -202,10 +216,21 @@ class SimplelocalizeCliCommandTest
                             .withDelay(TimeUnit.MILLISECONDS, 200)
             );
 
+    SimplelocalizeCliCommand app = new SimplelocalizeCliCommand();
+    CommandLine commandLine = new CommandLine(app);
+    String[] args = {"pull",
+            "--apiKey", "my-api-key",
+            "--baseUrl", MOCK_SERVER_BASE_URL,
+            "--pullPath", "./my-path",
+            "--environment", "latest",
+    };
+    commandLine.parseArgs(args);
+
     //when
-    assertDoesNotThrow(() -> {
-      sut.pull("my-api-key", "./my-path", "latest", null, MOCK_SERVER_BASE_URL);
-    });
+    int execute = commandLine.execute(args);
+
+    //then
+    assertEquals(0, execute);
   }
 
   @Test
@@ -226,9 +251,16 @@ class SimplelocalizeCliCommandTest
                             .withDelay(TimeUnit.MILLISECONDS, 200)
             );
 
-    //when
-    sut.status("my-api-key", MOCK_SERVER_BASE_URL);
+    SimplelocalizeCliCommand app = new SimplelocalizeCliCommand();
+    CommandLine commandLine = new CommandLine(app);
+    String[] args = {"status", "--apiKey", "my-api-key", "--baseUrl", MOCK_SERVER_BASE_URL};
+    commandLine.parseArgs(args);
 
+    //when
+    int execute = commandLine.execute(args);
+
+    //then
+    assertEquals(0, execute);
   }
 
   @Test
@@ -266,13 +298,20 @@ class SimplelocalizeCliCommandTest
                                     """)
                             .withDelay(TimeUnit.MILLISECONDS, 200)
             );
-
+    SimplelocalizeCliCommand app = new SimplelocalizeCliCommand();
+    CommandLine commandLine = new CommandLine(app);
+    String[] args = {"purge",
+            "--apiKey", "my-api-key",
+            "--baseUrl", MOCK_SERVER_BASE_URL,
+            "--force"
+    };
+    commandLine.parseArgs(args);
 
     //when
-    assertDoesNotThrow(() -> {
-      sut.purge("my-api-key", MOCK_SERVER_BASE_URL, true);
-    });
+    int execute = commandLine.execute(args);
 
+    //then
+    assertEquals(0, execute);
   }
 
   @Test
@@ -305,10 +344,20 @@ class SimplelocalizeCliCommandTest
                             .withDelay(TimeUnit.MILLISECONDS, 200)
             );
 
+    SimplelocalizeCliCommand app = new SimplelocalizeCliCommand();
+    CommandLine commandLine = new CommandLine(app);
+    String[] args = {"publish",
+            "--apiKey", "my-api-key",
+            "--baseUrl", MOCK_SERVER_BASE_URL,
+            "--environment", "_latest"
+    };
+    commandLine.parseArgs(args);
+
     //when
-    assertDoesNotThrow(() -> {
-      sut.publish("my-api-key", "_latest", MOCK_SERVER_BASE_URL);
-    });
+    int execute = commandLine.execute(args);
+
+    //then
+    assertEquals(0, execute);
   }
 
   @Test
@@ -339,11 +388,20 @@ class SimplelocalizeCliCommandTest
                             .withBody("{}")
                             .withDelay(TimeUnit.MILLISECONDS, 200)
             );
+    SimplelocalizeCliCommand app = new SimplelocalizeCliCommand();
+    CommandLine commandLine = new CommandLine(app);
+    String[] args = {"publish",
+            "--apiKey", "my-api-key",
+            "--baseUrl", MOCK_SERVER_BASE_URL,
+            "--environment", "_production"
+    };
+    commandLine.parseArgs(args);
 
     //when
-    assertDoesNotThrow(() -> {
-      sut.publish("my-api-key", "_production", MOCK_SERVER_BASE_URL);
-    });
+    int execute = commandLine.execute(args);
+
+    //then
+    assertEquals(0, execute);
   }
 
   @Test
@@ -386,11 +444,20 @@ class SimplelocalizeCliCommandTest
                                     """)
                             .withDelay(TimeUnit.MILLISECONDS, 200)
             );
+    SimplelocalizeCliCommand app = new SimplelocalizeCliCommand();
+    CommandLine commandLine = new CommandLine(app);
+    String[] args = {"auto-translate",
+            "--apiKey", "my-api-key",
+            "--baseUrl", MOCK_SERVER_BASE_URL,
+            "--languageKeys", "pl,en"
+    };
+    commandLine.parseArgs(args);
 
     //when
-    assertDoesNotThrow(() -> {
-      sut.startAutoTranslation("my-api-key", List.of("pl", "en"), MOCK_SERVER_BASE_URL);
-    });
+    int execute = commandLine.execute(args);
+
+    //then
+    assertEquals(0, execute);
   }
 
   @Test
@@ -410,10 +477,18 @@ class SimplelocalizeCliCommandTest
                                     """)
                             .withDelay(TimeUnit.MILLISECONDS, 200)
             );
+
+    SimplelocalizeCliCommand app = new SimplelocalizeCliCommand();
+    CommandLine commandLine = new CommandLine(app);
+    String[] args = {"init"};
+    commandLine.parseArgs(args);
+
     //then
-    assertDoesNotThrow(() -> {
-      sut.init();
-    });
+    int execute = commandLine.execute(args);
+
+    //then
+    assertEquals(0, execute);
+    assertTrue(Files.exists(Path.of("simplelocalize.yml")));
   }
 
 }
