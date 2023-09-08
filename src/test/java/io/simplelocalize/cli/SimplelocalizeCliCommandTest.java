@@ -217,6 +217,29 @@ class SimplelocalizeCliCommandTest
   }
 
   @Test
+  void purge() throws IOException
+  {
+    // given & when & then
+    String path = SimplelocalizeCliCommandTest.class.getClassLoader().getResource("mock-api-responses/fetch-project-empty-hosting-resources.json").getPath();
+    String content = Files.readString(Path.of(path), StandardCharsets.UTF_8);
+    mockServer.when(request()
+                            .withMethod("GET")
+                            .withPath("/api/v1/project")
+                            .withHeader("X-SimpleLocalize-Token", "my-api-key"),
+                    Times.exactly(1))
+            .respond(
+                    response()
+                            .withStatusCode(200)
+                            .withBody(content)
+                            .withDelay(TimeUnit.MILLISECONDS, 200)
+            );
+
+
+    sut.status("my-api-key", MOCK_SERVER_BASE_URL);
+
+  }
+
+  @Test
   void publishLatest() throws IOException
   {
     // given & when & then

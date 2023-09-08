@@ -55,6 +55,11 @@ public class SimpleLocalizeHttpRequestFactory
     return createBaseRequest(uri).GET();
   }
 
+  HttpRequest.Builder createDeleteRequest(URI uri)
+  {
+    return createBaseRequest(uri).DELETE();
+  }
+
   HttpRequest.Builder createBaseRequest(URI uri)
   {
     return HttpRequest.newBuilder()

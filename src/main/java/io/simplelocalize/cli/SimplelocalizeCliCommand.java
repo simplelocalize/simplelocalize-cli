@@ -457,6 +457,41 @@ public class SimplelocalizeCliCommand implements Runnable
     }
   }
 
+  @Command(
+          name = "purge",
+          description = "Purge translations from Translation Hosting. Use 'simplelocalize purge --help' to learn more about the parameters.")
+  public void purge(
+          @Option(names = {"--apiKey"}, description = "Project API Key") String apiKey,
+          @Option(names = {"--baseUrl"}, description = "(Optional) Set custom server URL") String baseUrl,
+          @Option(names = {"--force"}, description = "(Optional) No confirmation needed") Boolean force
+  )
+  {
+    try
+    {
+      ConfigurationLoader configurationLoader = new ConfigurationLoader();
+      Configuration configuration = configurationLoader.loadOrGetDefault(configurationFilePath);
+      if (StringUtils.isNotEmpty(baseUrl))
+      {
+        configuration.setBaseUrl(baseUrl);
+      }
+
+      if (StringUtils.isNotEmpty(apiKey))
+      {
+        configuration.setApiKey(apiKey);
+      }
+
+      ConfigurationValidator configurationValidator = new ConfigurationValidator();
+      configurationValidator.validateGetPurgeConfiguration(configuration);
+      SimpleLocalizeClient client = SimpleLocalizeClient.create(configuration.getBaseUrl(), configuration.getApiKey());
+      PurgeCommand command = new PurgeCommand(client, force);
+      command.invoke();
+    } catch (Exception e)
+    {
+      printDebug(e);
+      System.exit(CommandLine.ExitCode.USAGE);
+    }
+  }
+
   private void printDebug(Exception e)
   {
     if (debug)

@@ -93,6 +93,11 @@ public class SimpleLocalizeUriFactory
     return URI.create(baseUrl + "/api/v2/environments/" + environment + "/publish?source=CLI");
   }
 
+  public URI buildPurgeTranslations()
+  {
+    return URI.create(baseUrl + "/api/v1/translations/purge?source=CLI");
+  }
+
   URI buildGetRunningAutoTranslationJobsUri()
   {
     return URI.create(baseUrl + "/api/v2/jobs?status=RUNNING&type=AUTO_TRANSLATION");

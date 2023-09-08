@@ -53,6 +53,11 @@ public final class ConfigurationValidator
     validateIsNotEmptyOrNull(configuration.getApiKey(), "apiKey");
   }
 
+  public void validateGetPurgeConfiguration(Configuration configuration)
+  {
+    validateIsNotEmptyOrNull(configuration.getApiKey(), "apiKey");
+  }
+
   private void validateIsNotEmptyOrNull(String format, String argumentName)
   {
 

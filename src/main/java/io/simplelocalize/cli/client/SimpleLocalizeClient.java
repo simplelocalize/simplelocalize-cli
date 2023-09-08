@@ -142,6 +142,14 @@ public class SimpleLocalizeClient
     throwOnError(httpResponse);
   }
 
+  public void purgeTranslations() throws IOException, InterruptedException
+  {
+    URI uri = uriFactory.buildPurgeTranslations();
+    HttpRequest httpRequest = httpRequestFactory.createDeleteRequest(uri).build();
+    HttpResponse<String> httpResponse = httpClient.send(httpRequest, HttpResponse.BodyHandlers.ofString());
+    throwOnError(httpResponse);
+  }
+
 
   private void throwOnError(HttpResponse<?> httpResponse)
   {
