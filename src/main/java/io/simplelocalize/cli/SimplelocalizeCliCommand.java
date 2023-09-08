@@ -513,6 +513,10 @@ public class SimplelocalizeCliCommand implements Runnable
     } catch (Exception ex)
     {
       log.error("Unable to send exception to SimpleLocalize, please contact us at contact@simplelocalize.io");
+      if (ex instanceof InterruptedException)
+      {
+        Thread.currentThread().interrupt();
+      }
     }
   }
 
