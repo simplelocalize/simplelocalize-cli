@@ -5,10 +5,12 @@ import io.simplelocalize.cli.client.SimpleLocalizeClient;
 import io.simplelocalize.cli.client.dto.DownloadRequest;
 import io.simplelocalize.cli.client.dto.proxy.Configuration;
 import io.simplelocalize.cli.client.dto.proxy.DownloadableFile;
+import io.simplelocalize.cli.util.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 public class DownloadCommand implements CliCommand
@@ -31,7 +33,7 @@ public class DownloadCommand implements CliCommand
     String languageKey = configuration.getLanguageKey();
     String customerId = configuration.getCustomerId();
     String sort = configuration.getDownloadSort();
-    List<String> downloadOptions = configuration.getDownloadOptions();
+    List<String> downloadOptions = new ArrayList<>(configuration.getDownloadOptions());
 
     if (downloadPath.contains(TemplateKeys.NAMESPACE_TEMPLATE_KEY))
     {
@@ -51,6 +53,20 @@ public class DownloadCommand implements CliCommand
             .withSort(sort)
             .build();
     log.info("Preparing files to download");
+    log.info("File format: {}", downloadFormat);
+    if (StringUtils.isNotEmpty(customerId))
+    {
+      log.info("Customer ID: {}", customerId);
+    }
+    if (StringUtils.isNotEmpty(languageKey))
+    {
+      log.info("Language key: {}", languageKey);
+    }
+    if (StringUtils.isNotEmpty(sort))
+    {
+      log.info("Sort: {}", sort);
+    }
+    log.info("Download options: {}", downloadOptions);
     List<DownloadableFile> downloadableFiles = client.fetchDownloadableFiles(downloadRequest);
     for (DownloadableFile downloadableFile : downloadableFiles)
     {
