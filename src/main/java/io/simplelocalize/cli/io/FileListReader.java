@@ -41,7 +41,7 @@ public class FileListReader
                 {
                   String lang = getGroupOrNull("lang", matcher);
                   String ns = getGroupOrNull("ns", matcher);
-                  return FileToUpload.FileToUploadBuilder.Builder()
+                  return FileToUpload.FileToUploadBuilder.builder()
                           .withLanguage(lang)
                           .withNamespace(ns)
                           .withPath(file).build();

@@ -182,12 +182,12 @@ public class SimpleLocalizeClient
 
   private String safeCastHttpBodyToString(Object responseBody)
   {
-    if (responseBody instanceof byte[])
+    if (responseBody instanceof byte[] responseBodyBytes)
     {
-      return new String((byte[]) responseBody);
-    } else if (responseBody instanceof String)
+      return new String(responseBodyBytes);
+    } else if (responseBody instanceof String responseBodyString)
     {
-      return (String) responseBody;
+      return responseBodyString;
     }
     return "";
   }

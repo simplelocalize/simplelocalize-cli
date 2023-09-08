@@ -16,7 +16,7 @@ public record FileToUpload(Path path, String language, String namespace)
     {
     }
 
-    public static FileToUploadBuilder Builder()
+    public static FileToUploadBuilder builder()
     {
       return new FileToUploadBuilder();
     }

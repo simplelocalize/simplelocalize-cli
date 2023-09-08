@@ -15,7 +15,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 
-import static io.simplelocalize.cli.client.dto.UploadRequest.UploadFileRequestBuilder.Builder;
+import static io.simplelocalize.cli.client.dto.UploadRequest.UploadFileRequestBuilder.builder;
 
 public class UploadCommand implements CliCommand
 {
@@ -93,7 +93,7 @@ public class UploadCommand implements CliCommand
       String uploadFormat = configuration.getUploadFormat();
       String customerId = configuration.getCustomerId();
       List<String> uploadOptions = configuration.getUploadOptions();
-      UploadRequest uploadRequest = Builder()
+      UploadRequest uploadRequest = builder()
               .withPath(fileToUpload.path())
               .withLanguageKey(requestLanguageKey)
               .withNamespace(fileToUpload.namespace())

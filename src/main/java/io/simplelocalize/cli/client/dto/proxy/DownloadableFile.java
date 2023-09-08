@@ -16,7 +16,7 @@ public record DownloadableFile(String url, String namespace, String language)
     {
     }
 
-    public static DownloadableFileBuilder Builder()
+    public static DownloadableFileBuilder builder()
     {
       return new DownloadableFileBuilder();
     }

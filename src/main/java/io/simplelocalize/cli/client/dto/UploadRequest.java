@@ -26,7 +26,7 @@ public record UploadRequest(
     {
     }
 
-    public static UploadFileRequestBuilder Builder()
+    public static UploadFileRequestBuilder builder()
     {
       return new UploadFileRequestBuilder();
     }

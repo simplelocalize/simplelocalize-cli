@@ -32,7 +32,7 @@ public class StatusCommand implements CliCommand
     Float translated = Objects.requireNonNullElse(translatedNullable, 0.0f);
     Float translatedPercentage = translated * 100;
     String translatedPercentageFormatted = String.format("%.0f", translatedPercentage);
-    log.info("Translated: {}", translatedPercentageFormatted + "%");
+    log.info("Translated: {}%", translatedPercentageFormatted);
     log.info("Languages: {}", json.read("$.data.languages[*].key").toString());
     log.info("Environments: {}", json.read("$.data.environments[*].key").toString());
     log.info("Namespaces: {}", json.read("$.data.namespaces[*].name").toString());

@@ -17,4 +17,23 @@ public class TestLogEventFactory
     logger.addAppender(listAppender);
     return listAppender.list;
   }
+
+  public static void verifyLogEvents(List<ILoggingEvent> logEventList, List<String> strings)
+  {
+    if (logEventList.isEmpty())
+    {
+      throw new AssertionError("Log event list is empty");
+    }
+
+    for (int i = 0; i < logEventList.size(); i++)
+    {
+      ILoggingEvent loggingEvent = logEventList.get(i);
+      String expected = strings.get(i);
+      String actual = loggingEvent.getFormattedMessage();
+      if (!actual.equals(expected))
+      {
+        throw new AssertionError("Expected: " + expected + " but was: " + actual);
+      }
+    }
+  }
 }

@@ -16,7 +16,7 @@ public record DownloadRequest(String format, String languageKey, String customer
     {
     }
 
-    public static DownloadRequestBuilder Builder()
+    public static DownloadRequestBuilder builder()
     {
       return new DownloadRequestBuilder();
     }

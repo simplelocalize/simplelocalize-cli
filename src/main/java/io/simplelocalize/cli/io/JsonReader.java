@@ -22,9 +22,9 @@ public class JsonReader
 
   public DocumentContext read(String json)
   {
-    Configuration mappingConfiguration = Configuration.defaultConfiguration()
+    Configuration jsonPathConfiguration = Configuration.defaultConfiguration()
             .jsonProvider(this.jsonProvider)
             .mappingProvider(this.mappingConfiguration);
-    return JsonPath.parse(json, mappingConfiguration);
+    return JsonPath.parse(json, jsonPathConfiguration);
   }
 }

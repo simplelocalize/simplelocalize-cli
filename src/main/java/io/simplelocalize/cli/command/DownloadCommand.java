@@ -43,7 +43,7 @@ public class DownloadCommand implements CliCommand
       downloadOptions.add("SPLIT_BY_LANGUAGES");
     }
 
-    DownloadRequest downloadRequest = DownloadRequest.DownloadRequestBuilder.Builder()
+    DownloadRequest downloadRequest = DownloadRequest.DownloadRequestBuilder.builder()
             .withFormat(downloadFormat)
             .withOptions(downloadOptions)
             .withCustomerId(customerId)

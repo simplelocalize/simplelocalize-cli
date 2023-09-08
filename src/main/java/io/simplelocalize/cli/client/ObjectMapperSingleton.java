@@ -6,7 +6,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 public class ObjectMapperSingleton
 {
 
-  private static ObjectMapper INSTANCE = null;
+  private static ObjectMapper INSTANCE = null; //NOSONAR
 
   private ObjectMapperSingleton()
   {
