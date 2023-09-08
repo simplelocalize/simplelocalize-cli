@@ -33,7 +33,7 @@ class PublishHostingCommandTest
 
 
   @Test
-  void invoke() throws Exception
+  void invokeWhenPassedDefaultEnvironmentKeyWithoutUnderscore() throws Exception
   {
     //given
     List<ILoggingEvent> logEventList = TestLogEventFactory.createAndGetLogEventList(sut.getClass());
@@ -48,11 +48,36 @@ class PublishHostingCommandTest
     sut.invoke();
 
     //then
-    Mockito.verify(client).publish("latest");
+    Mockito.verify(client).publish("_latest");
 
     assertThat(logEventList.get(0).getFormattedMessage()).isEqualTo("Project name: My project");
     assertThat(logEventList.get(1).getFormattedMessage()).isEqualTo("Project token: dev-e7c0b7686c7b45fea4450a4c4a83c7ff");
-    assertThat(logEventList.get(2).getFormattedMessage()).isEqualTo("Environment: latest");
+    assertThat(logEventList.get(2).getFormattedMessage()).isEqualTo("Environment: _latest");
+    assertThat(logEventList.get(3).getFormattedMessage()).isEqualTo("Publishing translations...");
+    assertThat(logEventList.get(4).getFormattedMessage()).isEqualTo("Translations published");
+  }
+
+  @Test
+  void invoke() throws Exception
+  {
+    //given
+    List<ILoggingEvent> logEventList = TestLogEventFactory.createAndGetLogEventList(sut.getClass());
+
+    String path = StatusCommandTest.class.getClassLoader().getResource("mock-api-responses/fetch-project.json").getPath();
+    String content = Files.readString(Path.of(path), StandardCharsets.UTF_8);
+    Mockito.when(client.fetchProject()).thenReturn(content);
+
+    Mockito.when(configuration.getEnvironment()).thenReturn("_latest");
+
+    //when
+    sut.invoke();
+
+    //then
+    Mockito.verify(client).publish("_latest");
+
+    assertThat(logEventList.get(0).getFormattedMessage()).isEqualTo("Project name: My project");
+    assertThat(logEventList.get(1).getFormattedMessage()).isEqualTo("Project token: dev-e7c0b7686c7b45fea4450a4c4a83c7ff");
+    assertThat(logEventList.get(2).getFormattedMessage()).isEqualTo("Environment: _latest");
     assertThat(logEventList.get(3).getFormattedMessage()).isEqualTo("Publishing translations...");
     assertThat(logEventList.get(4).getFormattedMessage()).isEqualTo("Translations published");
   }
