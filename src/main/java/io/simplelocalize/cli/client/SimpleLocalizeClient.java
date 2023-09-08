@@ -178,7 +178,7 @@ public class SimpleLocalizeClient
         message = "Unknown error, HTTP Status: " + httpResponse.statusCode();
       }
       log.error("Request failed: {}", message);
-      throw new ApiRequestException(message, httpResponse);
+      throw new ApiRequestException(message);
     }
   }
 
