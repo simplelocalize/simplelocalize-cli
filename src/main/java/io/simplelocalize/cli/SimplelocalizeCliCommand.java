@@ -85,9 +85,9 @@ public class SimplelocalizeCliCommand implements Runnable
       {
         configuration.setSearchDir(searchDirectory);
       }
+      this.effectiveCommandConfiguration = configuration;
       ConfigurationValidator configurationValidator = new ConfigurationValidator();
       configurationValidator.validateExtractConfiguration(configuration);
-      this.effectiveCommandConfiguration = configuration;
       SimpleLocalizeClient client = SimpleLocalizeClient.create(configuration.getBaseUrl(), configuration.getApiKey());
       ExtractCommand extractCommand = new ExtractCommand(client, configuration);
       extractCommand.invoke();
@@ -196,9 +196,9 @@ public class SimplelocalizeCliCommand implements Runnable
         configuration.setDryRun(true);
       }
 
+      this.effectiveCommandConfiguration = configuration;
       ConfigurationValidator configurationValidator = new ConfigurationValidator();
       configurationValidator.validateUploadConfiguration(configuration);
-      this.effectiveCommandConfiguration = configuration;
       SimpleLocalizeClient client = SimpleLocalizeClient.create(configuration.getBaseUrl(), configuration.getApiKey());
       UploadCommand uploadCommand = new UploadCommand(client, configuration);
       uploadCommand.invoke();
@@ -263,9 +263,9 @@ public class SimplelocalizeCliCommand implements Runnable
         configuration.setDownloadOptions(downloadOptions);
       }
 
+      this.effectiveCommandConfiguration = configuration;
       ConfigurationValidator configurationValidator = new ConfigurationValidator();
       configurationValidator.validateDownloadConfiguration(configuration);
-      this.effectiveCommandConfiguration = configuration;
       SimpleLocalizeClient client = SimpleLocalizeClient.create(configuration.getBaseUrl(), configuration.getApiKey());
       DownloadCommand downloadCommand = new DownloadCommand(client, configuration);
       downloadCommand.invoke();
@@ -315,9 +315,9 @@ public class SimplelocalizeCliCommand implements Runnable
         configuration.setFilterRegex(filterRegex);
       }
 
+      this.effectiveCommandConfiguration = configuration;
       ConfigurationValidator configurationValidator = new ConfigurationValidator();
       configurationValidator.validateHostingPullConfiguration(configuration);
-      this.effectiveCommandConfiguration = configuration;
       SimpleLocalizeClient client = SimpleLocalizeClient.create(configuration.getBaseUrl(), configuration.getApiKey());
       PullHostingCommand command = new PullHostingCommand(client, configuration);
       command.invoke();
@@ -357,9 +357,9 @@ public class SimplelocalizeCliCommand implements Runnable
         configuration.setAutoTranslation(autoTranslationConfiguration);
       }
 
+      this.effectiveCommandConfiguration = configuration;
       ConfigurationValidator configurationValidator = new ConfigurationValidator();
       configurationValidator.validateAutoTranslationConfiguration(configuration);
-      this.effectiveCommandConfiguration = configuration;
       SimpleLocalizeClient client = SimpleLocalizeClient.create(configuration.getBaseUrl(), configuration.getApiKey());
       AutoTranslationCommand command = new AutoTranslationCommand(client, configuration);
       command.invoke();
@@ -406,9 +406,9 @@ public class SimplelocalizeCliCommand implements Runnable
         configuration.setApiKey(apiKey);
       }
 
+      this.effectiveCommandConfiguration = configuration;
       ConfigurationValidator configurationValidator = new ConfigurationValidator();
       configurationValidator.validateGetStatusConfiguration(configuration);
-      this.effectiveCommandConfiguration = configuration;
       SimpleLocalizeClient client = SimpleLocalizeClient.create(configuration.getBaseUrl(), configuration.getApiKey());
       StatusCommand command = new StatusCommand(client);
       command.invoke();
@@ -445,9 +445,9 @@ public class SimplelocalizeCliCommand implements Runnable
         configuration.setEnvironment(environment);
       }
 
+      this.effectiveCommandConfiguration = configuration;
       ConfigurationValidator configurationValidator = new ConfigurationValidator();
       configurationValidator.validateHostingPublishConfiguration(configuration);
-      this.effectiveCommandConfiguration = configuration;
       SimpleLocalizeClient client = SimpleLocalizeClient.create(configuration.getBaseUrl(), configuration.getApiKey());
       PublishHostingCommand command = new PublishHostingCommand(client, configuration);
       command.invoke();
@@ -480,9 +480,9 @@ public class SimplelocalizeCliCommand implements Runnable
         configuration.setApiKey(apiKey);
       }
 
+      this.effectiveCommandConfiguration = configuration;
       ConfigurationValidator configurationValidator = new ConfigurationValidator();
       configurationValidator.validateGetPurgeConfiguration(configuration);
-      this.effectiveCommandConfiguration = configuration;
       SimpleLocalizeClient client = SimpleLocalizeClient.create(configuration.getBaseUrl(), configuration.getApiKey());
       PurgeCommand command = new PurgeCommand(client, force);
       command.invoke();
@@ -512,7 +512,7 @@ public class SimplelocalizeCliCommand implements Runnable
       client.sendException(effectiveCommandConfiguration, exception);
     } catch (Exception ex)
     {
-      log.error("Unable to send exception to SimpleLocalize, please contact us at contact@simplelocalize.io");
+      log.error("Unable to send exception to SimpleLocalize, please contact us at contact@simplelocalize.io. {}", ex.getMessage());
       if (ex instanceof InterruptedException)
       {
         Thread.currentThread().interrupt();
