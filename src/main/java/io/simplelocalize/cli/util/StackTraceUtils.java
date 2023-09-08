@@ -11,6 +11,11 @@ public class StackTraceUtils
 
   public static String getStackTrace(Exception exception)
   {
+    if (exception == null)
+    {
+      return "";
+    }
+
     final StringWriter sw = new StringWriter();
     final PrintWriter pw = new PrintWriter(sw, true);
     exception.printStackTrace(pw);

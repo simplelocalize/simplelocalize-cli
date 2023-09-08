@@ -6,6 +6,7 @@ import io.simplelocalize.cli.client.SimpleLocalizeClient;
 import io.simplelocalize.cli.client.dto.proxy.Configuration;
 import io.simplelocalize.cli.client.dto.proxy.HostingResource;
 import io.simplelocalize.cli.io.JsonReader;
+import io.simplelocalize.cli.util.EnvironmentUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -42,7 +43,7 @@ public class PullHostingCommand implements CliCommand
     String projectToken = json.read("$.data.projectToken", String.class);
     log.info("Project token: {}", projectToken);
 
-    String environment = configuration.getEnvironment();
+    String environment = EnvironmentUtils.convertDefaultEnvironmentKeyFromPreviousCliVersionsToV3IfNeeded(configuration.getEnvironment());
     log.info("Environment: {}", environment);
 
     String filterRegex = configuration.getFilterRegex();
