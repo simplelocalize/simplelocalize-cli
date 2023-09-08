@@ -209,6 +209,15 @@ class SimplelocalizeCliCommandTest
   }
 
   @Test
+  void sendException() throws IOException
+  {
+    //when
+    assertDoesNotThrow(() -> {
+      sut.pull("my-api-key", "./my-path", null, null, MOCK_SERVER_BASE_URL);
+    });
+  }
+
+  @Test
   void status() throws IOException
   {
     // given
