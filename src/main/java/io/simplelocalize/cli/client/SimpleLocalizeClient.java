@@ -155,7 +155,9 @@ public class SimpleLocalizeClient
   public void sendException(Configuration configuration, Exception exception) throws IOException, InterruptedException
   {
     URI uri = uriFactory.buildStacktraceUri();
-    HttpRequest httpRequest = httpRequestFactory.createBaseRequest(uri).POST(ClientBodyBuilders.ofException(configuration, exception)).build();
+    HttpRequest httpRequest = httpRequestFactory.createBaseRequest(uri)
+            .header("Content-Type", "application/json; charset=utf-8")
+            .POST(ClientBodyBuilders.ofException(configuration, exception)).build();
     HttpResponse<String> httpResponse = httpClient.send(httpRequest, HttpResponse.BodyHandlers.ofString());
     throwOnError(httpResponse);
   }
