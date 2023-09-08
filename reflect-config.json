@@ -212,5 +212,11 @@
     "allPublicFields": true,
     "allDeclaredClasses": true,
     "allPublicClasses": true
+  },
+  {
+    "name": "com.jayway.jsonpath.internal.function.text.Length",
+    "methods": [
+      { "name": "<init>", "parameterTypes": [] }
+    ]
   }
 ]

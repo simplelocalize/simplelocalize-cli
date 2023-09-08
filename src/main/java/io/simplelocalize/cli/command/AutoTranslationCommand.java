@@ -1,15 +1,13 @@
 package io.simplelocalize.cli.command;
 
-import com.jayway.jsonpath.DocumentContext;
+import com.jayway.jsonpath.JsonPath;
 import io.simplelocalize.cli.client.SimpleLocalizeClient;
 import io.simplelocalize.cli.client.dto.proxy.AutoTranslationConfiguration;
 import io.simplelocalize.cli.client.dto.proxy.Configuration;
-import io.simplelocalize.cli.io.JsonReader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 
@@ -19,13 +17,11 @@ public class AutoTranslationCommand implements CliCommand
 
   private final SimpleLocalizeClient client;
   private final Configuration configuration;
-  private final JsonReader jsonReader;
 
   public AutoTranslationCommand(SimpleLocalizeClient client, Configuration configuration)
   {
     this.configuration = configuration;
     this.client = client;
-    this.jsonReader = new JsonReader();
   }
 
   public void invoke() throws IOException, InterruptedException
@@ -66,9 +62,7 @@ public class AutoTranslationCommand implements CliCommand
   public int getRunningJobsCount() throws IOException, InterruptedException
   {
     String responseData = client.getAutoTranslationJobs();
-    DocumentContext json = jsonReader.read(responseData);
-    LinkedList<?> runningJobs = json.read("$.data[*]", LinkedList.class);
-    return runningJobs.size();
+    return JsonPath.read(responseData, "$.data.length()");
   }
 
 }
