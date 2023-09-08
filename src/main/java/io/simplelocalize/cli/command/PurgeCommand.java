@@ -26,7 +26,7 @@ public class PurgeCommand implements CliCommand
   public void invoke() throws IOException, InterruptedException
   {
     String response = client.fetchProject();
-    String projectName = JsonPath.parse(response).read("$.name", String.class);
+    String projectName = JsonPath.parse(response).read("$.data.name", String.class);
 
     boolean isForceUsed = force != null && force;
     if (isForceUsed)

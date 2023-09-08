@@ -219,7 +219,7 @@ class SimplelocalizeCliCommandTest
   @Test
   void purge() throws IOException
   {
-    // given & when & then
+    // given
     String path = SimplelocalizeCliCommandTest.class.getClassLoader().getResource("mock-api-responses/fetch-project-empty-hosting-resources.json").getPath();
     String content = Files.readString(Path.of(path), StandardCharsets.UTF_8);
     mockServer.when(request()
@@ -234,8 +234,27 @@ class SimplelocalizeCliCommandTest
                             .withDelay(TimeUnit.MILLISECONDS, 200)
             );
 
+    mockServer.when(request()
+                            .withMethod("DELETE")
+                            .withPath("/api/v1/translations/purge")
+                            .withHeader("X-SimpleLocalize-Token", "my-api-key"),
+                    Times.exactly(1))
+            .respond(
+                    response()
+                            .withStatusCode(200)
+                            .withBody("""
+                                    {
+                                      "msg": "OK",
+                                      "status": 200,
+                                      "data": []
+                                    }
+                                    """)
+                            .withDelay(TimeUnit.MILLISECONDS, 200)
+            );
 
-    sut.status("my-api-key", MOCK_SERVER_BASE_URL);
+
+    //when
+    sut.purge("my-api-key", MOCK_SERVER_BASE_URL, true);
 
   }
 
