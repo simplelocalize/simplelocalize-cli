@@ -8,8 +8,6 @@ import org.slf4j.LoggerFactory;
 
 public final class ConfigurationValidator
 {
-  private static final Logger log = LoggerFactory.getLogger(ConfigurationValidator.class);
-
   public void validateExtractConfiguration(Configuration configuration)
   {
     validateIsNotEmptyOrNull(configuration.getApiKey(), "apiKey");
@@ -63,8 +61,8 @@ public final class ConfigurationValidator
 
     if (StringUtils.isEmpty(format))
     {
-      log.error("Missing '{}' value", argumentName);
-      throw new ConfigurationException();
+      String message = "Missing '%s' value".formatted(argumentName);
+      throw new ConfigurationException(message);
     }
   }
 }
