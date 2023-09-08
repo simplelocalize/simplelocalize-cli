@@ -53,6 +53,15 @@
             **/response/**/*
             **/request/**/*
         </sonar.coverage.exclusions>
+        <sonar.exclusions>
+            **/generated/**/*,
+            **/config/**/*,
+            **/exception/**/*,
+            **/dto/**/*
+            **/form/**/*
+            **/response/**/*
+            **/request/**/*
+        </sonar.exclusions>
     </properties>
 
     <dependencies>
