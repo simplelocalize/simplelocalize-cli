@@ -194,28 +194,28 @@ simplelocalize upload
 
 It publishes translation to [Translation Hosting](https://simplelocalize.io/translation-hosting). It behaves exactly the same as publish buttons in the SimpleLocalize (Hosting tab).
 
-Publishes translations from Translation Editor to the `latest` environment.
+Publishes translations from Translation Editor to the `_latest` environment.
 ```properties
-simplelocalize publish --apiKey <PROJECT_API_KEY> --environment latest
+simplelocalize publish --apiKey <PROJECT_API_KEY> --environment _latest
 ```
 
-Publishes translations from the `latest` environment to `production` environment.
+Publishes translations from the `_latest` environment to `_production` environment.
 ```properties
-simplelocalize publish --apiKey <PROJECT_API_KEY> --environment production
+simplelocalize publish --apiKey <PROJECT_API_KEY> --environment _production
 ```
 
 ## Translation Hosting: Pull resources
 
 Downloads all translation hosting files to given directory in `--pullPath` parameter. It overwrites existing files and creates subdirectories if necessary.
 
-Pulls translations from the `latest` environment.
+Pulls translations from the `_latest` environment.
 ```properties
-simplelocalize pull --apiKey <PROJECT_API_KEY> --pullPath ./hosting/ --environment latest
+simplelocalize pull --apiKey <PROJECT_API_KEY> --pullPath ./hosting/ --environment _latest
 ```
 
-Pulls translations from the `production` environment.
+Pulls translations from the `_production` environment.
 ```properties
-simplelocalize pull --apiKey <PROJECT_API_KEY> --pullPath ./hosting/ --environment production
+simplelocalize pull --apiKey <PROJECT_API_KEY> --pullPath ./hosting/ --environment _production
 ```
 
 If you would like to filter files which should be downloaded you can use `--filterRegex` param,
@@ -324,7 +324,7 @@ ignoreKeys:
 
 # Properties used by 'pull' and 'publish' command    
 pullPath: ./src/hosting/
-environment: 'production' # or 'latest' 
+environment: '_production' # or '_latest', or 'my_custom' 
 
 ```
 
