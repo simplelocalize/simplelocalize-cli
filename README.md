@@ -21,10 +21,10 @@ The installation process is automated by command-line scripts. Both scripts for 
 
 ```shell
 # macOs / Linux / Windows (WSL)
-curl -s https://get.simplelocalize.io/2.5/install | bash
+curl -s https://get.simplelocalize.io/2.4/install | bash
 
 # Windows (PowerShell)
-. { iwr -useb https://get.simplelocalize.io/2.5/install-windows } | iex;
+. { iwr -useb https://get.simplelocalize.io/2.4/install-windows } | iex;
 ```
 
 To change or update the CLI version, run the installation script with the desired version number in the URL, e.g.: 
@@ -51,6 +51,7 @@ Available commands:
 - `auto-translate` - starts [auto-translation](https://simplelocalize.io/auto-translation) jobs
 - `pull` - downloads translation files from [Translation Hosting](https://simplelocalize.io/translation-hosting)
 - `publish` - publishes translations to [Translation Hosting](https://simplelocalize.io/translation-hosting)
+- `purge` - removes all translation, translation keys and languages from [Translation Editor](https://simplelocalize.io/translation-editor)
 - `extract` - finds and extracts translation keys in your project files
 
 
@@ -83,9 +84,8 @@ e.g.: `./src/translations/{lang}/{ns}.json`.
 
 Upload format is a format of the file(s) with translations. [See available upload formats](https://simplelocalize.io/docs/general/file-formats/)
 
-#### Additional parameters:
+**Additional parameters:**
 - `--replace` allows you to **replace** existing translations with new ones.
-- `--delete` allows you to **delete** translations that are not present in uploaded files.
 - `--dryRun` allows you to **check** what translation files will be uploaded without actually uploading them.
 - `--uploadOptions` allows you to pass [additional options](https://simplelocalize.io/docs/general/options/) to the upload command. 
 Eg.: `--uploadOptions TRIM_LEADING_TRAILING_SPACES`. To pass multiple options, use comma as a separator.
@@ -108,29 +108,13 @@ e.g.: `./src/translations/{lang}/{ns}.json`.
 
 Download format is a format of the file(s) with translations. [See available download formats](https://simplelocalize.io/docs/general/file-formats/)
 
-#### Additional parameters:
+**Additional parameters:**
 - `--downloadOptions` allows you to pass [additional options](https://simplelocalize.io/docs/general/options/) to the download command. Eg.: `--downloadOptions WRITE_NESTED`.
+- `--downloadSort` allows you to sort translations in the downloaded file. Eg.: `--downloadSort NEWEST_KEYS_FIRST`. Available options: `NEWEST_KEYS_FIRST`, `NEWEST_KEYS_LAST`, `NAMESPACES`, `IMPORT_ORDER`.
 
 Learn more about [download translations command](https://simplelocalize.io/docs/cli/download-translations/).
 
-## Sync translations
-
-Sync command combines upload and download command executions.
-
-```properties
-simplelocalize sync 
-  --apiKey <PROJECT_API_KEY>
-  --downloadPath <DOWNLOAD_PATH>
-  --downloadFormat <DOWNLOAD_FORMAT>
-  --downloadOptions <DOWNLOAD_OPTIONS>
-  --uploadPath <UPLOAD_PATH>
-  --uploadFormat <UPLOAD_FORMAT>
-  --uploadOptions <UPLOAD_OPTIONS>
-```
-
-`--downloadOptions` and `--uploadOptions` parameters are optional.
-
-## Auto-translate translations
+## Auto-translate strings
 
 Auto-translate command starts [auto-translation](https://simplelocalize.io/auto-translation) jobs.
 
@@ -138,22 +122,8 @@ Auto-translate command starts [auto-translation](https://simplelocalize.io/auto-
 simplelocalize auto-translate --apiKey <PROJECT_API_KEY>
 ```
 
-Additional parameters:
+**Additional parameters:**
 - `--languageKeys` allows you to specify languages to auto-translate. Eg.: `--languageKeys en,de,fr`.
-
-## Extract translation keys
-
-Extract command finds and upload translation keys from project source code at `<SEARCH_DIRECTORY>` to SimpleLocalize.
-
-```properties
-simplelocalize extract 
-  --apiKey <PROJECT_API_KEY>
-  --searchDir <SEARCH_DIRECTOR>
-  --projectType <PROJECT_TYPE> 
-```
-
-See [available project types](https://simplelocalize.io/docs/cli/i18n-keys-extraction/).
-
 
 ## Usage examples
 
@@ -252,14 +222,56 @@ If you would like to filter files which should be downloaded you can use `--filt
 e.g.: `--filterRegex '__index.json'` will download only `__index.json` file.
 
 
-
-## Getting project details
+## Get project details
 
 Command gets project details and prints them to the console.
 
 ```properties
 simplelocalize status --apiKey <PROJECT_API_KEY>
 ```
+
+## Sync translations
+
+Sync command combines upload and download command executions.
+
+```properties
+simplelocalize sync 
+  --apiKey <PROJECT_API_KEY>
+  --downloadPath <DOWNLOAD_PATH>
+  --downloadFormat <DOWNLOAD_FORMAT>
+  --downloadOptions <DOWNLOAD_OPTIONS>
+  --uploadPath <UPLOAD_PATH>
+  --uploadFormat <UPLOAD_FORMAT>
+  --uploadOptions <UPLOAD_OPTIONS>
+```
+
+`--downloadOptions` and `--uploadOptions` parameters are optional.
+
+
+## Purge translations
+
+Command removes all translations, translation keys and languages from [Translation Editor](https://simplelocalize.io/translation-editor).
+
+```properties
+simplelocalize purge --apiKey <PROJECT_API_KEY>
+```
+
+**Additional parameters:**
+- `--force` allows you to skip confirmation prompt.
+
+## Extract translation keys
+
+Extract command finds and upload translation keys from project source code at `<SEARCH_DIRECTORY>` to SimpleLocalize.
+
+```properties
+simplelocalize extract 
+  --apiKey <PROJECT_API_KEY>
+  --searchDir <SEARCH_DIRECTOR>
+  --projectType <PROJECT_TYPE> 
+```
+
+See [available project types](https://simplelocalize.io/docs/cli/i18n-keys-extraction/).
+
 
 
 ## Configuration file
