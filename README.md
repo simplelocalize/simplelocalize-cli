@@ -15,6 +15,10 @@ SimpleLocalize command-line tool allows you to:
 
 It is a great tool for CI/CD pipelines and localization automation.
 
+## Github Actions support
+
+SimpleLocalize CLI is also availabe as a Github Action here: https://github.com/simplelocalize/github-action-cli
+
 ## Installation
 
 The installation process is automated by command-line scripts. Both scripts for Windows (PowerShell) and macOS/Linux/Windows downloads a binary file with CLI, copies it to user files and makes it available to run anywhere in the system from a command-line.
