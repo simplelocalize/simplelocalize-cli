@@ -11,9 +11,10 @@ jobs:
     name: "Testing ${{ matrix.version }} on ${{ matrix.os }}"
     runs-on: ${{ matrix.os }}
     strategy:
+      fail-fast: false
       matrix:
-        os: [ macos-10.15, macos-11, macos-12,ubuntu-18.04, ubuntu-20.04, ubuntu-22.04 ]
-        version: [ '2.4', '2.3', '2.2', '2.1', '2.0' ]
+        os: [ macos-11, macos-12, macos-13, ubuntu-20.04, ubuntu-22.04 ]
+        version: [ '2.5', '2.4', '2.3', '2.2' ]
     steps:
       - uses: actions/checkout@v3
       - name: Test on ${{ matrix.os }}
@@ -24,9 +25,10 @@ jobs:
     name: "Testing ${{ matrix.version }} on ${{ matrix.os }}"
     runs-on: ${{ matrix.os }}
     strategy:
+      fail-fast: false
       matrix:
         os: [ windows-2019, windows-2022 ]
-        version: [ '2.4', '2.3', '2.2', '2.1', '2.0' ]
+        version: [ '2.5', '2.4', '2.3', '2.2']
     steps:
       - uses: actions/checkout@v3
       - name: Test on ${{ matrix.os }}
