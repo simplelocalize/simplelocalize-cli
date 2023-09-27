@@ -16,7 +16,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ macos-11, macos-12, macos-13, ubuntu-20.04, ubuntu-22.04 ]
+        os: [ macos-11, macos-12, macos-13, ubuntu-22.04 ]
         version: [ '2.5', '2.4', '2.3', '2.2' ]
     steps:
       - uses: actions/checkout@v3
