@@ -1,10 +1,13 @@
 name: Install and execute
 
 on:
+  push:
+    branches:
+      - 'master'
   release:
     types: [published]
   schedule:
-    - cron: '12 * * * *'
+    - cron: '24 * * * *'
 
 jobs:
   test-unix:
