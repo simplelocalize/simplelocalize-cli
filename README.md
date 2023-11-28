@@ -1,23 +1,30 @@
+<p align="center">
+  <a href="https://simplelocalize.io">
+    <img src="static/simplelocalize-git-banner.png" width="100%">
+  </a>
+</p>
 
+<h3 align="center">Translation Management for software projects</h3>
+<p align="center">The easiest way to manage translation files for web and mobile apps.</p>
+
+<p align="center">
+  <a href="https://github.com/simplelocalize/simplelocalize-cli">
+    <img src="static/simplelocalize-git-hero.png">
+  </a>
+</p>
 
 ![Tests](https://github.com/simplelocalize/simplelocalize-cli/workflows/Run%20Tests/badge.svg)
 [![Maintainability](https://api.codeclimate.com/v1/badges/af2f6a7680929a8dba41/maintainability)](https://codeclimate.com/github/simplelocalize/simplelocalize-cli/maintainability)
 [![codecov](https://codecov.io/gh/simplelocalize/simplelocalize-cli/branch/master/graph/badge.svg)](https://codecov.io/gh/simplelocalize/simplelocalize-cli)
 
-## What it does?
+SimpleLocalize CLI is a command-line tool that allows you to manage translations in your software project,
+and it's a great tool for CI/CD pipelines and localization automation.
 
-SimpleLocalize command-line tool allows you to: 
-- upload and download translations,
-- [auto-translate](https://simplelocalize.io/auto-translate) translations,
-- publish and push [Translation Hosting](https://simplelocalize.io/translation-hosting) translations,
-- extract translation keys from your project files,
-- and more...
-
-It is a great tool for CI/CD pipelines and localization automation.
-
-## Github Actions support
-
-SimpleLocalize CLI is also availabe as a Github Action here: https://github.com/simplelocalize/github-action-cli
+- **Upload and download translations.** The main purpose of the command-line tool is to upload and download translation files from [Translation Editor](https://simplelocalize.io/translation-editor/) to your project.
+- **[Auto-translate](https://simplelocalize.io/auto-translate) strings.** Start auto-translation jobs from the command-line and get translated strings in a few minutes.
+- **[Hosted translations management](https://simplelocalize.io/translation-hosting).** Push and pull translations from Translation Hosting to your project using the command-line.
+- **[GitHub Actions support](https://github.com/simplelocalize/github-action-cli).** Use SimpleLocalize CLI in your GitHub Actions workflows.
+- **Check project status.** Get project details from the command-line and check if your translations are up-to-date.
 
 ## Installation
 
@@ -92,46 +99,9 @@ Upload format is a format of the file(s) with translations. [See available uploa
 - `--replace` allows you to **replace** existing translations with new ones.
 - `--dryRun` allows you to **check** what translation files will be uploaded without actually uploading them.
 - `--uploadOptions` allows you to pass [additional options](https://simplelocalize.io/docs/general/options/) to the upload command. 
-Eg.: `--uploadOptions TRIM_LEADING_TRAILING_SPACES`. To pass multiple options, use comma as a separator.
+E.g.: `--uploadOptions TRIM_LEADING_TRAILING_SPACES`. To pass multiple options, use comma as a separator.
 
 Learn more about [upload translations command](https://simplelocalize.io/docs/cli/upload-translations/).
-
-## Download translations
-
-Command downloads translation files from [Translation Editor](https://simplelocalize.io/translation-editor/) to given `<DOWNLOAD_PATH_PATTERN>`, e.g.: `./src/translations/messages.json`.
-
-```shell
-simplelocalize download 
-  --apiKey <PROJECT_API_KEY>
-  --downloadPath <DOWNLOAD_PATH_PATTERN>
-  --downloadFormat <DOWNLOAD_FORMAT>
-```
-
-You can use `{lang}` placeholder to specify language or locale and `{ns}` placeholder to specify namespace,
-e.g.: `./src/translations/{lang}/{ns}.json`.
-
-Download format is a format of the file(s) with translations. [See available download formats](https://simplelocalize.io/docs/general/file-formats/)
-
-**Additional parameters:**
-- `--downloadOptions` allows you to pass [additional options](https://simplelocalize.io/docs/general/options/) to the download command. Eg.: `--downloadOptions WRITE_NESTED`.
-- `--downloadSort` allows you to sort translations in the downloaded file. Eg.: `--downloadSort NEWEST_KEYS_FIRST`. Available options: `NEWEST_KEYS_FIRST`, `NEWEST_KEYS_LAST`, `NAMESPACES`, `IMPORT_ORDER`.
-
-Learn more about [download translations command](https://simplelocalize.io/docs/cli/download-translations/).
-
-## Auto-translate strings
-
-Auto-translate command starts [auto-translation](https://simplelocalize.io/auto-translation) jobs.
-
-```properties
-simplelocalize auto-translate --apiKey <PROJECT_API_KEY>
-```
-
-**Additional parameters:**
-- `--languageKeys` allows you to specify languages to auto-translate. Eg.: `--languageKeys en,de,fr`.
-
-## Usage examples
-
-Below, you can find some examples of using SimpleLocalize CLI.
 
 ### Example: One file with translations
 
@@ -193,6 +163,41 @@ simplelocalize upload
   --uploadFormat single-language-json
 ```
 
+
+## Download translations
+
+Command downloads translation files from the [Translation Editor](https://simplelocalize.io/translation-editor/) to the given `<DOWNLOAD_PATH_PATTERN>`,
+e.g.: `./src/translations/messages.json`.
+
+```shell
+simplelocalize download 
+  --apiKey <PROJECT_API_KEY>
+  --downloadPath <DOWNLOAD_PATH_PATTERN>
+  --downloadFormat <DOWNLOAD_FORMAT>
+```
+
+You can use `{lang}` placeholder to specify language or locale and `{ns}` placeholder to specify namespace,
+e.g.: `./src/translations/{lang}/{ns}.json`.
+
+Download format is a format of the file(s) with translations. [See available download formats](https://simplelocalize.io/docs/general/file-formats/)
+
+**Additional parameters:**
+- `--downloadOptions` allows you to pass [additional options](https://simplelocalize.io/docs/general/options/) to the download command. Eg.: `--downloadOptions WRITE_NESTED`.
+- `--downloadSort` allows you to sort translations in the downloaded file. Eg.: `--downloadSort NEWEST_KEYS_FIRST`. Available options: `NEWEST_KEYS_FIRST`, `NEWEST_KEYS_LAST`, `NAMESPACES`, `IMPORT_ORDER`.
+
+Learn more about [download translations command](https://simplelocalize.io/docs/cli/download-translations/).
+
+## Auto-translate strings
+
+Auto-translate command starts [auto-translation](https://simplelocalize.io/auto-translation) jobs for all languages in the project or for languages specified in `--languageKeys` parameter.
+Auto-translation configuration is taken from the last auto-translation job in the project for the given language.
+
+```properties
+simplelocalize auto-translate --apiKey <PROJECT_API_KEY>
+```
+
+**Additional parameters:**
+- `--languageKeys` allows you to specify project language keys to auto-translate, e.g.: `--languageKeys en,de,fr`.
 
 ## Translation Hosting: Publish translations
 
@@ -277,9 +282,8 @@ simplelocalize extract
 See [available project types](https://simplelocalize.io/docs/cli/i18n-keys-extraction/).
 
 
-
 ## Configuration file
-Use configuration file in order to simplify your bash command.
+Use configuration file to simplify your bash command.
 Arguments used in command always override properties set in the configuration file.
 By default, SimpleLocalize will load configuration from file named `simplelocalize.yml`.
 You can load configuration from different location by using a `-c` parameters.
