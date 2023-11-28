@@ -3,10 +3,8 @@
     <img src="static/simplelocalize-git-banner.png" width="100%">
   </a>
 </p>
-
 <h3 align="center">Translation Management for software projects</h3>
 <p align="center">The easiest way to manage translation files for web and mobile apps.</p>
-
 <p align="center">
   <a href="https://github.com/simplelocalize/simplelocalize-cli">
     <img src="static/simplelocalize-git-hero.png">
@@ -349,12 +347,16 @@ export http_proxy=http://someproxy.com:8080
 export http_proxy=http://user:password@someproxy.com:8080
 ```
 
-## Documentation
+## Support
 
-Visit [simplelocalize.io/docs/cli/get-started/](https://simplelocalize.io/docs/cli/get-started/) to get more information
-about SimpleLocalize CLI.
+Please refer to the [official SimpleLocalize documentation](https://simplelocalize.io/docs/cli/get-started/). That should help you troubleshoot common issues. For additional help, you can reach out to us on one of these channels:
+
+- [GitHub](https://github.com/simplelocalize/simplelocalize-cli/issues) (Bug and issue reports)
+- [Email](mailto:contact@simplelocalize.io) (General support)
+- [Changelog](https://simplelocalize.io/changelog/) (Product updates)
+- [YouTube](https://www.youtube.com/channel/UCBpYo2UnHwDGyK175SAKTig) (How-to tutorials)
 
 ## License
 
-Check LICENSE.md file
+See [LICENSE](/LICENSE) for more details.
 
