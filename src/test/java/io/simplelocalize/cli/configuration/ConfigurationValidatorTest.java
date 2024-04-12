@@ -16,7 +16,7 @@ class ConfigurationValidatorTest
   void validateUploadConfiguration()
   {
     //given
-    Configuration configuration = new Configuration();
+    Configuration configuration = Configuration.defaultConfiguration();
     configuration.setApiKey("my-api-key");
     configuration.setUploadFormat("multi-language-json");
     configuration.setUploadPath("./path");
@@ -33,7 +33,7 @@ class ConfigurationValidatorTest
   void validateDownloadConfiguration()
   {
     //given
-    Configuration configuration = new Configuration();
+    Configuration configuration = Configuration.defaultConfiguration();
     configuration.setApiKey("my-api-key");
     configuration.setDownloadFormat("multi-language-json");
     configuration.setDownloadPath("./path");
@@ -49,7 +49,7 @@ class ConfigurationValidatorTest
   void shouldThrowWhenApiKeyIsMissing()
   {
     //given
-    Configuration configuration = new Configuration();
+    Configuration configuration = Configuration.defaultConfiguration();
     configuration.setApiKey("");
     configuration.setDownloadFormat("multi-language-json");
     configuration.setDownloadPath("./path");

@@ -28,7 +28,7 @@ class AutoTranslationCommandTest
   void shouldStartNewAutoTranslationJobsForAllLanguages() throws IOException, InterruptedException
   {
     //given
-    Configuration configuration = new Configuration();
+    Configuration configuration = Configuration.defaultConfiguration();
     Mockito.when(client.getAutoTranslationJobs())
             .thenReturn("""
                     {
@@ -60,10 +60,11 @@ class AutoTranslationCommandTest
   void shouldStartNewAutoTranslationJobsForSelectedLanguagesWhenSomeJobsAreAlreadyRunning() throws IOException, InterruptedException
   {
     //given
-    Configuration configuration = new Configuration();
+    Configuration configuration = Configuration.defaultConfiguration();
 
-    AutoTranslationConfiguration autoTranslation = new AutoTranslationConfiguration();
-    autoTranslation.setLanguageKeys(List.of("en", "pl"));
+    AutoTranslationConfiguration autoTranslation = AutoTranslationConfiguration.builder()
+            .languageKeys(List.of("en", "pl"))
+            .build();
     configuration.setAutoTranslation(autoTranslation);
 
     Mockito.when(client.getAutoTranslationJobs())
@@ -147,7 +148,7 @@ class AutoTranslationCommandTest
   void getRunningJobsCount() throws IOException, InterruptedException
   {
     //given
-    Configuration configuration = new Configuration();
+    Configuration configuration = Configuration.defaultConfiguration();
 
     Mockito.when(client.getAutoTranslationJobs())
             .thenReturn("""

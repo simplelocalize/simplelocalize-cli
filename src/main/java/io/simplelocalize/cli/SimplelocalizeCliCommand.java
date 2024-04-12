@@ -352,8 +352,9 @@ public class SimplelocalizeCliCommand implements Runnable
 
       if (languageKeys != null)
       {
-        AutoTranslationConfiguration autoTranslationConfiguration = new AutoTranslationConfiguration();
-        autoTranslationConfiguration.setLanguageKeys(languageKeys);
+        AutoTranslationConfiguration autoTranslationConfiguration = AutoTranslationConfiguration.builder()
+                .languageKeys(languageKeys)
+                .build();
         configuration.setAutoTranslation(autoTranslationConfiguration);
       }
 

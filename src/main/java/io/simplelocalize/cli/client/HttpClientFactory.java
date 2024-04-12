@@ -38,8 +38,8 @@ public class HttpClientFactory
       ProxySelector proxySelector = getProxySelector(proxyConfigOptional);
       builder.proxy(proxySelector);
 
-      String proxyUsername = proxyConfigOptional.getUsername();
-      String proxyPassword = proxyConfigOptional.getPassword();
+      String proxyUsername = proxyConfigOptional.username();
+      String proxyPassword = proxyConfigOptional.password();
       boolean hasProxyAuthentication = proxyUsername != null && proxyPassword != null;
       if (hasProxyAuthentication)
       {
@@ -63,8 +63,8 @@ public class HttpClientFactory
 
   private static ProxySelector getProxySelector(ProxyConfiguration proxyConfigOptional)
   {
-    String host = proxyConfigOptional.getHost();
-    Integer port = proxyConfigOptional.getPort();
+    String host = proxyConfigOptional.host();
+    Integer port = proxyConfigOptional.port();
     InetSocketAddress proxyAddress = new InetSocketAddress(host, port);
     return ProxySelector.of(proxyAddress);
   }

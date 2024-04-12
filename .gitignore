@@ -59,7 +59,7 @@ $RECYCLE.BIN/
 # Windows shortcuts
 *.lnk
 
-/simplelocalize.yml
+/simplelocalize-sample.yml
 /dependency-reduced-pom.xml
 /build-far-jar.sh
 /build-quick.sh

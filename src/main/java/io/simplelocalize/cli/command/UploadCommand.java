@@ -16,8 +16,6 @@ import java.nio.file.Path;
 import java.util.List;
 import java.util.Optional;
 
-import static io.simplelocalize.cli.client.dto.UploadRequest.UploadFileRequestBuilder.builder;
-
 public class UploadCommand implements CliCommand
 {
   private static final Logger log = LoggerFactory.getLogger(UploadCommand.class);
@@ -106,7 +104,7 @@ public class UploadCommand implements CliCommand
 
 
       String namespace = fileToUpload.namespace();
-      UploadRequest uploadRequest = builder()
+      UploadRequest uploadRequest = UploadRequest.builder()
               .withPath(path)
               .withLanguageKey(requestLanguageKey)
               .withNamespace(namespace)

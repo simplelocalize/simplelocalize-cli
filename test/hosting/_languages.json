@@ -1,0 +1,15 @@
+[ {
+  "key": "en",
+  "name": "English",
+  "isDefault": true
+}, {
+  "key": "es_ES",
+  "name": "",
+  "isDefault": false,
+  "icon": "globe"
+}, {
+  "key": "pl_PL",
+  "name": "Polish",
+  "isDefault": false,
+  "icon": "pl"
+} ]

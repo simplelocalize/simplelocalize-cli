@@ -63,10 +63,11 @@ public class SystemProxySelector
       username = usernameAndPassword[0];
       password = usernameAndPassword[1];
     }
-    return new ProxyConfiguration()
-            .setHost(host)
-            .setPort(port)
-            .setUsername(username)
-            .setPassword(password);
+    return ProxyConfiguration.builder()
+            .host(host)
+            .port(port)
+            .username(username)
+            .password(password)
+            .build();
   }
 }

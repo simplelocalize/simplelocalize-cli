@@ -27,7 +27,7 @@ class ExtractCommandTest
   {
     //given
     Path path = TestResourcesUtility.read("react-intl-small-subset");
-    Configuration configuration = new Configuration();
+    Configuration configuration = Configuration.defaultConfiguration();
     configuration.setApiKey("my-api-key");
     configuration.setSearchDir(path.toString());
     configuration.setProjectType("yahoo/react-intl");

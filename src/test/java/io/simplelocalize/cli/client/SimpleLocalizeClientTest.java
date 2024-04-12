@@ -94,7 +94,7 @@ public class SimpleLocalizeClientTest
                             .withDelay(TimeUnit.MILLISECONDS, 200)
             );
 
-    UploadRequest uploadRequest = UploadRequest.UploadFileRequestBuilder.builder()
+    UploadRequest uploadRequest = UploadRequest.builder()
             .withPath(Path.of("./junit/mock-server/test.json"))
             .withLanguageKey(null)
             .withFormat("multi-language-json")
@@ -129,7 +129,7 @@ public class SimpleLocalizeClientTest
                             .withDelay(TimeUnit.MILLISECONDS, 200)
             );
 
-    UploadRequest uploadRequest = UploadRequest.UploadFileRequestBuilder.builder()
+    UploadRequest uploadRequest = UploadRequest.builder()
             .withPath(Path.of("./junit/mock-server/test.json"))
             .withLanguageKey("en")
             .withFormat("multi-language-json")
@@ -165,7 +165,7 @@ public class SimpleLocalizeClientTest
                             .withDelay(TimeUnit.MILLISECONDS, 200)
             );
 
-    UploadRequest uploadRequest = UploadRequest.UploadFileRequestBuilder.builder()
+    UploadRequest uploadRequest = UploadRequest.builder()
             .withPath(Path.of("./junit/mock-server/test.json"))
             .withLanguageKey("en")
             .withFormat("multi-language-json")
@@ -202,7 +202,7 @@ public class SimpleLocalizeClientTest
                             .withDelay(TimeUnit.MILLISECONDS, 200)
             );
 
-    DownloadRequest downloadRequest = DownloadRequest.DownloadRequestBuilder.builder()
+    DownloadRequest downloadRequest = DownloadRequest.builder()
             .withFormat("java-properties")
             .withOptions(List.of("SPLIT_BY_NAMESPACES"))
             .build();
@@ -235,7 +235,7 @@ public class SimpleLocalizeClientTest
                             .withDelay(TimeUnit.MILLISECONDS, 200)
             );
 
-    DownloadRequest downloadRequest = DownloadRequest.DownloadRequestBuilder.builder()
+    DownloadRequest downloadRequest = DownloadRequest.builder()
             .withFormat("java-properties")
             .withOptions(List.of("SPLIT_BY_NAMESPACES", "USE_NESTED_JSON"))
             .build();

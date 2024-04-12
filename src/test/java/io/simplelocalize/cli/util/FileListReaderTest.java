@@ -9,7 +9,6 @@ import java.io.IOException;
 import java.nio.file.Paths;
 import java.util.List;
 
-import static io.simplelocalize.cli.client.dto.FileToUpload.FileToUploadBuilder.builder;
 
 class FileListReaderTest
 {
@@ -29,22 +28,22 @@ class FileListReaderTest
     //then
     Assertions.assertThat(result)
             .containsExactlyInAnyOrder(
-                    builder()
+                    FileToUpload.builder()
                             .withPath(Paths.get("./junit/locale-directory-namespace-first/common/en.json"))
                             .withLanguage("en")
                             .withNamespace("common")
                             .build(),
-                    builder()
+                    FileToUpload.builder()
                             .withPath(Paths.get("./junit/locale-directory-namespace-first/home/en.json"))
                             .withLanguage("en")
                             .withNamespace("home")
                             .build(),
-                    builder()
+                    FileToUpload.builder()
                             .withPath(Paths.get("./junit/locale-directory-namespace-first/common/pl.json"))
                             .withLanguage("pl")
                             .withNamespace("common")
                             .build(),
-                    builder()
+                    FileToUpload.builder()
                             .withPath(Paths.get("./junit/locale-directory-namespace-first/home/pl.json"))
                             .withLanguage("pl")
                             .withNamespace("home")
@@ -64,22 +63,22 @@ class FileListReaderTest
     //then
     Assertions.assertThat(result)
             .containsExactlyInAnyOrder(
-                    builder()
+                    FileToUpload.builder()
                             .withPath(Paths.get("./junit/locale-directory/en/common.json"))
                             .withLanguage("en")
                             .withNamespace("common")
                             .build(),
-                    builder()
+                    FileToUpload.builder()
                             .withPath(Paths.get("./junit/locale-directory/en/home.json"))
                             .withLanguage("en")
                             .withNamespace("home")
                             .build(),
-                    builder()
+                    FileToUpload.builder()
                             .withPath(Paths.get("./junit/locale-directory/pl/common.json"))
                             .withLanguage("pl")
                             .withNamespace("common")
                             .build(),
-                    builder()
+                    FileToUpload.builder()
                             .withPath(Paths.get("./junit/locale-directory/pl/home.json"))
                             .withLanguage("pl")
                             .withNamespace("home")
@@ -98,12 +97,12 @@ class FileListReaderTest
 
     //then
     Assertions.assertThat(result).containsExactlyInAnyOrder(
-            builder()
+            FileToUpload.builder()
                     .withPath(Paths.get("./junit/lang-in-directory/en/strings.xml"))
                     .withLanguage("en")
                     .withNamespace(null)
                     .build(),
-            builder()
+            FileToUpload.builder()
                     .withPath(Paths.get("./junit/lang-in-directory/es/strings.xml"))
                     .withLanguage("es")
                     .withNamespace(null)
@@ -122,12 +121,12 @@ class FileListReaderTest
 
     //then
     Assertions.assertThat(result).containsExactlyInAnyOrder(
-            builder()
+            FileToUpload.builder()
                     .withPath(Paths.get("./junit/lang-in-directory-with-prefix/values-en/strings.xml"))
                     .withLanguage("en")
                     .withNamespace(null)
                     .build(),
-            builder()
+            FileToUpload.builder()
                     .withPath(Paths.get("./junit/lang-in-directory-with-prefix/values-es/strings.xml"))
                     .withLanguage("es")
                     .withNamespace(null)
@@ -146,12 +145,12 @@ class FileListReaderTest
 
     //then
     Assertions.assertThat(result).containsExactlyInAnyOrder(
-            builder()
+            FileToUpload.builder()
                     .withPath(Paths.get("./junit/lang-in-filename/en.json"))
                     .withLanguage("en")
                     .withNamespace(null)
                     .build(),
-            builder()
+            FileToUpload.builder()
                     .withPath(Paths.get("./junit/lang-in-filename/es.json"))
                     .withLanguage("es")
                     .withNamespace(null)
@@ -170,17 +169,17 @@ class FileListReaderTest
 
     //then
     Assertions.assertThat(result).containsExactlyInAnyOrder(
-            builder()
+            FileToUpload.builder()
                     .withPath(Paths.get("./junit/lang-in-filename-suffix/messages_de.properties"))
                     .withLanguage("de")
                     .withNamespace(null)
                     .build(),
-            builder()
+            FileToUpload.builder()
                     .withPath(Paths.get("./junit/lang-in-filename-suffix/messages_pl-PL.properties"))
                     .withLanguage("pl-PL")
                     .withNamespace(null)
                     .build(),
-            builder()
+            FileToUpload.builder()
                     .withPath(Paths.get("./junit/lang-in-filename-suffix/messages_pl.properties"))
                     .withLanguage("pl")
                     .withNamespace(null)
@@ -199,7 +198,7 @@ class FileListReaderTest
 
     //then
     Assertions.assertThat(result).containsExactlyInAnyOrder(
-            builder()
+            FileToUpload.builder()
                     .withPath(Paths.get("./junit/lang-in-filename-suffix/messages_pl.properties"))
                     .withLanguage(null)
                     .withNamespace(null)
@@ -221,32 +220,32 @@ class FileListReaderTest
     Assertions
             .assertThat(result)
             .containsExactlyInAnyOrder(
-                    builder()
+                    FileToUpload.builder()
                             .withPath(Paths.get("./junit/extreme-edge-cases/meaningless-directory/email_messages_de-DE.properties"))
                             .withLanguage("de-DE")
                             .withNamespace("email_messages")
                             .build(),
-                    builder()
+                    FileToUpload.builder()
                             .withPath(Paths.get("./junit/extreme-edge-cases/meaningless-directory/email_messages_en%US.properties"))
                             .withLanguage("en%US")
                             .withNamespace("email_messages")
                             .build(),
-                    builder()
+                    FileToUpload.builder()
                             .withPath(Paths.get("./junit/extreme-edge-cases/meaningless-directory/email_messages_es-ES.properties"))
                             .withLanguage("es-ES")
                             .withNamespace("email_messages")
                             .build(),
-                    builder()
+                    FileToUpload.builder()
                             .withPath(Paths.get("./junit/extreme-edge-cases/meaningless-directory/home_en-GB.properties"))
                             .withLanguage("en-GB")
                             .withNamespace("home")
                             .build(),
-                    builder()
+                    FileToUpload.builder()
                             .withPath(Paths.get("./junit/extreme-edge-cases/meaningless-directory/home-en_GB.properties"))
                             .withLanguage("GB")
                             .withNamespace("home-en")
                             .build(),
-                    builder()
+                    FileToUpload.builder()
                             .withPath(Paths.get("./junit/extreme-edge-cases/meaningless-directory/home_pl-PL.properties"))
                             .withLanguage("pl-PL")
                             .withNamespace("home")
@@ -266,22 +265,22 @@ class FileListReaderTest
     //then
     Assertions.assertThat(result).hasSize(4)
             .containsExactlyInAnyOrder(
-                    builder()
+                    FileToUpload.builder()
                             .withPath(Paths.get("./junit/lang-as-directories-ns-as-filename/meaningless-directory/en/common.json"))
                             .withLanguage("en")
                             .withNamespace("common")
                             .build(),
-                    builder()
+                    FileToUpload.builder()
                             .withPath(Paths.get("./junit/lang-as-directories-ns-as-filename/meaningless-directory/en/home.json"))
                             .withLanguage("en")
                             .withNamespace("home")
                             .build(),
-                    builder()
+                    FileToUpload.builder()
                             .withPath(Paths.get("./junit/lang-as-directories-ns-as-filename/meaningless-directory/es/home.json"))
                             .withLanguage("es")
                             .withNamespace("home")
                             .build(),
-                    builder()
+                    FileToUpload.builder()
                             .withPath(Paths.get("./junit/lang-as-directories-ns-as-filename/meaningless-directory/pl/common.json"))
                             .withLanguage("pl")
                             .withNamespace("common")

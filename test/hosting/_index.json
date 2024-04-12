@@ -1,0 +1,17 @@
+{
+  "pl_PL": {
+    "SAMPLE": "Resize your files - make them smaller!",
+    "ACHIEVEMENTS": "Osiągnięcia",
+    "HELLO_WORLD": "Witaj świecie"
+  },
+  "en": {
+    "SAMPLE": "Resize your files – make them smaller!",
+    "ACHIEVEMENTS": "Achievements",
+    "HELLO_WORLD": "Hello World"
+  },
+  "es_ES": {
+    "SAMPLE": "Resize your files—make them smaller!",
+    "ACHIEVEMENTS": "logros",
+    "HELLO_WORLD": "Hola Mundo"
+  }
+}
