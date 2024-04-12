@@ -3,21 +3,21 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>io.simplelocalize</groupId>
-    <artifactId>simplelocalize-cli</artifactId>
-    <version>2.5.1</version>
+    <artifactId>cli</artifactId>
+    <version>2.6.0</version>
     <packaging>jar</packaging>
     <name>simplelocalize-cli</name>
     <description>Official SimpleLocalize Command Line Interface</description>
 
     <properties>
-        <jdk.version>17</jdk.version>
+        <jdk.version>21</jdk.version>
         <exec.mainClass>io.simplelocalize.cli.SimplelocalizeCliCommand</exec.mainClass>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
         <!-- versions -->
         <junit5.version>5.9.2</junit5.version>
-        <picocli.version>4.7.4</picocli.version>
+        <picocli.version>4.7.5</picocli.version>
         <jackson.version>2.14.2</jackson.version>
 
         <!-- maven -->
@@ -30,6 +30,7 @@
         <native-maven-plugin.version>0.9.22</native-maven-plugin.version>
         <maven-surefire-plugin.version>2.22.2</maven-surefire-plugin.version>
         <maven-failsafe-plugin.version>2.22.2</maven-failsafe-plugin.version>
+        <lombok.version>1.18.30</lombok.version>
         <graalvm.quickBuild>false</graalvm.quickBuild>
 
         <!-- jacoco -->
@@ -85,6 +86,13 @@
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
             <version>${jackson.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>${lombok.version}</version>
+            <optional>true</optional>
         </dependency>
 
         <!-- test -->
@@ -184,8 +192,6 @@
             </activation>
             <build>
                 <plugins>
-
-
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-jar-plugin</artifactId>
@@ -212,6 +218,11 @@
                                     <groupId>info.picocli</groupId>
                                     <artifactId>picocli-codegen</artifactId>
                                     <version>${picocli.version}</version>
+                                </path>
+                                <path>
+                                    <groupId>org.projectlombok</groupId>
+                                    <artifactId>lombok</artifactId>
+                                    <version>${lombok.version}</version>
                                 </path>
                             </annotationProcessorPaths>
                             <compilerArgs>
