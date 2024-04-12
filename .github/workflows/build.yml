@@ -28,7 +28,7 @@ jobs:
       - name: 'Get version'
         run: echo "::set-env name=VERSION::$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)"
       - name: 'Upload artifact'
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: 'simplelocalize-cli-${{env.VERSION}}.jar'
           path: 'target/simplelocalize-cli-${{env.VERSION}}.jar'
@@ -68,7 +68,7 @@ jobs:
       - name: "Rename executable"
         run: mv ./target/${{ matrix.filename }} ./target/${{ matrix.downloadFilename }}
       - name: "Upload artifact"
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: simplelocalize-cli-${{ matrix.label }}
           path: ./target/${{ matrix.downloadFilename }}

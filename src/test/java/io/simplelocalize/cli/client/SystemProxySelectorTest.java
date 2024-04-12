@@ -61,7 +61,7 @@ class SystemProxySelectorTest
     String result = given.toString();
 
     //then
-    assertEquals("host='123.456.789.000', port=8080, username='foo', password='*****'", result);
+    assertEquals("host='123.456.789.000', port=8080, username='foo', password='***'", result);
   }
 
   @Test

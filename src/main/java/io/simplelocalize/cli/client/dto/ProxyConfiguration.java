@@ -10,4 +10,11 @@ public record ProxyConfiguration(
         String password
 )
 {
+
+  @Override
+  public String toString()
+  {
+    return "host='%s', port=%d, username='%s', password='%s'".formatted(host, port, username, password == null ? null : "***");
+  }
+
 }
