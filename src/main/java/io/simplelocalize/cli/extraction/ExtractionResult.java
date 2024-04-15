@@ -1,48 +1,36 @@
 package io.simplelocalize.cli.extraction;
 
+import lombok.Builder;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 import java.nio.file.Path;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
 
-public final class ExtractionResult
+@Data
+@Builder
+@EqualsAndHashCode(of = "key")
+public class ExtractionResult
 {
+  private String key;
+  private String translation;
+  private Path filePath;
 
-  private final Set<String> keys;
-  private final List<Path> processedFiles;
-
-  public ExtractionResult(Set<String> keys, List<Path> processedFiles)
+  public static Collection<ExtractionResult> fromCollection(Collection<String> data, Path file)
   {
-    this.keys = keys;
-    this.processedFiles = processedFiles;
-  }
+    if (data == null)
+    {
+      return new ArrayList<>();
+    }
 
-  public static ExtractionResult of(Set<String> keys, List<Path> processedFiles)
-  {
-    return new ExtractionResult(keys, processedFiles);
-  }
-
-  public Set<String> getKeys()
-  {
-    return new HashSet<>(keys);
-  }
-
-  public List<Path> getProcessedFiles()
-  {
-    return new ArrayList<>(processedFiles);
-  }
-
-  @Override
-  public boolean equals(Object o)
-  {
-    if (this == o) return true;
-    if (o == null || getClass() != o.getClass()) return false;
-    ExtractionResult that = (ExtractionResult) o;
-    return keys.equals(that.keys) && processedFiles.equals(that.processedFiles);
-  }
-
-  @Override
-  public int hashCode()
-  {
-    return Objects.hash(keys, processedFiles);
+    return data.stream()
+            .map(key -> ExtractionResult.builder()
+                    .key(key)
+                    .translation("")
+                    .filePath(file)
+                    .build()
+            )
+            .toList();
   }
 }

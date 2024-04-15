@@ -1,9 +1,9 @@
 package io.simplelocalize.cli.command;
 
-import io.simplelocalize.cli.client.SimpleLocalizeClient;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import io.simplelocalize.cli.client.ObjectMapperSingleton;
 import io.simplelocalize.cli.client.dto.proxy.Configuration;
-import io.simplelocalize.cli.extraction.ExtractionResult;
-import io.simplelocalize.cli.extraction.ProjectProcessorFactory;
+import io.simplelocalize.cli.extraction.*;
 import io.simplelocalize.cli.extraction.processor.ExtractionProcessor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,38 +13,68 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 public class ExtractCommand implements CliCommand
 {
   private static final Logger log = LoggerFactory.getLogger(ExtractCommand.class);
 
-  private final SimpleLocalizeClient client;
   private final Configuration configuration;
+  private final ExtractionProcessorFactory extractionProcessorFactory = new ExtractionProcessorFactory();
+  private final ExtractionResultMapper extractionResultMapper = new ExtractionResultMapper();
 
-  public ExtractCommand(SimpleLocalizeClient client, Configuration configuration)
+  public ExtractCommand(Configuration configuration)
   {
     this.configuration = configuration;
-    this.client = client;
   }
 
   public void invoke() throws IOException, InterruptedException
   {
-    String searchDir = configuration.getSearchDir();
-    String projectType = configuration.getProjectType();
+    final String projectType = configuration.getProjectType();
+    log.info("Project type: {}", projectType);
 
-    ProjectProcessorFactory processorFactory = new ProjectProcessorFactory();
-    ExtractionProcessor extractionProcessor = processorFactory.createForType(projectType);
-    ExtractionResult result = extractionProcessor.process(Paths.get(searchDir));
+    final String searchDir = configuration.getSearchDir();
+    log.info("Search directory: {}", searchDir);
 
-    Set<String> keys = result.getKeys();
-    List<Path> processedFiles = result.getProcessedFiles();
-    log.info("Found {} unique keys in {} components", keys.size(), processedFiles.size());
+    final String outputPath = configuration.getOutputPath();
+    log.info("Output path: {}", outputPath);
 
-    Set<String> ignoredKeys = new HashSet<>(configuration.getIgnoreKeys());
-    keys.removeAll(ignoredKeys);
+    final List<String> ignorePaths = configuration.getIgnorePaths();
+    log.info("Ignoring paths: {}", ignorePaths);
 
-    Integer processedKeys = client.uploadKeys(keys);
-    log.info("Uploaded {} keys to SimpleLocalize", processedKeys);
+    final List<String> ignoreKeys = configuration.getIgnoreKeys();
+    Set<String> ignoredKeys = new HashSet<>(ignoreKeys);
+    log.info("Ignoring keys: {}", ignoredKeys);
+
+    ExtractionProcessor extractionProcessor = extractionProcessorFactory.createForType(projectType);
+    Set<ExtractionResult> results = new HashSet<>(extractionProcessor.process(Paths.get(searchDir), ignorePaths));
+
+    Set<String> uniqueKeys = results.stream()
+            .map(ExtractionResult::getKey)
+            .collect(Collectors.toSet());
+
+    Set<Path> uniqueFiles = results.stream()
+            .map(ExtractionResult::getFilePath)
+            .collect(Collectors.toSet());
+
+    log.info("Extracted {} unique keys from {} files", uniqueKeys.size(), uniqueFiles.size());
+
+    Set<ExtractionResult> filteredKeys = ExtractionUtils.filterOutIgnoredKeys(results, ignoredKeys);
+    Map<String, SimpleLocalizeJsonMetadata> keysWithMetadata = extractionResultMapper.map(filteredKeys);
+
+    log.info("Saving results to: {}", outputPath);
+    saveToFile(keysWithMetadata, outputPath);
+    log.info("Done!");
+  }
+
+
+  private void saveToFile(Map<String, SimpleLocalizeJsonMetadata> data, String outputPath) throws IOException
+  {
+    ObjectMapper objectMapperSingleton = ObjectMapperSingleton.getInstance();
+    objectMapperSingleton
+            .writerWithDefaultPrettyPrinter()
+            .writeValue(Paths.get(outputPath).toFile(), data);
   }
 }

@@ -7,6 +7,7 @@ import org.slf4j.LoggerFactory;
 import org.yaml.snakeyaml.LoaderOptions;
 import org.yaml.snakeyaml.Yaml;
 import org.yaml.snakeyaml.constructor.Constructor;
+import org.yaml.snakeyaml.introspector.BeanAccess;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -33,7 +34,7 @@ public final class ConfigurationLoader
       configurationFilePath = DEFAULT_CONFIG_FILE_NAME;
     }
 
-    return Objects.requireNonNullElse(configurationLoader.load(configurationFilePath), new Configuration());
+    return Objects.requireNonNullElse(configurationLoader.load(configurationFilePath), Configuration.defaultConfiguration());
   }
 
   private Configuration load(Path configurationFilePath)
@@ -44,6 +45,7 @@ public final class ConfigurationLoader
     Constructor constructor = new Constructor(Configuration.class, loadingConfig);
 
     Yaml yaml = new Yaml(constructor);
+    yaml.setBeanAccess(BeanAccess.PROPERTY);
     log.info("Loading configuration file from: {}", configurationFilePath);
     Configuration configuration;
     try
@@ -54,7 +56,7 @@ public final class ConfigurationLoader
     } catch (FileNotFoundException e)
     {
       log.info("Configuration file not found.");
-      return new Configuration();
+      return Configuration.defaultConfiguration();
     } catch (Exception e)
     {
       log.error("Unable to load configuration: {}", e.getMessage());

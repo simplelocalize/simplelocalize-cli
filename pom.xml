@@ -4,21 +4,22 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>io.simplelocalize</groupId>
     <artifactId>simplelocalize-cli</artifactId>
-    <version>2.5.1</version>
+    <version>2.6.0-beta</version>
     <packaging>jar</packaging>
     <name>simplelocalize-cli</name>
     <description>Official SimpleLocalize Command Line Interface</description>
 
     <properties>
-        <jdk.version>17</jdk.version>
+        <jdk.version>21</jdk.version>
         <exec.mainClass>io.simplelocalize.cli.SimplelocalizeCliCommand</exec.mainClass>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
         <!-- versions -->
         <junit5.version>5.9.2</junit5.version>
-        <picocli.version>4.7.4</picocli.version>
+        <picocli.version>4.7.5</picocli.version>
         <jackson.version>2.14.2</jackson.version>
+        <lombok.version>1.18.30</lombok.version>
 
         <!-- maven -->
         <maven.compiler.target>${jdk.version}</maven.compiler.target>
@@ -87,6 +88,13 @@
             <version>${jackson.version}</version>
         </dependency>
 
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>${lombok.version}</version>
+            <optional>true</optional>
+        </dependency>
+
         <!-- test -->
         <dependency>
             <groupId>org.junit.jupiter</groupId>
@@ -115,13 +123,13 @@
         <dependency>
             <groupId>org.mockito</groupId>
             <artifactId>mockito-core</artifactId>
-            <version>4.2.0</version>
+            <version>5.7.0</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.mockito</groupId>
             <artifactId>mockito-junit-jupiter</artifactId>
-            <version>4.2.0</version>
+            <version>5.7.0</version>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -139,7 +147,7 @@
         <dependency>
             <groupId>org.mockito</groupId>
             <artifactId>mockito-inline</artifactId>
-            <version>3.12.4</version>
+            <version>5.2.0</version>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -184,8 +192,6 @@
             </activation>
             <build>
                 <plugins>
-
-
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-jar-plugin</artifactId>
@@ -212,6 +218,11 @@
                                     <groupId>info.picocli</groupId>
                                     <artifactId>picocli-codegen</artifactId>
                                     <version>${picocli.version}</version>
+                                </path>
+                                <path>
+                                    <groupId>org.projectlombok</groupId>
+                                    <artifactId>lombok</artifactId>
+                                    <version>${lombok.version}</version>
                                 </path>
                             </annotationProcessorPaths>
                             <compilerArgs>

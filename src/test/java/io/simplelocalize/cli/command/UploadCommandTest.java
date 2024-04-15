@@ -43,7 +43,7 @@ class UploadCommandTest
   public void shouldUploadTwelveFiles() throws Exception
   {
     //given
-    Configuration configuration = new Configuration();
+    Configuration configuration = Configuration.defaultConfiguration();
     configuration.setApiKey("my-api-key");
     configuration.setUploadPath("./junit/download-test/values-{lang}/strings.xml");
     configuration.setUploadFormat("android");
@@ -54,7 +54,7 @@ class UploadCommandTest
 
     //then
     Mockito.verify(client, times(12)).uploadFile(
-            Mockito.refEq(UploadRequest.UploadFileRequestBuilder.builder()
+            Mockito.refEq(UploadRequest.builder()
                             .withPath(Path.of("./junit/download-test/values-{lang}/strings.xml"))
                             .withFormat("android")
                             .withOptions(Collections.emptyList())
@@ -68,7 +68,7 @@ class UploadCommandTest
   public void shouldUploadOneFileWithLangTemplate() throws Exception
   {
     //given
-    Configuration configuration = new Configuration();
+    Configuration configuration = Configuration.defaultConfiguration();
     configuration.setApiKey("my-api-key");
     configuration.setUploadPath("./junit/download-test/values-{lang}/strings.xml");
     configuration.setLanguageKey("en");
@@ -80,7 +80,7 @@ class UploadCommandTest
 
     //then
     Mockito.verify(client, times(1)).uploadFile(
-            Mockito.refEq(UploadRequest.UploadFileRequestBuilder.builder()
+            Mockito.refEq(UploadRequest.builder()
                             .withPath(Path.of("./junit/download-test/values-{lang}/strings.xml"))
                             .withFormat("android")
                             .withLanguageKey("en")
@@ -95,7 +95,7 @@ class UploadCommandTest
   public void shouldUploadOneFileWithOnlyTranslationKeys() throws Exception
   {
     //given
-    Configuration configuration = new Configuration();
+    Configuration configuration = Configuration.defaultConfiguration();
     configuration.setApiKey("my-api-key");
     configuration.setUploadPath("./junit/download-test/values-en/strings.xml");
     configuration.setUploadFormat("android");
@@ -106,7 +106,7 @@ class UploadCommandTest
 
     //then
     Mockito.verify(client, times(1)).uploadFile(
-            Mockito.refEq(UploadRequest.UploadFileRequestBuilder.builder()
+            Mockito.refEq(UploadRequest.builder()
                     .withPath(Path.of("./junit/download-test/values-en/strings.xml"))
                     .withFormat("android")
                     .withLanguageKey("")
@@ -120,7 +120,7 @@ class UploadCommandTest
   public void shouldSkipEmptyFile() throws Exception
   {
     //given
-    Configuration configuration = new Configuration();
+    Configuration configuration = Configuration.defaultConfiguration();
     configuration.setApiKey("my-api-key");
     configuration.setUploadPath("./junit/empty-test/strings.xml");
     configuration.setUploadFormat("android");
@@ -137,7 +137,7 @@ class UploadCommandTest
   public void shouldUploadOneFile() throws Exception
   {
     //given
-    Configuration configuration = new Configuration();
+    Configuration configuration = Configuration.defaultConfiguration();
     configuration.setApiKey("my-api-key");
     configuration.setUploadPath("./junit/download-test/values-en/strings.xml");
     configuration.setLanguageKey("en");
@@ -149,7 +149,7 @@ class UploadCommandTest
 
     //then
     Mockito.verify(client, times(1)).uploadFile(
-            Mockito.refEq(UploadRequest.UploadFileRequestBuilder.builder()
+            Mockito.refEq(UploadRequest.builder()
                             .withPath(Path.of("./junit/download-test/values-{lang}/strings.xml"))
                             .withFormat("android")
                             .withLanguageKey("en")
@@ -164,7 +164,7 @@ class UploadCommandTest
   public void shouldUploadZeroFiles() throws Exception
   {
     //given
-    Configuration configuration = new Configuration();
+    Configuration configuration = Configuration.defaultConfiguration();
     configuration.setApiKey("my-api-key");
     configuration.setUploadPath("./junit/zero-files");
     configuration.setUploadFormat("android");
@@ -183,7 +183,7 @@ class UploadCommandTest
   {
     //given
     System.setProperty("os.name", "Windows 10");
-    Configuration configuration = new Configuration();
+    Configuration configuration = Configuration.defaultConfiguration();
     configuration.setApiKey("my-api-key");
     configuration.setUploadPath("./junit/download-test/values-en/strings.xml");
     configuration.setUploadFormat("android");

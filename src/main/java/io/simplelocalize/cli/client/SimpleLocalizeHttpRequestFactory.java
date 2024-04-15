@@ -1,6 +1,5 @@
 package io.simplelocalize.cli.client;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import io.simplelocalize.cli.Version;
 import io.simplelocalize.cli.client.dto.UploadRequest;
 
@@ -9,7 +8,6 @@ import java.net.URI;
 import java.net.http.HttpRequest;
 import java.nio.file.Path;
 import java.security.SecureRandom;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -26,14 +24,6 @@ public class SimpleLocalizeHttpRequestFactory
   {
     this.apiKey = apiKey;
     this.random = new SecureRandom();
-  }
-
-  HttpRequest createSendKeysRequest(URI uri, Collection<String> keys) throws JsonProcessingException
-  {
-    return createBaseRequest(uri)
-            .POST(ClientBodyBuilders.ofKeysBody(keys))
-            .header(CONTENT_TYPE_HEADER_NAME, "application/json")
-            .build();
   }
 
   HttpRequest createUploadFileRequest(URI uri, UploadRequest uploadRequest) throws IOException

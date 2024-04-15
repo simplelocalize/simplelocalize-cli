@@ -20,7 +20,6 @@ import java.net.http.HttpResponse;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
-import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -53,15 +52,6 @@ public class SimpleLocalizeClient
   public static SimpleLocalizeClient create(String baseUrl, String apiKey)
   {
     return new SimpleLocalizeClient(baseUrl, apiKey);
-  }
-
-  public Integer uploadKeys(Collection<String> keys) throws IOException, InterruptedException
-  {
-    URI uri = uriFactory.buildSendKeysURI();
-    HttpRequest httpRequest = httpRequestFactory.createSendKeysRequest(uri, keys);
-    HttpResponse<String> httpResponse = httpClient.send(httpRequest, HttpResponse.BodyHandlers.ofString());
-    throwOnError(httpResponse);
-    return JsonPath.read(httpResponse.body(), "$.data.uniqueKeysProcessed");
   }
 
   public void uploadFile(UploadRequest uploadRequest) throws IOException, InterruptedException

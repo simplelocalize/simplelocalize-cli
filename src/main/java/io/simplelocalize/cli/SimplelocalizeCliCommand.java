@@ -53,43 +53,33 @@ public class SimplelocalizeCliCommand implements Runnable
 
   @Command(
           name = "extract",
-          description = "Extract translation keys from project files. Use 'simplelocalize extract --help' to learn more about the parameters.")
+          description = "Extract translation keys from your project or website. Use 'simplelocalize extract --help' to learn more about the parameters.")
   public void extract(
-          @Option(names = {"--apiKey"}, description = "Project API Key") String apiKey,
-          @Option(names = {"--projectType"}, description = "Project type tells CLI how to find i18n keys in your project files") String projectType,
-          @Option(names = {"--searchDir"}, description = "(Optional) Search directory tells CLI where to look for project files which may contain translation keys. Default: ./") String searchDirectory,
-          @Option(names = {"--baseUrl"}, description = "(Optional) Set custom server URL") String baseUrl
+          @Option(names = {"--projectType"}, description = "Choose extraction type") String projectType,
+          @Option(names = {"--searchDir"}, description = "(Optional) Choose where to search it can be local file path. Default: ./") String searchDir,
+          @Option(names = {"--outputPath"}, description = "(Optional) Choose where to save results. Default: ./extraction.json") String outputPath
   )
   {
     try
     {
       ConfigurationLoader configurationLoader = new ConfigurationLoader();
       Configuration configuration = configurationLoader.loadOrGetDefault(configurationFilePath);
-      if (StringUtils.isNotEmpty(baseUrl))
-      {
-        configuration.setBaseUrl(baseUrl);
-      }
-      if (StringUtils.isNotEmpty(apiKey))
-      {
-        configuration.setApiKey(apiKey);
-      }
       if (StringUtils.isNotEmpty(projectType))
       {
         configuration.setProjectType(projectType);
       }
-      if (StringUtils.isNotEmpty(searchDirectory))
+      if (StringUtils.isNotEmpty(searchDir))
       {
-        configuration.setSearchDir(searchDirectory);
+        configuration.setSearchDir(searchDir);
       }
-      if (StringUtils.isNotEmpty(searchDirectory))
+      if (StringUtils.isNotEmpty(outputPath))
       {
-        configuration.setSearchDir(searchDirectory);
+        configuration.setOutputPath(outputPath);
       }
       this.effectiveCommandConfiguration = configuration;
       ConfigurationValidator configurationValidator = new ConfigurationValidator();
       configurationValidator.validateExtractConfiguration(configuration);
-      SimpleLocalizeClient client = SimpleLocalizeClient.create(configuration.getBaseUrl(), configuration.getApiKey());
-      ExtractCommand extractCommand = new ExtractCommand(client, configuration);
+      ExtractCommand extractCommand = new ExtractCommand(configuration);
       extractCommand.invoke();
     } catch (Exception e)
     {
@@ -352,8 +342,9 @@ public class SimplelocalizeCliCommand implements Runnable
 
       if (languageKeys != null)
       {
-        AutoTranslationConfiguration autoTranslationConfiguration = new AutoTranslationConfiguration();
-        autoTranslationConfiguration.setLanguageKeys(languageKeys);
+        AutoTranslationConfiguration autoTranslationConfiguration = AutoTranslationConfiguration.builder()
+                .languageKeys(languageKeys)
+                .build();
         configuration.setAutoTranslation(autoTranslationConfiguration);
       }
 

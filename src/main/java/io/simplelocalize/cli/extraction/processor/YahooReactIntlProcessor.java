@@ -1,37 +1,37 @@
 package io.simplelocalize.cli.extraction.processor;
 
 import io.simplelocalize.cli.extraction.ExtractionResult;
+import io.simplelocalize.cli.extraction.files.BaseExtensionFilesFinder;
 import io.simplelocalize.cli.extraction.files.JavaScriptAndTypeScriptFilesFinder;
 import io.simplelocalize.cli.extraction.keys.ReactIntlKeyExtractor;
 
 import java.nio.file.Path;
-import java.util.HashSet;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
 public class YahooReactIntlProcessor implements ExtractionProcessor
 {
 
-
   @Override
-  public ExtractionResult process(Path searchDirectory)
+  public List<ExtractionResult> process(Path searchDirectory, List<String> ignorePaths)
   {
-    JavaScriptAndTypeScriptFilesFinder javaScriptAndTypeScriptFilesFinder = new JavaScriptAndTypeScriptFilesFinder();
+    JavaScriptAndTypeScriptFilesFinder javaScriptAndTypeScriptFilesFinder = new JavaScriptAndTypeScriptFilesFinder(new BaseExtensionFilesFinder(ignorePaths));
     ReactIntlKeyExtractor reactIntlKeyExtractor = new ReactIntlKeyExtractor();
-
     List<Path> foundFiles = javaScriptAndTypeScriptFilesFinder.findFilesToProcess(searchDirectory);
 
-    Set<String> keys = new HashSet<>();
+    List<ExtractionResult> output = new ArrayList<>();
     for (Path file : foundFiles)
     {
       Set<String> batchKeys = reactIntlKeyExtractor.extractKeysFromFile(file);
-      keys.addAll(batchKeys);
+      output.addAll(ExtractionResult.fromCollection(batchKeys, file));
     }
-    return ExtractionResult.of(keys, foundFiles);
+    return output;
   }
 
   @Override
-  public String getProjectTypeSupport() {
+  public String getExtractTypeSupport()
+  {
     return "yahoo/react-intl";
   }
 }

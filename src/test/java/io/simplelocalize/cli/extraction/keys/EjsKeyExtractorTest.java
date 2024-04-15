@@ -7,12 +7,14 @@ import java.net.URL;
 import java.nio.file.Paths;
 import java.util.Set;
 
-public class EjsKeyExtractorTest {
+class EjsKeyExtractorTest
+{
 
   private final EjsKeyExtractor keyExtractor = new EjsKeyExtractor();
 
   @Test
-  public void shouldExtractKeysFromLines() throws Exception {
+  void shouldExtractKeysFromLines() throws Exception
+  {
     //given
     ClassLoader classLoader = this.getClass().getClassLoader();
     URL resource = classLoader.getResource("ejs/confirm-page.ejs");

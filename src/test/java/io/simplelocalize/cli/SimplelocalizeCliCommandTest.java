@@ -1,6 +1,5 @@
 package io.simplelocalize.cli;
 
-import com.google.common.net.HttpHeaders;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -14,10 +13,10 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockserver.integration.ClientAndServer.startClientAndServer;
 import static org.mockserver.model.HttpRequest.request;
 import static org.mockserver.model.HttpResponse.response;
@@ -45,23 +44,9 @@ class SimplelocalizeCliCommandTest
   void extract()
   {
     // given
-    mockServer.when(request()
-                            .withMethod("POST")
-                            .withPath("/cli/v1/keys")
-                            .withHeader(HttpHeaders.CONTENT_TYPE, "application/json")
-                            .withHeader("X-SimpleLocalize-Token", "my-api-key"),
-                    Times.exactly(1))
-            .respond(
-                    response()
-                            .withStatusCode(200)
-                            .withBody("{ 'msg': 'OK', data: { uniqueKeysProcessed: 1, processedWithWarnings: false } }")
-                            .withDelay(TimeUnit.MILLISECONDS, 200));
-
     SimplelocalizeCliCommand app = new SimplelocalizeCliCommand();
     CommandLine commandLine = new CommandLine(app);
     String[] args = {"extract",
-            "--apiKey", "my-api-key",
-            "--baseUrl", MOCK_SERVER_BASE_URL,
             "--projectType", "yahoo/react-intl",
             "--searchDir", "./",
     };

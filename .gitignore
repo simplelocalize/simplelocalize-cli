@@ -16,6 +16,11 @@
 *.iml
 *.ipr
 
+extraction.json
+simplelocalize.yml
+
+test
+
 ### NetBeans ###
 /nbproject/private/
 /nbbuild/
@@ -59,7 +64,7 @@ $RECYCLE.BIN/
 # Windows shortcuts
 *.lnk
 
-/simplelocalize.yml
+/simplelocalize-sample.yml
 /dependency-reduced-pom.xml
 /build-far-jar.sh
 /build-quick.sh

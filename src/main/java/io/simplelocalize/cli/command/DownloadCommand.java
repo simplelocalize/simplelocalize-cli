@@ -32,6 +32,7 @@ public class DownloadCommand implements CliCommand
     String downloadFormat = configuration.getDownloadFormat();
     String languageKey = configuration.getLanguageKey();
     String customerId = configuration.getCustomerId();
+    String namespace = configuration.getNamespace();
     String sort = configuration.getDownloadSort();
     List<String> downloadOptions = new ArrayList<>(configuration.getDownloadOptions());
 
@@ -45,19 +46,24 @@ public class DownloadCommand implements CliCommand
       downloadOptions.add("SPLIT_BY_LANGUAGES");
     }
 
-    DownloadRequest downloadRequest = DownloadRequest.DownloadRequestBuilder.builder()
+    DownloadRequest downloadRequest = DownloadRequest.builder()
             .withFormat(downloadFormat)
             .withOptions(downloadOptions)
             .withCustomerId(customerId)
             .withLanguageKey(languageKey)
             .withSort(sort)
             .build();
-    log.info("Preparing files to download");
     log.info("File format: {}", downloadFormat);
     if (StringUtils.isNotEmpty(customerId))
     {
       log.info("Customer ID: {}", customerId);
     }
+
+    if (StringUtils.isNotEmpty(namespace))
+    {
+      log.info("Namespace: {}", namespace);
+    }
+
     if (StringUtils.isNotEmpty(languageKey))
     {
       log.info("Language key: {}", languageKey);

@@ -18,14 +18,14 @@ class SystemProxySelectorTest
   private static Stream<Arguments> provideArguments()
   {
     return Stream.of(
-            of("http://123.456.789.000", new ProxyConfiguration().setHost("123.456.789.000").setPort(80).setUsername(null).setPassword(null)),
-            of("https://123.456.789.000", new ProxyConfiguration().setHost("123.456.789.000").setPort(443).setUsername(null).setPassword(null)),
-            of("http://123.456.789.000:8080", new ProxyConfiguration().setHost("123.456.789.000").setPort(8080).setUsername(null).setPassword(null)),
-            of("https://123.456.789.000:8080", new ProxyConfiguration().setHost("123.456.789.000").setPort(8080).setUsername(null).setPassword(null)),
-            of("http://foo:bar@123.456.789.000", new ProxyConfiguration().setHost("123.456.789.000").setPort(80).setUsername("foo").setPassword("bar")),
-            of("https://foo:bar@123.456.789.000", new ProxyConfiguration().setHost("123.456.789.000").setPort(443).setUsername("foo").setPassword("bar")),
-            of("http://foo:bar@123.456.789.000:8080", new ProxyConfiguration().setHost("123.456.789.000").setPort(8080).setUsername("foo").setPassword("bar")),
-            of("https://foo:bar@123.456.789.000:8080", new ProxyConfiguration().setHost("123.456.789.000").setPort(8080).setUsername("foo").setPassword("bar"))
+            of("http://123.456.789.000", ProxyConfiguration.builder().host("123.456.789.000").port(80).username(null).password(null).build()),
+            of("https://123.456.789.000", ProxyConfiguration.builder().host("123.456.789.000").port(443).username(null).password(null).build()),
+            of("http://123.456.789.000:8080", ProxyConfiguration.builder().host("123.456.789.000").port(8080).username(null).password(null).build()),
+            of("https://123.456.789.000:8080", ProxyConfiguration.builder().host("123.456.789.000").port(8080).username(null).password(null).build()),
+            of("http://foo:bar@123.456.789.000", ProxyConfiguration.builder().host("123.456.789.000").port(80).username("foo").password("bar").build()),
+            of("https://foo:bar@123.456.789.000", ProxyConfiguration.builder().host("123.456.789.000").port(443).username("foo").password("bar").build()),
+            of("http://foo:bar@123.456.789.000:8080", ProxyConfiguration.builder().host("123.456.789.000").port(8080).username("foo").password("bar").build()),
+            of("https://foo:bar@123.456.789.000:8080", ProxyConfiguration.builder().host("123.456.789.000").port(8080).username("foo").password("bar").build())
     );
   }
 
@@ -55,20 +55,20 @@ class SystemProxySelectorTest
   void shouldNotPrintPasswordWhenToString()
   {
     //given
-    ProxyConfiguration given = new ProxyConfiguration().setHost("123.456.789.000").setPort(8080).setUsername("foo").setPassword("bar");
+    ProxyConfiguration given = ProxyConfiguration.builder().host("123.456.789.000").port(8080).username("foo").password("bar").build();
 
     //when
     String result = given.toString();
 
     //then
-    assertEquals("host='123.456.789.000', port=8080, username='foo', password='*****'", result);
+    assertEquals("host='123.456.789.000', port=8080, username='foo', password='***'", result);
   }
 
   @Test
   void shouldPrintNullPasswordWhenToString()
   {
     //given
-    ProxyConfiguration given = new ProxyConfiguration().setHost("123.456.789.000").setPort(8080);
+    ProxyConfiguration given = ProxyConfiguration.builder().host("123.456.789.000").port(8080).build();
 
     //when
     String result = given.toString();

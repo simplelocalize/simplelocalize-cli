@@ -7,6 +7,10 @@ on:
       - '*-snapshot'
   pull_request:
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
 env:
   ACTIONS_ALLOW_UNSECURE_COMMANDS: true
 
@@ -15,12 +19,12 @@ jobs:
     name: "Build JAR"
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         name: "Checkout"
-      - uses: actions/setup-java@v3
+      - uses: actions/setup-java@v4
         name: "Install Java"
         with:
-          java-version: '17'
+          java-version: '21'
           distribution: 'temurin'
           cache: 'maven'
       - name: "Build JAR"
@@ -28,7 +32,7 @@ jobs:
       - name: 'Get version'
         run: echo "::set-env name=VERSION::$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)"
       - name: 'Upload artifact'
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: 'simplelocalize-cli-${{env.VERSION}}.jar'
           path: 'target/simplelocalize-cli-${{env.VERSION}}.jar'
@@ -55,15 +59,13 @@ jobs:
             downloadFilename: 'simplelocalize-cli-windows.exe'
     runs-on: ${{ matrix.os }}
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         name: "Checkout"
       - uses: graalvm/setup-graalvm@v1
         name: "Install GraalVM"
         with:
-          version: '22.3.2'
-          java-version: '17.0.7'
+          java-version: '21'
           distribution: 'graalvm'
-          components: 'native-image'
           github-token: ${{ secrets.GITHUB_TOKEN }}
           native-image-job-reports: 'true'
       - name: "Build executable"
@@ -73,7 +75,7 @@ jobs:
       - name: "Rename executable"
         run: mv ./target/${{ matrix.filename }} ./target/${{ matrix.downloadFilename }}
       - name: "Upload artifact"
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: simplelocalize-cli-${{ matrix.label }}
           path: ./target/${{ matrix.downloadFilename }}

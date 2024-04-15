@@ -1,7 +1,6 @@
 package io.simplelocalize.cli.client;
 
 import ch.qos.logback.classic.spi.ILoggingEvent;
-import com.google.common.net.HttpHeaders;
 import io.simplelocalize.cli.client.dto.DownloadRequest;
 import io.simplelocalize.cli.client.dto.UploadRequest;
 import io.simplelocalize.cli.client.dto.proxy.DownloadableFile;
@@ -14,7 +13,6 @@ import org.junit.jupiter.api.Test;
 import org.mockserver.integration.ClientAndServer;
 import org.mockserver.matchers.Times;
 import org.mockserver.model.MediaType;
-import org.mockserver.model.StringBody;
 
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
@@ -45,35 +43,6 @@ public class SimpleLocalizeClientTest
     mockServer.stop();
   }
 
-  @Test
-  void shouldSendKeys() throws Exception
-  {
-    //given
-    List<String> givenKeys = List.of("test");
-
-    mockServer.when(request()
-                            .withMethod("POST")
-                            .withPath("/cli/v1/keys")
-                            .withHeader(HttpHeaders.CONTENT_TYPE, "application/json")
-                            .withHeader("X-SimpleLocalize-Token", "237b305f6b2273e92ac857eb44d7f33b")
-                            .withBody(StringBody.exact("{\"content\":[{\"key\":\"test\"}]}")),
-                    Times.exactly(1))
-            .respond(
-                    response()
-                            .withStatusCode(200)
-                            .withBody("{ 'msg': 'OK', data: { uniqueKeysProcessed: 1, processedWithWarnings: false } }")
-                            .withDelay(TimeUnit.MILLISECONDS, 200)
-            );
-
-    SimpleLocalizeClient client = new SimpleLocalizeClient(MOCK_SERVER_BASE_URL, "237b305f6b2273e92ac857eb44d7f33b");
-    List<ILoggingEvent> logEventList = TestLogEventFactory.createAndGetLogEventList(client.getClass());
-
-    //when
-    client.uploadKeys(givenKeys);
-
-    //then
-    logEventList.forEach(logEvent -> assertThat(logEvent.getFormattedMessage()).isEqualTo("1 unique keys processed"));
-  }
 
   @Test
   void shouldUploadFileWithLanguageKey() throws Exception
@@ -94,7 +63,7 @@ public class SimpleLocalizeClientTest
                             .withDelay(TimeUnit.MILLISECONDS, 200)
             );
 
-    UploadRequest uploadRequest = UploadRequest.UploadFileRequestBuilder.builder()
+    UploadRequest uploadRequest = UploadRequest.builder()
             .withPath(Path.of("./junit/mock-server/test.json"))
             .withLanguageKey(null)
             .withFormat("multi-language-json")
@@ -129,7 +98,7 @@ public class SimpleLocalizeClientTest
                             .withDelay(TimeUnit.MILLISECONDS, 200)
             );
 
-    UploadRequest uploadRequest = UploadRequest.UploadFileRequestBuilder.builder()
+    UploadRequest uploadRequest = UploadRequest.builder()
             .withPath(Path.of("./junit/mock-server/test.json"))
             .withLanguageKey("en")
             .withFormat("multi-language-json")
@@ -165,7 +134,7 @@ public class SimpleLocalizeClientTest
                             .withDelay(TimeUnit.MILLISECONDS, 200)
             );
 
-    UploadRequest uploadRequest = UploadRequest.UploadFileRequestBuilder.builder()
+    UploadRequest uploadRequest = UploadRequest.builder()
             .withPath(Path.of("./junit/mock-server/test.json"))
             .withLanguageKey("en")
             .withFormat("multi-language-json")
@@ -202,7 +171,7 @@ public class SimpleLocalizeClientTest
                             .withDelay(TimeUnit.MILLISECONDS, 200)
             );
 
-    DownloadRequest downloadRequest = DownloadRequest.DownloadRequestBuilder.builder()
+    DownloadRequest downloadRequest = DownloadRequest.builder()
             .withFormat("java-properties")
             .withOptions(List.of("SPLIT_BY_NAMESPACES"))
             .build();
@@ -235,7 +204,7 @@ public class SimpleLocalizeClientTest
                             .withDelay(TimeUnit.MILLISECONDS, 200)
             );
 
-    DownloadRequest downloadRequest = DownloadRequest.DownloadRequestBuilder.builder()
+    DownloadRequest downloadRequest = DownloadRequest.builder()
             .withFormat("java-properties")
             .withOptions(List.of("SPLIT_BY_NAMESPACES", "USE_NESTED_JSON"))
             .build();
