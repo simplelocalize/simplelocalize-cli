@@ -1,11 +1,12 @@
 package io.simplelocalize.cli.extraction.processor;
 
 import io.simplelocalize.cli.extraction.ExtractionResult;
+import io.simplelocalize.cli.extraction.files.BaseExtensionFilesFinder;
 import io.simplelocalize.cli.extraction.files.JavaScriptAndTypeScriptFilesFinder;
 import io.simplelocalize.cli.extraction.keys.IEighteenNextKeyExtractor;
 
 import java.nio.file.Path;
-import java.util.HashSet;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -13,24 +14,24 @@ public class IEighteenNextProcessor implements ExtractionProcessor
 {
 
   @Override
-  public ExtractionResult process(Path searchDirectory)
+  public List<ExtractionResult> process(Path searchDirectory, List<String> ignorePaths)
   {
-    JavaScriptAndTypeScriptFilesFinder filesFinder = new JavaScriptAndTypeScriptFilesFinder();
+    JavaScriptAndTypeScriptFilesFinder filesFinder = new JavaScriptAndTypeScriptFilesFinder(new BaseExtensionFilesFinder(ignorePaths));
     IEighteenNextKeyExtractor keyExtractor = new IEighteenNextKeyExtractor();
 
     List<Path> foundFiles = filesFinder.findFilesToProcess(searchDirectory);
-
-    Set<String> keys = new HashSet<>();
+    List<ExtractionResult> output = new ArrayList<>();
     for (Path file : foundFiles)
     {
       Set<String> batchKeys = keyExtractor.extractKeysFromFile(file);
-      keys.addAll(batchKeys);
+      output.addAll(ExtractionResult.fromCollection(batchKeys, file));
     }
-    return ExtractionResult.of(keys, foundFiles);
+    return output;
   }
 
   @Override
-  public String getProjectTypeSupport() {
+  public String getExtractTypeSupport()
+  {
     return "i18next/i18next";
   }
 }

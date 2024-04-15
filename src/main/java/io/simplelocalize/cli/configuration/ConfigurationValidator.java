@@ -3,14 +3,11 @@ package io.simplelocalize.cli.configuration;
 import io.simplelocalize.cli.client.dto.proxy.Configuration;
 import io.simplelocalize.cli.exception.ConfigurationException;
 import io.simplelocalize.cli.util.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public final class ConfigurationValidator
 {
   public void validateExtractConfiguration(Configuration configuration)
   {
-    validateIsNotEmptyOrNull(configuration.getApiKey(), "apiKey");
     validateIsNotEmptyOrNull(configuration.getProjectType(), "projectType");
   }
 

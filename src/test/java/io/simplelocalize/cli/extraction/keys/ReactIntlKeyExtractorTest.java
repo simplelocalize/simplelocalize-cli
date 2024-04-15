@@ -7,12 +7,14 @@ import java.net.URL;
 import java.nio.file.Paths;
 import java.util.Set;
 
-public class ReactIntlKeyExtractorTest {
+class ReactIntlKeyExtractorTest
+{
 
   private final ReactIntlKeyExtractor reactIntlKeyExtractor = new ReactIntlKeyExtractor();
 
   @Test
-  public void shouldExtractKeysFromLines() throws Exception {
+  void shouldExtractKeysFromLines() throws Exception
+  {
     //given
     ClassLoader classLoader = this.getClass().getClassLoader();
     URL resource = classLoader.getResource("react-intl/UserPage.js");
@@ -39,7 +41,8 @@ public class ReactIntlKeyExtractorTest {
   }
 
   @Test
-  public void shouldExtractKeysFromProblematicCase2() throws Exception {
+  void shouldExtractKeysFromProblematicCase2() throws Exception
+  {
     //given
     ClassLoader classLoader = this.getClass().getClassLoader();
     URL resource = classLoader.getResource("react-intl/ProblematicCase-issue-2.js");
@@ -54,7 +57,8 @@ public class ReactIntlKeyExtractorTest {
   }
 
   @Test
-  public void shouldExtractKeysFromProblematicCase3() throws Exception {
+  void shouldExtractKeysFromProblematicCase3() throws Exception
+  {
     //given
     ClassLoader classLoader = this.getClass().getClassLoader();
     URL resource = classLoader.getResource("react-intl/ProblematicCase-issue-3.js");

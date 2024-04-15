@@ -16,6 +16,9 @@
 *.iml
 *.ipr
 
+extraction.json
+simplelocalize.yml
+
 test
 
 ### NetBeans ###

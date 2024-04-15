@@ -21,10 +21,18 @@ public class Configuration
   private String apiKey;
 
   private String projectType;
-  private String searchDir;
+
+  @Builder.Default
+  private String searchDir = "./";
+
+  @Builder.Default
+  private String outputPath = "extraction.json";
 
   @Builder.Default
   private List<String> ignoreKeys = new ArrayList<>();
+
+  @Builder.Default
+  private List<String> ignorePaths = new ArrayList<>();
 
   private String uploadPath;
   private String uploadFormat;

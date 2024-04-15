@@ -13,14 +13,14 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.List;
 
 @ExtendWith(MockitoExtension.class)
-public class DownloadCommandTest
+class DownloadCommandTest
 {
 
   @Mock
   private SimpleLocalizeClient client = new SimpleLocalizeClient("https://simplelocalize.io", "my-api-key");
 
   @Test
-  public void shouldDownloadMultipleFiles() throws Exception
+  void shouldDownloadMultipleFiles() throws Exception
   {
     //given
     Configuration configuration = Configuration.defaultConfiguration();

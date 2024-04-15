@@ -19,7 +19,6 @@ import java.util.Optional;
 public class UploadCommand implements CliCommand
 {
   private static final Logger log = LoggerFactory.getLogger(UploadCommand.class);
-  private static final List<String> MULTI_LANGUAGE_FORMATS = List.of("multi-language-json", "excel", "csv-translations");
   private final FileListReader fileListReader;
   private final SimpleLocalizeClient client;
   private final Configuration configuration;
@@ -63,9 +62,26 @@ public class UploadCommand implements CliCommand
     {
       log.info("Customer ID: {}", customerId);
     }
+
+    String configurationNamespace = configuration.getNamespace();
+    if (StringUtils.isNotBlank(configurationNamespace))
+    {
+      log.info("Namespace: {}", configurationNamespace);
+    }
+
     log.info("Upload options: {}", uploadOptions);
 
-    log.info("Found {} files to upload", filesToUpload.size());
+    log.info("Found {} files matching upload path '{}'", filesToUpload.size(), uploadPath);
+
+    if (isDryRun)
+    {
+      log.info("Dry run mode enabled, no files will be uploaded");
+    } else
+    {
+      log.info("Uploading files...");
+    }
+
+
     for (FileToUpload fileToUpload : filesToUpload)
     {
       Path path = fileToUpload.path();
@@ -96,14 +112,17 @@ public class UploadCommand implements CliCommand
         requestLanguageKey = configurationLanguageKey;
       }
 
-      boolean isMultiLanguageFormat = isMultiLanguageFormat(configuration.getUploadFormat());
-      if (!hasFileLanguageKey && !hasConfigurationLanguageKey && !isMultiLanguageFormat)
+      boolean isMultiLanguage = isMultiLanguage(configuration);
+      if (!hasFileLanguageKey && !hasConfigurationLanguageKey && !isMultiLanguage)
       {
         log.info("Language key not present in '--uploadPath' nor '--languageKey' parameter, file: {}", path);
       }
 
-
       String namespace = fileToUpload.namespace();
+      if (StringUtils.isBlank(namespace))
+      {
+        namespace = configuration.getNamespace();
+      }
       UploadRequest uploadRequest = UploadRequest.builder()
               .withPath(path)
               .withLanguageKey(requestLanguageKey)
@@ -115,7 +134,7 @@ public class UploadCommand implements CliCommand
 
       if (isDryRun)
       {
-        log.info("[Dry run] Found file to upload, language=[{}], namespace=[{}], file: {}", language, namespace, path);
+        log.info("[Dry run] Found file to upload, language=[{}], namespace=[{}] = {}", language, namespace, path);
       } else
       {
         log.info("Uploading language=[{}] namespace=[{}] = {}", language, namespace, path);
@@ -125,19 +144,31 @@ public class UploadCommand implements CliCommand
 
     if (!isDryRun)
     {
-      log.info("Uploaded {} files to SimpleLocalize", filesToUpload.size());
+      log.info("Uploaded {} file(s) to SimpleLocalize", filesToUpload.size());
     }
   }
 
-  private boolean isMultiLanguageFormat(String inputUploadFormat)
+  private boolean isMultiLanguage(Configuration configuration)
   {
-    for (String uploadFormat : MULTI_LANGUAGE_FORMATS)
+    List<String> multiLanguageFileFormats = List.of("multi-language-json", "excel", "csv-translations");
+    for (String uploadFormat : multiLanguageFileFormats)
     {
-      if (uploadFormat.equalsIgnoreCase(inputUploadFormat))
+      if (uploadFormat.equalsIgnoreCase(configuration.getUploadFormat()))
       {
         return true;
       }
     }
+
+    List<String> uploadOptions = configuration.getUploadOptions();
+    for (String uploadOption : uploadOptions)
+    {
+      if (uploadOption.equalsIgnoreCase("MULTI_LANGUAGE"))
+      {
+        return true;
+      }
+    }
+
+
     return false;
   }
 }

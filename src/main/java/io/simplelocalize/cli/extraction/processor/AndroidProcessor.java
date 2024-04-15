@@ -1,55 +1,47 @@
 package io.simplelocalize.cli.extraction.processor;
 
 import io.simplelocalize.cli.extraction.ExtractionResult;
-import io.simplelocalize.cli.extraction.files.GenericExtensionFilesFinder;
-import io.simplelocalize.cli.extraction.keys.AndroidRStringKeyExtractor;
-import io.simplelocalize.cli.extraction.keys.AndroidXmlKeysExtractor;
+import io.simplelocalize.cli.extraction.files.BaseExtensionFilesFinder;
+import io.simplelocalize.cli.extraction.keys.DefaultKeysExtractor;
 import io.simplelocalize.cli.util.ListsUtil;
 
 import java.nio.file.Path;
 import java.util.ArrayList;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.regex.Pattern;
 
 public class AndroidProcessor implements ExtractionProcessor
 {
 
-
   @Override
-  public ExtractionResult process(Path searchDirectory)
+  public List<ExtractionResult> process(Path searchDirectory, List<String> ignorePaths)
   {
-
-    Set<String> foundKeys = new LinkedHashSet<>();
-    List<Path> foundFiles = new ArrayList<>();
-
-    GenericExtensionFilesFinder filesFinder = new GenericExtensionFilesFinder();
-    List<Path> javaFiles = filesFinder.findFilesToProcess(searchDirectory, ".java");
-    List<Path> kotlinFiles = filesFinder.findFilesToProcess(searchDirectory, ".kt");
+    BaseExtensionFilesFinder filesFinder = new BaseExtensionFilesFinder(ignorePaths);
+    List<Path> javaFiles = filesFinder.findFilesWithExtension(searchDirectory, ".java");
+    List<Path> kotlinFiles = filesFinder.findFilesWithExtension(searchDirectory, ".kt");
     List<Path> combinedLists = ListsUtil.combine(javaFiles, kotlinFiles);
-    foundFiles.addAll(combinedLists);
 
-    AndroidRStringKeyExtractor javaKeysExtractor = new AndroidRStringKeyExtractor();
+    List<ExtractionResult> output = new ArrayList<>();
     for (Path javaFile : combinedLists)
     {
-      Set<String> chunk = javaKeysExtractor.extractKeysFromFile(javaFile);
-      foundKeys.addAll(chunk);
+      Set<String> chunk = DefaultKeysExtractor.extractValuesByPattern(javaFile, Pattern.compile("(?<=R\\.string\\.)(.*?)(?=\\))"));
+      output.addAll(ExtractionResult.fromCollection(chunk, javaFile));
     }
 
-    List<Path> xmlFiles = filesFinder.findFilesToProcess(searchDirectory, ".xml");
-    foundFiles.addAll(xmlFiles);
-    AndroidXmlKeysExtractor xmlKeysExtractor = new AndroidXmlKeysExtractor();
+    List<Path> xmlFiles = filesFinder.findFilesWithExtension(searchDirectory, ".xml");
     for (Path xmlFile : xmlFiles)
     {
-      Set<String> chunk = xmlKeysExtractor.extractKeysFromFile(xmlFile);
-      foundKeys.addAll(chunk);
+      Set<String> chunk = DefaultKeysExtractor.extractValuesByPattern(xmlFile, Pattern.compile("(?<=android:text=\"@string/)(.*?)(?=\")"));
+      output.addAll(ExtractionResult.fromCollection(chunk, xmlFile));
     }
 
-    return ExtractionResult.of(foundKeys, foundFiles);
+    return output;
   }
 
   @Override
-  public String getProjectTypeSupport() {
+  public String getExtractTypeSupport()
+  {
     return "google/android";
   }
 }

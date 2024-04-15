@@ -9,12 +9,14 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 
-public class JavaScriptAndTypeScriptFilesFinderTest {
+class JavaScriptAndTypeScriptFilesFinderTest
+{
 
-  private final JavaScriptAndTypeScriptFilesFinder javaScriptAndTypeScriptFilesFinder = new JavaScriptAndTypeScriptFilesFinder();
+  private final JavaScriptAndTypeScriptFilesFinder javaScriptAndTypeScriptFilesFinder = new JavaScriptAndTypeScriptFilesFinder(new BaseExtensionFilesFinder());
 
   @Test
-  public void shouldFindFiles() throws Exception {
+  void shouldFindFiles() throws Exception
+  {
     //given
     Path path = TestResourcesUtility.read("react-intl");
 
@@ -26,7 +28,8 @@ public class JavaScriptAndTypeScriptFilesFinderTest {
   }
 
   @Test
-  public void shouldThrowWhenFileNotFound() throws Exception {
+  void shouldThrowWhenFileNotFound() throws Exception
+  {
     //given
     Path path = Paths.get("some invalid path");
 

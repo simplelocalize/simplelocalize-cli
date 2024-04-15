@@ -7,11 +7,13 @@ import java.net.URL;
 import java.nio.file.Paths;
 import java.util.Set;
 
-public class IEighteenNextKeyExtractorTest {
+class IEighteenNextKeyExtractorTest
+{
   private final IEighteenNextKeyExtractor keyExtractor = new IEighteenNextKeyExtractor();
 
   @Test
-  public void shouldExtractKeysFromLines() throws Exception {
+  void shouldExtractKeysFromLines() throws Exception
+  {
     //given
     ClassLoader classLoader = this.getClass().getClassLoader();
     URL resource = classLoader.getResource("i18next/AboutPage.jsx");
