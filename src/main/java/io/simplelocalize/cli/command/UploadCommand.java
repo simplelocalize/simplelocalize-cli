@@ -41,17 +41,7 @@ public class UploadCommand implements CliCommand
       uploadPath = WindowsUtils.convertToWindowsPath(uploadPath);
     }
 
-    List<FileToUpload> filesToUpload;
-    try
-    {
-      filesToUpload = fileListReader.findFilesToUpload(uploadPath);
-    } catch (IOException e)
-    {
-      log.error("Matching files could not be found at {}", uploadPath, e);
-      throw new IllegalArgumentException("Matching files could not be found", e);
-    }
-
-
+    List<FileToUpload> filesToUpload = fileListReader.findFilesToUpload(uploadPath);
     String uploadFormat = configuration.getUploadFormat();
     String customerId = configuration.getCustomerId();
     List<String> uploadOptions = configuration.getUploadOptions();
@@ -76,13 +66,14 @@ public class UploadCommand implements CliCommand
       log.info("Dry run mode enabled, no files will be uploaded");
     }
 
+    int uploadedFilesCounter = 0;
     for (FileToUpload fileToUpload : filesToUpload)
     {
       Path path = fileToUpload.path();
       long length = path.toFile().length();
       if (length == 0)
       {
-        log.warn("Skipping empty file: {}", path);
+        log.warn("Skipping empty file = {}", path);
         continue;
       }
 
@@ -96,7 +87,7 @@ public class UploadCommand implements CliCommand
       String language = fileToUpload.language();
       if (hasFileLanguageKey && hasConfigurationLanguageKey && !isLanguageMatching)
       {
-        log.info("Skipping '{}' language, file: {}", language, path);
+        log.info("Skipping '{}' language = {}", language, path);
         continue;
       }
 
@@ -109,7 +100,7 @@ public class UploadCommand implements CliCommand
       boolean isMultiLanguage = isMultiLanguage(configuration);
       if (!hasFileLanguageKey && !hasConfigurationLanguageKey && !isMultiLanguage)
       {
-        log.info("Language key not present in '--uploadPath' nor '--languageKey' parameter, file: {}", path);
+        log.info("Language key not present in '--uploadPath' nor '--languageKey' parameter = {}", path);
       }
 
       String effectiveNamespace = fileToUpload.namespace();
@@ -133,12 +124,13 @@ public class UploadCommand implements CliCommand
       {
         log.info("Uploading file, language=[{}] namespace=[{}] = {}", effectiveLanguageKey, effectiveNamespace, path);
         client.uploadFile(uploadRequest);
+        uploadedFilesCounter++;
       }
     }
 
     if (!isDryRun)
     {
-      log.info("Uploaded {} file(s) to SimpleLocalize", filesToUpload.size());
+      log.info("Uploaded {} file(s) to SimpleLocalize", uploadedFilesCounter);
     }
   }
 
