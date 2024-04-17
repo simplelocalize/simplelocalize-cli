@@ -26,7 +26,7 @@ public class Configuration
   private String searchDir = "./";
 
   @Builder.Default
-  private String outputPath = "extraction.json";
+  private String output = "extraction.json";
 
   @Builder.Default
   private List<String> ignoreKeys = new ArrayList<>();

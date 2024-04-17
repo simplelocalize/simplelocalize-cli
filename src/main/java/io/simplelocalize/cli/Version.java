@@ -3,7 +3,7 @@ package io.simplelocalize.cli;
 public class Version
 {
 
-  public static final String NUMBER = "2.5.1";
+  public static final String NUMBER = "2.6.0-beta";
 
   private Version()
   {

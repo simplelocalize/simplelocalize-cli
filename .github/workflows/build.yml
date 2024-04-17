@@ -36,7 +36,7 @@ jobs:
         with:
           name: 'simplelocalize-cli-${{env.VERSION}}.jar'
           path: 'target/simplelocalize-cli-${{env.VERSION}}.jar'
-  build-unix:
+  build-executable:
     name: "Build ${{ matrix.label }} executable"
     strategy:
       matrix:
@@ -45,10 +45,14 @@ jobs:
             label: 'linux'
             filename: 'simplelocalize-cli'
             downloadFilename: 'simplelocalize-cli-linux'
-          - os: 'macos-latest'
+          - os: 'macos-11'
             label: 'mac'
             filename: 'simplelocalize-cli'
             downloadFilename: 'simplelocalize-cli-mac'
+          - os: 'macos-latest'
+            label: 'mac-arm64'
+            filename: 'simplelocalize-cli'
+            downloadFilename: 'simplelocalize-cli-mac-arm64'
           - os: 'windows-latest'
             label: 'windows'
             filename: 'simplelocalize-cli.exe'
@@ -63,7 +67,6 @@ jobs:
           java-version: '21'
           distribution: 'graalvm'
           github-token: ${{ secrets.GITHUB_TOKEN }}
-          native-image-job-reports: 'true'
       - name: "Build executable"
         run: mvn -DskipTests -Pnative clean package
       - name: "Test executable"

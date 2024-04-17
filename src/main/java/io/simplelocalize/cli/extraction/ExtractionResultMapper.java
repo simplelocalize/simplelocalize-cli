@@ -1,5 +1,7 @@
 package io.simplelocalize.cli.extraction;
 
+import io.simplelocalize.cli.client.dto.proxy.SimpleLocalizeJsonMetadata;
+
 import java.util.Collection;
 import java.util.Map;
 import java.util.TreeMap;
