@@ -10,7 +10,7 @@
     <description>Official SimpleLocalize Command Line Interface</description>
 
     <properties>
-        <jdk.version>22</jdk.version>
+        <jdk.version>21</jdk.version>
         <exec.mainClass>io.simplelocalize.cli.SimplelocalizeCliCommand</exec.mainClass>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
@@ -34,7 +34,7 @@
         <graalvm.quickBuild>false</graalvm.quickBuild>
 
         <!-- jacoco -->
-        <jacoco.version>0.8.10</jacoco.version>
+        <jacoco.version>0.8.12</jacoco.version>
 
         <!-- sonar -->
         <sonar.projectKey>simplelocalize_simplelocalize-cli</sonar.projectKey>

@@ -24,7 +24,7 @@ jobs:
       - uses: actions/setup-java@v4
         name: "Install Java"
         with:
-          java-version: '22'
+          java-version: '21'
           distribution: 'corretto'
           cache: 'maven'
       - name: "Build JAR"
@@ -67,7 +67,7 @@ jobs:
       - uses: graalvm/setup-graalvm@v1
         name: "Install GraalVM"
         with:
-          java-version: '22'
+          java-version: '21'
           distribution: 'graalvm'
           github-token: ${{ secrets.GITHUB_TOKEN }}
       - name: "Build executable"

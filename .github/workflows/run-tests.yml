@@ -25,7 +25,7 @@ jobs:
       - uses: actions/setup-java@v4
         name: "Install Java"
         with:
-          java-version: '22'
+          java-version: '21'
           distribution: 'corretto'
           cache: 'maven'
       - name: Cache SonarCloud packages
