@@ -10,7 +10,7 @@
     <description>Official SimpleLocalize Command Line Interface</description>
 
     <properties>
-        <jdk.version>21</jdk.version>
+        <jdk.version>22</jdk.version>
         <exec.mainClass>io.simplelocalize.cli.SimplelocalizeCliCommand</exec.mainClass>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
@@ -93,6 +93,12 @@
             <artifactId>lombok</artifactId>
             <version>${lombok.version}</version>
             <optional>true</optional>
+        </dependency>
+
+        <dependency>
+            <groupId>org.jsoup</groupId>
+            <artifactId>jsoup</artifactId>
+            <version>1.17.2</version>
         </dependency>
 
         <!-- test -->

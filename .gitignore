@@ -36,6 +36,8 @@ simplelocalize*.jar
 io.simplelocalize.cli.simplelocalizeclicommand
 simplelocalize-cli
 
+.*bgv
+
 ### macOS ###
 *.DS_Store
 .AppleDouble
@@ -70,4 +72,5 @@ $RECYCLE.BIN/
 /build-production.sh
 /build-m1.sh
 /install.sh
+/install-locally.sh
 /simplelocalize-init-command.yml
