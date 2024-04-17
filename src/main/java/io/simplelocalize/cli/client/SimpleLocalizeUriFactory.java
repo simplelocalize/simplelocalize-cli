@@ -16,11 +16,6 @@ public class SimpleLocalizeUriFactory
     this.baseUrl = baseUrl;
   }
 
-  URI buildSendKeysURI()
-  {
-    return URI.create(baseUrl + "/cli/v1/keys");
-  }
-
   URI buildDownloadUri(DownloadRequest downloadRequest)
   {
     String endpointUrl = baseUrl + "/cli/v2/download?downloadFormat=" + downloadRequest.format();
@@ -35,6 +30,12 @@ public class SimpleLocalizeUriFactory
     if (!downloadOptions.isEmpty())
     {
       endpointUrl += "&downloadOptions=" + String.join(",", downloadOptions);
+    }
+
+    String namespace = downloadRequest.namespace();
+    if (StringUtils.isNotEmpty(namespace))
+    {
+      endpointUrl += "&namespace=" + namespace;
     }
 
     String customerId = downloadRequest.customerId();

@@ -12,6 +12,7 @@ import org.slf4j.LoggerFactory;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class DownloadCommand implements CliCommand
 {
@@ -49,6 +50,7 @@ public class DownloadCommand implements CliCommand
     DownloadRequest downloadRequest = DownloadRequest.builder()
             .withFormat(downloadFormat)
             .withOptions(downloadOptions)
+            .withNamespace(namespace)
             .withCustomerId(customerId)
             .withLanguageKey(languageKey)
             .withSort(sort)
@@ -59,7 +61,8 @@ public class DownloadCommand implements CliCommand
       log.info("Customer ID: {}", customerId);
     }
 
-    if (StringUtils.isNotEmpty(namespace))
+    boolean hasNamespace = StringUtils.isNotEmpty(namespace);
+    if (hasNamespace)
     {
       log.info("Namespace: {}", namespace);
     }
@@ -74,11 +77,19 @@ public class DownloadCommand implements CliCommand
     }
     log.info("Download options: {}", downloadOptions);
     List<DownloadableFile> downloadableFiles = client.fetchDownloadableFiles(downloadRequest);
+    int downloadedFilesCounter = 0;
     for (DownloadableFile downloadableFile : downloadableFiles)
     {
+      boolean isNamespaceMatches = Objects.equals(downloadableFile.namespace(), namespace);
+      if (hasNamespace && !isNamespaceMatches)
+      {
+        log.info("Skipping file download for namespace = {}", downloadableFile.namespace());
+        continue;
+      }
       client.downloadFile(downloadableFile, downloadPath);
+      downloadedFilesCounter++;
     }
-    log.info("Downloaded {} files from SimpleLocalize", downloadableFiles.size());
+    log.info("Downloaded {} file(s) from SimpleLocalize", downloadedFilesCounter);
   }
 
 }
