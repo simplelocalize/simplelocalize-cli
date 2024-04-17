@@ -25,7 +25,7 @@ jobs:
         name: "Install Java"
         with:
           java-version: '21'
-          distribution: 'temurin'
+          distribution: 'corretto'
           cache: 'maven'
       - name: "Build JAR"
         run: mvn -DskipTests -Pfatjar clean package

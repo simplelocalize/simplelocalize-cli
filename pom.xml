@@ -34,7 +34,7 @@
         <graalvm.quickBuild>false</graalvm.quickBuild>
 
         <!-- jacoco -->
-        <jacoco.version>0.8.10</jacoco.version>
+        <jacoco.version>0.8.12</jacoco.version>
 
         <!-- sonar -->
         <sonar.projectKey>simplelocalize_simplelocalize-cli</sonar.projectKey>
@@ -93,6 +93,12 @@
             <artifactId>lombok</artifactId>
             <version>${lombok.version}</version>
             <optional>true</optional>
+        </dependency>
+
+        <dependency>
+            <groupId>org.jsoup</groupId>
+            <artifactId>jsoup</artifactId>
+            <version>1.17.2</version>
         </dependency>
 
         <!-- test -->
