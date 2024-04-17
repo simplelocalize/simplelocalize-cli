@@ -20,14 +20,15 @@ public class DataKeyAttributeProcessor implements ExtractionProcessor
   public List<ExtractionResult> process(Path inputPath, List<String> ignorePaths)
   {
     BaseExtensionFilesFinder filesFinder = new BaseExtensionFilesFinder(ignorePaths);
-    List<Path> foundFiles = filesFinder.findFiles(inputPath);
+    List<Path> foundFiles = filesFinder.findFilesWithExtension(inputPath, ".html");
     List<ExtractionResult> output = new ArrayList<>();
     for (Path file : foundFiles)
     {
       try
       {
-        output.addAll(extractTranslationsFromFile(file));
-        log.info("Found {} results in file: {}", output.size(), file);
+        List<ExtractionResult> chunk = extractTranslationsFromFile(file);
+        output.addAll(chunk);
+        log.info("Found {} results in file: {}", chunk.size(), file);
       } catch (Exception e)
       {
         log.error("Error while processing file: {} ({})", file, e.getMessage());
