@@ -45,11 +45,11 @@ jobs:
             label: 'linux'
             filename: 'simplelocalize-cli'
             downloadFilename: 'simplelocalize-cli-linux'
-          - os: 'macos-11'
+          - os: 'macos-latest'
             label: 'mac'
             filename: 'simplelocalize-cli'
             downloadFilename: 'simplelocalize-cli-mac'
-          - os: 'macos-latest'
+          - os: 'macos-14'
             label: 'mac-arm64'
             filename: 'simplelocalize-cli'
             downloadFilename: 'simplelocalize-cli-mac-arm64'
@@ -61,6 +61,9 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         name: "Checkout"
+      - name: "Print architecture"
+        run: uname -m
+        if: startsWith(matrix.os, 'macos')
       - uses: graalvm/setup-graalvm@v1
         name: "Install GraalVM"
         with:
