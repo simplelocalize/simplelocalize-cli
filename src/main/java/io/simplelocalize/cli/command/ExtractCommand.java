@@ -3,7 +3,11 @@ package io.simplelocalize.cli.command;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.simplelocalize.cli.client.ObjectMapperSingleton;
 import io.simplelocalize.cli.client.dto.proxy.Configuration;
-import io.simplelocalize.cli.extraction.*;
+import io.simplelocalize.cli.client.dto.proxy.SimpleLocalizeJsonMetadata;
+import io.simplelocalize.cli.extraction.ExtractionProcessorFactory;
+import io.simplelocalize.cli.extraction.ExtractionResult;
+import io.simplelocalize.cli.extraction.ExtractionResultMapper;
+import io.simplelocalize.cli.extraction.ExtractionUtils;
 import io.simplelocalize.cli.extraction.processor.ExtractionProcessor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,8 +42,8 @@ public class ExtractCommand implements CliCommand
     final String searchDir = configuration.getSearchDir();
     log.info("Search directory: {}", searchDir);
 
-    final String outputPath = configuration.getOutputPath();
-    log.info("Output path: {}", outputPath);
+    final String output = configuration.getOutput();
+    log.info("Output: {}", output);
 
     final List<String> ignorePaths = configuration.getIgnorePaths();
     log.info("Ignoring paths: {}", ignorePaths);
@@ -64,8 +68,8 @@ public class ExtractCommand implements CliCommand
     Set<ExtractionResult> filteredKeys = ExtractionUtils.filterOutIgnoredKeys(results, ignoredKeys);
     Map<String, SimpleLocalizeJsonMetadata> keysWithMetadata = extractionResultMapper.map(filteredKeys);
 
-    log.info("Saving results to: {}", outputPath);
-    saveToFile(keysWithMetadata, outputPath);
+    log.info("Saving results to: {}", output);
+    saveToFile(keysWithMetadata, output);
     log.info("Done!");
   }
 

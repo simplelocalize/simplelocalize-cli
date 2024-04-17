@@ -29,7 +29,7 @@ import java.util.Objects;
                 },
         mixinStandardHelpOptions = true,
         version = {
-                "Current version: " + Version.NUMBER + " (${os.name} ${os.version} ${os.arch})\nReleases: https://github.com/simplelocalize/simplelocalize-cli/releases"
+                "Version: " + Version.NUMBER + " (${os.arch})\nReleases: https://github.com/simplelocalize/simplelocalize-cli/releases"
         }
 )
 public class SimplelocalizeCliCommand implements Runnable
@@ -57,7 +57,7 @@ public class SimplelocalizeCliCommand implements Runnable
   public void extract(
           @Option(names = {"--projectType"}, description = "Choose extraction type") String projectType,
           @Option(names = {"--searchDir"}, description = "(Optional) Choose where to search it can be local file path. Default: ./") String searchDir,
-          @Option(names = {"--outputPath"}, description = "(Optional) Choose where to save results. Default: ./extraction.json") String outputPath
+          @Option(names = {"--output"}, description = "(Optional) Choose where to save results. Default: ./extraction.json") String output
   )
   {
     try
@@ -72,9 +72,9 @@ public class SimplelocalizeCliCommand implements Runnable
       {
         configuration.setSearchDir(searchDir);
       }
-      if (StringUtils.isNotEmpty(outputPath))
+      if (StringUtils.isNotEmpty(output))
       {
-        configuration.setOutputPath(outputPath);
+        configuration.setOutput(output);
       }
       this.effectiveCommandConfiguration = configuration;
       ConfigurationValidator configurationValidator = new ConfigurationValidator();
@@ -320,7 +320,7 @@ public class SimplelocalizeCliCommand implements Runnable
   @Command(
           name = "auto-translate",
           description = "Start auto-translation. 'simplelocalize auto-translate --help' to learn more about the parameters.")
-  public void startAutoTranslation(
+  public void autoTranslate(
           @Option(names = {"--apiKey"}, description = "Project API Key") String apiKey,
           @Option(names = {"--languageKeys"}, description = "(Optional) Project language keys to auto-translate", split = ",") List<String> languageKeys,
           @Option(names = {"--baseUrl"}, description = "(Optional) Set custom server URL") String baseUrl
