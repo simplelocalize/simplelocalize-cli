@@ -4,6 +4,8 @@ import io.simplelocalize.cli.extraction.ExtractionResult;
 import io.simplelocalize.cli.extraction.files.BaseExtensionFilesFinder;
 import io.simplelocalize.cli.io.FileContentReader;
 import org.jsoup.Jsoup;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -11,6 +13,8 @@ import java.util.List;
 
 public class DataKeyAttributeProcessor implements ExtractionProcessor
 {
+
+  private final Logger log = LoggerFactory.getLogger(DataKeyAttributeProcessor.class);
 
   @Override
   public List<ExtractionResult> process(Path inputPath, List<String> ignorePaths)
@@ -20,7 +24,14 @@ public class DataKeyAttributeProcessor implements ExtractionProcessor
     List<ExtractionResult> output = new ArrayList<>();
     for (Path file : foundFiles)
     {
-      output.addAll(extractTranslationsFromFile(file));
+      try
+      {
+        output.addAll(extractTranslationsFromFile(file));
+        log.info("Found {} results in file: {}", output.size(), file);
+      } catch (Exception e)
+      {
+        log.error("Error while processing file: {} ({})", file, e.getMessage());
+      }
     }
     return output;
   }
