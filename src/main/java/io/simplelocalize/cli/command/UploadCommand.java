@@ -19,17 +19,15 @@ import java.util.Optional;
 public class UploadCommand implements CliCommand
 {
   private static final Logger log = LoggerFactory.getLogger(UploadCommand.class);
-  private final FileListReader fileListReader;
+  private final FileListReader fileListReader = new FileListReader();
+  private final ConfigurationValidator configurationValidator = new ConfigurationValidator();
   private final SimpleLocalizeClient client;
   private final Configuration configuration;
-  private final ConfigurationValidator configurationValidator;
 
   public UploadCommand(SimpleLocalizeClient client, Configuration configuration)
   {
     this.configuration = configuration;
     this.client = client;
-    this.fileListReader = new FileListReader();
-    this.configurationValidator = new ConfigurationValidator();
   }
 
   public void invoke() throws IOException, InterruptedException
@@ -76,11 +74,7 @@ public class UploadCommand implements CliCommand
     if (isDryRun)
     {
       log.info("Dry run mode enabled, no files will be uploaded");
-    } else
-    {
-      log.info("Uploading files...");
     }
-
 
     for (FileToUpload fileToUpload : filesToUpload)
     {
@@ -106,10 +100,10 @@ public class UploadCommand implements CliCommand
         continue;
       }
 
-      String requestLanguageKey = fileLanguageKey;
+      String effectiveLanguageKey = fileLanguageKey;
       if (hasConfigurationLanguageKey && !hasFileLanguageKey)
       {
-        requestLanguageKey = configurationLanguageKey;
+        effectiveLanguageKey = configurationLanguageKey;
       }
 
       boolean isMultiLanguage = isMultiLanguage(configuration);
@@ -118,15 +112,15 @@ public class UploadCommand implements CliCommand
         log.info("Language key not present in '--uploadPath' nor '--languageKey' parameter, file: {}", path);
       }
 
-      String namespace = fileToUpload.namespace();
-      if (StringUtils.isBlank(namespace))
+      String effectiveNamespace = fileToUpload.namespace();
+      if (StringUtils.isBlank(effectiveNamespace))
       {
-        namespace = configuration.getNamespace();
+        effectiveNamespace = configuration.getNamespace();
       }
       UploadRequest uploadRequest = UploadRequest.builder()
               .withPath(path)
-              .withLanguageKey(requestLanguageKey)
-              .withNamespace(namespace)
+              .withLanguageKey(effectiveLanguageKey)
+              .withNamespace(effectiveNamespace)
               .withFormat(uploadFormat)
               .withCustomerId(customerId)
               .withOptions(uploadOptions)
@@ -134,10 +128,10 @@ public class UploadCommand implements CliCommand
 
       if (isDryRun)
       {
-        log.info("[Dry run] Found file to upload, language=[{}], namespace=[{}] = {}", language, namespace, path);
+        log.info("[Dry run] Found file to upload, language=[{}], namespace=[{}] = {}", effectiveLanguageKey, effectiveNamespace, path);
       } else
       {
-        log.info("Uploading language=[{}] namespace=[{}] = {}", language, namespace, path);
+        log.info("Uploading file, language=[{}] namespace=[{}] = {}", effectiveLanguageKey, effectiveNamespace, path);
         client.uploadFile(uploadRequest);
       }
     }
@@ -167,8 +161,6 @@ public class UploadCommand implements CliCommand
         return true;
       }
     }
-
-
     return false;
   }
 }
