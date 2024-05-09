@@ -30,10 +30,10 @@ The installation process is automated by command-line scripts. Both scripts for 
 
 ```shell
 # macOs / Linux / Windows (WSL)
-curl -s https://get.simplelocalize.io/2.5/install | bash
+curl -s https://get.simplelocalize.io/2.6/install | bash
 
 # Windows (PowerShell)
-. { iwr -useb https://get.simplelocalize.io/2.5/install-windows } | iex;
+. { iwr -useb https://get.simplelocalize.io/2.6/install-windows } | iex;
 ```
 
 To change or update the CLI version, run the installation script with the desired version number in the URL, e.g.: 
@@ -268,11 +268,10 @@ simplelocalize purge --apiKey <PROJECT_API_KEY>
 
 ## Extract translation keys
 
-Extract command finds and upload translation keys from project source code at `<SEARCH_DIRECTORY>` to SimpleLocalize.
+Extract command finds translation keys and translations from project source code at `<SEARCH_DIRECTORY>` and exports them to `extraction.json` file that uses `simplelocalize-json` file format.
 
 ```properties
 simplelocalize extract 
-  --apiKey <PROJECT_API_KEY>
   --searchDir <SEARCH_DIRECTOR>
   --projectType <PROJECT_TYPE> 
 ```
