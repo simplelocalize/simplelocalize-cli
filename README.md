@@ -94,7 +94,7 @@ e.g.: `./src/translations/{lang}/{ns}.json`.
 Upload format is a format of the file(s) with translations. [See available upload formats](https://simplelocalize.io/docs/general/file-formats/)
 
 **Additional parameters:**
-- `--replace` allows you to **replace** existing translations with new ones.
+- `--overwrite` allows you to **replace** existing translations with new ones.
 - `--dryRun` allows you to **check** what translation files will be uploaded without actually uploading them.
 - `--uploadOptions` allows you to pass [additional options](https://simplelocalize.io/docs/general/options/) to the upload command. 
 E.g.: `--uploadOptions TRIM_LEADING_TRAILING_SPACES`. To pass multiple options, use comma as a separator.
