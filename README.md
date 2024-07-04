@@ -19,9 +19,9 @@ SimpleLocalize CLI is a command-line tool that allows you to manage translations
 and it's a great tool for CI/CD pipelines and localization automation.
 
 - **Upload and download translations.** The main purpose of the command-line tool is to upload and download translation files from [Translation Editor](https://simplelocalize.io/translation-editor/) to your project.
-- **[Auto-translate](https://simplelocalize.io/auto-translate) strings.** Start auto-translation jobs from the command-line and get translated strings in a few minutes.
-- **[Hosted translations management](https://simplelocalize.io/translation-hosting).** Push and pull translations from Translation Hosting to your project using the command-line.
-- **[GitHub Actions support](https://github.com/simplelocalize/github-action-cli).** Use SimpleLocalize CLI in your GitHub Actions workflows.
+- **[Auto-translate](https://simplelocalize.io/auto-translation/) strings.** Start auto-translation jobs from the command-line and get translated strings in a few minutes.
+- **[Hosted translations management](https://simplelocalize.io/translation-hosting/).** Push and pull translations from Translation Hosting to your project using the command-line.
+- **[GitHub Actions support](https://github.com/simplelocalize/github-action-cli/).** Use SimpleLocalize CLI in your GitHub Actions workflows.
 - **Check project status.** Get project details from the command-line and check if your translations are up-to-date.
 
 ## Installation
