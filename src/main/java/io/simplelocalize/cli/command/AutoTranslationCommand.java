@@ -2,7 +2,6 @@ package io.simplelocalize.cli.command;
 
 import com.jayway.jsonpath.JsonPath;
 import io.simplelocalize.cli.client.SimpleLocalizeClient;
-import io.simplelocalize.cli.client.dto.proxy.AutoTranslationConfiguration;
 import io.simplelocalize.cli.client.dto.proxy.Configuration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,8 +34,7 @@ public class AutoTranslationCommand implements CliCommand
     }
 
     List<String> languageKeys = Optional.of(configuration)
-            .map(Configuration::getAutoTranslation)
-            .map(AutoTranslationConfiguration::getLanguageKeys)
+            .map(Configuration::getAutoTranslateLanguageKeys)
             .orElse(List.of());
     if (languageKeys.isEmpty())
     {

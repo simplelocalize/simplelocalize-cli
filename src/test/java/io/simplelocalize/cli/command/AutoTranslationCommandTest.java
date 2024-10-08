@@ -2,7 +2,6 @@ package io.simplelocalize.cli.command;
 
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import io.simplelocalize.cli.client.SimpleLocalizeClient;
-import io.simplelocalize.cli.client.dto.proxy.AutoTranslationConfiguration;
 import io.simplelocalize.cli.client.dto.proxy.Configuration;
 import io.simplelocalize.cli.util.TestLogEventFactory;
 import org.assertj.core.api.Assertions;
@@ -61,11 +60,7 @@ class AutoTranslationCommandTest
   {
     //given
     Configuration configuration = Configuration.defaultConfiguration();
-
-    AutoTranslationConfiguration autoTranslation = AutoTranslationConfiguration.builder()
-            .languageKeys(List.of("en", "pl"))
-            .build();
-    configuration.setAutoTranslation(autoTranslation);
+    configuration.setAutoTranslateLanguageKeys(List.of("en", "pl"));
 
     Mockito.when(client.getAutoTranslationJobs())
             .thenReturn("""

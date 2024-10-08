@@ -1,6 +1,7 @@
 package io.simplelocalize.cli.command;
 
 import ch.qos.logback.classic.spi.ILoggingEvent;
+import io.simplelocalize.cli.client.dto.proxy.Configuration;
 import io.simplelocalize.cli.util.TestLogEventFactory;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -23,7 +24,7 @@ class InitCommandTest
     var fileName = "simplelocalize-init-command.yml";
     var configurationAtPath = Path.of(fileName);
     Files.deleteIfExists(configurationAtPath);
-    var initCommand = new InitCommand(fileName);
+    var initCommand = new InitCommand(Configuration.defaultConfiguration(), fileName);
     Assertions.assertThat(configurationAtPath).doesNotExist();
 
     List<ILoggingEvent> logEventList = TestLogEventFactory.createAndGetLogEventList(initCommand.getClass());
@@ -53,7 +54,7 @@ class InitCommandTest
     var configurationAtPath = Path.of(fileName);
     Files.deleteIfExists(configurationAtPath);
     Files.write(configurationAtPath, "do not overwrite me".getBytes());
-    var initCommand = new InitCommand(fileName);
+    var initCommand = new InitCommand(Configuration.defaultConfiguration(), fileName);
 
     List<ILoggingEvent> logEventList = TestLogEventFactory.createAndGetLogEventList(initCommand.getClass());
 

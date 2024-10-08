@@ -1,70 +1,54 @@
-# Common
-apiKey: API_KEY
+# Need help with the configuration? Contact us: contact@simplelocalize.io
 
-# Business plan option
-# customerId: ikea
+# Common, required configuration
+apiKey: YOUR_PROJECT_API_KEY
+
+##############################################################################################
+# 'simplelocalize upload' ## Learn more: https://simplelocalize.io/docs/general/file-formats/
+##############################################################################################
+
+# Input path for source translations.
+# Placeholders:
+# - {lang} - language key (optional)
+# - {ns} - namespace (optional)
+# Examples:
+# - ./translations_{lang}.json
+# - ./translations_en/{ns}.json
+# Use '--dryRun' parameter to see which files will be uploaded without actually uploading them.
+uploadPath: ./translations_en.json
+
+# Specify language key for uploaded translations. Language key must match the language key used in SimpleLocalize.
+uploadLanguageKey: en
+
+# Input format for translations: https://simplelocalize.io/docs/general/file-formats/
+uploadFormat: single-language-json
 
 
-#################################
-# 'simplelocalize upload' command
-#################################
 
-# Upload path is a path to a file(s) with translations. Use {lang} placeholder to specify language or locale and {ns} placeholder to specify namespace.
-# For example, if you have translations in 2 languages and 2 namespaces, you can use the following path: ./src/translations/{lang}/{ns}.json.
-# Add '--dryRun' parameter to check what translation files will be uploaded without actually uploading them.
-uploadPath: ./src/translations.json
+#####################################################################################################
+# 'simplelocalize download' ## Learn more: https://simplelocalize.io/docs/cli/download-translations/
+#####################################################################################################
 
-# Upload format is a format of the file(s) with translations.
-# Supported formats: https://simplelocalize.io/docs/general/file-formats/
-uploadFormat: multi-language-json
+# Output path for downloaded translations.
+# Placeholders:
+# - {lang} - language key (optional)
+# - {ns} - namespace (optional)
+# Examples:
+# - ./translations_{lang}.json
+# - ./translations_{lang}/{ns}.json
+downloadPath: ./translations_{lang}.json
 
-# Upload options are options that are passed to the upload command.
-# Supported options: https://simplelocalize.io/docs/general/options/
-uploadOptions:
-#  - 'REPLACE_TRANSLATION_IF_FOUND' # overwrite translation for given a key and namespace if found
+# Specify language keys which you want to download, by default all languages are downloaded.
+# downloadLanguageKey: ['pl', 'es']
 
+# Output format for translations: https://simplelocalize.io/docs/general/file-formats/
+downloadFormat: single-language-json
 
-###################################
-# 'simplelocalize download' command
-###################################
-
-# Download path is a path to a file(s) with translations. Use {lang} placeholder to specify language or locale and {ns} placeholder to specify namespace.
-# For example, if you have translations in 2 languages and 2 namespaces, you can use the following path: ./src/translations/{lang}/{ns}.json
-downloadPath: ./src/translations.json
-
-# Download format is a format of the file(s) with translations.
-# Supported formats: https://simplelocalize.io/docs/general/file-formats/
-downloadFormat: multi-language-json
-
-# Download options are options that are passed to the download command.
-# Supported options: https://simplelocalize.io/docs/general/options/
-downloadOptions:
-#  - 'WRITE_NESTED' # write nested JSON
 
 
 #########################################
-# 'simplelocalize auto-translate' command
+# 'simplelocalize auto-translate' ## Learn more: https://simplelocalize.io/docs/cli/other-commands/#auto-translate-project
 #########################################
 
-# autoTranslation.languageKeys is a list of languages that should be auto-translated.
-# Leave empty to auto-translate all project languages.
-autoTranslation:
-  languageKeys:
-    - 'en'
-    - 'de'
-
-##################################
-# 'simplelocalize extract' command
-##################################
-
-# Extract path is a path to a directory with application source code.
-searchDir: ./src
-
-# Project type is a type of the project. It is used to extract i18n keys from the source code.
-# Supported project types: https://simplelocalize.io/docs/cli/i18n-keys-extraction/
-projectType: yahoo/react-intl
-
-# Ignore keys are a list of keys that should be ignored during i18n keys extraction.
-ignoreKeys:
-  - 'WELCOME'
-  - 'ABOUT-US'
+# Specify language keys which you want to auto-translate, leave empty to auto-translate all languages.
+# autoTranslateLanguageKeys: ['en', 'de']

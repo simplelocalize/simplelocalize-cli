@@ -78,23 +78,26 @@ class ConfigurationLoaderTest
     //then
 
     // common
-    Assertions.assertThat(configuration.getLanguageKey()).isEqualTo("en");
     Assertions.assertThat(configuration.getApiKey()).isEqualTo("my-api-key");
-    Assertions.assertThat(configuration.getCustomerId()).isEqualTo("ikea");
 
     // upload
     Assertions.assertThat(configuration.getUploadPath()).isEqualTo("./my-upload-path");
     Assertions.assertThat(configuration.getUploadFormat()).isEqualTo("my-upload-format");
+    Assertions.assertThat(configuration.getUploadLanguageKey()).isEqualTo("en");
+    Assertions.assertThat(configuration.getUploadCustomerId()).isEqualTo("my-customer-id-1");
+    Assertions.assertThat(configuration.getUploadNamespace()).isEqualTo("common");
     Assertions.assertThat(configuration.getUploadOptions()).containsExactlyInAnyOrder("SPLIT_BY_NAMESPACES");
 
     // download
     Assertions.assertThat(configuration.getDownloadPath()).isEqualTo("./my-download-path");
     Assertions.assertThat(configuration.getDownloadFormat()).isEqualTo("my-download-format");
+    Assertions.assertThat(configuration.getDownloadLanguageKeys()).containsExactlyInAnyOrder("pl", "es");
+    Assertions.assertThat(configuration.getDownloadCustomerId()).isEqualTo("my-customer-id-2");
+    Assertions.assertThat(configuration.getDownloadNamespace()).isEqualTo("login");
     Assertions.assertThat(configuration.getDownloadOptions()).containsExactlyInAnyOrder("SPLIT_BY_NAMESPACES", "WRITE_NESTED");
 
     // auto-translate
-    Assertions.assertThat(configuration.getAutoTranslation()).isNotNull();
-    Assertions.assertThat(configuration.getAutoTranslation().getLanguageKeys()).containsExactlyInAnyOrder("en", "de");
+    Assertions.assertThat(configuration.getAutoTranslateLanguageKeys()).isNotNull().containsExactlyInAnyOrder("en", "de");
 
     // extract
     Assertions.assertThat(configuration.getProjectType()).isEqualTo("yahoo/react-intl");

@@ -4,6 +4,7 @@ import com.jayway.jsonpath.DocumentContext;
 import com.jayway.jsonpath.JsonPath;
 import io.simplelocalize.cli.client.SimpleLocalizeClient;
 import io.simplelocalize.cli.client.dto.proxy.Configuration;
+import io.simplelocalize.cli.configuration.ConfigurationValidatorUtil;
 import io.simplelocalize.cli.util.EnvironmentUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,6 +27,9 @@ public class PublishHostingCommand implements CliCommand
 
   public void invoke() throws IOException, InterruptedException
   {
+    String configurationEnvironment = configuration.getEnvironment();
+    ConfigurationValidatorUtil.validateIsNotEmptyOrNull(configurationEnvironment, "environment");
+
     String responseData = client.fetchProject();
     DocumentContext json = JsonPath.parse(responseData);
 
@@ -35,7 +39,7 @@ public class PublishHostingCommand implements CliCommand
     String projectToken = json.read("$.data.projectToken", String.class);
     log.info("Project token: {}", projectToken);
 
-    String environment = EnvironmentUtils.convertDefaultEnvironmentKeyFromPreviousCliVersionsToV3IfNeeded(configuration.getEnvironment());
+    String environment = EnvironmentUtils.convertDefaultEnvironmentKeyFromPreviousCliVersionsToV3IfNeeded(configurationEnvironment);
     log.info("Environment: {}", environment);
 
     log.info("Publishing translations...");
