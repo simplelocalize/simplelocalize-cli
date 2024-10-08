@@ -88,10 +88,13 @@ simplelocalize upload
 Upload format is a format of the file(s) with translations. [See available upload formats](https://simplelocalize.io/docs/general/file-formats/)
 
 **Additional parameters:**
-- `--overwrite` allows you to **replace** existing translations with new ones.
-- `--dryRun` allows you to **check** what translation files will be uploaded without actually uploading them.
-- `--uploadOptions` allows you to pass [additional options](https://simplelocalize.io/docs/general/options/) to the upload command. 
-E.g.: `--uploadOptions TRIM_LEADING_TRAILING_SPACES`. To pass multiple options, use comma as a separator.
+- `--replace` allows you to **replace** existing translations with new ones,
+- `--dryRun` allows you to **check** what translation files will be uploaded without actually uploading them,
+- `--namespace` download translations for a specific namespace, e.g.: `--namespace home`,
+- `--customerId` download translations for a specific customer, e.g.: `--customerId ikea`,
+- `--uploadOptions` allows you to pass [additional options](https://simplelocalize.io/docs/general/options/) to the upload command, E.g.: `--options TRIM_LEADING_TRAILING_SPACES`. To pass multiple options, use comma as a separator.
+
+> Since version 2.7 you can skip 'upload' part in the parameters names, e.g.: `--path` instead of `--uploadPath`.
 
 Learn more about [upload translations command](https://simplelocalize.io/docs/cli/upload-translations/).
 
@@ -211,9 +214,13 @@ simplelocalize download
 ```
 
 **Additional parameters:**
-- `--downloadLanguageKey` allows you to download translation for specified languages. Eg.: `--downloadLanguageKey en,de,fr`.
-- `--downloadOptions` allows you to pass [additional options](https://simplelocalize.io/docs/general/options/) to the download command. Eg.: `--downloadOptions WRITE_NESTED`.
-- `--downloadSort` allows you to sort translations in the downloaded file. Eg.: `--downloadSort NEWEST_KEYS_FIRST`. Available options: `NEWEST_KEYS_FIRST`, `NEWEST_KEYS_LAST`, `NAMESPACES`, `IMPORT_ORDER`.
+- `--downloadLanguageKey` allows you to download translation for specified languages. E.g.: `--languageKey en,de,fr`.
+- `--downloadCustomerId` allows you to download translations for a specific customer. E.g.: `--customerId ikea`.
+- `--downloadNamespace` allows you to download translations for a specific namespace. E.g.: `--namespace home`.
+- `--downloadOptions` allows you to pass [additional options](https://simplelocalize.io/docs/general/options/) to the download command. E.g.: `--options WRITE_NESTED`.
+- `--downloadSort` allows you to sort translations in the downloaded file. E.g.: `--sort NEWEST_KEYS_FIRST`. Available options: `NEWEST_KEYS_FIRST`, `NEWEST_KEYS_LAST`, `NAMESPACES`, `IMPORT_ORDER`.
+
+> Since version 2.7 you can skip 'download' part in the parameters names, e.g.: `--path` instead of `--downloadPath`.
 
 Learn more about [download translations command](https://simplelocalize.io/docs/cli/download-translations/).
 
