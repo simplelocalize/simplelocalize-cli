@@ -29,6 +29,6 @@ public final class ExtractionProcessorFactory
         return processor;
       }
     }
-    throw new IllegalArgumentException("Could not find matching project processor for extractType: " + extractType + " please use on of these: " + supportedProjectTypes);
+    throw new IllegalArgumentException("Could not find matching project processor for extractType: " + extractType + " please use one of these: " + supportedProjectTypes);
   }
 }
