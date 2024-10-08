@@ -6,7 +6,7 @@
 <h3 align="center">Translation Management for software projects</h3>
 <p align="center">The easiest way to manage translation files for web and mobile apps.</p>
 <p align="center">
-  <a href="https://github.com/simplelocalize/simplelocalize-cli">
+  <a href="https://simplelocalize.io/">
     <img src="static/simplelocalize-git-hero.png">
   </a>
 </p>
