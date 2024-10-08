@@ -5,11 +5,11 @@ import org.slf4j.LoggerFactory;
 
 import java.util.Optional;
 
-public class WindowsUtils
+public class SystemUtils
 {
-  private static final Logger log = LoggerFactory.getLogger(WindowsUtils.class);
+  private static final Logger log = LoggerFactory.getLogger(SystemUtils.class);
 
-  private WindowsUtils()
+  private SystemUtils()
   {
   }
 

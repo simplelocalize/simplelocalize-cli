@@ -16,10 +16,16 @@ import java.util.List;
 public class Configuration
 {
 
+  /**
+   * Common configuration
+   */
   @Builder.Default
   private String baseUrl = "https://api.simplelocalize.io";
   private String apiKey;
 
+  /**
+   * Extract command
+   */
   private String projectType;
 
   @Builder.Default
@@ -34,21 +40,24 @@ public class Configuration
   @Builder.Default
   private List<String> ignorePaths = new ArrayList<>();
 
+  /**
+   * Upload command
+   */
   private String uploadPath;
   private String uploadFormat;
+  private String uploadLanguageKey;
+  private String uploadCustomerId;
+  private String uploadNamespace;
 
   @Builder.Default
   private List<String> uploadOptions = new ArrayList<>();
 
   @Builder.Default
-  private List<String> uploadFilesExclude = new ArrayList<>();
-
-  @Builder.Default
-  private List<String> uploadFilesInclude = new ArrayList<>();
-
-  @Builder.Default
   private Boolean dryRun = false;
 
+  /**
+   * Download command
+   */
   private String downloadPath;
   private String downloadFormat;
   private String downloadSort;
@@ -57,19 +66,19 @@ public class Configuration
   private List<String> downloadOptions = new ArrayList<>();
 
   @Builder.Default
-  private List<String> downloadFilesExclude = new ArrayList<>();
+  private List<String> downloadLanguageKeys = new ArrayList<>();
 
-  @Builder.Default
-  private List<String> downloadFilesInclude = new ArrayList<>();
+  private String downloadCustomerId;
+  private String downloadNamespace;
 
-  private String customerId;
+  /**
+   * Auto-translate command
+   */
+  private List<String> autoTranslateLanguageKeys = new ArrayList<>();
 
-  private String namespace;
-
-  private String languageKey;
-
-  private AutoTranslationConfiguration autoTranslation = AutoTranslationConfiguration.defaultConfiguration();
-
+  /**
+   * Pull & Publish command
+   */
   private String environment;
 
   private String pullPath;

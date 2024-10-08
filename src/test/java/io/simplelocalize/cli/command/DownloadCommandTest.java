@@ -1,7 +1,7 @@
 package io.simplelocalize.cli.command;
 
 import io.simplelocalize.cli.client.SimpleLocalizeClient;
-import io.simplelocalize.cli.client.dto.DownloadRequest;
+import io.simplelocalize.cli.client.dto.ExportRequest;
 import io.simplelocalize.cli.client.dto.proxy.Configuration;
 import io.simplelocalize.cli.client.dto.proxy.DownloadableFile;
 import org.junit.jupiter.api.Test;
@@ -10,6 +10,7 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.Collections;
 import java.util.List;
 
 @ExtendWith(MockitoExtension.class)
@@ -26,14 +27,14 @@ class DownloadCommandTest
     Configuration configuration = Configuration.defaultConfiguration();
     configuration.setApiKey("my-api-key");
     configuration.setDownloadPath("./my-project-path");
-    configuration.setLanguageKey("en");
+    configuration.setDownloadLanguageKeys(Collections.singletonList("en"));
     configuration.setDownloadOptions(List.of("SPLIT_BY_NAMESPACES"));
     configuration.setDownloadFormat("android");
 
     //when
-    Mockito.when(client.fetchDownloadableFiles(DownloadRequest.builder()
+    Mockito.when(client.exportFiles(ExportRequest.builder()
                     .withFormat("android")
-                    .withLanguageKey("en")
+                    .withLanguageKeys(List.of("en"))
                     .withOptions(List.of("SPLIT_BY_NAMESPACES"))
                     .build()))
             .thenReturn(List.of(

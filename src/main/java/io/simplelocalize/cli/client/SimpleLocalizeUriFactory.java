@@ -1,6 +1,6 @@
 package io.simplelocalize.cli.client;
 
-import io.simplelocalize.cli.client.dto.DownloadRequest;
+import io.simplelocalize.cli.client.dto.ExportRequest;
 import io.simplelocalize.cli.client.dto.UploadRequest;
 import io.simplelocalize.cli.util.StringUtils;
 
@@ -16,35 +16,35 @@ public class SimpleLocalizeUriFactory
     this.baseUrl = baseUrl;
   }
 
-  URI buildDownloadUri(DownloadRequest downloadRequest)
+  URI buildDownloadUri(ExportRequest exportRequest)
   {
-    String endpointUrl = baseUrl + "/cli/v2/download?downloadFormat=" + downloadRequest.format();
-    String languageKey = downloadRequest.languageKey();
-    boolean isRequestedTranslationsForSpecificLanguage = StringUtils.isNotEmpty(languageKey);
+    String endpointUrl = baseUrl + "/cli/v2/download?downloadFormat=" + exportRequest.format();
+    final List<String> languageKeys = exportRequest.languageKeys();
+    boolean isRequestedTranslationsForSpecificLanguage = languageKeys != null && !languageKeys.isEmpty();
     if (isRequestedTranslationsForSpecificLanguage)
     {
-      endpointUrl += "&languageKey=" + languageKey;
+      endpointUrl += "&languageKey=" + String.join(",", languageKeys);
     }
 
-    List<String> downloadOptions = downloadRequest.options();
+    List<String> downloadOptions = exportRequest.options();
     if (!downloadOptions.isEmpty())
     {
       endpointUrl += "&downloadOptions=" + String.join(",", downloadOptions);
     }
 
-    String namespace = downloadRequest.namespace();
+    String namespace = exportRequest.namespace();
     if (StringUtils.isNotEmpty(namespace))
     {
       endpointUrl += "&namespace=" + namespace;
     }
 
-    String customerId = downloadRequest.customerId();
+    String customerId = exportRequest.customerId();
     if (StringUtils.isNotEmpty(customerId))
     {
       endpointUrl += "&customerId=" + customerId;
     }
 
-    String sort = downloadRequest.sort();
+    String sort = exportRequest.sort();
     if (StringUtils.isNotEmpty(sort))
     {
       endpointUrl += "&sort=" + sort;

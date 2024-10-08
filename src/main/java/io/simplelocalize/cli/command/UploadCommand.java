@@ -1,26 +1,26 @@
 package io.simplelocalize.cli.command;
 
+import io.simplelocalize.cli.TemplateKeys;
 import io.simplelocalize.cli.client.SimpleLocalizeClient;
 import io.simplelocalize.cli.client.dto.FileToUpload;
 import io.simplelocalize.cli.client.dto.UploadRequest;
 import io.simplelocalize.cli.client.dto.proxy.Configuration;
-import io.simplelocalize.cli.configuration.ConfigurationValidator;
+import io.simplelocalize.cli.configuration.ConfigurationValidatorUtil;
+import io.simplelocalize.cli.exception.ConfigurationException;
 import io.simplelocalize.cli.io.FileListReader;
 import io.simplelocalize.cli.util.StringUtils;
-import io.simplelocalize.cli.util.WindowsUtils;
+import io.simplelocalize.cli.util.SystemUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.List;
-import java.util.Optional;
 
 public class UploadCommand implements CliCommand
 {
   private static final Logger log = LoggerFactory.getLogger(UploadCommand.class);
   private final FileListReader fileListReader = new FileListReader();
-  private final ConfigurationValidator configurationValidator = new ConfigurationValidator();
   private final SimpleLocalizeClient client;
   private final Configuration configuration;
 
@@ -32,105 +32,137 @@ public class UploadCommand implements CliCommand
 
   public void invoke() throws IOException, InterruptedException
   {
-    configurationValidator.validateUploadConfiguration(configuration);
-    String uploadPath = configuration.getUploadPath();
-    boolean isDryRun = Boolean.TRUE.equals(configuration.getDryRun());
+    validateConfiguration(configuration);
 
-    if (WindowsUtils.isWindows())
-    {
-      uploadPath = WindowsUtils.convertToWindowsPath(uploadPath);
-    }
-
-    List<FileToUpload> filesToUpload = fileListReader.findFilesToUpload(uploadPath);
-    String uploadFormat = configuration.getUploadFormat();
-    String customerId = configuration.getCustomerId();
-    List<String> uploadOptions = configuration.getUploadOptions();
-    log.info("File format: {}", uploadFormat);
-    if (StringUtils.isNotEmpty(customerId))
-    {
-      log.info("Customer ID: {}", customerId);
-    }
-
-    String configurationNamespace = configuration.getNamespace();
-    if (StringUtils.isNotBlank(configurationNamespace))
-    {
-      log.info("Namespace: {}", configurationNamespace);
-    }
-
-    log.info("Upload options: {}", uploadOptions);
-
-    log.info("Found {} files matching upload path '{}'", filesToUpload.size(), uploadPath);
-
+    final boolean isDryRun = Boolean.TRUE.equals(configuration.getDryRun());
     if (isDryRun)
     {
       log.info("Dry run mode enabled, no files will be uploaded");
     }
 
-    int uploadedFilesCounter = 0;
+    String uploadPath = configuration.getUploadPath();
+    if (SystemUtils.isWindows())
+    {
+      uploadPath = SystemUtils.convertToWindowsPath(uploadPath);
+    }
+
+    final String uploadFormat = configuration.getUploadFormat();
+    log.info("File format: {}", uploadFormat);
+
+    final String uploadLanguageKey = configuration.getUploadLanguageKey();
+    boolean hasDefinedLanguageKey = StringUtils.isNotEmpty(uploadLanguageKey);
+    if (hasDefinedLanguageKey)
+    {
+      log.info("Language: {}", uploadLanguageKey);
+    }
+
+    final String uploadNamespace = configuration.getUploadNamespace();
+    boolean hasDefinedNamespace = StringUtils.isNotBlank(uploadNamespace);
+    if (hasDefinedNamespace)
+    {
+      log.info("Namespace: {}", uploadNamespace);
+    }
+
+    final String uploadCustomerId = configuration.getUploadCustomerId();
+    if (StringUtils.isNotEmpty(uploadCustomerId))
+    {
+      log.info("Customer ID: {}", uploadCustomerId);
+    }
+
+    final List<String> uploadOptions = configuration.getUploadOptions();
+    log.info("Options: {}", uploadOptions);
+
+    final List<FileToUpload> filesToUpload = fileListReader.findFilesToUpload(uploadPath);
+    if (filesToUpload.size() > 1)
+    {
+      log.info("Found {} files matching the upload path", filesToUpload.size());
+    }
+
+    if (filesToUpload.isEmpty())
+    {
+      log.warn("No files found to upload! Please check the upload path: {}", uploadPath);
+      return;
+    }
+
     for (FileToUpload fileToUpload : filesToUpload)
     {
-      Path path = fileToUpload.path();
-      long length = path.toFile().length();
+      final Path path = fileToUpload.path();
+      final long length = path.toFile().length();
       if (length == 0)
       {
         log.warn("Skipping empty file = {}", path);
         continue;
       }
 
-      String fileLanguageKey = Optional.of(fileToUpload).map(FileToUpload::language).orElse("");
-      boolean hasFileLanguageKey = StringUtils.isNotBlank(fileLanguageKey);
+      final String effectiveLanguageKey = hasDefinedLanguageKey ? uploadLanguageKey : fileToUpload.language();
+      final String effectiveNamespace = hasDefinedNamespace ? uploadNamespace : fileToUpload.namespace();
 
-      String configurationLanguageKey = configuration.getLanguageKey();
-      boolean hasConfigurationLanguageKey = StringUtils.isNotBlank(configurationLanguageKey);
-
-      boolean isLanguageMatching = fileLanguageKey.equals(configurationLanguageKey);
-      String language = fileToUpload.language();
-      if (hasFileLanguageKey && hasConfigurationLanguageKey && !isLanguageMatching)
-      {
-        log.info("Skipping '{}' language = {}", language, path);
-        continue;
-      }
-
-      String effectiveLanguageKey = fileLanguageKey;
-      if (hasConfigurationLanguageKey && !hasFileLanguageKey)
-      {
-        effectiveLanguageKey = configurationLanguageKey;
-      }
-
-      boolean isMultiLanguage = isMultiLanguage(configuration);
-      if (!hasFileLanguageKey && !hasConfigurationLanguageKey && !isMultiLanguage)
-      {
-        log.info("Language key not present in '--uploadPath' nor '--languageKey' parameter = {}", path);
-      }
-
-      String effectiveNamespace = fileToUpload.namespace();
-      if (StringUtils.isBlank(effectiveNamespace))
-      {
-        effectiveNamespace = configuration.getNamespace();
-      }
-      UploadRequest uploadRequest = UploadRequest.builder()
+      final UploadRequest uploadRequest = UploadRequest.builder()
               .withPath(path)
+              .withFormat(uploadFormat)
               .withLanguageKey(effectiveLanguageKey)
               .withNamespace(effectiveNamespace)
-              .withFormat(uploadFormat)
-              .withCustomerId(customerId)
+              .withCustomerId(uploadCustomerId)
               .withOptions(uploadOptions)
               .build();
 
       if (isDryRun)
       {
-        log.info("[Dry run] Found file to upload, language=[{}], namespace=[{}] = {}", effectiveLanguageKey, effectiveNamespace, path);
+        log.info("[Dry run] Upload candidate = {}", path);
       } else
       {
-        log.info("Uploading file, language=[{}] namespace=[{}] = {}", effectiveLanguageKey, effectiveNamespace, path);
+        log.info("Uploading file = {}", path);
+      }
+
+      if (StringUtils.isNotEmpty(fileToUpload.language()))
+      {
+        log.info("- Language = {}", effectiveLanguageKey);
+      }
+      if (StringUtils.isNotEmpty(fileToUpload.namespace()))
+      {
+        log.info("- Namespace = {}", effectiveNamespace);
+      }
+
+      if (!isDryRun)
+      {
         client.uploadFile(uploadRequest);
-        uploadedFilesCounter++;
       }
     }
 
-    if (!isDryRun)
+    if (isDryRun)
     {
-      log.info("Uploaded {} file(s) to SimpleLocalize", uploadedFilesCounter);
+      log.info("Dry run mode completed. Run the command without --dryRun flag to upload files.");
+    } else
+    {
+      log.info("Upload to SimpleLocalize completed");
+    }
+  }
+
+  private void validateConfiguration(Configuration configuration)
+  {
+    ConfigurationValidatorUtil.validateIsNotEmptyOrNull(configuration.getUploadFormat(), "uploadFormat");
+    final String uploadPath = configuration.getUploadPath();
+    ConfigurationValidatorUtil.validateIsNotEmptyOrNull(uploadPath, "uploadPath");
+
+    final String uploadLanguageKey = configuration.getUploadLanguageKey();
+    final boolean hasUploadLanguageKey = StringUtils.isNotBlank(uploadLanguageKey);
+
+    final boolean hasLanguagePlaceholder = uploadPath.contains(TemplateKeys.LANGUAGE_TEMPLATE_KEY);
+    if (hasLanguagePlaceholder && hasUploadLanguageKey)
+    {
+      throw new ConfigurationException("You cannot use {lang} placeholder in uploadPath and language key parameter at the same time");
+    }
+
+    final boolean hasNamespacePlaceholder = uploadPath.contains(TemplateKeys.NAMESPACE_TEMPLATE_KEY);
+    if (hasNamespacePlaceholder && hasUploadLanguageKey)
+    {
+      throw new ConfigurationException("You cannot use {ns} placeholder in uploadPath and namespace parameter at the same time");
+    }
+
+    final boolean isMultiLanguage = isMultiLanguage(configuration);
+    if (isMultiLanguage && hasUploadLanguageKey)
+    {
+      throw new ConfigurationException("You cannot use language key parameter with multi-language file formats");
     }
   }
 

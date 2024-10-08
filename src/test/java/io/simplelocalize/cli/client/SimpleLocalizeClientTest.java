@@ -1,7 +1,7 @@
 package io.simplelocalize.cli.client;
 
 import ch.qos.logback.classic.spi.ILoggingEvent;
-import io.simplelocalize.cli.client.dto.DownloadRequest;
+import io.simplelocalize.cli.client.dto.ExportRequest;
 import io.simplelocalize.cli.client.dto.UploadRequest;
 import io.simplelocalize.cli.client.dto.proxy.DownloadableFile;
 import io.simplelocalize.cli.exception.ApiRequestException;
@@ -171,7 +171,7 @@ public class SimpleLocalizeClientTest
                             .withDelay(TimeUnit.MILLISECONDS, 200)
             );
 
-    DownloadRequest downloadRequest = DownloadRequest.builder()
+    ExportRequest exportRequest = ExportRequest.builder()
             .withFormat("java-properties")
             .withOptions(List.of("SPLIT_BY_NAMESPACES"))
             .build();
@@ -179,7 +179,7 @@ public class SimpleLocalizeClientTest
     List<ILoggingEvent> logEventList = TestLogEventFactory.createAndGetLogEventList(client.getClass());
 
     //when
-    client.fetchDownloadableFiles(downloadRequest);
+    client.exportFiles(exportRequest);
 
     //then
     logEventList.forEach(logEvent -> assertThat(logEvent.getFormattedMessage()).isEqualTo("Downloadable files fetched: 1"));
@@ -204,7 +204,7 @@ public class SimpleLocalizeClientTest
                             .withDelay(TimeUnit.MILLISECONDS, 200)
             );
 
-    DownloadRequest downloadRequest = DownloadRequest.builder()
+    ExportRequest exportRequest = ExportRequest.builder()
             .withFormat("java-properties")
             .withOptions(List.of("SPLIT_BY_NAMESPACES", "USE_NESTED_JSON"))
             .build();
@@ -212,7 +212,7 @@ public class SimpleLocalizeClientTest
     List<ILoggingEvent> logEventList = TestLogEventFactory.createAndGetLogEventList(client.getClass());
 
     //when
-    client.fetchDownloadableFiles(downloadRequest);
+    client.exportFiles(exportRequest);
 
     //then
     logEventList.forEach(logEvent -> assertThat(logEvent.getFormattedMessage()).isEqualTo("Downloadable files fetched: 1"));

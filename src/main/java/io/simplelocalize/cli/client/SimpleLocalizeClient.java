@@ -3,12 +3,14 @@ package io.simplelocalize.cli.client;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jayway.jsonpath.JsonPath;
 import com.jayway.jsonpath.Option;
-import io.simplelocalize.cli.client.dto.DownloadRequest;
+import io.simplelocalize.cli.client.dto.ExportRequest;
 import io.simplelocalize.cli.client.dto.UploadRequest;
 import io.simplelocalize.cli.client.dto.proxy.Configuration;
 import io.simplelocalize.cli.client.dto.proxy.DownloadableFile;
 import io.simplelocalize.cli.client.dto.proxy.ExportResponse;
 import io.simplelocalize.cli.exception.ApiRequestException;
+import io.simplelocalize.cli.exception.ConfigurationException;
+import io.simplelocalize.cli.util.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -51,7 +53,18 @@ public class SimpleLocalizeClient
 
   public static SimpleLocalizeClient create(String baseUrl, String apiKey)
   {
-    return new SimpleLocalizeClient(baseUrl, apiKey);
+    final String effectiveApiKey = StringUtils.isNotEmpty(apiKey) ? apiKey : loadApiKeyFromEnvironmentVariable();
+    if (StringUtils.isBlank(effectiveApiKey))
+    {
+      throw new ConfigurationException("API key is required");
+    }
+
+    return new SimpleLocalizeClient(baseUrl, effectiveApiKey);
+  }
+
+  public static String loadApiKeyFromEnvironmentVariable()
+  {
+    return System.getenv("SIMPLELOCALIZE_API_KEY");
   }
 
   public void uploadFile(UploadRequest uploadRequest) throws IOException, InterruptedException
@@ -62,9 +75,9 @@ public class SimpleLocalizeClient
     throwOnError(httpResponse);
   }
 
-  public List<DownloadableFile> fetchDownloadableFiles(DownloadRequest downloadRequest) throws IOException, InterruptedException
+  public List<DownloadableFile> exportFiles(ExportRequest exportRequest) throws IOException, InterruptedException
   {
-    URI downloadUri = uriFactory.buildDownloadUri(downloadRequest);
+    URI downloadUri = uriFactory.buildDownloadUri(exportRequest);
     HttpRequest httpRequest = httpRequestFactory.createGetRequest(downloadUri).build();
     HttpResponse<String> httpResponse = httpClient.send(httpRequest, HttpResponse.BodyHandlers.ofString());
     throwOnError(httpResponse);

@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import io.simplelocalize.cli.client.ObjectMapperSingleton;
 import io.simplelocalize.cli.client.dto.proxy.Configuration;
 import io.simplelocalize.cli.client.dto.proxy.SimpleLocalizeJsonMetadata;
+import io.simplelocalize.cli.configuration.ConfigurationValidatorUtil;
 import io.simplelocalize.cli.extraction.ExtractionProcessorFactory;
 import io.simplelocalize.cli.extraction.ExtractionResult;
 import io.simplelocalize.cli.extraction.ExtractionResultMapper;
@@ -36,6 +37,9 @@ public class ExtractCommand implements CliCommand
 
   public void invoke() throws IOException, InterruptedException
   {
+    ConfigurationValidatorUtil.validateIsNotEmptyOrNull(configuration.getProjectType(), "projectType");
+    ConfigurationValidatorUtil.validateIsNotEmptyOrNull(configuration.getSearchDir(), "searchDir");
+
     final String projectType = configuration.getProjectType();
     log.info("Project type: {}", projectType);
 

@@ -70,8 +70,8 @@ class UploadCommandTest
     //given
     Configuration configuration = Configuration.defaultConfiguration();
     configuration.setApiKey("my-api-key");
-    configuration.setUploadPath("./junit/download-test/values-{lang}/strings.xml");
-    configuration.setLanguageKey("en");
+    configuration.setUploadPath("./junit/download-test/values-en/strings.xml");
+    configuration.setUploadLanguageKey("en");
     configuration.setUploadFormat("android");
 
     //when
@@ -81,7 +81,7 @@ class UploadCommandTest
     //then
     Mockito.verify(client, times(1)).uploadFile(
             Mockito.refEq(UploadRequest.builder()
-                            .withPath(Path.of("./junit/download-test/values-{lang}/strings.xml"))
+                            .withPath(Path.of("./junit/download-test/values-en/strings.xml"))
                             .withFormat("android")
                             .withLanguageKey("en")
                             .withOptions(Collections.emptyList())
@@ -99,6 +99,7 @@ class UploadCommandTest
     configuration.setApiKey("my-api-key");
     configuration.setUploadPath("./junit/download-test/values-en/strings.xml");
     configuration.setUploadFormat("android");
+    configuration.setUploadLanguageKey("en");
 
     //when
     UploadCommand uploadCommand = new UploadCommand(client, configuration);
@@ -109,7 +110,7 @@ class UploadCommandTest
             Mockito.refEq(UploadRequest.builder()
                     .withPath(Path.of("./junit/download-test/values-en/strings.xml"))
                     .withFormat("android")
-                    .withLanguageKey("")
+                    .withLanguageKey("en")
                     .withOptions(Collections.emptyList())
                     .build()
             )
@@ -140,7 +141,7 @@ class UploadCommandTest
     Configuration configuration = Configuration.defaultConfiguration();
     configuration.setApiKey("my-api-key");
     configuration.setUploadPath("./junit/download-test/values-en/strings.xml");
-    configuration.setLanguageKey("en");
+    configuration.setUploadLanguageKey("en");
     configuration.setUploadFormat("android");
 
     //when

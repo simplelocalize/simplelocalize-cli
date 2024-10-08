@@ -5,6 +5,7 @@ import com.jayway.jsonpath.TypeRef;
 import io.simplelocalize.cli.client.SimpleLocalizeClient;
 import io.simplelocalize.cli.client.dto.proxy.Configuration;
 import io.simplelocalize.cli.client.dto.proxy.HostingResource;
+import io.simplelocalize.cli.configuration.ConfigurationValidatorUtil;
 import io.simplelocalize.cli.io.JsonReader;
 import io.simplelocalize.cli.util.EnvironmentUtils;
 import org.slf4j.Logger;
@@ -34,21 +35,27 @@ public class PullHostingCommand implements CliCommand
 
   public void invoke() throws IOException, InterruptedException
   {
-    String responseData = client.fetchProject();
-    DocumentContext json = jsonReader.read(responseData);
+    final String configurationEnvironment = configuration.getEnvironment();
+    ConfigurationValidatorUtil.validateIsNotEmptyOrNull(configurationEnvironment, "environment");
 
-    String projectName = json.read("$.data.name", String.class);
+    final String configurationPullPath = configuration.getPullPath();
+    ConfigurationValidatorUtil.validateIsNotEmptyOrNull(configurationPullPath, "pullPath");
+
+    final String responseData = client.fetchProject();
+    final DocumentContext json = jsonReader.read(responseData);
+
+    final String projectName = json.read("$.data.name", String.class);
     log.info("Project name: {}", projectName);
 
-    String projectToken = json.read("$.data.projectToken", String.class);
+    final String projectToken = json.read("$.data.projectToken", String.class);
     log.info("Project token: {}", projectToken);
 
-    String environment = EnvironmentUtils.convertDefaultEnvironmentKeyFromPreviousCliVersionsToV3IfNeeded(configuration.getEnvironment());
+    final String environment = EnvironmentUtils.convertDefaultEnvironmentKeyFromPreviousCliVersionsToV3IfNeeded(configurationEnvironment);
     log.info("Environment: {}", environment);
 
-    String filterRegex = configuration.getFilterRegex();
-    log.info("Filter regex: {}", filterRegex);
+    final String filterRegex = configuration.getFilterRegex();
     Pattern filterPattern = null;
+    log.info("Filter regex: {}", filterRegex);
     if (filterRegex != null)
     {
       filterPattern = Pattern.compile(filterRegex);
@@ -63,7 +70,6 @@ public class PullHostingCommand implements CliCommand
             .sorted()
             .toList();
     log.info("Found {} Translation Hosting resources", resourcePaths.size());
-    String pullDirectory = configuration.getPullPath();
 
     int numberOfDownloadedResources = 0;
     for (String resourcePath : resourcePaths)
@@ -82,7 +88,7 @@ public class PullHostingCommand implements CliCommand
         }
       }
 
-      Path savePath = Path.of(pullDirectory, filePath);
+      Path savePath = Path.of(configurationPullPath, filePath);
       client.downloadFile(downloadUrl, savePath);
       numberOfDownloadedResources++;
     }

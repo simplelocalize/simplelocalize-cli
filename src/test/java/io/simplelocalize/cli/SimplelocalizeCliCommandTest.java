@@ -60,59 +60,6 @@ class SimplelocalizeCliCommandTest
   }
 
   @Test
-  void sync()
-  {
-
-    // given
-    mockServer.when(request()
-                            .withMethod("POST")
-                            .withPath("/cli/v2/upload")
-                            .withQueryStringParameter("uploadFormat", "multi-language-json")
-                            .withHeader("X-SimpleLocalize-Token", "my-api-key"),
-                    Times.exactly(1))
-            .respond(
-                    response()
-                            .withStatusCode(200)
-                            .withBody("{ 'msg': 'OK' }")
-                            .withDelay(TimeUnit.MILLISECONDS, 200)
-            );
-
-    mockServer.when(request()
-                            .withMethod("GET")
-                            .withPath("/cli/v2/download")
-                            .withQueryStringParameter("downloadOptions", "SPLIT_BY_NAMESPACES")
-                            .withQueryStringParameter("downloadFormat", "java-properties")
-                            .withHeader("X-SimpleLocalize-Token", "my-api-key"),
-                    Times.exactly(1))
-            .respond(
-                    response()
-                            .withStatusCode(200)
-                            .withBody("{ \"files\": [{\"namespace\": \"my-file\", \"url\": \"https://simplelocalize.io\"}] }")
-                            .withDelay(TimeUnit.MILLISECONDS, 200)
-            );
-
-
-    SimplelocalizeCliCommand app = new SimplelocalizeCliCommand();
-    CommandLine commandLine = new CommandLine(app);
-    String[] args = {"sync",
-            "--apiKey", "my-api-key",
-            "--baseUrl", MOCK_SERVER_BASE_URL,
-            "--uploadPath", "./junit/mock-server/test.json",
-            "--uploadFormat", "multi-language-json",
-            "--downloadPath", "./junit/mock-server/test.json",
-            "--downloadFormat", "java-properties",
-            "--downloadOptions", "SPLIT_BY_NAMESPACES"
-    };
-    commandLine.parseArgs(args);
-
-    //when
-    int execute = commandLine.execute(args);
-
-    //then
-    assertEquals(0, execute);
-  }
-
-  @Test
   void upload()
   {
     // given

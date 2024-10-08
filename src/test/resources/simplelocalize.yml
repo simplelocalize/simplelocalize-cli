@@ -2,36 +2,24 @@ apiKey: my-api-key
 
 uploadPath: ./my-upload-path
 uploadFormat: my-upload-format
+uploadLanguageKey: en
+uploadCustomerId: my-customer-id-1
+uploadNamespace: common
 uploadOptions:
   - SPLIT_BY_NAMESPACES
-uploadFilesExclude:
-  - ./my-upload-path/exclude-me.json
-  - ./my-upload-path/exclude-me-too.json
-
-uploadFilesInclude:
-  - ./my-upload-path/include-me.json
-  - ./my-upload-path/include-me-too.json
 
 downloadPath: ./my-download-path
 downloadFormat: my-download-format
+downloadLanguageKeys: ['pl', 'es']
+downloadCustomerId: my-customer-id-2
+downloadNamespace: login
 downloadOptions:
   - WRITE_NESTED
   - SPLIT_BY_NAMESPACES
-downloadFilesExclude:
-  - ./my-download-path/exclude-me.json
-  - ./my-download-path/exclude-me-too.json
-downloadFilesInclude:
-  - ./my-download-path/include-me.json
-  - ./my-download-path/include-me-too.json
 
-languageKey: en
-
-customerId: ikea
-
-autoTranslation:
-  languageKeys:
-    - 'en'
-    - 'de'
+autoTranslateLanguageKeys:
+  - 'en'
+  - 'de'
 
 projectType: yahoo/react-intl
 searchDir: ./target/test-classes/react-intl

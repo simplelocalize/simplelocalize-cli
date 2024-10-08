@@ -10,7 +10,17 @@
       { "name" : "debug" }
     ],
     "methods" : [
-      { "name" : "download", "parameterTypes" : ["java.lang.String", "java.lang.String", "java.lang.String", "java.util.List", "java.lang.String","java.lang.String", "java.lang.String", "java.lang.String"] },
+      { "name" : "download", "parameterTypes" : [
+        "java.lang.String",
+        "java.lang.String",
+        "java.lang.String",
+        "java.util.List",
+        "java.lang.String",
+        "java.lang.String",
+        "java.lang.String",
+        "java.lang.String",
+        "java.lang.String"
+      ] },
       {
         "name": "extract",
         "parameterTypes": [
@@ -31,17 +41,21 @@
         ]
       },
       { "name" : "status", "parameterTypes" : ["java.lang.String", "java.lang.String"] },
-      { "name" : "sync", "parameterTypes" : ["java.lang.String", "java.lang.String", "java.lang.String", "java.util.List", "java.lang.String", "java.lang.String", "java.util.List", "java.lang.String", "java.lang.String", "java.lang.String", "java.lang.String"] },
-      { "name" : "upload", "parameterTypes" : ["java.lang.String", "java.lang.String", "java.lang.String", "java.lang.Boolean", "java.lang.Boolean", "java.lang.Boolean", "java.util.List", "java.lang.String", "java.lang.String", "java.lang.String"] },
+      { "name" : "upload", "parameterTypes" : [
+        "java.lang.String",
+        "java.lang.String",
+        "java.lang.String",
+        "java.util.List",
+        "java.lang.String",
+        "java.lang.String",
+        "java.lang.String",
+        "java.lang.Boolean",
+        "java.lang.Boolean",
+        "java.lang.Boolean",
+        "java.lang.String"
+      ] },
       { "name" : "purge", "parameterTypes" : ["java.lang.String", "java.lang.String", "java.lang.Boolean"] }
     ]
-  },
-  {
-    "name" : "io.simplelocalize.cli.client.dto.proxy.AutoTranslationConfiguration",
-    "allDeclaredConstructors" : true,
-    "allPublicConstructors" : true,
-    "allDeclaredMethods" : true,
-    "allPublicMethods" : true
   },
   {
     "name": "io.simplelocalize.cli.client.dto.proxy.SimpleLocalizeJsonMetadata",
