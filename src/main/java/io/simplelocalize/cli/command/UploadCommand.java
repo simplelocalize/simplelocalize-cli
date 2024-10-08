@@ -144,23 +144,24 @@ public class UploadCommand implements CliCommand
     final String uploadPath = configuration.getUploadPath();
     ConfigurationValidatorUtil.validateIsNotEmptyOrNull(uploadPath, "uploadPath");
 
+    final boolean hasLanguagePlaceholder = uploadPath.contains(TemplateKeys.LANGUAGE_TEMPLATE_KEY);
     final String uploadLanguageKey = configuration.getUploadLanguageKey();
     final boolean hasUploadLanguageKey = StringUtils.isNotBlank(uploadLanguageKey);
-
-    final boolean hasLanguagePlaceholder = uploadPath.contains(TemplateKeys.LANGUAGE_TEMPLATE_KEY);
     if (hasLanguagePlaceholder && hasUploadLanguageKey)
     {
       throw new ConfigurationException("You cannot use {lang} placeholder in uploadPath and language key parameter at the same time");
     }
 
     final boolean hasNamespacePlaceholder = uploadPath.contains(TemplateKeys.NAMESPACE_TEMPLATE_KEY);
-    if (hasNamespacePlaceholder && hasUploadLanguageKey)
+    final String uploadNamespace = configuration.getUploadNamespace();
+    final boolean hasUploadNamespace = StringUtils.isNotBlank(uploadNamespace);
+    if (hasNamespacePlaceholder && hasUploadNamespace)
     {
       throw new ConfigurationException("You cannot use {ns} placeholder in uploadPath and namespace parameter at the same time");
     }
 
     final boolean isMultiLanguage = isMultiLanguage(configuration);
-    if (isMultiLanguage && hasUploadLanguageKey)
+    if (isMultiLanguage && hasLanguagePlaceholder)
     {
       throw new ConfigurationException("You cannot use language key parameter with multi-language file formats");
     }
