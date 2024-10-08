@@ -35,11 +35,14 @@ public class DownloadCommand implements CliCommand
     final String downloadPath = configuration.getDownloadPath();
     ConfigurationValidatorUtil.validateIsNotEmptyOrNull(downloadPath, "downloadPath");
 
-    log.info("Download path: {}", downloadPath);
+    log.info("Path: {}", downloadPath);
     log.info("File format: {}", downloadFormat);
 
     final List<String> languageKeys = configuration.getDownloadLanguageKeys();
-    log.info("Language key(s): {}", languageKeys);
+    if (!languageKeys.isEmpty())
+    {
+      log.info("Language(s): {}", languageKeys);
+    }
 
     final String sort = configuration.getDownloadSort();
     if (StringUtils.isNotEmpty(sort))
@@ -70,7 +73,10 @@ public class DownloadCommand implements CliCommand
       downloadOptions.add("SPLIT_BY_LANGUAGES");
     }
 
-    log.info("Options: {}", downloadOptions);
+    if (!downloadOptions.isEmpty())
+    {
+      log.info("Options: {}", downloadOptions);
+    }
 
     final ExportRequest exportRequest = ExportRequest.builder()
             .withFormat(downloadFormat)
@@ -81,13 +87,11 @@ public class DownloadCommand implements CliCommand
             .withSort(sort)
             .build();
     final List<DownloadableFile> downloadableFiles = client.exportFiles(exportRequest);
-    int downloadedFilesCounter = 0;
     for (DownloadableFile downloadableFile : downloadableFiles)
     {
       client.downloadFile(downloadableFile, downloadPath);
-      downloadedFilesCounter++;
     }
-    log.info("Downloaded {} file(s) from SimpleLocalize", downloadedFilesCounter);
+    log.info("Successfully downloaded all files");
   }
 
 }

@@ -45,19 +45,20 @@ public class UploadCommand implements CliCommand
     {
       uploadPath = SystemUtils.convertToWindowsPath(uploadPath);
     }
+    log.info("Path: {}", uploadPath);
 
     final String uploadFormat = configuration.getUploadFormat();
     log.info("File format: {}", uploadFormat);
 
     final String uploadLanguageKey = configuration.getUploadLanguageKey();
-    boolean hasDefinedLanguageKey = StringUtils.isNotEmpty(uploadLanguageKey);
+    final boolean hasDefinedLanguageKey = StringUtils.isNotEmpty(uploadLanguageKey);
     if (hasDefinedLanguageKey)
     {
       log.info("Language: {}", uploadLanguageKey);
     }
 
     final String uploadNamespace = configuration.getUploadNamespace();
-    boolean hasDefinedNamespace = StringUtils.isNotBlank(uploadNamespace);
+    final boolean hasDefinedNamespace = StringUtils.isNotBlank(uploadNamespace);
     if (hasDefinedNamespace)
     {
       log.info("Namespace: {}", uploadNamespace);
@@ -70,7 +71,10 @@ public class UploadCommand implements CliCommand
     }
 
     final List<String> uploadOptions = configuration.getUploadOptions();
-    log.info("Options: {}", uploadOptions);
+    if (!uploadOptions.isEmpty())
+    {
+      log.info("Options: {}", uploadOptions);
+    }
 
     final List<FileToUpload> filesToUpload = fileListReader.findFilesToUpload(uploadPath);
     if (filesToUpload.size() > 1)
@@ -94,8 +98,11 @@ public class UploadCommand implements CliCommand
         continue;
       }
 
-      final String effectiveLanguageKey = hasDefinedLanguageKey ? uploadLanguageKey : fileToUpload.language();
-      final String effectiveNamespace = hasDefinedNamespace ? uploadNamespace : fileToUpload.namespace();
+      final String fileLanguage = fileToUpload.language();
+      final String effectiveLanguageKey = hasDefinedLanguageKey ? uploadLanguageKey : fileLanguage;
+
+      final String fileNamespace = fileToUpload.namespace();
+      final String effectiveNamespace = hasDefinedNamespace ? uploadNamespace : fileNamespace;
 
       final UploadRequest uploadRequest = UploadRequest.builder()
               .withPath(path)
@@ -106,27 +113,31 @@ public class UploadCommand implements CliCommand
               .withOptions(uploadOptions)
               .build();
 
+      String logMessage = "";
       if (isDryRun)
       {
-        log.info("[Dry run] Upload candidate = {}", path);
+        logMessage += "Upload candidate {}";
       } else
       {
-        log.info("Uploading file = {}", path);
+        logMessage += "Uploading {}";
       }
 
-      if (StringUtils.isNotEmpty(fileToUpload.language()))
+      if (StringUtils.isNotEmpty(fileLanguage))
       {
-        log.info("- Language = {}", effectiveLanguageKey);
-      }
-      if (StringUtils.isNotEmpty(fileToUpload.namespace()))
-      {
-        log.info("- Namespace = {}", effectiveNamespace);
+        logMessage += " (language: " + fileLanguage + ")";
       }
 
-      if (!isDryRun)
+      if (StringUtils.isNotEmpty(fileNamespace))
       {
-        client.uploadFile(uploadRequest);
+        logMessage += " (namespace: " + fileNamespace + ")";
       }
+
+      log.info(logMessage, path);
+      if (isDryRun)
+      {
+        continue;
+      }
+      client.uploadFile(uploadRequest);
     }
 
     if (isDryRun)
@@ -134,7 +145,7 @@ public class UploadCommand implements CliCommand
       log.info("Dry run mode completed. Run the command without --dryRun flag to upload files.");
     } else
     {
-      log.info("Upload to SimpleLocalize completed");
+      log.info("Successfully uploaded all files");
     }
   }
 
@@ -169,7 +180,7 @@ public class UploadCommand implements CliCommand
 
   private boolean isMultiLanguage(Configuration configuration)
   {
-    List<String> multiLanguageFileFormats = List.of("multi-language-json", "excel", "csv-translations");
+    final List<String> multiLanguageFileFormats = List.of("multi-language-json", "excel", "csv-translations");
     for (String uploadFormat : multiLanguageFileFormats)
     {
       if (uploadFormat.equalsIgnoreCase(configuration.getUploadFormat()))
@@ -178,7 +189,7 @@ public class UploadCommand implements CliCommand
       }
     }
 
-    List<String> uploadOptions = configuration.getUploadOptions();
+    final List<String> uploadOptions = configuration.getUploadOptions();
     for (String uploadOption : uploadOptions)
     {
       if (uploadOption.equalsIgnoreCase("MULTI_LANGUAGE"))
