@@ -180,7 +180,7 @@ public class UploadCommand implements CliCommand
 
   private boolean isMultiLanguage(Configuration configuration)
   {
-    final List<String> multiLanguageFileFormats = List.of("multi-language-json", "excel", "csv-translations");
+    final List<String> multiLanguageFileFormats = List.of("multi-language-json", "excel", "csv-translations", "localizable-xcstrings");
     for (String uploadFormat : multiLanguageFileFormats)
     {
       if (uploadFormat.equalsIgnoreCase(configuration.getUploadFormat()))
