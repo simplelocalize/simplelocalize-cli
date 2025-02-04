@@ -5,6 +5,7 @@ import io.simplelocalize.cli.client.dto.UploadRequest;
 import io.simplelocalize.cli.util.StringUtils;
 
 import java.net.URI;
+import java.nio.file.Path;
 import java.util.List;
 
 public class SimpleLocalizeUriFactory
@@ -79,6 +80,29 @@ public class SimpleLocalizeUriFactory
     if (StringUtils.isNotEmpty(customerId))
     {
       endpointUrl += "&customerId=" + customerId;
+    }
+
+    String translationKey = uploadRequest.translationKey();
+    if (StringUtils.isNotEmpty(translationKey))
+    {
+      if (translationKey.length() > 500)
+      {
+        throw new IllegalArgumentException("Translation key is too long. Max length is 500 characters");
+      }
+      endpointUrl += "&translationKey=" + translationKey;
+    }
+
+    Path filePath = uploadRequest.path();
+    String fileName = filePath.getFileName().toString();
+    if (StringUtils.isNotEmpty(fileName))
+    {
+      endpointUrl += "&fileName=" + fileName;
+    }
+
+    boolean includeFilePath = uploadOptions.contains("INCLUDE_FILE_PATH");
+    if (includeFilePath)
+    {
+      endpointUrl += "&path=" + filePath;
     }
 
     return URI.create(endpointUrl);

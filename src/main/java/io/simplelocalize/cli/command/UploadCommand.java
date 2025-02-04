@@ -104,8 +104,11 @@ public class UploadCommand implements CliCommand
       final String fileNamespace = fileToUpload.namespace();
       final String effectiveNamespace = hasDefinedNamespace ? uploadNamespace : fileNamespace;
 
+      final String translationKey = fileToUpload.translationKey();
+
       final UploadRequest uploadRequest = UploadRequest.builder()
               .withPath(path)
+              .withTranslationKey(translationKey)
               .withFormat(uploadFormat)
               .withLanguageKey(effectiveLanguageKey)
               .withNamespace(effectiveNamespace)
@@ -130,6 +133,11 @@ public class UploadCommand implements CliCommand
       if (StringUtils.isNotEmpty(fileNamespace))
       {
         logMessage += " (namespace: " + fileNamespace + ")";
+      }
+
+      if (StringUtils.isNotEmpty(translationKey))
+      {
+        logMessage += " (translation key: " + translationKey + ")";
       }
 
       log.info(logMessage, path);
@@ -180,7 +188,7 @@ public class UploadCommand implements CliCommand
 
   private boolean isMultiLanguage(Configuration configuration)
   {
-    final List<String> multiLanguageFileFormats = List.of("multi-language-json", "excel", "csv-translations");
+    final List<String> multiLanguageFileFormats = List.of("multi-language-json", "excel", "csv-translations", "tsv", "localizable-xcstrings");
     for (String uploadFormat : multiLanguageFileFormats)
     {
       if (uploadFormat.equalsIgnoreCase(configuration.getUploadFormat()))

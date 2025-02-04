@@ -236,7 +236,7 @@ public class SimpleLocalizeClientTest
                             .withDelay(TimeUnit.MILLISECONDS, 200)
             );
 
-    DownloadableFile downloadableFile = new DownloadableFile(MOCK_SERVER_BASE_URL + "/s3/file", "common", null);
+    DownloadableFile downloadableFile = new DownloadableFile(MOCK_SERVER_BASE_URL + "/s3/file", "common", null, null, null, null);
     String downloadPath = "./junit/download-test/file.json";
 
     //when
@@ -263,7 +263,7 @@ public class SimpleLocalizeClientTest
                             .withDelay(TimeUnit.MILLISECONDS, 200)
             );
 
-    DownloadableFile downloadableFile = new DownloadableFile(MOCK_SERVER_BASE_URL + "/s3/file", "common", null);
+    DownloadableFile downloadableFile = new DownloadableFile(MOCK_SERVER_BASE_URL + "/s3/file", "common", null, null, null, null);
     String downloadPath = "./junit/truncate/file.json";
 
     //when

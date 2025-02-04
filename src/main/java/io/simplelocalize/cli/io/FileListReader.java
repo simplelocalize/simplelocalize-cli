@@ -11,8 +11,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
-import static io.simplelocalize.cli.TemplateKeys.LANGUAGE_TEMPLATE_KEY;
-import static io.simplelocalize.cli.TemplateKeys.NAMESPACE_TEMPLATE_KEY;
+import static io.simplelocalize.cli.TemplateKeys.*;
 
 public class FileListReader
 {
@@ -38,12 +37,15 @@ public class FileListReader
                 Matcher matcher = getMatcher(fileName, pattern);
                 if (matcher.matches())
                 {
+                  String translationKey = getGroupOrNull("translationKey", matcher);
                   String lang = getGroupOrNull("lang", matcher);
                   String ns = getGroupOrNull("ns", matcher);
                   return FileToUpload.builder()
                           .withLanguage(lang)
                           .withNamespace(ns)
-                          .withPath(file).build();
+                          .withTranslationKey(translationKey)
+                          .withPath(file)
+                          .build();
                 }
                 return null;
               })
@@ -68,6 +70,7 @@ public class FileListReader
     String replace = pattern
             .replace("\\", "\\\\") // escape backslash
             .replace(NAMESPACE_TEMPLATE_KEY, "(?<ns>.*)")
+            .replace(TRANSLATION_KEY_TEMPLATE_KEY, "(?<translationKey>.*)")
             .replace(LANGUAGE_TEMPLATE_KEY, "(?<lang>.*)");
     Pattern regex = Pattern.compile(replace);
     return regex.matcher(input);

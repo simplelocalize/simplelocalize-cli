@@ -5,6 +5,6 @@ import lombok.Builder;
 
 @NativeProxy
 @Builder(setterPrefix = "with")
-public record DownloadableFile(String url, String namespace, String language)
+public record DownloadableFile(String url, String namespace, String language, String customer, String translationKey, String remotePath)
 {
 }
