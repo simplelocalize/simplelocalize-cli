@@ -73,6 +73,11 @@ public class DownloadCommand implements CliCommand
       downloadOptions.add("SPLIT_BY_LANGUAGES");
     }
 
+    if (downloadPath.contains(TemplateKeys.CUSTOMER_KEY_TEMPLATE_KEY))
+    {
+      downloadOptions.add("SPLIT_BY_CUSTOMERS");
+    }
+
     if (!downloadOptions.isEmpty())
     {
       log.info("Options: {}", downloadOptions);

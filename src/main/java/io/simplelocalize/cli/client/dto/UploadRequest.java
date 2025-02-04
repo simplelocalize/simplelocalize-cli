@@ -12,7 +12,8 @@ public record UploadRequest(
         String format,
         List<String> options,
         String namespace,
-        String customerId
+        String customerId,
+        String translationKey
 )
 {
 }

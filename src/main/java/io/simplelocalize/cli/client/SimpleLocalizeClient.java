@@ -26,8 +26,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
-import static io.simplelocalize.cli.TemplateKeys.LANGUAGE_TEMPLATE_KEY;
-import static io.simplelocalize.cli.TemplateKeys.NAMESPACE_TEMPLATE_KEY;
+import static io.simplelocalize.cli.TemplateKeys.*;
 
 public class SimpleLocalizeClient
 {
@@ -91,7 +90,10 @@ public class SimpleLocalizeClient
     Optional<DownloadableFile> optionalDownloadableFile = Optional.of(downloadableFile);
     String downloadPath = downloadPathTemplate
             .replace(NAMESPACE_TEMPLATE_KEY, optionalDownloadableFile.map(DownloadableFile::namespace).orElse(""))
-            .replace(LANGUAGE_TEMPLATE_KEY, optionalDownloadableFile.map(DownloadableFile::language).orElse(""));
+            .replace(LANGUAGE_TEMPLATE_KEY, optionalDownloadableFile.map(DownloadableFile::language).orElse(""))
+            .replace(CUSTOMER_KEY_TEMPLATE_KEY, optionalDownloadableFile.map(DownloadableFile::customer).orElse(""))
+            .replace(TRANSLATION_KEY_TEMPLATE_KEY, optionalDownloadableFile.map(DownloadableFile::translationKey).orElse(""))
+            .replace(REMOTE_PATH, optionalDownloadableFile.map(DownloadableFile::remotePath).orElse(""));
     String url = downloadableFile.url();
     Path savePath = Path.of(downloadPath);
     downloadFile(url, savePath);
