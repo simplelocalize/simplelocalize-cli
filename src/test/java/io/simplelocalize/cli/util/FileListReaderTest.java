@@ -15,6 +15,113 @@ class FileListReaderTest
 
   private final FileListReader sut = new FileListReader();
 
+  @Test
+  void shouldFindMarkdownBlogPostsWithNamespaceAndLanguageKey() throws IOException
+  {
+    //given
+    String path = "./junit/blog-posts-with-lang-name-and-namespace/{lang}/{translationKey}_{ns}.md";
+
+    //when
+    List<FileToUpload> result = sut.findFilesToUpload(path);
+
+    //then
+    Assertions.assertThat(result)
+            .containsExactlyInAnyOrder(
+                    FileToUpload.builder()
+                            .withPath(Paths.get("./junit/blog-posts-with-lang-name-and-namespace/en/ai-translations_common.md"))
+                            .withLanguage("en")
+                            .withNamespace("common")
+                            .withTranslationKey("ai-translations")
+                            .build(),
+                    FileToUpload.builder()
+                            .withPath(Paths.get("./junit/blog-posts-with-lang-name-and-namespace/en/how-to-translate-website_common.md"))
+                            .withLanguage("en")
+                            .withNamespace("common")
+                            .withTranslationKey("how-to-translate-website")
+                            .build(),
+                    FileToUpload.builder()
+                            .withPath(Paths.get("./junit/blog-posts-with-lang-name-and-namespace/pl/ai-translations_common.md"))
+                            .withLanguage("pl")
+                            .withNamespace("common")
+                            .withTranslationKey("ai-translations")
+                            .build(),
+                    FileToUpload.builder()
+                            .withPath(Paths.get("./junit/blog-posts-with-lang-name-and-namespace/pl/how-to-translate-website_common.md"))
+                            .withLanguage("pl")
+                            .withNamespace("common")
+                            .withTranslationKey("how-to-translate-website")
+                            .build()
+            );
+  }
+
+  @Test
+  void shouldFindMarkdownBlogPostsWithoutExtension() throws IOException
+  {
+    //given
+    String path = "./junit/blog-posts/{translationKey}.md";
+
+    //when
+    List<FileToUpload> result = sut.findFilesToUpload(path);
+
+    //then
+    Assertions.assertThat(result)
+            .containsExactlyInAnyOrder(
+                    FileToUpload.builder()
+                            .withPath(Paths.get("./junit/blog-posts/ai-translations.md"))
+                            .withTranslationKey("ai-translations")
+                            .build(),
+                    FileToUpload.builder()
+                            .withPath(Paths.get("./junit/blog-posts/how-to-translate-website.md"))
+                            .withTranslationKey("how-to-translate-website")
+                            .build()
+            );
+  }
+
+  @Test
+  void shouldFindMarkdownBlogPostsWithExtension() throws IOException
+  {
+    //given
+    String path = "./junit/blog-posts/{translationKey}";
+
+    //when
+    List<FileToUpload> result = sut.findFilesToUpload(path);
+
+    //then
+    Assertions.assertThat(result)
+            .containsExactlyInAnyOrder(
+                    FileToUpload.builder()
+                            .withPath(Paths.get("./junit/blog-posts/ai-translations.md"))
+                            .withTranslationKey("ai-translations.md")
+                            .build(),
+                    FileToUpload.builder()
+                            .withPath(Paths.get("./junit/blog-posts/how-to-translate-website.md"))
+                            .withTranslationKey("how-to-translate-website.md")
+                            .build()
+            );
+  }
+
+  @Test
+  void shouldFindMarkdownBlogPostsWhenKeyAsDirName() throws IOException
+  {
+    //given
+    String path = "./junit/blog-posts-keys-as-dir-name/{translationKey}/index.md";
+
+    //when
+    List<FileToUpload> result = sut.findFilesToUpload(path);
+
+    //then
+    Assertions.assertThat(result)
+            .containsExactlyInAnyOrder(
+                    FileToUpload.builder()
+                            .withPath(Paths.get("./junit/blog-posts-keys-as-dir-name/ai-translations/index.md"))
+                            .withTranslationKey("ai-translations")
+                            .build(),
+                    FileToUpload.builder()
+                            .withPath(Paths.get("./junit/blog-posts-keys-as-dir-name/how-to-translate-website/index.md"))
+                            .withTranslationKey("how-to-translate-website")
+                            .build()
+            );
+  }
 
   @Test
   void shouldFindJsonFilesWithInLocaleDirectoryWhenNamespaceFirst() throws IOException

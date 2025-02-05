@@ -338,7 +338,7 @@ uploadOptions:
 
 # Properties used by 'download' command
 downloadPath: ./output-translations/messages_{lang}.json
-downloadLanguageKey: ['de-DE', 'fr-FR', 'pl-PL']
+downloadLanguageKeys: ['de-DE', 'fr-FR', 'pl-PL']
 downloadFormat: single-language-json
 downloadOptions:
   - WRITE_NESTED
