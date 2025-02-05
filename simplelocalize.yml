@@ -39,7 +39,7 @@ uploadFormat: single-language-json
 downloadPath: ./translations_{lang}.json
 
 # Specify language keys which you want to download, by default all languages are downloaded.
-# downloadLanguageKey: ['pl', 'es']
+# downloadLanguageKeys: ['pl', 'es']
 
 # Output format for translations: https://simplelocalize.io/docs/general/file-formats/
 downloadFormat: single-language-json
