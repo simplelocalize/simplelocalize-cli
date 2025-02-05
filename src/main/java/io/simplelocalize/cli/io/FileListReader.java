@@ -38,11 +38,11 @@ public class FileListReader
                 if (matcher.matches())
                 {
                   String translationKey = getGroupOrNull("translationKey", matcher);
-                  String lang = getGroupOrNull("lang", matcher);
-                  String ns = getGroupOrNull("ns", matcher);
+                  String languageKey = getGroupOrNull("lang", matcher);
+                  String namespace = getGroupOrNull("ns", matcher);
                   return FileToUpload.builder()
-                          .withLanguage(lang)
-                          .withNamespace(ns)
+                          .withLanguage(languageKey)
+                          .withNamespace(namespace)
                           .withTranslationKey(translationKey)
                           .withPath(file)
                           .build();
