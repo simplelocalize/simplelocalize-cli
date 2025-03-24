@@ -34,6 +34,9 @@ curl -s https://get.simplelocalize.io/2.7/install | bash
 
 # Windows (PowerShell)
 . { iwr -useb https://get.simplelocalize.io/2.7/install-windows } | iex;
+
+# npm (Work in progress: https://github.com/simplelocalize/simplelocalize-cli-npm)
+npm install @simplelocalize/cli
 ```
 
 To change or update the CLI version, run the installation script with the desired version number in the URL, e.g.: 
