@@ -45,15 +45,16 @@ public class AutoTranslationCommand implements CliCommand
     }
     client.startAutoTranslation(languageKeys);
     log.info("Auto-translation started");
-    Thread.sleep(5_000);
+    Thread.sleep(3_000);
 
     runningJobsCount = getRunningJobsCount();
     while (runningJobsCount > 0)
     {
       System.out.print(".");
-      Thread.sleep(5_000);
+      Thread.sleep(3_000);
       runningJobsCount = getRunningJobsCount();
     }
+    Thread.sleep(2_000);
     log.info("Auto-translation finished");
   }
 
