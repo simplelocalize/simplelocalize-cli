@@ -75,9 +75,7 @@ simplelocalize init
 
 ## Upload translations
 
-Upload command takes your local files and uploads them to SimpleLocalize. You can specify a path to the file or use placeholders to upload many files at once. 
-A good practise is to **upload only source translations** instead of uploading all translations on each run. You can use `{lang}` placeholder to specify language or locale and `{ns}` placeholder to specify namespace,
-e.g.: `./src/translations/{lang}/{ns}.json`.
+Upload command takes your local files and uploads them to SimpleLocalize.
 
 ```shell
 simplelocalize upload 
@@ -90,12 +88,12 @@ simplelocalize upload
 
 ## Download translations
 
-Download works similarly to the upload command, but this time it exports translation files from the Translation Editor to your local files.
+Download command takes translation from SimpleLocalize and saves them to your local files.
 
 ```shell
 simplelocalize download 
   --apiKey PROJECT_API_KEY
-  --downloadPath OUTPUT_FILE
+  --downloadPath DOWNLOAD_PATH
   --downloadFormat FILE_FORMAT
 ```
 
