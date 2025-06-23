@@ -1,8 +1,3 @@
-<p align="center">
-  <a href="https://simplelocalize.io">
-    <img src="static/simplelocalize-git-banner.png" width="100%">
-  </a>
-</p>
 <h3 align="center">Translation Management for software projects</h3>
 <p align="center">The easiest way to manage translation files for web and mobile apps.</p>
 <p align="center">
