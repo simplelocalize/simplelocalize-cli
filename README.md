@@ -21,7 +21,7 @@ and it's a great tool for CI/CD pipelines and localization automation.
 The installation process is automated by command-line scripts. Both scripts for Windows (PowerShell) and macOS/Linux/Windows downloads a binary file with CLI, copies it to user files and makes it available to run anywhere in the system from a command-line.
 
 ```bash
-# macOs / Linux / Windows (WSL)
+# macOS / Linux / Windows (WSL)
 curl -s https://get.simplelocalize.io/2.8/install | bash
 
 # Windows (PowerShell)
@@ -31,11 +31,7 @@ curl -s https://get.simplelocalize.io/2.8/install | bash
 npm install @simplelocalize/cli
 ```
 
-To change or update the CLI version, run the installation script with the desired version number in the URL, e.g.: 
-- `https://get.simplelocalize.io/2.0.6/install` installs version 2.0.6 on macOS/Linux/Windows (WSL)
-- `https://get.simplelocalize.io/2.0.6/install-windows` installs version 2.0.6 on Windows (PowerShell)
-
-See [releases](https://github.com/simplelocalize/simplelocalize-cli/releases) for the list of available versions.
+[GitHub Wiki: Installation](https://github.com/simplelocalize/simplelocalize-cli/wiki)
 
 ## Usage
 
@@ -45,6 +41,8 @@ You can set `apiKey` via [configuration file](/simplelocalize-cli/wiki/Configura
 ```bash
 simplelocalize [command] ...parameters
 ```
+
+[GitHub Wiki: Usage](https://github.com/simplelocalize/simplelocalize-cli/wiki)
 
 ## Upload translations
 
