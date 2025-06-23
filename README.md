@@ -104,19 +104,19 @@ simplelocalize auto-translate
   --languageKeys en,fr,de,pl
 ```
 
+[GitHub Wiki: Auto-translate strings](/simplelocalize/simplelocalize-cli/wiki/Auto%E2%80%90translate-strings)
+
 ## Translation Hosting: Publish translations
 
-It publishes translation to [Translation Hosting](https://simplelocalize.io/translation-hosting). It behaves exactly the same as publish buttons in the SimpleLocalize (Hosting tab).
+Publish command updates translations on [translation hosting](https://simplelocalize.io/translation-hosting/).
 
-Publishes translations from Translation Editor to the `_latest` environment.
-```properties
-simplelocalize publish --apiKey <PROJECT_API_KEY> --environment _latest
+```
+simplelocalize publish
+  --apiKey PROJECT_API_KEY
+  --environment _latest
 ```
 
-Publishes translations from the `_latest` environment to `_production` environment.
-```properties
-simplelocalize publish --apiKey <PROJECT_API_KEY> --environment _production
-```
+[GitHub Wiki: Pull resources](/simplelocalize/simplelocalize-cli/wiki/Publish-translations)
 
 ## Translation Hosting: Pull resources
 
@@ -127,14 +127,7 @@ Pulls translations from the `_latest` environment.
 simplelocalize pull --apiKey <PROJECT_API_KEY> --pullPath ./hosting/ --environment _latest
 ```
 
-Pulls translations from the `_production` environment.
-```properties
-simplelocalize pull --apiKey <PROJECT_API_KEY> --pullPath ./hosting/ --environment _production
-```
-
-If you would like to filter files which should be downloaded you can use `--filterRegex` param,
-e.g.: `--filterRegex '__index.json'` will download only `__index.json` file.
-
+[GitHub Wiki: Pull resources](/simplelocalize/simplelocalize-cli/wiki/Pull-resources)
 
 ## Get project details
 
