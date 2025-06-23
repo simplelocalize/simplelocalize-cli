@@ -14,7 +14,7 @@ and it's a great tool for CI/CD pipelines and localization automation.
 - [Synchronize files](https://simplelocalize.io/auto-translation/) - keep in sync all your translation files
 - [Auto-translate](https://simplelocalize.io/auto-translation/) - auto-translate texts in seconds
 - [Host translations](https://simplelocalize.io/translation-hosting/) - manage your hosted translations
-- [GitHub Actions support](https://github.com/simplelocalize/github-action-cli/) - use SimpleLocalize CLI in your GitHub Actions workflows
+- [GitHub Actions support](https://github.com/simplelocalize/github-action-cli/) - seemles integration with GitHub Actions
 
 ## Installation
 
