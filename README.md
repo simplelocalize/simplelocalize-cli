@@ -81,113 +81,12 @@ e.g.: `./src/translations/{lang}/{ns}.json`.
 
 ```shell
 simplelocalize upload 
-  --apiKey <PROJECT_API_KEY>
-  --uploadPath <UPLOAD_PATH_PATTERN>
-  --uploadFormat <UPLOAD_FORMAT>
+  --apiKey PROJECT_API_KEY
+  --uploadPath INPUT_FILE
+  --uploadFormat FILE_FORMAT
 ```
 
-Upload format is a format of the file(s) with translations. [See available upload formats](https://simplelocalize.io/docs/general/file-formats/)
-
-**Additional parameters:**
-- `--replace` allows you to **replace** existing translations with new ones,
-- `--dryRun` allows you to **check** what translation files will be uploaded without actually uploading them,
-- `--namespace` download translations for a specific namespace, e.g.: `--namespace home`,
-- `--customerId` download translations for a specific customer, e.g.: `--customerId ikea`,
-- `--uploadOptions` allows you to pass [additional options](https://simplelocalize.io/docs/general/options/) to the upload command, E.g.: `--options TRIM_LEADING_TRAILING_SPACES`. To pass multiple options, use comma as a separator.
-
-> Since version 2.7 you can skip 'upload' part in the parameters names, e.g.: `--path` instead of `--uploadPath`.
-
-Learn more about [upload translations command](https://simplelocalize.io/docs/cli/upload-translations/).
-
-### Example: One file with multiple languages
-
-```bash
-.
-└── locales
-    └── messages.json
-```
-
-Command:
-```
-simplelocalize upload 
-  --apiKey <PROJECT_API_KEY>
-  --uploadPath ./locales/messages.json
-  --uploadFormat multi-language-json
-```
-
-### Example: One file per language
-
-In this example we upload only source translations from `./en/messages.json` and uses `--uploadLanguageKey en-GB` to specify language key for the uploaded file for the Translation Editor.
-It's a recommended way to upload source translations.
-
-```bash
-.
-├── ca
-│   └── messages.json
-├── en
-│   └── messages.json
-└── es
-    └── messages.json
-```
-
-Command:
-```
-simplelocalize upload 
-  --apiKey <PROJECT_API_KEY>
-  --uploadPath ./en/index.json
-  --uploadLanguageKey en-GB
-  --uploadFormat single-language-json
-```
-
-### Example: One file per language using placeholders
-
-In this example we use `{lang}` placeholder to upload **many files** at once and specify language key for each file. 
-It's not a recommended way to upload source translations, as it uploads more files than necessary.
-
-```bash
-.
-├── ca
-│   └── index.json
-├── en
-│   └── index.json
-└── es
-    └── index.json
-```
-
-Command:
-```
-simplelocalize upload 
-  --apiKey <PROJECT_API_KEY>
-  --uploadPath /{lang}/index.json
-  --uploadFormat single-language-json
-```
-
-### Example: One file per language and namespace
-
-In this example we use `{ns}` placeholder to upload **many files** at once for the English language. We used `--uploadLanguageKey en-GB` to specify language key for the uploaded file for the Translation Editor.  
-
-```bash
-.
-├── italian
-│   ├── common.json
-│   └── home.json
-├── english
-│   ├── common.json
-│   └── home.json
-└── spanish
-    ├── common.json
-    └── home.json
-```
-
-Command:
-```
-simplelocalize upload 
-  --apiKey <PROJECT_API_KEY>
-  --uploadPath /english/{ns}.json
-  --uploadLanguageKey en-GB
-  --uploadFormat single-language-json
-```
-
+[GitHub Wiki: Upload translations](/simplelocalize/simplelocalize-cli/wiki/Upload-translations)
 
 ## Download translations
 
@@ -195,47 +94,22 @@ Download works similarly to the upload command, but this time it exports transla
 
 ```shell
 simplelocalize download 
-  --apiKey <PROJECT_API_KEY>
-  --downloadPath <DOWNLOAD_PATH_PATTERN>
-  --downloadFormat <DOWNLOAD_FORMAT>
+  --apiKey PROJECT_API_KEY
+  --downloadPath OUTPUT_FILE
+  --downloadFormat FILE_FORMAT
 ```
 
-Download format is a format of the file(s) with translations. [See available upload formats](https://simplelocalize.io/docs/general/file-formats/)
-
-### Example
-
-Same as before you can use `{lang}` and `{ns}` placeholders to download many files at once and specify language keys that should be downloaded, eg.:
-
-```shell
-simplelocalize download 
-  --apiKey <PROJECT_API_KEY>
-  --downloadPath ./src/{ns}/messages_{lang}.json
-  --downloadFormat single-language-json
-  --downloadLanguageKey en,de,fr
-```
-
-**Additional parameters:**
-- `--downloadLanguageKey` allows you to download translation for specified languages. E.g.: `--languageKey en,de,fr`.
-- `--downloadCustomerId` allows you to download translations for a specific customer. E.g.: `--customerId ikea`.
-- `--downloadNamespace` allows you to download translations for a specific namespace. E.g.: `--namespace home`.
-- `--downloadOptions` allows you to pass [additional options](https://simplelocalize.io/docs/general/options/) to the download command. E.g.: `--options WRITE_NESTED`.
-- `--downloadSort` allows you to sort translations in the downloaded file. E.g.: `--sort NEWEST_KEYS_FIRST`. Available options: `NEWEST_KEYS_FIRST`, `NEWEST_KEYS_LAST`, `NAMESPACES`, `IMPORT_ORDER`.
-
-> Since version 2.7 you can skip 'download' part in the parameters names, e.g.: `--path` instead of `--downloadPath`.
-
-Learn more about [download translations command](https://simplelocalize.io/docs/cli/download-translations/).
+[GitHub Wiki: Download translations](/simplelocalize/simplelocalize-cli/wiki/Download-translations)
 
 ## Auto-translate strings
 
-Auto-translate command starts auto-translation tasks for all languages in the project or for languages specified in `--languageKeys` parameter.
-Auto-translation configuration is taken from the last auto-translation job in the project for the given language.
+Auto-translate command starts auto-translation tasks for all languages in the project or for languages specified in `--languageKeys` parameter. 
 
 ```properties
-simplelocalize auto-translate --apiKey <PROJECT_API_KEY>
+simplelocalize auto-translate 
+  --apiKey PROJECT_API_KEY
+  --languageKeys en,fr,de,pl
 ```
-
-**Additional parameters:**
-- `--languageKeys` allows you to specify project language keys to auto-translate, e.g.: `--languageKeys en,de,fr`.
 
 ## Translation Hosting: Publish translations
 
@@ -315,46 +189,7 @@ simplelocalize upload
 simplelocalize -c my-configuration.yml upload
 ```
 
-## Sample configuration file
-
-Filename: `simplelocalize.yml`
-
-```yaml
-# Get started with CLI: https://simplelocalize.io/docs/cli/get-started/
-# Available formats: https://simplelocalize.io/docs/general/file-formats/
-# Available import/export options: https://simplelocalize.io/docs/general/options/
-# Support: contact@simplelocalize.io
-
-# Project API Key
-apiKey: API_KEY
-
-# Properties used by 'upload' command
-uploadPath: ./source-translations/messages_en.json
-uploadLanguageKey: en-GB
-uploadFormat: single-language-json
-uploadOptions:
-  # by default, the 'upload' command only adds new keys and fills empty translations, 
-  # add this option to overwrite existing translations with values from the uploaded file
-  - REPLACE_TRANSLATION_IF_FOUND 
-
-# Properties used by 'download' command
-downloadPath: ./output-translations/messages_{lang}.json
-downloadLanguageKeys: ['de-DE', 'fr-FR', 'pl-PL']
-downloadFormat: single-language-json
-downloadOptions:
-  - WRITE_NESTED
-
-# Properties used by 'extract' command
-searchDir: ./src
-projectType: yahoo/react-intl
-ignoreKeys:
-  - 'WELCOME'
-  - 'ABOUT-US'
-
-# Properties used by 'pull' and 'publish' command    
-pullPath: ./src/hosting/
-environment: '_production' # or '_latest', or 'my_custom'
-```
+[GitHub Wiki: Configuration file](/simplelocalize/simplelocalize-cli/wiki/Configuration-file)
 
 ## Proxy support
 
