@@ -52,21 +52,11 @@ Available commands:
 - `status` - gets translation project details
 - `upload` - uploads translation files or translation keys 
 - `download` - downloads translation files
-- `auto-translate` - starts [auto-translation](https://simplelocalize.io/auto-translation/) jobs
-- `pull` - downloads translation files from [Translation Hosting](https://simplelocalize.io/translation-hosting/)
-- `publish` - publishes translations to [Translation Hosting](https://simplelocalize.io/translation-hosting/)
+- `auto-translate` - auto-translates texts in the editor
+- `pull` - downloads translation files from translation hosting
+- `publish` - publishes translations to hosting environment
 - `purge` - removes all translation, translation keys and languages from the project
 - `extract` - finds and extracts translation keys in your project files
-
-## Create configuration file
-
-Command creates a sample configuration file in the current directory.
-The configuration file simplifies the usage of the command-line tool
-by providing a default configuration for the project and allowing to omit some parameters.
-
-```shell
-simplelocalize init
-```
 
 ## Upload translations
 
@@ -108,9 +98,11 @@ simplelocalize auto-translate
 
 ## Translation Hosting
 
+There are two commands that operates on [translation hosting](https://simplelocalize.io/translation-hosting/) resources which is `publish` and `pull`.
+
 ### Publish translations
 
-Publish command updates translations on [translation hosting](https://simplelocalize.io/translation-hosting/).
+Publish translations between translation editor and hosting or between hosting environments.
 
 ```
 simplelocalize publish
@@ -122,52 +114,65 @@ simplelocalize publish
 
 ### Pull resources
 
-Downloads all translation hosting files to given directory in `--pullPath` parameter. It overwrites existing files and creates subdirectories if necessary.
+Pull command downloads files from translation hosting.
 
 Pulls translations from the `_latest` environment.
 ```properties
-simplelocalize pull --apiKey <PROJECT_API_KEY> --pullPath ./hosting/ --environment _latest
+simplelocalize pull
+  --apiKey PROJECT_API_KEY
+  --pullPath ./hosting/
+  --environment _latest
 ```
 
 [GitHub Wiki: Pull resources](/simplelocalize/simplelocalize-cli/wiki/Translation-Hosting)
 
-## Get project details
+## Additional commands
+
+### Initalize configuration file
+
+Command creates a sample configuration file in the current directory.
+
+```shell
+simplelocalize init
+```
+
+### Get project details
 
 Command gets project details and prints them to the console.
 
-```properties
-simplelocalize status --apiKey <PROJECT_API_KEY>
+```bash
+simplelocalize status --apiKey PROJECT_API_KEY
 ```
 
-## Purge translations
+[GitHub Wiki: Additional commands](https://github.com/simplelocalize/simplelocalize-cli/wiki/Additional-commands)
 
-Command removes all translations, translation keys and languages from [Translation Editor](https://simplelocalize.io/translation-editor).
+### Purge translations
 
-```properties
-simplelocalize purge --apiKey <PROJECT_API_KEY>
+Command removes all translations, translation keys and languages.
+
+```bash
+simplelocalize purge --apiKey PROJECT_API_KEY
 ```
 
-**Additional parameters:**
-- `--force` allows you to skip confirmation prompt.
+[GitHub Wiki: Additional commands](https://github.com/simplelocalize/simplelocalize-cli/wiki/Additional-commands)
 
-## Extract translation keys
+### Extract translation keys
 
-Extract command finds translation keys and translations from project source code at `<SEARCH_DIRECTORY>` and exports them to `extraction.json` file that uses `simplelocalize-json` file format.
+Extract command finds translation keys and translations from the source code.
 
-```properties
+```bash
 simplelocalize extract 
-  --searchDir <SEARCH_DIRECTOR>
-  --projectType <PROJECT_TYPE> 
+  --searchDir SEARCH_DIRECTORY
+  --projectType PROJECT_TYPE 
 ```
 
-See [available project types](https://simplelocalize.io/docs/cli/i18n-keys-extraction/).
-
+[GitHub Wiki: Additional commands](https://github.com/simplelocalize/simplelocalize-cli/wiki/Additional-commands)
 
 ## Configuration file
-Use configuration file to simplify your bash command.
+
+Create configuration file to to simplify the bash commands.
 Arguments used in command always override properties set in the configuration file.
-By default, SimpleLocalize will load configuration from file named `simplelocalize.yml`.
-You can load configuration from different location by using a `-c` parameters.
+By default, SimpleLocalize loads configuration from `simplelocalize.yml` file.
 
 ```properties
 # Load default simplelocalize.yml file
