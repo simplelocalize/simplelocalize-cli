@@ -13,7 +13,7 @@ and it's a great tool for CI/CD pipelines and localization automation.
 
 - **Upload and download translations.** The main purpose of the command-line tool is to upload and download translation files from [Translation Editor](https://simplelocalize.io/translation-editor/) to your project.
 - **[Auto-translate](https://simplelocalize.io/auto-translation/) strings.** Start auto-translation jobs from the command-line and get translated strings in a few minutes.
-- **[Hosted translations management](https://simplelocalize.io/translation-hosting/).** Push and pull translations from Translation Hosting to your project using the command-line.
+- **[Host translations](https://simplelocalize.io/translation-hosting/).** Push and pull translations from Translation Hosting to your project using the command-line.
 - **[GitHub Actions support](https://github.com/simplelocalize/github-action-cli/).** Use SimpleLocalize CLI in your GitHub Actions workflows.
 - **Check project status.** Get project details from the command-line and check if your translations are up-to-date.
 
@@ -106,7 +106,9 @@ simplelocalize auto-translate
 
 [GitHub Wiki: Auto-translate strings](/simplelocalize/simplelocalize-cli/wiki/Auto%E2%80%90translate-strings)
 
-## Translation Hosting: Publish translations
+## Translation Hosting
+
+### Publish translations
 
 Publish command updates translations on [translation hosting](https://simplelocalize.io/translation-hosting/).
 
@@ -116,9 +118,9 @@ simplelocalize publish
   --environment _latest
 ```
 
-[GitHub Wiki: Pull resources](/simplelocalize/simplelocalize-cli/wiki/Publish-translations)
+[GitHub Wiki: Pull resources](/simplelocalize/simplelocalize-cli/wiki/Translation-Hosting)
 
-## Translation Hosting: Pull resources
+### Pull resources
 
 Downloads all translation hosting files to given directory in `--pullPath` parameter. It overwrites existing files and creates subdirectories if necessary.
 
@@ -127,7 +129,7 @@ Pulls translations from the `_latest` environment.
 simplelocalize pull --apiKey <PROJECT_API_KEY> --pullPath ./hosting/ --environment _latest
 ```
 
-[GitHub Wiki: Pull resources](/simplelocalize/simplelocalize-cli/wiki/Pull-resources)
+[GitHub Wiki: Pull resources](/simplelocalize/simplelocalize-cli/wiki/Translation-Hosting)
 
 ## Get project details
 
