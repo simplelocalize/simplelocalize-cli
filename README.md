@@ -11,17 +11,16 @@
 SimpleLocalize CLI is a command-line tool that allows you to manage translations in your software project,
 and it's a great tool for CI/CD pipelines and localization automation.
 
-- **Upload and download translations.** The main purpose of the command-line tool is to upload and download translation files from [Translation Editor](https://simplelocalize.io/translation-editor/) to your project.
-- **[Auto-translate](https://simplelocalize.io/auto-translation/) strings.** Start auto-translation jobs from the command-line and get translated strings in a few minutes.
-- **[Host translations](https://simplelocalize.io/translation-hosting/).** Push and pull translations from Translation Hosting to your project using the command-line.
-- **[GitHub Actions support](https://github.com/simplelocalize/github-action-cli/).** Use SimpleLocalize CLI in your GitHub Actions workflows.
-- **Check project status.** Get project details from the command-line and check if your translations are up-to-date.
+- [Synchronize files](https://simplelocalize.io/auto-translation/) - keep in sync all your translation files
+- [Auto-translate](https://simplelocalize.io/auto-translation/) - auto-translate texts in seconds
+- [Host translations](https://simplelocalize.io/translation-hosting/) - manage your hosted translations
+- [GitHub Actions support](https://github.com/simplelocalize/github-action-cli/) - use SimpleLocalize CLI in your GitHub Actions workflows
 
 ## Installation
 
 The installation process is automated by command-line scripts. Both scripts for Windows (PowerShell) and macOS/Linux/Windows downloads a binary file with CLI, copies it to user files and makes it available to run anywhere in the system from a command-line.
 
-```shell
+```bash
 # macOs / Linux / Windows (WSL)
 curl -s https://get.simplelocalize.io/2.8/install | bash
 
@@ -41,28 +40,17 @@ See [releases](https://github.com/simplelocalize/simplelocalize-cli/releases) fo
 ## Usage
 
 The command-line tool offers several commands to execute. All of them requires Project API Key that is unique for each project. 
-You can set `apiKey` in simplelocalize.yml configuration file, pass it as parameter with `--apiKey` or set it by environment variable `SIMPLELOCALIZE_API_KEY`.
+You can set `apiKey` via [configuration file](/simplelocalize-cli/wiki/Configuration-file), pass it as parameter with `--apiKey` or by environment variable `SIMPLELOCALIZE_API_KEY`.
 
-```shell
+```bash
 simplelocalize [command] ...parameters
 ```
-
-Available commands:
-- `init` - creates a sample configuration file
-- `status` - gets translation project details
-- `upload` - uploads translation files or translation keys 
-- `download` - downloads translation files
-- `auto-translate` - auto-translates texts in the editor
-- `pull` - downloads translation files from translation hosting
-- `publish` - publishes translations to hosting environment
-- `purge` - removes all translation, translation keys and languages from the project
-- `extract` - finds and extracts translation keys in your project files
 
 ## Upload translations
 
 Upload command takes your local files and uploads them to SimpleLocalize.
 
-```shell
+```bash
 simplelocalize upload 
   --apiKey PROJECT_API_KEY
   --uploadPath INPUT_FILE
@@ -73,9 +61,9 @@ simplelocalize upload
 
 ## Download translations
 
-Download command takes translation from SimpleLocalize and saves them to your local files.
+Download command takes translations from SimpleLocalize and saves them to your local files.
 
-```shell
+```bash
 simplelocalize download 
   --apiKey PROJECT_API_KEY
   --downloadPath DOWNLOAD_PATH
@@ -86,12 +74,10 @@ simplelocalize download
 
 ## Auto-translate strings
 
-Auto-translate command starts auto-translation tasks for all languages in the project or for languages specified in `--languageKeys` parameter. 
+Auto-translate command starts auto-translation tasks for project languages and waits for the finish. 
 
-```properties
-simplelocalize auto-translate 
-  --apiKey PROJECT_API_KEY
-  --languageKeys en,fr,de,pl
+```bash
+simplelocalize auto-translate --apiKey PROJECT_API_KEY
 ```
 
 [GitHub Wiki: Auto-translate strings](/simplelocalize/simplelocalize-cli/wiki/Auto%E2%80%90translate-strings)
@@ -104,7 +90,7 @@ There are two commands that operates on [translation hosting](https://simpleloca
 
 Publish translations between translation editor and hosting or between hosting environments.
 
-```
+```bash
 simplelocalize publish
   --apiKey PROJECT_API_KEY
   --environment _latest
@@ -116,8 +102,7 @@ simplelocalize publish
 
 Pull command downloads files from translation hosting.
 
-Pulls translations from the `_latest` environment.
-```properties
+```bash
 simplelocalize pull
   --apiKey PROJECT_API_KEY
   --pullPath ./hosting/
@@ -130,21 +115,23 @@ simplelocalize pull
 
 ### Initalize configuration file
 
-Command creates a sample configuration file in the current directory.
+Command creates a sample [configuration file](/simplelocalize/simplelocalize-cli/wiki/Configuration-file) in the current directory.
 
-```shell
+```bash
 simplelocalize init
 ```
 
+[GitHub Wiki: Additional commands](/simplelocalize/simplelocalize-cli/wiki/Additional-commands)
+
 ### Get project details
 
-Command gets project details and prints them to the console.
+Command gets project details and prints them.
 
 ```bash
 simplelocalize status --apiKey PROJECT_API_KEY
 ```
 
-[GitHub Wiki: Additional commands](https://github.com/simplelocalize/simplelocalize-cli/wiki/Additional-commands)
+[GitHub Wiki: Additional commands](/simplelocalize/simplelocalize-cli/wiki/Additional-commands)
 
 ### Purge translations
 
@@ -154,32 +141,25 @@ Command removes all translations, translation keys and languages.
 simplelocalize purge --apiKey PROJECT_API_KEY
 ```
 
-[GitHub Wiki: Additional commands](https://github.com/simplelocalize/simplelocalize-cli/wiki/Additional-commands)
+[GitHub Wiki: Additional commands](/simplelocalize/simplelocalize-cli/wiki/Additional-commands)
 
 ### Extract translation keys
 
 Extract command finds translation keys and translations from the source code.
 
 ```bash
-simplelocalize extract 
-  --searchDir SEARCH_DIRECTORY
-  --projectType PROJECT_TYPE 
+simplelocalize extract --searchDir SEARCH_DIRECTORY --projectType PROJECT_TYPE 
 ```
 
-[GitHub Wiki: Additional commands](https://github.com/simplelocalize/simplelocalize-cli/wiki/Additional-commands)
+[GitHub Wiki: Additional commands](/simplelocalize/simplelocalize-cli/wiki/Additional-commands)
 
 ## Configuration file
 
-Create configuration file to to simplify the bash commands.
-Arguments used in command always override properties set in the configuration file.
-By default, SimpleLocalize loads configuration from `simplelocalize.yml` file.
+Create configuration file to to simplify the bash commands. Arguments used in command always override properties set in the configuration file.
 
-```properties
-# Load default simplelocalize.yml file
+```bash
+# It load simplelocalize.yml file by default
 simplelocalize upload
-
-# Use configuration file at custom location
-simplelocalize -c my-configuration.yml upload
 ```
 
 [GitHub Wiki: Configuration file](/simplelocalize/simplelocalize-cli/wiki/Configuration-file)
@@ -191,11 +171,13 @@ variables.
 
 Here are some examples of how to set proxy environment variables in Linux and macOS:
 
-```shell
+```bash
 export http_proxy=http://someproxy.com
 export http_proxy=http://someproxy.com:8080
 export http_proxy=http://user:password@someproxy.com:8080
 ```
+
+[GitHub Wiki: Proxy support](/simplelocalize/simplelocalize-cli/wiki/Proxy-Support)
 
 ## Support
 
