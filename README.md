@@ -1,10 +1,10 @@
-<h3 align="center">Translation Management for software projects</h3>
-<p align="center">The easiest way to manage translation files for web and mobile apps.</p>
 <p align="center">
   <a href="https://simplelocalize.io/">
-    <img src="static/simplelocalize-git-hero.png">
+    <img src="static/logo-square-white-rounded.png" width="96" height="96">
   </a>
 </p>
+<h3 align="center">Translation Management for software projects</h3>
+<p align="center">The easiest way to manage translation files for web and mobile apps.</p>
 
 [![codecov](https://codecov.io/gh/simplelocalize/simplelocalize-cli/branch/master/graph/badge.svg)](https://codecov.io/gh/simplelocalize/simplelocalize-cli)
 
