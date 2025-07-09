@@ -11,6 +11,9 @@ public record StartAutoTranslationRequest(
         @JsonProperty("languageKeys")
         Collection<String> languageKeys,
         @JsonProperty("source")
-        String source)
+        String source,
+        @JsonProperty("options")
+        Collection<String> options
+)
 {
 }

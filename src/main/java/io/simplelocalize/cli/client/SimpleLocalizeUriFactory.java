@@ -54,10 +54,16 @@ public class SimpleLocalizeUriFactory
     return URI.create(endpointUrl);
   }
 
-
-  URI buildUploadUri(UploadRequest uploadRequest)
+  URI buildUploadUri(UploadRequest uploadRequest, boolean isPreviewMode)
   {
-    String endpointUrl = baseUrl + "/cli/v2/upload?uploadFormat=" + uploadRequest.format();
+    String command = "upload";
+    if (isPreviewMode)
+    {
+      command = "upload-preview";
+    }
+
+    String endpointUrl = baseUrl + "/cli/v2/" + command + "?uploadFormat=" + uploadRequest.format();
+
     String languageKey = uploadRequest.languageKey();
     if (StringUtils.isNotEmpty(languageKey))
     {

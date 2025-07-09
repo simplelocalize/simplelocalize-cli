@@ -40,6 +40,12 @@ public class UploadCommand implements CliCommand
       log.info("Dry run mode enabled, no files will be uploaded");
     }
 
+    final boolean isPreviewMode = Boolean.TRUE.equals(configuration.getPreview());
+    if (isPreviewMode)
+    {
+      log.info("Preview mode enabled");
+    }
+
     String uploadPath = configuration.getUploadPath();
     if (SystemUtils.isWindows())
     {
@@ -145,7 +151,21 @@ public class UploadCommand implements CliCommand
       {
         continue;
       }
-      client.uploadFile(uploadRequest);
+
+      if (isPreviewMode)
+      {
+        String output = client.previewFile(uploadRequest);
+        log.info("{}", output);
+      } else
+      {
+        client.uploadFile(uploadRequest);
+      }
+    }
+
+    if (isPreviewMode)
+    {
+      log.info("Preview completed. No files were imported. To import files, run the command without --preview flag.");
+      return;
     }
 
     if (isDryRun)

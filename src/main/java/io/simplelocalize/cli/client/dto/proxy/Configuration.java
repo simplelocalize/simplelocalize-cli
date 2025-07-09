@@ -55,6 +55,9 @@ public class Configuration
   @Builder.Default
   private Boolean dryRun = false;
 
+  @Builder.Default
+  private Boolean preview = false;
+
   /**
    * Download command
    */
@@ -75,6 +78,8 @@ public class Configuration
    * Auto-translate command
    */
   private List<String> autoTranslateLanguageKeys = new ArrayList<>();
+  @Builder.Default
+  private List<String> autoTranslateOptions = new ArrayList<>();
 
   /**
    * Pull & Publish command
