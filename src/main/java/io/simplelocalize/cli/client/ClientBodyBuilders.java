@@ -33,9 +33,9 @@ final class ClientBodyBuilders
     return HttpRequest.BodyPublishers.ofString(jsonString);
   }
 
-  static HttpRequest.BodyPublisher ofStartAutoTranslation(Collection<String> languageKeys) throws JsonProcessingException
+  static HttpRequest.BodyPublisher ofStartAutoTranslation(Collection<String> languageKeys, Collection<String> options) throws JsonProcessingException
   {
-    StartAutoTranslationRequest request = new StartAutoTranslationRequest(languageKeys, "CLI");
+    StartAutoTranslationRequest request = new StartAutoTranslationRequest(languageKeys, "CLI", options);
     String jsonString = ObjectMapperSingleton.getInstance().writeValueAsString(request);
     return HttpRequest.BodyPublishers.ofString(jsonString);
   }

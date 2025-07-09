@@ -94,9 +94,10 @@ public class SimplelocalizeCliCommand implements Runnable
           @Option(names = {"--uploadNamespace", "--namespace"}, description = "(Optional) Specify namespace for single file upload (cannot be used with {ns} in uploadPath)") String namespace,
           @Option(names = {"--uploadLanguageKey", "--languageKey"}, description = "(Optional) Specify language key for single file upload (cannot be used with {lang} in uploadPath)") String languageKey,
           @Option(names = {"--uploadCustomerId", "--customerId"}, description = "(Optional) Assign customerId to uploaded translations") String customerId,
-          @Option(names = {"--overwrite"}, description = "(Optional) Overwrite existing translations", defaultValue = "false") Boolean overwrite,
+          @Option(names = {"--overwrite", "--replace", "--update"}, description = "(Optional) Update existing translations", defaultValue = "false") Boolean updateTranslations,
           @Option(names = {"--delete"}, description = "(Optional) Delete translations which are not present in uploaded file", defaultValue = "false") Boolean delete,
           @Option(names = {"--dryRun"}, description = "(Optional) Dry run mode. Do not upload anything to SimpleLocalize", defaultValue = "false") Boolean dryRun,
+          @Option(names = {"--preview"}, description = "(Optional) Preview changes before importing files", defaultValue = "false") Boolean preview,
           @Option(names = {"--baseUrl"}, description = "(Optional) Set custom server URL") String baseUrl
   )
   {
@@ -150,7 +151,7 @@ public class SimplelocalizeCliCommand implements Runnable
         effectiveUploadOptions = new ArrayList<>(uploadOptions);
       }
 
-      if (Boolean.TRUE.equals(overwrite))
+      if (Boolean.TRUE.equals(updateTranslations))
       {
         effectiveUploadOptions.add("REPLACE_TRANSLATION_IF_FOUND");
       }
@@ -164,6 +165,11 @@ public class SimplelocalizeCliCommand implements Runnable
       if (Boolean.TRUE.equals(dryRun))
       {
         configuration.setDryRun(true);
+      }
+
+      if (Boolean.TRUE.equals(preview))
+      {
+        configuration.setPreview(true);
       }
 
       this.effectiveCommandConfiguration = configuration;
@@ -310,6 +316,8 @@ public class SimplelocalizeCliCommand implements Runnable
   public void autoTranslate(
           @Option(names = {"--apiKey"}, description = "Project API Key") String apiKey,
           @Option(names = {"--autoTranslateLanguageKey", "--languageKey", "--languageKeys"}, description = "(Optional) Project language keys to auto-translate", split = ",") List<String> languageKeys,
+          @Option(names = {"--force"}, description = "(Optional) Force auto-translation for all translations") Boolean forceAutoTranslate,
+          @Option(names = {"--autoTranslateOptions", "--options"}, description = "(Optional) Auto-translate options") List<String> autoTranslateOptions,
           @Option(names = {"--baseUrl"}, description = "(Optional) Set custom server URL") String baseUrl
   )
   {
@@ -332,6 +340,19 @@ public class SimplelocalizeCliCommand implements Runnable
         configuration.setAutoTranslateLanguageKeys(languageKeys);
       }
 
+      List<String> effectiveAutoTranslateOptions = new ArrayList<>();
+      if (autoTranslateOptions != null && !autoTranslateOptions.isEmpty())
+      {
+        effectiveAutoTranslateOptions.addAll(autoTranslateOptions);
+      }
+
+      if (Boolean.TRUE.equals(forceAutoTranslate))
+      {
+        effectiveAutoTranslateOptions.add("FORCE_REPLACE");
+      }
+      configuration.setAutoTranslateOptions(effectiveAutoTranslateOptions);
+
+      configuration.setAutoTranslateOptions(autoTranslateOptions);
       this.effectiveCommandConfiguration = configuration;
       SimpleLocalizeClient client = SimpleLocalizeClient.create(configuration.getBaseUrl(), configuration.getApiKey());
       AutoTranslationCommand command = new AutoTranslationCommand(client, configuration);

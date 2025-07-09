@@ -43,7 +43,16 @@ public class AutoTranslationCommand implements CliCommand
     {
       log.info("Starting auto-translation for languages: {}", languageKeys);
     }
-    client.startAutoTranslation(languageKeys);
+    List<String> autoTranslateOptions = Optional.of(configuration)
+            .map(Configuration::getAutoTranslateOptions)
+            .orElse(List.of());
+
+    if (!autoTranslateOptions.isEmpty())
+    {
+      log.info("Auto-translation options: {}", autoTranslateOptions);
+    }
+
+    client.startAutoTranslation(languageKeys, autoTranslateOptions);
     log.info("Auto-translation started");
     Thread.sleep(5_000);
 

@@ -46,7 +46,7 @@ class AutoTranslationCommandTest
 
     //then
     Mockito.verify(client, Mockito.times(2)).getAutoTranslationJobs();
-    Mockito.verify(client, Mockito.times(1)).startAutoTranslation(List.of());
+    Mockito.verify(client, Mockito.times(1)).startAutoTranslation(List.of(), List.of());
 
     assertThat(logEventList.get(0).getFormattedMessage()).isEqualTo("Starting auto-translation for all languages");
     assertThat(logEventList.get(1).getFormattedMessage()).isEqualTo("Auto-translation started");
@@ -130,7 +130,7 @@ class AutoTranslationCommandTest
 
     //then
     Mockito.verify(client, Mockito.times(4)).getAutoTranslationJobs();
-    Mockito.verify(client, Mockito.times(1)).startAutoTranslation(List.of("en", "pl"));
+    Mockito.verify(client, Mockito.times(1)).startAutoTranslation(List.of("en", "pl"), List.of());
 
     assertThat(logEventList.get(0).getFormattedMessage()).isEqualTo("Waiting for auto-translation to finish");
     assertThat(logEventList.get(1).getFormattedMessage()).isEqualTo("Starting auto-translation for languages: [en, pl]");

@@ -1,6 +1,7 @@
 package io.simplelocalize.cli.client;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.jayway.jsonpath.DocumentContext;
 import com.jayway.jsonpath.JsonPath;
 import com.jayway.jsonpath.Option;
 import io.simplelocalize.cli.client.dto.ExportRequest;
@@ -68,10 +69,20 @@ public class SimpleLocalizeClient
 
   public void uploadFile(UploadRequest uploadRequest) throws IOException, InterruptedException
   {
-    URI uri = uriFactory.buildUploadUri(uploadRequest);
+    URI uri = uriFactory.buildUploadUri(uploadRequest, false);
     HttpRequest httpRequest = httpRequestFactory.createUploadFileRequest(uri, uploadRequest);
     HttpResponse<String> httpResponse = httpClient.send(httpRequest, HttpResponse.BodyHandlers.ofString());
     throwOnError(httpResponse);
+  }
+
+  public String previewFile(UploadRequest uploadRequest) throws IOException, InterruptedException
+  {
+    URI uri = uriFactory.buildUploadUri(uploadRequest, true);
+    HttpRequest httpRequest = httpRequestFactory.createUploadFileRequest(uri, uploadRequest);
+    HttpResponse<String> httpResponse = httpClient.send(httpRequest, HttpResponse.BodyHandlers.ofString());
+    throwOnError(httpResponse);
+    DocumentContext json = JsonPath.parse(httpResponse.body());
+    return json.read("$.data", String.class);
   }
 
   public List<DownloadableFile> exportFiles(ExportRequest exportRequest) throws IOException, InterruptedException
@@ -130,12 +141,12 @@ public class SimpleLocalizeClient
     return httpResponse.body();
   }
 
-  public void startAutoTranslation(List<String> languageKeys) throws IOException, InterruptedException
+  public void startAutoTranslation(List<String> languageKeys, List<String> options) throws IOException, InterruptedException
   {
     URI startAutoTranslationUri = uriFactory.buildStartAutoTranslationUri();
     HttpRequest httpRequest = httpRequestFactory.createBaseRequest(startAutoTranslationUri)
             .header("Content-Type", "application/json; charset=utf-8")
-            .POST(ClientBodyBuilders.ofStartAutoTranslation(languageKeys)).build();
+            .POST(ClientBodyBuilders.ofStartAutoTranslation(languageKeys, options)).build();
     HttpResponse<String> httpResponse = httpClient.send(httpRequest, HttpResponse.BodyHandlers.ofString());
     throwOnError(httpResponse);
   }
