@@ -82,7 +82,7 @@ public class SimpleLocalizeClient
     HttpResponse<String> httpResponse = httpClient.send(httpRequest, HttpResponse.BodyHandlers.ofString());
     throwOnError(httpResponse);
     DocumentContext json = JsonPath.parse(httpResponse.body());
-    return json.read("$.data", String.class);
+    return json.read("$.data").toString();
   }
 
   public List<DownloadableFile> exportFiles(ExportRequest exportRequest) throws IOException, InterruptedException
