@@ -38,6 +38,7 @@
           "java.lang.String",
           "java.util.List",
           "java.util.List",
+          "java.lang.Boolean",
           "java.lang.String"
         ]
       },

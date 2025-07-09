@@ -316,8 +316,8 @@ public class SimplelocalizeCliCommand implements Runnable
   public void autoTranslate(
           @Option(names = {"--apiKey"}, description = "Project API Key") String apiKey,
           @Option(names = {"--autoTranslateLanguageKey", "--languageKey", "--languageKeys"}, description = "(Optional) Project language keys to auto-translate", split = ",") List<String> languageKeys,
-          @Option(names = {"--force"}, description = "(Optional) Force auto-translation for all translations") Boolean forceAutoTranslate,
           @Option(names = {"--autoTranslateOptions", "--options"}, description = "(Optional) Auto-translate options") List<String> autoTranslateOptions,
+          @Option(names = {"--force"}, description = "(Optional) Force auto-translation for all translations") Boolean forceAutoTranslate,
           @Option(names = {"--baseUrl"}, description = "(Optional) Set custom server URL") String baseUrl
   )
   {
