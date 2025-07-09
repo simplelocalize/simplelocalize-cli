@@ -351,8 +351,6 @@ public class SimplelocalizeCliCommand implements Runnable
         effectiveAutoTranslateOptions.add("FORCE_REPLACE");
       }
       configuration.setAutoTranslateOptions(effectiveAutoTranslateOptions);
-
-      configuration.setAutoTranslateOptions(autoTranslateOptions);
       this.effectiveCommandConfiguration = configuration;
       SimpleLocalizeClient client = SimpleLocalizeClient.create(configuration.getBaseUrl(), configuration.getApiKey());
       AutoTranslationCommand command = new AutoTranslationCommand(client, configuration);
