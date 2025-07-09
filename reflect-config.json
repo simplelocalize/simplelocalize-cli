@@ -37,6 +37,7 @@
         "parameterTypes": [
           "java.lang.String",
           "java.util.List",
+          "java.util.List",
           "java.lang.String"
         ]
       },
@@ -49,6 +50,7 @@
         "java.lang.String",
         "java.lang.String",
         "java.lang.String",
+        "java.lang.Boolean",
         "java.lang.Boolean",
         "java.lang.Boolean",
         "java.lang.Boolean",
