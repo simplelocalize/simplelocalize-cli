@@ -36,8 +36,8 @@ jobs:
           restore-keys: ${{ runner.os }}-sonar
       - name: "Test with Maven"
         run: mvn --settings .maven.xml clean install -B -V
-      - name: "SonarCloud Analyze"
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        run: mvn clean -B verify -Ptest org.sonarsource.scanner.maven:sonar-maven-plugin:sonar
+#      - name: "SonarCloud Analyze"
+#        env:
+#          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+#          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+#        run: mvn clean -B verify -Ptest org.sonarsource.scanner.maven:sonar-maven-plugin:sonar

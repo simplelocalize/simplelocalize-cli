@@ -1,6 +1,8 @@
 package io.simplelocalize.cli.client;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import com.jayway.jsonpath.DocumentContext;
 import com.jayway.jsonpath.JsonPath;
 import com.jayway.jsonpath.Option;
@@ -82,7 +84,15 @@ public class SimpleLocalizeClient
     HttpResponse<String> httpResponse = httpClient.send(httpRequest, HttpResponse.BodyHandlers.ofString());
     throwOnError(httpResponse);
     DocumentContext json = JsonPath.parse(httpResponse.body());
-    return json.read("$.data", String.class);
+    return prettyPrintJson(json);
+  }
+
+  private String prettyPrintJson(DocumentContext json) throws JsonProcessingException
+  {
+    Object data = json.read("$.data");
+    ObjectMapper mapper = new ObjectMapper();
+    mapper.enable(SerializationFeature.INDENT_OUTPUT);
+    return mapper.writeValueAsString(data);
   }
 
   public List<DownloadableFile> exportFiles(ExportRequest exportRequest) throws IOException, InterruptedException
