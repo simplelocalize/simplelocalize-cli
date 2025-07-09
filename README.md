@@ -22,12 +22,12 @@ The installation process is automated by command-line scripts. Both scripts for 
 
 ```bash
 # macOS / Linux / Windows (WSL)
-curl -s https://get.simplelocalize.io/2.8/install | bash
+curl -s https://get.simplelocalize.io/2.9/install | bash
 
 # Windows (PowerShell)
-. { iwr -useb https://get.simplelocalize.io/2.8/install-windows } | iex;
+. { iwr -useb https://get.simplelocalize.io/2.9/install-windows } | iex;
 
-# npm (Work in progress: https://github.com/simplelocalize/simplelocalize-cli-npm)
+# npm - https://github.com/simplelocalize/simplelocalize-cli-npm
 npm install @simplelocalize/cli
 ```
 
