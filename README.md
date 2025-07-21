@@ -18,10 +18,10 @@ and it's a great tool for CI/CD pipelines and localization automation.
 
 ## Installation
 
-The installation process is automated by command-line scripts. Both scripts for Windows (PowerShell) and macOS/Linux/Windows downloads a binary file with CLI, copies it to user files and makes it available to run anywhere in the system from a command-line.
+The installation process is automated by command-line scripts. Both scripts for Windows (PowerShell) and macOS/Linux/Windows downloads a binary file with CLI, copies it to user files and makes it available to run anywhere in the system from a command-line. The CLI supports macOS (both Apple Silicon and Intel), Linux (x86 and ARM64), and Windows.
 
 ```bash
-# macOS / Linux / Windows (WSL)
+# macOS / Linux / Windows (WSL) 
 curl -s https://get.simplelocalize.io/2.9/install | bash
 
 # Windows (PowerShell)
