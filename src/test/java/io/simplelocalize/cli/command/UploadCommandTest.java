@@ -13,6 +13,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.nio.file.Path;
 import java.util.Collections;
+import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.times;
@@ -58,6 +59,7 @@ class UploadCommandTest
                             .withPath(Path.of("./junit/download-test/values-{lang}/strings.xml"))
                             .withFormat("android")
                             .withOptions(Collections.emptyList())
+                            .withTags(List.of())
                             .build(),
                     "languageKey", "path"
             )
@@ -85,6 +87,7 @@ class UploadCommandTest
                             .withFormat("android")
                             .withLanguageKey("en")
                             .withOptions(Collections.emptyList())
+                            .withTags(List.of())
                             .build(),
                     "path"
             )
@@ -112,6 +115,7 @@ class UploadCommandTest
                     .withFormat("android")
                     .withLanguageKey("en")
                     .withOptions(Collections.emptyList())
+                    .withTags(List.of())
                     .build()
             )
     );
@@ -155,6 +159,7 @@ class UploadCommandTest
                             .withFormat("android")
                             .withLanguageKey("en")
                             .withOptions(Collections.emptyList())
+                            .withTags(List.of())
                             .build(),
                     "path"
             )
