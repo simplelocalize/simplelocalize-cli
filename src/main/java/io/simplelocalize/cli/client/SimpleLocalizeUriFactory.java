@@ -7,6 +7,7 @@ import io.simplelocalize.cli.util.StringUtils;
 import java.net.URI;
 import java.nio.file.Path;
 import java.util.List;
+import java.util.Objects;
 
 public class SimpleLocalizeUriFactory
 {
@@ -33,7 +34,7 @@ public class SimpleLocalizeUriFactory
       endpointUrl += "&downloadOptions=" + String.join(",", downloadOptions);
     }
 
-    List<String> tags = exportRequest.tags();
+    List<String> tags = Objects.requireNonNullElse(exportRequest.tags(), List.of());
     if (!tags.isEmpty())
     {
       endpointUrl += "&tags=" + String.join(",", tags);
@@ -82,7 +83,7 @@ public class SimpleLocalizeUriFactory
       endpointUrl += "&uploadOptions=" + String.join(",", uploadOptions);
     }
 
-    List<String> tags = uploadRequest.tags();
+    List<String> tags = Objects.requireNonNullElse(uploadRequest.tags(), List.of());
     if (!tags.isEmpty())
     {
       endpointUrl += "&tags=" + String.join(",", tags);
