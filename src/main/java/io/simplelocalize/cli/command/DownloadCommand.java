@@ -13,6 +13,7 @@ import org.slf4j.LoggerFactory;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class DownloadCommand implements CliCommand
 {
@@ -44,7 +45,7 @@ public class DownloadCommand implements CliCommand
       log.info("Languages: {}", languageKeys);
     }
 
-    final List<String> tags = configuration.getDownloadTags();
+    final List<String> tags = Objects.requireNonNullElse(configuration.getDownloadTags(), List.of());
     if (!tags.isEmpty())
     {
       log.info("Tags: {}", tags);
