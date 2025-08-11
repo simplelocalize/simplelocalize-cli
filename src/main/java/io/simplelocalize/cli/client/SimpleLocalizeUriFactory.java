@@ -33,6 +33,12 @@ public class SimpleLocalizeUriFactory
       endpointUrl += "&downloadOptions=" + String.join(",", downloadOptions);
     }
 
+    List<String> tags = exportRequest.tags();
+    if (!tags.isEmpty())
+    {
+      endpointUrl += "&tags=" + String.join(",", tags);
+    }
+
     String namespace = exportRequest.namespace();
     if (StringUtils.isNotEmpty(namespace))
     {
@@ -74,6 +80,12 @@ public class SimpleLocalizeUriFactory
     if (!uploadOptions.isEmpty())
     {
       endpointUrl += "&uploadOptions=" + String.join(",", uploadOptions);
+    }
+
+    List<String> tags = uploadRequest.tags();
+    if (!tags.isEmpty())
+    {
+      endpointUrl += "&tags=" + String.join(",", tags);
     }
 
     String namespace = uploadRequest.namespace();
