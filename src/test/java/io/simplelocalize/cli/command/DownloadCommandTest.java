@@ -36,6 +36,7 @@ class DownloadCommandTest
                     .withFormat("android")
                     .withLanguageKeys(List.of("en"))
                     .withOptions(List.of("SPLIT_BY_NAMESPACES"))
+                    .withTags(List.of())
                     .build()))
             .thenReturn(List.of(
                     DownloadableFile.builder().withNamespace("common").withUrl("https://s3.simplelocalize.io/file1.xml").build(),

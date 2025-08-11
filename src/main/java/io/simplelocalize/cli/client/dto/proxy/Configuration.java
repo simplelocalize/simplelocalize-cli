@@ -53,6 +53,9 @@ public class Configuration
   private List<String> uploadOptions = new ArrayList<>();
 
   @Builder.Default
+  private List<String> uploadTags = new ArrayList<>();
+
+  @Builder.Default
   private Boolean dryRun = false;
 
   @Builder.Default
@@ -67,6 +70,9 @@ public class Configuration
 
   @Builder.Default
   private List<String> downloadOptions = new ArrayList<>();
+
+  @Builder.Default
+  private List<String> downloadTags = new ArrayList<>();
 
   @Builder.Default
   private List<String> downloadLanguageKeys = new ArrayList<>();

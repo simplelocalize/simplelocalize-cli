@@ -11,7 +11,8 @@ public record ExportRequest(
         String customerId,
         String namespace,
         List<String> options,
-        String sort
+        String sort,
+        List<String> tags
 )
 {
 }

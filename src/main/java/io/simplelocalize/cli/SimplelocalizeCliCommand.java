@@ -91,6 +91,7 @@ public class SimplelocalizeCliCommand implements Runnable
           @Option(names = {"--uploadPath", "--path"}, description = "Path to file with translation or translation keys to upload. Use '{lang}' to define language key if you are uploading more than one file with translations.") String uploadPath,
           @Option(names = {"--uploadFormat", "--format"}, description = "Translations file format") String uploadFormat,
           @Option(names = {"--uploadOptions", "--options"}, split = ",", description = "(Optional) Upload options") List<String> uploadOptions,
+          @Option(names = {"--uploadTags", "--tags"}, split = ",", description = "(Optional) Assign tags to translation keys") List<String> tags,
           @Option(names = {"--uploadNamespace", "--namespace"}, description = "(Optional) Specify namespace for single file upload (cannot be used with {ns} in uploadPath)") String namespace,
           @Option(names = {"--uploadLanguageKey", "--languageKey"}, description = "(Optional) Specify language key for single file upload (cannot be used with {lang} in uploadPath)") String languageKey,
           @Option(names = {"--uploadCustomerId", "--customerId"}, description = "(Optional) Assign customerId to uploaded translations") String customerId,
@@ -138,6 +139,11 @@ public class SimplelocalizeCliCommand implements Runnable
       if (StringUtils.isNotEmpty(namespace))
       {
         configuration.setUploadNamespace(namespace);
+      }
+
+      if (tags != null && !tags.isEmpty())
+      {
+        configuration.setUploadTags(tags);
       }
 
       List<String> effectiveUploadOptions = new ArrayList<>();
@@ -190,6 +196,7 @@ public class SimplelocalizeCliCommand implements Runnable
           @Option(names = {"--downloadPath", "--path"}, description = "Directory where translations should be downloaded") String downloadPath,
           @Option(names = {"--downloadFormat", "--format"}, description = "Translations file format") String downloadFormat,
           @Option(names = {"--downloadOptions", "--options"}, split = ",", description = "(Optional) Download options, use comma separated values for multiple options") List<String> downloadOptions,
+          @Option(names = {"--downloadTags", "--tags"}, split = ",", description = "(Optional) Download translation keys with given tags") List<String> tags,
           @Option(names = {"--downloadSort", "--sort"}, description = "(Optional) Download sorting") String downloadSort,
           @Option(names = {"--downloadLanguageKey", "--languageKey"}, split = ",", description = "(Optional) Download translations only for given language key, use comma separated values for multiple keys") List<String> languageKeys,
           @Option(names = {"--downloadCustomerId", "--customerId"}, description = "(Optional) Download translations only for given customerId") String customerId,
@@ -240,6 +247,11 @@ public class SimplelocalizeCliCommand implements Runnable
       if (StringUtils.isNotEmpty(downloadSort))
       {
         configuration.setDownloadSort(downloadSort);
+      }
+
+      if (tags != null && !tags.isEmpty())
+      {
+        configuration.setDownloadTags(tags);
       }
 
       List<String> nonNullConfigurationFileDownloadOptions = Objects.requireNonNullElse(configuration.getDownloadOptions(), List.of());

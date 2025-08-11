@@ -13,6 +13,7 @@ import org.slf4j.LoggerFactory;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class DownloadCommand implements CliCommand
 {
@@ -41,7 +42,13 @@ public class DownloadCommand implements CliCommand
     final List<String> languageKeys = configuration.getDownloadLanguageKeys();
     if (!languageKeys.isEmpty())
     {
-      log.info("Language(s): {}", languageKeys);
+      log.info("Languages: {}", languageKeys);
+    }
+
+    final List<String> tags = Objects.requireNonNullElse(configuration.getDownloadTags(), List.of());
+    if (!tags.isEmpty())
+    {
+      log.info("Tags: {}", tags);
     }
 
     final String sort = configuration.getDownloadSort();
@@ -90,6 +97,7 @@ public class DownloadCommand implements CliCommand
             .withCustomerId(customerId)
             .withOptions(downloadOptions)
             .withSort(sort)
+            .withTags(tags)
             .build();
     final List<DownloadableFile> downloadableFiles = client.exportFiles(exportRequest);
     for (DownloadableFile downloadableFile : downloadableFiles)

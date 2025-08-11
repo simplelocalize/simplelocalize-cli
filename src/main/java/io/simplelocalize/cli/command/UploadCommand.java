@@ -63,6 +63,12 @@ public class UploadCommand implements CliCommand
       log.info("Language: {}", uploadLanguageKey);
     }
 
+    final List<String> uploadTags = configuration.getUploadTags();
+    if (!uploadTags.isEmpty())
+    {
+      log.info("Tags: {}", uploadTags);
+    }
+
     final String uploadNamespace = configuration.getUploadNamespace();
     final boolean hasDefinedNamespace = StringUtils.isNotBlank(uploadNamespace);
     if (hasDefinedNamespace)
@@ -120,6 +126,7 @@ public class UploadCommand implements CliCommand
               .withNamespace(effectiveNamespace)
               .withCustomerId(uploadCustomerId)
               .withOptions(uploadOptions)
+              .withTags(uploadTags)
               .build();
 
       String logMessage = "";

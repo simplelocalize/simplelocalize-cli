@@ -10,9 +10,6 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
   cancel-in-progress: true
 
-env:
-  ACTIONS_ALLOW_UNSECURE_COMMANDS: true
-
 jobs:
   run_tests:
     name: "Run tests"
@@ -36,8 +33,3 @@ jobs:
           restore-keys: ${{ runner.os }}-sonar
       - name: "Test with Maven"
         run: mvn --settings .maven.xml clean install -B -V
-#      - name: "SonarCloud Analyze"
-#        env:
-#          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-#          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-#        run: mvn clean -B verify -Ptest org.sonarsource.scanner.maven:sonar-maven-plugin:sonar

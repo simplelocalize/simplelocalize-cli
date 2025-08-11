@@ -13,7 +13,8 @@ public record UploadRequest(
         List<String> options,
         String namespace,
         String customerId,
-        String translationKey
+        String translationKey,
+        List<String> tags
 )
 {
 }
