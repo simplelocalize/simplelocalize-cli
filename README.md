@@ -53,6 +53,7 @@ simplelocalize upload
   --apiKey PROJECT_API_KEY
   --uploadPath INPUT_FILE
   --uploadFormat FILE_FORMAT
+  --uploadLanguageKey en
 ```
 
 [GitHub Wiki: Upload translations](/simplelocalize/simplelocalize-cli/wiki/Upload-translations)
@@ -66,6 +67,7 @@ simplelocalize download
   --apiKey PROJECT_API_KEY
   --downloadPath DOWNLOAD_PATH
   --downloadFormat FILE_FORMAT
+  --downloadLanguageKey en,de,fr
 ```
 
 [GitHub Wiki: Download translations](/simplelocalize/simplelocalize-cli/wiki/Download-translations)
