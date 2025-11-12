@@ -7,6 +7,8 @@ assignees: jpomykala
 
 ---
 
+Feel free to contact us at contact@simplelocalize.io to report the bug.
+
 **Describe the bug**
 A clear and concise description of what the bug is.
 

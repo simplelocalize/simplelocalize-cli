@@ -2,10 +2,12 @@
 name: Feature request
 about: Suggest an idea for this project
 title: ''
-labels: ''
-assignees: ''
+labels: feature-request
+assignees: jpomykala
 
 ---
+
+Feel free to contact us at contact@simplelocalize.io to request a new feature or use our feature board: https://simplelocalize.io/feature-requests 
 
 **Is your feature request related to a problem? Please describe.**
 A clear and concise description of what the problem is. Ex. I'm always frustrated when [...]
