@@ -35,6 +35,8 @@ public class SimpleLocalizeClient
 {
 
   private static final String ERROR_MESSAGE_PATH = "$.msg";
+  private static final int MAX_DOWNLOAD_ATTEMPTS = 3;
+  private static final long RETRY_DELAY_MILLIS = 1000;
   private final HttpClient httpClient;
   private final SimpleLocalizeHttpRequestFactory httpRequestFactory;
   private final SimpleLocalizeUriFactory uriFactory;
@@ -129,8 +131,58 @@ public class SimpleLocalizeClient
       Files.createDirectories(parentDirectory);
     }
     log.info("Downloading {}", savePath);
-    HttpResponse<Path> response = httpClient.send(httpRequest, HttpResponse.BodyHandlers.ofFile(savePath, StandardOpenOption.CREATE, StandardOpenOption.WRITE, StandardOpenOption.TRUNCATE_EXISTING));
-    throwOnError(response);
+    for (int attempt = 1; ; attempt++)
+    {
+      HttpResponse<Path> response;
+      try
+      {
+        response = httpClient.send(httpRequest, HttpResponse.BodyHandlers.ofFile(savePath, StandardOpenOption.CREATE, StandardOpenOption.WRITE, StandardOpenOption.TRUNCATE_EXISTING));
+      } catch (IOException e)
+      {
+        if (attempt >= MAX_DOWNLOAD_ATTEMPTS)
+        {
+          throw e;
+        }
+        log.warn("Downloading {} failed: {}, retrying ({}/{})", savePath, e.getMessage(), attempt + 1, MAX_DOWNLOAD_ATTEMPTS);
+        Thread.sleep(RETRY_DELAY_MILLIS * attempt);
+        continue;
+      }
+      if (response.statusCode() == 200)
+      {
+        return;
+      }
+      // the body handler wrote the error response to savePath; don't leave it there as a translation file
+      try
+      {
+        if (isRetryableStatusCode(response.statusCode()) && attempt < MAX_DOWNLOAD_ATTEMPTS)
+        {
+          log.warn("Downloading {} failed with HTTP {}, retrying ({}/{})", savePath, response.statusCode(), attempt + 1, MAX_DOWNLOAD_ATTEMPTS);
+        } else
+        {
+          throwOnError(response);
+        }
+      } finally
+      {
+        deleteQuietly(savePath);
+      }
+      Thread.sleep(RETRY_DELAY_MILLIS * attempt);
+    }
+  }
+
+  private boolean isRetryableStatusCode(int statusCode)
+  {
+    return statusCode == 429 || statusCode >= 500;
+  }
+
+  private void deleteQuietly(Path path)
+  {
+    try
+    {
+      Files.deleteIfExists(path);
+    } catch (IOException e)
+    {
+      log.warn("Unable to remove incomplete file: {}", path);
+    }
   }
 
   public String fetchProject() throws IOException, InterruptedException
@@ -192,19 +244,34 @@ public class SimpleLocalizeClient
   {
     if (httpResponse.statusCode() != 200)
     {
-      com.jayway.jsonpath.Configuration parseContext = com.jayway.jsonpath.Configuration
-              .defaultConfiguration()
-              .addOptions(Option.SUPPRESS_EXCEPTIONS);
-
-      Object responseBody = httpResponse.body();
-      String stringBody = safeCastHttpBodyToString(responseBody);
-      String message = JsonPath.using(parseContext).parse(stringBody).read(ERROR_MESSAGE_PATH);
-      if (message == null)
+      String message = tryReadErrorMessage(httpResponse);
+      if (StringUtils.isBlank(message))
       {
         message = "Unknown error, HTTP Status: " + httpResponse.statusCode();
       }
       log.error("Request failed: {}", message);
       throw new ApiRequestException(message);
+    }
+  }
+
+  private String tryReadErrorMessage(HttpResponse<?> httpResponse)
+  {
+    String stringBody = safeCastHttpBodyToString(httpResponse.body());
+    if (StringUtils.isBlank(stringBody))
+    {
+      return null;
+    }
+    try
+    {
+      com.jayway.jsonpath.Configuration parseContext = com.jayway.jsonpath.Configuration
+              .defaultConfiguration()
+              .addOptions(Option.SUPPRESS_EXCEPTIONS);
+      Object message = JsonPath.using(parseContext).parse(stringBody).read(ERROR_MESSAGE_PATH);
+      return message != null ? String.valueOf(message) : null;
+    } catch (Exception e)
+    {
+      log.debug("Unable to extract error message from response body", e);
+      return null;
     }
   }
 
@@ -216,6 +283,15 @@ public class SimpleLocalizeClient
     } else if (responseBody instanceof String responseBodyString)
     {
       return responseBodyString;
+    } else if (responseBody instanceof Path responseBodyPath)
+    {
+      try
+      {
+        return Files.readString(responseBodyPath);
+      } catch (IOException e)
+      {
+        return "";
+      }
     }
     return "";
   }

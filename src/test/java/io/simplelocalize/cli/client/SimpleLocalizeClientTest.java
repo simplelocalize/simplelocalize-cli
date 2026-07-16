@@ -272,4 +272,120 @@ public class SimpleLocalizeClientTest
     //then
     assertThat(Path.of(downloadPath)).hasContent("sample").isRegularFile();
   }
+
+  @Test
+  void shouldThrowApiRequestExceptionWhenDownloadFailsWithEmptyBody()
+  {
+    //given
+    SimpleLocalizeClient client = new SimpleLocalizeClient(MOCK_SERVER_BASE_URL, "96a7b6ca75c79d4af4dfd5db2946fdd4");
+    mockServer.when(request()
+                            .withMethod("GET")
+                            .withPath("/s3/missing-file"),
+                    Times.exactly(1))
+            .respond(
+                    response()
+                            .withStatusCode(403)
+                            .withDelay(TimeUnit.MILLISECONDS, 200)
+            );
+
+    DownloadableFile downloadableFile = new DownloadableFile(MOCK_SERVER_BASE_URL + "/s3/missing-file", "common", null, null, null, null);
+    String downloadPath = "./junit/download-error/file.json";
+
+    //when & then
+    Assertions
+            .assertThatThrownBy(() -> client.downloadFile(downloadableFile, downloadPath))
+            .isInstanceOf(ApiRequestException.class)
+            .hasMessage("Unknown error, HTTP Status: 403");
+
+    assertThat(Path.of(downloadPath)).doesNotExist();
+  }
+
+  @Test
+  void shouldThrowApiRequestExceptionWithMessageWhenDownloadFailsWithJsonBody()
+  {
+    //given
+    SimpleLocalizeClient client = new SimpleLocalizeClient(MOCK_SERVER_BASE_URL, "96a7b6ca75c79d4af4dfd5db2946fdd4");
+    mockServer.when(request()
+                            .withMethod("GET")
+                            .withPath("/s3/expired-file"),
+                    Times.exactly(1))
+            .respond(
+                    response()
+                            .withStatusCode(410)
+                            .withContentType(MediaType.APPLICATION_JSON_UTF_8)
+                            .withBody("{ \"msg\": \"link expired\" }")
+                            .withDelay(TimeUnit.MILLISECONDS, 200)
+            );
+
+    DownloadableFile downloadableFile = new DownloadableFile(MOCK_SERVER_BASE_URL + "/s3/expired-file", "common", null, null, null, null);
+    String downloadPath = "./junit/download-error/expired.json";
+
+    //when & then
+    Assertions
+            .assertThatThrownBy(() -> client.downloadFile(downloadableFile, downloadPath))
+            .isInstanceOf(ApiRequestException.class)
+            .hasMessage("link expired");
+
+    assertThat(Path.of(downloadPath)).doesNotExist();
+  }
+
+  @Test
+  void shouldRetryDownloadOnServerError() throws Exception
+  {
+    //given
+    SimpleLocalizeClient client = new SimpleLocalizeClient(MOCK_SERVER_BASE_URL, "96a7b6ca75c79d4af4dfd5db2946fdd4");
+    mockServer.when(request()
+                            .withMethod("GET")
+                            .withPath("/s3/flaky-file"),
+                    Times.exactly(2))
+            .respond(
+                    response()
+                            .withStatusCode(500)
+            );
+    mockServer.when(request()
+                            .withMethod("GET")
+                            .withPath("/s3/flaky-file"),
+                    Times.exactly(1))
+            .respond(
+                    response()
+                            .withStatusCode(200)
+                            .withContentType(MediaType.APPLICATION_JSON_UTF_8)
+                            .withBody("{ \"key\": \"value\" }")
+            );
+
+    DownloadableFile downloadableFile = new DownloadableFile(MOCK_SERVER_BASE_URL + "/s3/flaky-file", "common", null, null, null, null);
+    String downloadPath = "./junit/download-retry/file.json";
+
+    //when
+    client.downloadFile(downloadableFile, downloadPath);
+
+    //then
+    assertThat(Path.of(downloadPath)).hasContent("{ \"key\": \"value\" }").isRegularFile();
+  }
+
+  @Test
+  void shouldGiveUpDownloadAfterMaxRetryAttempts()
+  {
+    //given
+    SimpleLocalizeClient client = new SimpleLocalizeClient(MOCK_SERVER_BASE_URL, "96a7b6ca75c79d4af4dfd5db2946fdd4");
+    mockServer.when(request()
+                            .withMethod("GET")
+                            .withPath("/s3/broken-file"),
+                    Times.exactly(3))
+            .respond(
+                    response()
+                            .withStatusCode(503)
+            );
+
+    DownloadableFile downloadableFile = new DownloadableFile(MOCK_SERVER_BASE_URL + "/s3/broken-file", "common", null, null, null, null);
+    String downloadPath = "./junit/download-retry/broken.json";
+
+    //when & then
+    Assertions
+            .assertThatThrownBy(() -> client.downloadFile(downloadableFile, downloadPath))
+            .isInstanceOf(ApiRequestException.class)
+            .hasMessage("Unknown error, HTTP Status: 503");
+
+    assertThat(Path.of(downloadPath)).doesNotExist();
+  }
 }
