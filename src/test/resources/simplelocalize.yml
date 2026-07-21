@@ -17,6 +17,13 @@ downloadOptions:
   - WRITE_NESTED
   - SPLIT_BY_NAMESPACES
 
+mappings:
+  lang:
+    - languageKey: en
+      placeholder: english
+    - languageKey: pl_PL
+      placeholder: polish
+
 autoTranslateLanguageKeys:
   - 'en'
   - 'de'

@@ -5,7 +5,9 @@ import io.simplelocalize.cli.client.SimpleLocalizeClient;
 import io.simplelocalize.cli.client.dto.ExportRequest;
 import io.simplelocalize.cli.client.dto.proxy.Configuration;
 import io.simplelocalize.cli.client.dto.proxy.DownloadableFile;
+import io.simplelocalize.cli.client.dto.proxy.LanguageTransform;
 import io.simplelocalize.cli.configuration.ConfigurationValidatorUtil;
+import io.simplelocalize.cli.util.LanguageMappingUtil;
 import io.simplelocalize.cli.util.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -99,12 +101,37 @@ public class DownloadCommand implements CliCommand
             .withSort(sort)
             .withTags(tags)
             .build();
+    final List<LanguageTransform> languageTransforms = configuration.getMappings().getLang();
+    if (!languageTransforms.isEmpty())
+    {
+      log.info("Language mapping: {}", languageTransforms);
+    }
+
     final List<DownloadableFile> downloadableFiles = client.exportFiles(exportRequest);
     for (DownloadableFile downloadableFile : downloadableFiles)
     {
-      client.downloadFile(downloadableFile, downloadPath);
+      DownloadableFile fileToDownload = mapLanguage(downloadableFile, languageTransforms);
+      client.downloadFile(fileToDownload, downloadPath);
     }
     log.info("Successfully downloaded all files");
+  }
+
+  private DownloadableFile mapLanguage(DownloadableFile downloadableFile, List<LanguageTransform> languageTransforms)
+  {
+    final String originalLanguage = downloadableFile.language();
+    final String mappedLanguage = LanguageMappingUtil.toFileSystemLanguage(languageTransforms, originalLanguage);
+    if (Objects.equals(originalLanguage, mappedLanguage))
+    {
+      return downloadableFile;
+    }
+    return DownloadableFile.builder()
+            .withUrl(downloadableFile.url())
+            .withNamespace(downloadableFile.namespace())
+            .withLanguage(mappedLanguage)
+            .withCustomer(downloadableFile.customer())
+            .withTranslationKey(downloadableFile.translationKey())
+            .withRemotePath(downloadableFile.remotePath())
+            .build();
   }
 
 }

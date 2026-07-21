@@ -198,7 +198,7 @@ public class SimplelocalizeCliCommand implements Runnable
           @Option(names = {"--downloadOptions", "--options"}, split = ",", description = "(Optional) Download options, use comma separated values for multiple options") List<String> downloadOptions,
           @Option(names = {"--downloadTags", "--tags"}, split = ",", description = "(Optional) Download translation keys with given tags") List<String> tags,
           @Option(names = {"--downloadSort", "--sort"}, description = "(Optional) Download sorting") String downloadSort,
-          @Option(names = {"--downloadLanguageKey", "--languageKey"}, split = ",", description = "(Optional) Download translations only for given language key, use comma separated values for multiple keys") List<String> languageKeys,
+          @Option(names = {"--downloadLanguageKey", "--downloadLanguageKeys", "--languageKey", "--languageKeys"}, split = ",", description = "(Optional) Download translations only for given language key, use comma separated values for multiple keys") List<String> languageKeys,
           @Option(names = {"--downloadCustomerId", "--customerId"}, description = "(Optional) Download translations only for given customerId") String customerId,
           @Option(names = {"--downloadNamespace", "--namespace"}, description = "(Optional) Download translations only for given namespace") String namespace,
           @Option(names = {"--baseUrl"}, description = "(Optional) Set custom server URL") String baseUrl

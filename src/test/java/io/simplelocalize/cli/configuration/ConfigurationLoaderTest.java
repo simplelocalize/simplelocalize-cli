@@ -2,9 +2,11 @@ package io.simplelocalize.cli.configuration;
 
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import io.simplelocalize.cli.client.dto.proxy.Configuration;
+import io.simplelocalize.cli.client.dto.proxy.LanguageTransform;
 import io.simplelocalize.cli.exception.ConfigurationException;
 import io.simplelocalize.cli.util.TestLogEventFactory;
 import org.assertj.core.api.Assertions;
+import org.assertj.core.groups.Tuple;
 import org.junit.jupiter.api.Test;
 
 import java.nio.file.Path;
@@ -95,6 +97,13 @@ class ConfigurationLoaderTest
     Assertions.assertThat(configuration.getDownloadCustomerId()).isEqualTo("my-customer-id-2");
     Assertions.assertThat(configuration.getDownloadNamespace()).isEqualTo("login");
     Assertions.assertThat(configuration.getDownloadOptions()).containsExactlyInAnyOrder("SPLIT_BY_NAMESPACES", "WRITE_NESTED");
+
+    // language mapping
+    Assertions.assertThat(configuration.getMappings().getLang())
+            .extracting(LanguageTransform::getLanguageKey, LanguageTransform::getPlaceholder)
+            .containsExactlyInAnyOrder(
+                    Tuple.tuple("en", "english"),
+                    Tuple.tuple("pl_PL", "polish"));
 
     // auto-translate
     Assertions.assertThat(configuration.getAutoTranslateLanguageKeys()).isNotNull().containsExactlyInAnyOrder("en", "de");

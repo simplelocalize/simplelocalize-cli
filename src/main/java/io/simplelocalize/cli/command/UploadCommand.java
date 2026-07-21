@@ -5,9 +5,11 @@ import io.simplelocalize.cli.client.SimpleLocalizeClient;
 import io.simplelocalize.cli.client.dto.FileToUpload;
 import io.simplelocalize.cli.client.dto.UploadRequest;
 import io.simplelocalize.cli.client.dto.proxy.Configuration;
+import io.simplelocalize.cli.client.dto.proxy.LanguageTransform;
 import io.simplelocalize.cli.configuration.ConfigurationValidatorUtil;
 import io.simplelocalize.cli.exception.ConfigurationException;
 import io.simplelocalize.cli.io.FileListReader;
+import io.simplelocalize.cli.util.LanguageMappingUtil;
 import io.simplelocalize.cli.util.StringUtils;
 import io.simplelocalize.cli.util.SystemUtils;
 import org.slf4j.Logger;
@@ -88,6 +90,12 @@ public class UploadCommand implements CliCommand
       log.info("Options: {}", uploadOptions);
     }
 
+    final List<LanguageTransform> languageTransforms = configuration.getMappings().getLang();
+    if (!languageTransforms.isEmpty())
+    {
+      log.info("Language mapping: {}", languageTransforms);
+    }
+
     final List<FileToUpload> filesToUpload = fileListReader.findFilesToUpload(uploadPath);
     if (filesToUpload.size() > 1)
     {
@@ -111,7 +119,8 @@ public class UploadCommand implements CliCommand
       }
 
       final String fileLanguage = fileToUpload.language();
-      final String effectiveLanguageKey = hasDefinedLanguageKey ? uploadLanguageKey : fileLanguage;
+      final String mappedFileLanguage = LanguageMappingUtil.toSimpleLocalizeLanguage(languageTransforms, fileLanguage);
+      final String effectiveLanguageKey = hasDefinedLanguageKey ? uploadLanguageKey : mappedFileLanguage;
 
       final String fileNamespace = fileToUpload.namespace();
       final String effectiveNamespace = hasDefinedNamespace ? uploadNamespace : fileNamespace;

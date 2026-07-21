@@ -71,7 +71,9 @@ public class FileListReader
             .replace("\\", "\\\\") // escape backslash
             .replace(NAMESPACE_TEMPLATE_KEY, "(?<ns>.*)")
             .replace(TRANSLATION_KEY_TEMPLATE_KEY, "(?<translationKey>.*)")
-            .replace(LANGUAGE_TEMPLATE_KEY, "(?<lang>.*)");
+            // language never spans multiple directories, so it must not cross a path separator,
+            // otherwise it would greedily swallow nested namespace directories (e.g. en/components/impact)
+            .replace(LANGUAGE_TEMPLATE_KEY, "(?<lang>[^/\\\\]*)");
     Pattern regex = Pattern.compile(replace);
     return regex.matcher(input);
   }
