@@ -17,8 +17,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ macos-11, macos-12, macos-13, ubuntu-22.04 ]
-        version: [ '2.9', '2.8', '2.7', '2.6' ]
+        os: [ macos-26, macos-26-intel, ubuntu-24.04-arm, ubuntu-latest ]
+        version: [ '2.10', '2.9', '2.8' ]
     steps:
       - uses: actions/checkout@v3
       - name: Test on ${{ matrix.os }}
@@ -31,8 +31,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ windows-2019, windows-2022 ]
-        version: [ '2.5', '2.4', '2.3', '2.2']
+        os: [ windows-latest ]
+        version: [ '2.10', '2.9', '2.8' ]
     steps:
       - uses: actions/checkout@v3
       - name: Test on ${{ matrix.os }}

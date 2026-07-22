@@ -36,6 +36,8 @@ jobs:
           VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
           echo "VERSION=$VERSION" >> $GITHUB_ENV
           echo "version=$VERSION" >> $GITHUB_OUTPUT
+      - name: 'Smoke test JAR'
+        run: ./scripts/smoke-test.sh java -jar target/simplelocalize-cli-${{env.VERSION}}.jar
       - name: 'Upload artifact'
         uses: actions/upload-artifact@v4
         with:
@@ -90,10 +92,17 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }}
       - name: "Build executable"
         run: mvn -DskipTests -Pnative clean package
-      - name: "Test executable"
-        run: ./target/${{ matrix.filename }} --version
+      - name: "Smoke test executable"
+        shell: bash
+        run: ./scripts/smoke-test.sh ./target/${{ matrix.filename }}
       - name: "Rename executable"
         run: mv ./target/${{ matrix.filename }} ./target/${{ matrix.downloadFilename }}
+      - name: "Ad-hoc sign executable (macOS)"
+        if: startsWith(matrix.os, 'macos')
+        run: |
+          xattr -d com.apple.quarantine ./target/${{ matrix.downloadFilename }} 2>/dev/null || true
+          codesign --force --deep --sign - ./target/${{ matrix.downloadFilename }}
+          codesign --verify --verbose ./target/${{ matrix.downloadFilename }}
       - name: "Upload artifact"
         uses: actions/upload-artifact@v4
         with:
