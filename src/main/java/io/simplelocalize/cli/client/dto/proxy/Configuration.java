@@ -81,6 +81,16 @@ public class Configuration
   private String downloadNamespace;
 
   /**
+   * Mappings (configurable only via YAML configuration file).
+   * mappings.lang maps SimpleLocalize language keys (languageKey) to the language name used in the file
+   * system / {lang} placeholder (placeholder).
+   * On download: SimpleLocalize language key is translated to the file system language name ({lang}).
+   * On upload: the file system language name ({lang}) is translated back to the SimpleLocalize language key (reverse mapping).
+   */
+  @Builder.Default
+  private Mappings mappings = new Mappings();
+
+  /**
    * Auto-translate command
    */
   private List<String> autoTranslateLanguageKeys = new ArrayList<>();

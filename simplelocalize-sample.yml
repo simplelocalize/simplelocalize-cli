@@ -41,6 +41,23 @@ downloadOptions:
   - 'WRITE_NESTED' # write nested JSON
 
 
+###################################
+# Language mapping (YAML only)
+###################################
+
+# mappings.lang maps SimpleLocalize language keys ('languageKey') to the language name used in the file system / {lang} placeholder ('placeholder').
+# On download the SimpleLocalize language key is translated to the file system language name ({lang}),
+# on upload the file system language name ({lang}) is translated back to the SimpleLocalize language key.
+# This can be used to customize where files are downloaded, e.g. to download 'en' to '/values/' instead of '/values-en/'.
+# This option can be configured only via this YAML configuration file.
+mappings:
+   lang:
+     - languageKey: "en"
+       placeholder: ""      # SimpleLocalize 'en' is downloaded to '{lang}' = '' (e.g. ./res/values{lang} -> ./res/values)
+     - languageKey: "de"
+       placeholder: "-de"   # SimpleLocalize 'de' is downloaded to '{lang}' = '-de' (e.g. ./res/values{lang} -> ./res/values-de)
+
+
 #########################################
 # 'simplelocalize auto-translate' command
 #########################################
@@ -67,5 +84,3 @@ projectType: yahoo/react-intl
 ignoreKeys:
   - 'WELCOME'
   - 'ABOUT-US'
-
-

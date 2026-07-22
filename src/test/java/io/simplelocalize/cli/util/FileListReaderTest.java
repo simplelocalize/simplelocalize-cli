@@ -361,6 +361,36 @@ class FileListReaderTest
   }
 
   @Test
+  void shouldKeepLanguageAsSingleDirectoryAndUseSubdirectoriesAsNamespace() throws IOException
+  {
+    //given: customer layout where language is a single directory and the namespace spans nested directories
+    String path = "./junit/nested-namespaces/{lang}/{ns}.json";
+
+    //when
+    List<FileToUpload> result = sut.findFilesToUpload(path);
+
+    //then
+    Assertions.assertThat(result)
+            .containsExactlyInAnyOrder(
+                    FileToUpload.builder()
+                            .withPath(Paths.get("./junit/nested-namespaces/en/toast.json"))
+                            .withLanguage("en")
+                            .withNamespace("toast")
+                            .build(),
+                    FileToUpload.builder()
+                            .withPath(Paths.get("./junit/nested-namespaces/en/app/settings/home.json"))
+                            .withLanguage("en")
+                            .withNamespace("app/settings/home")
+                            .build(),
+                    FileToUpload.builder()
+                            .withPath(Paths.get("./junit/nested-namespaces/en/components/impact/ProjectItem.json"))
+                            .withLanguage("en")
+                            .withNamespace("components/impact/ProjectItem")
+                            .build()
+            );
+  }
+
+  @Test
   void langAsDirectoriesNsAsFilename() throws IOException
   {
     //given
@@ -391,6 +421,204 @@ class FileListReaderTest
                             .withPath(Paths.get("./junit/lang-as-directories-ns-as-filename/meaningless-directory/pl/common.json"))
                             .withLanguage("pl")
                             .withNamespace("common")
+                            .build()
+            );
+  }
+
+  @Test
+  void shouldTreatNestedDirectoriesAsNamespaceWhenLanguageIsFilename() throws IOException
+  {
+    //given: language is the file name while the namespace spans one or more nested directories
+    String path = "./junit/ns-nested-lang-filename/{ns}/{lang}.json";
+
+    //when
+    List<FileToUpload> result = sut.findFilesToUpload(path);
+
+    //then
+    Assertions.assertThat(result)
+            .containsExactlyInAnyOrder(
+                    FileToUpload.builder()
+                            .withPath(Paths.get("./junit/ns-nested-lang-filename/common/en.json"))
+                            .withLanguage("en")
+                            .withNamespace("common")
+                            .build(),
+                    FileToUpload.builder()
+                            .withPath(Paths.get("./junit/ns-nested-lang-filename/common/pl.json"))
+                            .withLanguage("pl")
+                            .withNamespace("common")
+                            .build(),
+                    FileToUpload.builder()
+                            .withPath(Paths.get("./junit/ns-nested-lang-filename/mobile/settings/en.json"))
+                            .withLanguage("en")
+                            .withNamespace("mobile/settings")
+                            .build(),
+                    FileToUpload.builder()
+                            .withPath(Paths.get("./junit/ns-nested-lang-filename/mobile/settings/pl.json"))
+                            .withLanguage("pl")
+                            .withNamespace("mobile/settings")
+                            .build()
+            );
+  }
+
+  @Test
+  void shouldMatchMultipleLanguagesEachWithNestedNamespaces() throws IOException
+  {
+    //given: several single-directory languages, each containing a deeply nested namespace tree
+    String path = "./junit/multi-lang-nested/{lang}/{ns}.json";
+
+    //when
+    List<FileToUpload> result = sut.findFilesToUpload(path);
+
+    //then
+    Assertions.assertThat(result)
+            .containsExactlyInAnyOrder(
+                    FileToUpload.builder()
+                            .withPath(Paths.get("./junit/multi-lang-nested/en/toast.json"))
+                            .withLanguage("en")
+                            .withNamespace("toast")
+                            .build(),
+                    FileToUpload.builder()
+                            .withPath(Paths.get("./junit/multi-lang-nested/en/app/settings/home.json"))
+                            .withLanguage("en")
+                            .withNamespace("app/settings/home")
+                            .build(),
+                    FileToUpload.builder()
+                            .withPath(Paths.get("./junit/multi-lang-nested/fr/toast.json"))
+                            .withLanguage("fr")
+                            .withNamespace("toast")
+                            .build(),
+                    FileToUpload.builder()
+                            .withPath(Paths.get("./junit/multi-lang-nested/fr/app/settings/home.json"))
+                            .withLanguage("fr")
+                            .withNamespace("app/settings/home")
+                            .build()
+            );
+  }
+
+  @Test
+  void shouldSupportLanguageCodesWithRegionScriptAndUnderscore() throws IOException
+  {
+    //given: language codes containing region, script subtags and underscores
+    String path = "./junit/lang-region-codes/{lang}.json";
+
+    //when
+    List<FileToUpload> result = sut.findFilesToUpload(path);
+
+    //then
+    Assertions.assertThat(result)
+            .containsExactlyInAnyOrder(
+                    FileToUpload.builder()
+                            .withPath(Paths.get("./junit/lang-region-codes/en.json"))
+                            .withLanguage("en")
+                            .build(),
+                    FileToUpload.builder()
+                            .withPath(Paths.get("./junit/lang-region-codes/pt-BR.json"))
+                            .withLanguage("pt-BR")
+                            .build(),
+                    FileToUpload.builder()
+                            .withPath(Paths.get("./junit/lang-region-codes/zh-Hant-TW.json"))
+                            .withLanguage("zh-Hant-TW")
+                            .build(),
+                    FileToUpload.builder()
+                            .withPath(Paths.get("./junit/lang-region-codes/es_419.json"))
+                            .withLanguage("es_419")
+                            .build()
+            );
+  }
+
+  @Test
+  void shouldMatchLanguageAsFilenameSuffixWithNestedNamespace() throws IOException
+  {
+    //given: language embedded as a suffix in the file name while the namespace spans nested directories
+    String path = "./junit/ns-dir-lang-suffix/{ns}/messages_{lang}.properties";
+
+    //when
+    List<FileToUpload> result = sut.findFilesToUpload(path);
+
+    //then
+    Assertions.assertThat(result)
+            .containsExactlyInAnyOrder(
+                    FileToUpload.builder()
+                            .withPath(Paths.get("./junit/ns-dir-lang-suffix/home/messages_en.properties"))
+                            .withLanguage("en")
+                            .withNamespace("home")
+                            .build(),
+                    FileToUpload.builder()
+                            .withPath(Paths.get("./junit/ns-dir-lang-suffix/home/messages_pl.properties"))
+                            .withLanguage("pl")
+                            .withNamespace("home")
+                            .build(),
+                    FileToUpload.builder()
+                            .withPath(Paths.get("./junit/ns-dir-lang-suffix/account/settings/messages_en.properties"))
+                            .withLanguage("en")
+                            .withNamespace("account/settings")
+                            .build(),
+                    FileToUpload.builder()
+                            .withPath(Paths.get("./junit/ns-dir-lang-suffix/account/settings/messages_pl.properties"))
+                            .withLanguage("pl")
+                            .withNamespace("account/settings")
+                            .build()
+            );
+  }
+
+  @Test
+  void shouldMatchLanguageWithPrefixAndSuffixInDirectoryName() throws IOException
+  {
+    //given: language surrounded by a static prefix and suffix in the directory name; sibling dirs without the suffix must be ignored
+    String path = "./junit/download-test/values-{lang}-test/strings.xml";
+
+    //when
+    List<FileToUpload> result = sut.findFilesToUpload(path);
+
+    //then
+    Assertions.assertThat(result)
+            .containsExactlyInAnyOrder(
+                    FileToUpload.builder()
+                            .withPath(Paths.get("./junit/download-test/values-de-test/strings.xml"))
+                            .withLanguage("de")
+                            .build(),
+                    FileToUpload.builder()
+                            .withPath(Paths.get("./junit/download-test/values-en-test/strings.xml"))
+                            .withLanguage("en")
+                            .build(),
+                    FileToUpload.builder()
+                            .withPath(Paths.get("./junit/download-test/values-es-test/strings.xml"))
+                            .withLanguage("es")
+                            .build(),
+                    FileToUpload.builder()
+                            .withPath(Paths.get("./junit/download-test/values-fr-test/strings.xml"))
+                            .withLanguage("fr")
+                            .build(),
+                    FileToUpload.builder()
+                            .withPath(Paths.get("./junit/download-test/values-it-test/strings.xml"))
+                            .withLanguage("it")
+                            .build(),
+                    FileToUpload.builder()
+                            .withPath(Paths.get("./junit/download-test/values-pl-test/strings.xml"))
+                            .withLanguage("pl")
+                            .build()
+            );
+  }
+
+  @Test
+  void shouldCaptureNestedNamespaceWhenPatternHasNoLanguage() throws IOException
+  {
+    //given: no language placeholder, namespace alone must capture the whole nested path
+    String path = "./junit/multi-lang-nested/en/{ns}.json";
+
+    //when
+    List<FileToUpload> result = sut.findFilesToUpload(path);
+
+    //then
+    Assertions.assertThat(result)
+            .containsExactlyInAnyOrder(
+                    FileToUpload.builder()
+                            .withPath(Paths.get("./junit/multi-lang-nested/en/toast.json"))
+                            .withNamespace("toast")
+                            .build(),
+                    FileToUpload.builder()
+                            .withPath(Paths.get("./junit/multi-lang-nested/en/app/settings/home.json"))
+                            .withNamespace("app/settings/home")
                             .build()
             );
   }

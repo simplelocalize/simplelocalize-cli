@@ -164,6 +164,26 @@ simplelocalize upload
 
 [GitHub Wiki: Configuration file](/simplelocalize/simplelocalize-cli/wiki/Configuration-file)
 
+### Language mapping
+
+The `mappings.lang` option (available only in the YAML configuration file) maps SimpleLocalize language keys
+(`languageKey`) to the language names used in the file system (`placeholder`, the `{lang}` placeholder). Unlike a
+generic `source`/`target` pair, these names stay unambiguous regardless of direction: on `download` a SimpleLocalize
+language key is translated to the file system language name, and on `upload` the file system language name is
+translated back to the SimpleLocalize language key. This lets you customize where files are downloaded, for example
+to download `en` into `/values/` instead of `/values-en/`.
+
+```yaml
+downloadPath: ./res/values{lang}/strings.xml
+downloadFormat: android
+mappings:
+  lang:
+    - languageKey: "en"
+      placeholder: ""      # download 'en' to ./res/values
+    - languageKey: "de"
+      placeholder: "-de"   # download 'de' to ./res/values-de
+```
+
 ## Proxy support
 
 SimpleLocalize CLI supports HTTP and HTTPS proxies, and it respects the `http_proxy`, `https_proxy` environment

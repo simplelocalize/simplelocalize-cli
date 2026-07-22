@@ -17,6 +17,8 @@ jobs:
   build-jar:
     name: "Build JAR"
     runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.get-version.outputs.version }}
     steps:
       - uses: actions/checkout@v4
         name: "Checkout"
@@ -29,7 +31,11 @@ jobs:
       - name: "Build JAR"
         run: mvn -DskipTests -Pfatjar clean package
       - name: 'Get version'
-        run: echo "VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)" >> $GITHUB_ENV
+        id: get-version
+        run: |
+          VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
+          echo "VERSION=$VERSION" >> $GITHUB_ENV
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
       - name: 'Upload artifact'
         uses: actions/upload-artifact@v4
         with:
@@ -56,11 +62,12 @@ jobs:
             label: 'linux-arm64'
             filename: 'simplelocalize-cli'
             downloadFilename: 'simplelocalize-cli-linux-arm64'
-          - os: 'macos-13'
+          # https://github.blog/changelog/2026-02-26-macos-26-is-now-generally-available-for-github-hosted-runners/
+          - os: 'macos-26-intel'
             label: 'mac'
             filename: 'simplelocalize-cli'
             downloadFilename: 'simplelocalize-cli-mac'
-          - os: 'macos-14'
+          - os: 'macos-26'
             label: 'mac-arm64'
             filename: 'simplelocalize-cli'
             downloadFilename: 'simplelocalize-cli-mac-arm64'
@@ -97,5 +104,32 @@ jobs:
         uses: softprops/action-gh-release@v1
         with:
           files: './target/${{ matrix.downloadFilename }}'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  bundle-release:
+    name: "Bundle all files into a single ZIP"
+    needs: [ build-jar, build-executable ]
+    runs-on: ubuntu-latest
+    steps:
+      - name: "Download all artifacts"
+        uses: actions/download-artifact@v4
+        with:
+          path: dist
+          merge-multiple: true
+      - name: "Create ZIP archive"
+        run: |
+          cd dist
+          zip -j "../simplelocalize-cli-${{ needs.build-jar.outputs.version }}.zip" *
+      - name: "Upload bundle artifact"
+        uses: actions/upload-artifact@v4
+        with:
+          name: 'simplelocalize-cli-${{ needs.build-jar.outputs.version }}'
+          path: 'simplelocalize-cli-${{ needs.build-jar.outputs.version }}.zip'
+      - name: 'Upload bundle to Release'
+        if: github.event_name == 'release'
+        uses: softprops/action-gh-release@v1
+        with:
+          files: 'simplelocalize-cli-${{ needs.build-jar.outputs.version }}.zip'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

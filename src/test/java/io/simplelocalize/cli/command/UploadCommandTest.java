@@ -3,10 +3,14 @@ package io.simplelocalize.cli.command;
 import io.simplelocalize.cli.client.SimpleLocalizeClient;
 import io.simplelocalize.cli.client.dto.UploadRequest;
 import io.simplelocalize.cli.client.dto.proxy.Configuration;
+import io.simplelocalize.cli.client.dto.proxy.LanguageTransform;
+import io.simplelocalize.cli.client.dto.proxy.Mappings;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -200,5 +204,62 @@ class UploadCommandTest
 
     //then
     Mockito.verify(client, times(0)).uploadFile(any());
+  }
+
+  @Test
+  public void shouldMapFileSystemLanguageToSimpleLocalizeLanguageKeyOnUpload() throws Exception
+  {
+    //given
+    List<LanguageTransform> languageTransforms = List.of(
+            new LanguageTransform("en_US", "en"), // SimpleLocalize key 'en_US' is stored on disk as 'en'
+            new LanguageTransform("pl_PL", "pl")); // SimpleLocalize key 'pl_PL' is stored on disk as 'pl'
+
+    Configuration configuration = Configuration.defaultConfiguration();
+    configuration.setApiKey("my-api-key");
+    configuration.setUploadPath("./junit/download-test/values-{lang}/strings.xml");
+    configuration.setUploadFormat("android");
+    configuration.setMappings(Mappings.builder().lang(languageTransforms).build());
+
+    //when
+    UploadCommand uploadCommand = new UploadCommand(client, configuration);
+    uploadCommand.invoke();
+
+    //then
+    ArgumentCaptor<UploadRequest> uploadRequestCaptor = ArgumentCaptor.forClass(UploadRequest.class);
+    Mockito.verify(client, times(12)).uploadFile(uploadRequestCaptor.capture());
+    List<String> uploadedLanguageKeys = uploadRequestCaptor.getAllValues().stream()
+            .map(UploadRequest::languageKey)
+            .toList();
+
+    Assertions.assertThat(uploadedLanguageKeys)
+            .contains("en_US", "pl_PL") // mapped values
+            .contains("de", "es", "fr", "it") // unmapped languages pass through unchanged
+            .doesNotContain("en", "pl"); // file system names should have been mapped away
+  }
+
+  @Test
+  public void shouldUseLanguageMappingReverseValueForSingleMappedFile() throws Exception
+  {
+    //given
+    List<LanguageTransform> languageTransforms = List.of(new LanguageTransform("en_US", "en"));
+
+    Configuration configuration = Configuration.defaultConfiguration();
+    configuration.setApiKey("my-api-key");
+    configuration.setUploadPath("./junit/download-test/values-{lang}/strings.xml");
+    configuration.setUploadFormat("android");
+    configuration.setMappings(Mappings.builder().lang(languageTransforms).build());
+
+    //when
+    UploadCommand uploadCommand = new UploadCommand(client, configuration);
+    uploadCommand.invoke();
+
+    //then
+    ArgumentCaptor<UploadRequest> uploadRequestCaptor = ArgumentCaptor.forClass(UploadRequest.class);
+    Mockito.verify(client, times(12)).uploadFile(uploadRequestCaptor.capture());
+    UploadRequest enUsRequest = uploadRequestCaptor.getAllValues().stream()
+            .filter(request -> "en_US".equals(request.languageKey()))
+            .findFirst()
+            .orElseThrow();
+    Assertions.assertThat(enUsRequest.path().toString()).contains("values-en");
   }
 }
