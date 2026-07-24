@@ -462,7 +462,7 @@ public class SimplelocalizeCliCommand implements Runnable
 
   @Command(
           name = "purge",
-          description = "Purge translations from Translation Hosting. Use 'simplelocalize purge --help' to learn more about the parameters.")
+          description = "Purge translations from the project. Use 'simplelocalize purge --help' to learn more about the parameters.")
   public void purge(
           @Option(names = {"--apiKey"}, description = "Project API Key") String apiKey,
           @Option(names = {"--baseUrl"}, description = "(Optional) Set custom server URL") String baseUrl,
