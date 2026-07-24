@@ -77,6 +77,20 @@
     "allPublicMethods" : true
   },
   {
+    "name" : "io.simplelocalize.cli.client.dto.proxy.Mappings",
+    "allDeclaredConstructors" : true,
+    "allPublicConstructors" : true,
+    "allDeclaredMethods" : true,
+    "allPublicMethods" : true
+  },
+  {
+    "name" : "io.simplelocalize.cli.client.dto.proxy.LanguageTransform",
+    "allDeclaredConstructors" : true,
+    "allPublicConstructors" : true,
+    "allDeclaredMethods" : true,
+    "allPublicMethods" : true
+  },
+  {
     "name" : "io.simplelocalize.cli.client.dto.proxy.DownloadableFile",
     "allDeclaredConstructors" : true,
     "allPublicConstructors" : true,
