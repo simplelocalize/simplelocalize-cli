@@ -115,6 +115,42 @@ class ConfigurationLoaderTest
   }
 
   @Test
+  void shouldLoadLanguageMappingsFromConfiguration() throws Exception
+  {
+    //given
+    ClassLoader classLoader = getClass().getClassLoader();
+    String pathToConfig = classLoader.getResource("simplelocalize.yml").toURI().toString().replace("file:", "");
+    Path configurationFilePath = Path.of(pathToConfig);
+
+    //when
+    Configuration configuration = loader.loadOrGetDefault(configurationFilePath);
+
+    //then
+    Assertions.assertThat(configuration.getMappings()).isNotNull();
+    Assertions.assertThat(configuration.getMappings().getLang())
+            .extracting(LanguageTransform::getLanguageKey, LanguageTransform::getPlaceholder)
+            .containsExactlyInAnyOrder(
+                    Tuple.tuple("en", "english"),
+                    Tuple.tuple("pl_PL", "polish"));
+  }
+
+  @Test
+  void shouldDefaultToEmptyMappingsWhenNotProvidedInConfiguration() throws Exception
+  {
+    //given
+    ClassLoader classLoader = getClass().getClassLoader();
+    String pathToConfig = classLoader.getResource("simplelocalize-upload-download.yml").toURI().toString().replace("file:", "");
+    Path configurationFilePath = Path.of(pathToConfig);
+
+    //when
+    Configuration configuration = loader.loadOrGetDefault(configurationFilePath);
+
+    //then
+    Assertions.assertThat(configuration.getMappings()).isNotNull();
+    Assertions.assertThat(configuration.getMappings().getLang()).isEmpty();
+  }
+
+  @Test
   void shouldThrowErrorWhenInvalidFile() throws Exception
   {
     //given

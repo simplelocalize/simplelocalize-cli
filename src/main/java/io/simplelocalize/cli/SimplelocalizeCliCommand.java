@@ -159,7 +159,7 @@ public class SimplelocalizeCliCommand implements Runnable
 
       if (Boolean.TRUE.equals(updateTranslations))
       {
-        effectiveUploadOptions.add("REPLACE_TRANSLATION_IF_FOUND");
+        effectiveUploadOptions.add("UPDATE_TRANSLATIONS");
       }
 
       if (Boolean.TRUE.equals(delete))
