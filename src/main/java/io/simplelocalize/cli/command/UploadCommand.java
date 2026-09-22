@@ -23,10 +23,6 @@ import java.util.Locale;
 public class UploadCommand implements CliCommand
 {
   private static final Logger log = LoggerFactory.getLogger(UploadCommand.class);
-  /**
-   * Used only when the API cannot be reached. The API is the source of truth, see
-   * FileFormat#hasMultipleLanguages and FileFormatServiceTest#shouldReturnExactListOfMultiLanguageFormats.
-   */
   private static final List<String> FALLBACK_MULTI_LANGUAGE_FILE_FORMATS = List.of("multi-language-json", "project-json", "excel", "csv-translations", "tsv", "localizable-xcstrings");
   private final FileListReader fileListReader = new FileListReader();
   private final SimpleLocalizeClient client;
@@ -249,11 +245,6 @@ public class UploadCommand implements CliCommand
     return false;
   }
 
-  /**
-   * API versions released before the file-formats fix report enum names ('MULTI_LANGUAGE_JSON')
-   * instead of format values ('multi-language-json'), so both spellings have to match the
-   * configured upload format. Without it such a response would silently match nothing.
-   */
   private String normalizeFileFormat(String fileFormat)
   {
     if (fileFormat == null)
