@@ -5,6 +5,7 @@ import io.simplelocalize.cli.client.dto.UploadRequest;
 import io.simplelocalize.cli.client.dto.proxy.Configuration;
 import io.simplelocalize.cli.client.dto.proxy.LanguageTransform;
 import io.simplelocalize.cli.client.dto.proxy.Mappings;
+import io.simplelocalize.cli.exception.ConfigurationException;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -15,6 +16,7 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Collections;
 import java.util.List;
@@ -261,5 +263,130 @@ class UploadCommandTest
             .findFirst()
             .orElseThrow();
     Assertions.assertThat(enUsRequest.path().toString()).contains("values-en");
+  }
+  @Test
+  public void shouldUseMultiLanguageFileFormatsReturnedByApi() throws Exception
+  {
+    //given
+    // 'json' is not multi-language in the CLI's built-in list, so rejecting it proves the API list was used
+    Mockito.when(client.fetchMultiLanguageFileFormats()).thenReturn(List.of("json"));
+
+    Configuration configuration = Configuration.defaultConfiguration();
+    configuration.setApiKey("my-api-key");
+    configuration.setUploadPath("./junit/download-test/values-{lang}/strings.xml");
+    configuration.setUploadFormat("json");
+
+    //when
+    UploadCommand uploadCommand = new UploadCommand(client, configuration);
+
+    //then
+    Assertions.assertThatThrownBy(uploadCommand::invoke)
+            .isInstanceOf(ConfigurationException.class)
+            .hasMessageContaining("multi-language file formats");
+    Mockito.verify(client, times(0)).uploadFile(any());
+  }
+
+  @Test
+  public void shouldAcceptFormatThatApiDoesNotReportAsMultiLanguage() throws Exception
+  {
+    //given
+    // 'excel' is multi-language in the built-in list, but the API is the source of truth
+    Mockito.when(client.fetchMultiLanguageFileFormats()).thenReturn(List.of("tsv"));
+
+    Configuration configuration = Configuration.defaultConfiguration();
+    configuration.setApiKey("my-api-key");
+    configuration.setUploadPath("./junit/download-test/values-{lang}/strings.xml");
+    configuration.setUploadFormat("excel");
+
+    //when
+    UploadCommand uploadCommand = new UploadCommand(client, configuration);
+    uploadCommand.invoke();
+
+    //then
+    Mockito.verify(client, times(12)).uploadFile(any());
+  }
+
+  @Test
+  public void shouldFallBackToBuiltInFormatsWhenApiRequestFails() throws Exception
+  {
+    //given
+    Mockito.when(client.fetchMultiLanguageFileFormats()).thenThrow(new IOException("connection refused"));
+
+    Configuration configuration = Configuration.defaultConfiguration();
+    configuration.setApiKey("my-api-key");
+    configuration.setUploadPath("./junit/download-test/values-{lang}/strings.xml");
+    configuration.setUploadFormat("excel");
+
+    //when
+    UploadCommand uploadCommand = new UploadCommand(client, configuration);
+
+    //then
+    Assertions.assertThatThrownBy(uploadCommand::invoke)
+            .isInstanceOf(ConfigurationException.class)
+            .hasMessageContaining("multi-language file formats");
+    Mockito.verify(client, times(0)).uploadFile(any());
+  }
+
+  @Test
+  public void shouldFallBackToBuiltInFormatsWhenApiReturnsNothing() throws Exception
+  {
+    //given
+    Mockito.when(client.fetchMultiLanguageFileFormats()).thenReturn(List.of());
+
+    Configuration configuration = Configuration.defaultConfiguration();
+    configuration.setApiKey("my-api-key");
+    configuration.setUploadPath("./junit/download-test/values-{lang}/strings.xml");
+    configuration.setUploadFormat("project-json");
+
+    //when
+    UploadCommand uploadCommand = new UploadCommand(client, configuration);
+
+    //then
+    Assertions.assertThatThrownBy(uploadCommand::invoke)
+            .isInstanceOf(ConfigurationException.class)
+            .hasMessageContaining("multi-language file formats");
+    Mockito.verify(client, times(0)).uploadFile(any());
+  }
+
+  @Test
+  public void shouldTreatMultiLanguageUploadOptionAsMultiLanguageWithoutCallingApi() throws Exception
+  {
+    //given
+    Configuration configuration = Configuration.defaultConfiguration();
+    configuration.setApiKey("my-api-key");
+    configuration.setUploadPath("./junit/download-test/values-{lang}/strings.xml");
+    configuration.setUploadFormat("android");
+    configuration.setUploadOptions(List.of("MULTI_LANGUAGE"));
+
+    //when
+    UploadCommand uploadCommand = new UploadCommand(client, configuration);
+
+    //then
+    Assertions.assertThatThrownBy(uploadCommand::invoke)
+            .isInstanceOf(ConfigurationException.class)
+            .hasMessageContaining("multi-language file formats");
+    Mockito.verify(client, times(0)).fetchMultiLanguageFileFormats();
+  }
+
+  @Test
+  public void shouldUnderstandEnumNamesReturnedByOlderApiVersions() throws Exception
+  {
+    //given
+    // API versions before the file-formats fix report enum names instead of format values
+    Mockito.when(client.fetchMultiLanguageFileFormats()).thenReturn(List.of("MULTI_LANGUAGE_JSON", "LOCALIZABLE_XC_STRINGS", "EXCEL"));
+
+    Configuration configuration = Configuration.defaultConfiguration();
+    configuration.setApiKey("my-api-key");
+    configuration.setUploadPath("./junit/download-test/values-{lang}/strings.xml");
+    configuration.setUploadFormat("localizable-xcstrings");
+
+    //when
+    UploadCommand uploadCommand = new UploadCommand(client, configuration);
+
+    //then
+    Assertions.assertThatThrownBy(uploadCommand::invoke)
+            .isInstanceOf(ConfigurationException.class)
+            .hasMessageContaining("multi-language file formats");
+    Mockito.verify(client, times(0)).uploadFile(any());
   }
 }

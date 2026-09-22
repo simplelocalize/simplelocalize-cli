@@ -388,4 +388,63 @@ public class SimpleLocalizeClientTest
 
     assertThat(Path.of(downloadPath)).doesNotExist();
   }
+  @Test
+  void shouldFetchMultiLanguageFileFormats() throws Exception
+  {
+    //given
+    SimpleLocalizeClient client = new SimpleLocalizeClient(MOCK_SERVER_BASE_URL, "81707741b64e68427e1a2c20e75095b1");
+    // Response shape of GET /api/v1/file-formats, wrapped by the API's global response wrapper
+    String responseBody = """
+            {
+              "msg": "OK",
+              "status": 200,
+              "data": {
+                "fileFormats": [
+                  {"value": "java-properties", "multiLanguageSupport": false},
+                  {"value": "csv", "multiLanguageSupport": false, "deprecated": true},
+                  {"value": "excel", "multiLanguageSupport": true},
+                  {"value": "multi-language-json", "multiLanguageSupport": true},
+                  {"value": "ini", "multiLanguageSupport": false, "beta": true}
+                ]
+              }
+            }
+            """;
+    mockServer.when(request()
+                            .withMethod("GET")
+                            .withPath("/api/v1/file-formats"),
+                    Times.exactly(1))
+            .respond(
+                    response()
+                            .withStatusCode(200)
+                            .withContentType(MediaType.APPLICATION_JSON)
+                            .withBody(responseBody)
+            );
+
+    //when
+    List<String> result = client.fetchMultiLanguageFileFormats();
+
+    //then
+    assertThat(result).containsExactly("excel", "multi-language-json");
+  }
+
+  @Test
+  void shouldThrowWhenFetchingFileFormatsFails()
+  {
+    //given
+    SimpleLocalizeClient client = new SimpleLocalizeClient(MOCK_SERVER_BASE_URL, "81707741b64e68427e1a2c20e75095b1");
+    mockServer.when(request()
+                            .withMethod("GET")
+                            .withPath("/api/v1/file-formats"),
+                    Times.exactly(1))
+            .respond(
+                    response()
+                            .withStatusCode(500)
+                            .withContentType(MediaType.APPLICATION_JSON)
+                            .withBody("{\"msg\": \"Internal server error\"}")
+            );
+
+    //when & then
+    Assertions.assertThatThrownBy(client::fetchMultiLanguageFileFormats)
+            .isInstanceOf(ApiRequestException.class);
+  }
 }

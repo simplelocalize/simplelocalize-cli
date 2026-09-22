@@ -4,7 +4,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>io.simplelocalize</groupId>
     <artifactId>simplelocalize-cli</artifactId>
-    <version>2.11.1</version>
+    <version>2.12.0</version>
     <packaging>jar</packaging>
     <name>simplelocalize-cli</name>
     <description>Official SimpleLocalize Command Line Interface</description>
@@ -254,6 +254,7 @@
                             <quickBuild>${graalvm.quickBuild}</quickBuild>
                             <buildArgs>
                                 <arg>--no-fallback</arg>
+                                <arg>-march=compatibility</arg>
                                 <arg>--enable-http</arg>
                                 <arg>--enable-https</arg>
                                 <arg>-H:IncludeResources=logback.xml</arg>

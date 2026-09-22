@@ -147,6 +147,11 @@ public class SimpleLocalizeUriFactory
     return URI.create(baseUrl + "/cli/v1/stacktrace");
   }
 
+  URI buildFileFormatsUri()
+  {
+    return URI.create(baseUrl + "/api/v1/file-formats");
+  }
+
   URI buildGetRunningAutoTranslationJobsUri()
   {
     return URI.create(baseUrl + "/api/v2/jobs?status=RUNNING&type=AUTO_TRANSLATION");

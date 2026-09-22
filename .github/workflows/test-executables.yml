@@ -18,9 +18,9 @@ jobs:
       fail-fast: false
       matrix:
         os: [ macos-26, macos-26-intel, ubuntu-24.04-arm, ubuntu-latest ]
-        version: [ '2.10', '2.9', '2.8' ]
+        version: [ '2.11', '2.10' ]
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v7
       - name: Test on ${{ matrix.os }}
         run: |
           curl --fail -s https://get.simplelocalize.io/${{ matrix.version }}/install | bash
@@ -32,9 +32,9 @@ jobs:
       fail-fast: false
       matrix:
         os: [ windows-latest ]
-        version: [ '2.10', '2.9', '2.8' ]
+        version: [ '2.11', '2.10' ]
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v7
       - name: Test on ${{ matrix.os }}
         run: |
           . { iwr -useb https://get.simplelocalize.io/${{ matrix.version }}/install-windows } | iex;

@@ -20,9 +20,9 @@ jobs:
     outputs:
       version: ${{ steps.get-version.outputs.version }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
         name: "Checkout"
-      - uses: actions/setup-java@v4
+      - uses: actions/setup-java@v6
         name: "Install Java"
         with:
           java-version: '21'
@@ -39,13 +39,13 @@ jobs:
       - name: 'Smoke test JAR'
         run: ./scripts/smoke-test.sh java -jar target/simplelocalize-cli-${{env.VERSION}}.jar
       - name: 'Upload artifact'
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: 'simplelocalize-cli-${{env.VERSION}}.jar'
           path: 'target/simplelocalize-cli-${{env.VERSION}}.jar'
       - name: 'Upload JAR to Release'
         if: github.event_name == 'release'
-        uses: softprops/action-gh-release@v1
+        uses: softprops/action-gh-release@v3
         with:
           files: 'target/simplelocalize-cli-${{env.VERSION}}.jar'
         env:
@@ -79,7 +79,7 @@ jobs:
             downloadFilename: 'simplelocalize-cli-windows.exe'
     runs-on: ${{ matrix.os }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
         name: "Checkout"
       - name: "Print architecture"
         run: uname -m
@@ -104,13 +104,13 @@ jobs:
           codesign --force --deep --sign - ./target/${{ matrix.downloadFilename }}
           codesign --verify --verbose ./target/${{ matrix.downloadFilename }}
       - name: "Upload artifact"
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: simplelocalize-cli-${{ matrix.label }}
           path: ./target/${{ matrix.downloadFilename }}
       - name: 'Upload Executable to Release'
         if: github.event_name == 'release'
-        uses: softprops/action-gh-release@v1
+        uses: softprops/action-gh-release@v3
         with:
           files: './target/${{ matrix.downloadFilename }}'
         env:
@@ -122,7 +122,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: "Download all artifacts"
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8
         with:
           path: dist
           merge-multiple: true
@@ -131,13 +131,13 @@ jobs:
           cd dist
           zip -j "../simplelocalize-cli-${{ needs.build-jar.outputs.version }}.zip" *
       - name: "Upload bundle artifact"
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: 'simplelocalize-cli-${{ needs.build-jar.outputs.version }}'
           path: 'simplelocalize-cli-${{ needs.build-jar.outputs.version }}.zip'
       - name: 'Upload bundle to Release'
         if: github.event_name == 'release'
-        uses: softprops/action-gh-release@v1
+        uses: softprops/action-gh-release@v3
         with:
           files: 'simplelocalize-cli-${{ needs.build-jar.outputs.version }}.zip'
         env:
