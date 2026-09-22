@@ -11,6 +11,7 @@
 
     <properties>
         <jdk.version>21</jdk.version>
+        <macos.version.min>13.0</macos.version.min>
         <exec.mainClass>io.simplelocalize.cli.SimplelocalizeCliCommand</exec.mainClass>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
@@ -259,6 +260,29 @@
                                 <arg>--enable-https</arg>
                                 <arg>-H:IncludeResources=logback.xml</arg>
                                 <arg>-H:ReflectionConfigurationFiles=reflect-config.json</arg>
+                            </buildArgs>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+
+        <!-- Keeps macOS binaries runnable on older systems than the CI runner's SDK. -->
+        <profile>
+            <id>macos-deployment-target</id>
+            <activation>
+                <os>
+                    <family>mac</family>
+                </os>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.graalvm.buildtools</groupId>
+                        <artifactId>native-maven-plugin</artifactId>
+                        <configuration>
+                            <buildArgs combine.children="append">
+                                <arg>-H:NativeLinkerOption=-mmacosx-version-min=${macos.version.min}</arg>
                             </buildArgs>
                         </configuration>
                     </plugin>
