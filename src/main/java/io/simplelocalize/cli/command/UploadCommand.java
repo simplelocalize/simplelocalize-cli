@@ -18,10 +18,16 @@ import org.slf4j.LoggerFactory;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.List;
+import java.util.Locale;
 
 public class UploadCommand implements CliCommand
 {
   private static final Logger log = LoggerFactory.getLogger(UploadCommand.class);
+  /**
+   * Used only when the API cannot be reached. The API is the source of truth, see
+   * FileFormat#hasMultipleLanguages and FileFormatServiceTest#shouldReturnExactListOfMultiLanguageFormats.
+   */
+  private static final List<String> FALLBACK_MULTI_LANGUAGE_FILE_FORMATS = List.of("multi-language-json", "project-json", "excel", "csv-translations", "tsv", "localizable-xcstrings");
   private final FileListReader fileListReader = new FileListReader();
   private final SimpleLocalizeClient client;
   private final Configuration configuration;
@@ -215,8 +221,7 @@ public class UploadCommand implements CliCommand
       throw new ConfigurationException("You cannot use {ns} placeholder in uploadPath and namespace parameter at the same time");
     }
 
-    final boolean isMultiLanguage = isMultiLanguage(configuration);
-    if (isMultiLanguage && hasLanguagePlaceholder)
+    if (hasLanguagePlaceholder && isMultiLanguage(configuration))
     {
       throw new ConfigurationException("You cannot use language key parameter with multi-language file formats");
     }
@@ -224,15 +229,6 @@ public class UploadCommand implements CliCommand
 
   private boolean isMultiLanguage(Configuration configuration)
   {
-    final List<String> multiLanguageFileFormats = List.of("multi-language-json", "excel", "csv-translations", "tsv", "localizable-xcstrings");
-    for (String uploadFormat : multiLanguageFileFormats)
-    {
-      if (uploadFormat.equalsIgnoreCase(configuration.getUploadFormat()))
-      {
-        return true;
-      }
-    }
-
     final List<String> uploadOptions = configuration.getUploadOptions();
     for (String uploadOption : uploadOptions)
     {
@@ -241,6 +237,56 @@ public class UploadCommand implements CliCommand
         return true;
       }
     }
+
+    final String uploadFormat = normalizeFileFormat(configuration.getUploadFormat());
+    for (String multiLanguageFileFormat : getMultiLanguageFileFormats())
+    {
+      if (normalizeFileFormat(multiLanguageFileFormat).equals(uploadFormat))
+      {
+        return true;
+      }
+    }
     return false;
+  }
+
+  /**
+   * API versions released before the file-formats fix report enum names ('MULTI_LANGUAGE_JSON')
+   * instead of format values ('multi-language-json'), so both spellings have to match the
+   * configured upload format. Without it such a response would silently match nothing.
+   */
+  private String normalizeFileFormat(String fileFormat)
+  {
+    if (fileFormat == null)
+    {
+      return "";
+    }
+    return fileFormat.toLowerCase(Locale.ROOT).replaceAll("[^a-z0-9]", "");
+  }
+
+  private List<String> getMultiLanguageFileFormats()
+  {
+    try
+    {
+      final List<String> fileFormats = client.fetchMultiLanguageFileFormats();
+      if (fileFormats != null && !fileFormats.isEmpty())
+      {
+        return fileFormats;
+      }
+      log.warn("Could not load multi-language file formats from the API (empty response), using the list built into this CLI version");
+    } catch (InterruptedException e)
+    {
+      Thread.currentThread().interrupt();
+      logFileFormatsFallback(e);
+    } catch (Exception e)
+    {
+      logFileFormatsFallback(e);
+    }
+    return FALLBACK_MULTI_LANGUAGE_FILE_FORMATS;
+  }
+
+  private void logFileFormatsFallback(Exception e)
+  {
+    final String reason = StringUtils.isNotEmpty(e.getMessage()) ? e.getMessage() : e.getClass().getSimpleName();
+    log.warn("Could not load multi-language file formats from the API ({}), using the list built into this CLI version", reason);
   }
 }

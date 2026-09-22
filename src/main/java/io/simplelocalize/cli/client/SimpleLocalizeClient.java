@@ -97,6 +97,24 @@ public class SimpleLocalizeClient
     return mapper.writeValueAsString(data);
   }
 
+  /**
+   * Returns file formats that carry translations for more than one language, as declared by the API.
+   * The CLI keeps its own copy of that list as a fallback, see UploadCommand.
+   */
+  public List<String> fetchMultiLanguageFileFormats() throws IOException, InterruptedException
+  {
+    URI uri = uriFactory.buildFileFormatsUri();
+    HttpRequest httpRequest = httpRequestFactory.createGetRequest(uri).build();
+    HttpResponse<String> httpResponse = httpClient.send(httpRequest, HttpResponse.BodyHandlers.ofString());
+    if (httpResponse.statusCode() != 200)
+    {
+      // Caller falls back to its built-in list and warns, so this must not log an error on its own
+      throw new ApiRequestException(readErrorMessage(httpResponse));
+    }
+    DocumentContext json = JsonPath.parse(httpResponse.body());
+    return json.read("$.data.fileFormats[?(@.multiLanguageSupport == true)].value");
+  }
+
   public List<DownloadableFile> exportFiles(ExportRequest exportRequest) throws IOException, InterruptedException
   {
     URI downloadUri = uriFactory.buildDownloadUri(exportRequest);
@@ -244,14 +262,20 @@ public class SimpleLocalizeClient
   {
     if (httpResponse.statusCode() != 200)
     {
-      String message = tryReadErrorMessage(httpResponse);
-      if (StringUtils.isBlank(message))
-      {
-        message = "Unknown error, HTTP Status: " + httpResponse.statusCode();
-      }
+      String message = readErrorMessage(httpResponse);
       log.error("Request failed: {}", message);
       throw new ApiRequestException(message);
     }
+  }
+
+  private String readErrorMessage(HttpResponse<?> httpResponse)
+  {
+    String message = tryReadErrorMessage(httpResponse);
+    if (StringUtils.isBlank(message))
+    {
+      message = "Unknown error, HTTP Status: " + httpResponse.statusCode();
+    }
+    return message;
   }
 
   private String tryReadErrorMessage(HttpResponse<?> httpResponse)
