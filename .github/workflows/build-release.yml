@@ -38,6 +38,11 @@ jobs:
           echo "version=$VERSION" >> $GITHUB_OUTPUT
       - name: 'Smoke test JAR'
         run: ./scripts/smoke-test.sh java -jar target/simplelocalize-cli-${{env.VERSION}}.jar
+      - name: 'End-to-end test JAR'
+        env:
+          SIMPLELOCALIZE_TEST_API_KEY: ${{ secrets.SIMPLELOCALIZE_TEST_API_KEY }}
+          E2E_NAMESPACE: ci-jar
+        run: ./scripts/e2e-test.sh java -jar target/simplelocalize-cli-${{env.VERSION}}.jar
       - name: 'Upload artifact'
         uses: actions/upload-artifact@v7
         with:
@@ -95,6 +100,13 @@ jobs:
       - name: "Smoke test executable"
         shell: bash
         run: ./scripts/smoke-test.sh ./target/${{ matrix.filename }}
+      - name: "End-to-end test executable"
+        shell: bash
+        # Skips itself when the secret is unavailable (pull requests from forks).
+        env:
+          SIMPLELOCALIZE_TEST_API_KEY: ${{ secrets.SIMPLELOCALIZE_TEST_API_KEY }}
+          E2E_NAMESPACE: ci-${{ matrix.label }}
+        run: ./scripts/e2e-test.sh ./target/${{ matrix.filename }}
       - name: "Rename executable"
         run: mv ./target/${{ matrix.filename }} ./target/${{ matrix.downloadFilename }}
       - name: "Ad-hoc sign executable (macOS)"

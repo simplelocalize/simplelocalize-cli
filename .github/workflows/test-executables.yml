@@ -18,13 +18,23 @@ jobs:
       fail-fast: false
       matrix:
         os: [ macos-26, macos-26-intel, ubuntu-24.04-arm, ubuntu-latest ]
-        version: [ '2.11', '2.10' ]
+        version: [ '2.12', '2.11', '2.10' ]
     steps:
       - uses: actions/checkout@v7
       - name: Test on ${{ matrix.os }}
         run: |
           curl --fail -s https://get.simplelocalize.io/${{ matrix.version }}/install | bash
           simplelocalize --version
+      - name: Verify the installer picked the right architecture
+        run: |
+          case "$(uname -m)" in
+            arm64|aarch64) EXPECTED="aarch64|arm64" ;;
+            *)             EXPECTED="amd64|x86_64" ;;
+          esac
+          if ! simplelocalize --version | grep -qE "\(($EXPECTED)\)"; then
+            echo "::error::Installed binary does not match this machine ($(uname -m)): $(simplelocalize --version | head -1)"
+            exit 1
+          fi
   test-windows:
     name: "Testing ${{ matrix.version }} on ${{ matrix.os }}"
     runs-on: ${{ matrix.os }}
@@ -32,7 +42,7 @@ jobs:
       fail-fast: false
       matrix:
         os: [ windows-latest ]
-        version: [ '2.11', '2.10' ]
+        version: [ '2.12', '2.11', '2.10' ]
     steps:
       - uses: actions/checkout@v7
       - name: Test on ${{ matrix.os }}
